@@ -2,7 +2,9 @@ files/
 
 .DS_Store
 .env
-data/
+# Runtime data stays out of git. Cited reference data under data/masks/ is source.
+/data/*
+!/data/masks/
 .venv/
 __pycache__/
 .pytest_cache/
