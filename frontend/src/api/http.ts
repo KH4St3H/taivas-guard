@@ -231,8 +231,8 @@ export function rankFindings(rows: Finding[]): Finding[] {
 export const caseInIssue = (c: CaseSummary, domain: string, issue: number) => c.domain === domain && c.first_issue <= issue && issue <= c.last_issue;
 
 const GAPS: Record<Domain, string[]> = {
-  space: ['No beam coverage check: maximum notified gain is applied towards Finland, as Traficom said to assume, so the M4 rule over-flags by design', 'M4 band file merges 3400–4200 MHz, which can miss cases in 3.4–3.8 GHz', 'AP30, AP30A and AP30B aren’t screened', 'Station results come from the pfd calculation at each station; a band with no limit mask stays uncalculated, and antenna direction isn’t used'],
-  terrestrial: ['Land-mobile notices from the configured neighbours only, within an approximate 300 km screen', 'P.1546 without terrain; T/R 25-08 thresholds stop at 470 MHz and are unconfirmed on the Russian border', 'Notices that could not be calculated are listed for expert review; they are not clear results'],
+  space: ['No beam coverage check: maximum notified gain is applied towards Finland, as Traficom said to assume, so the M4 rule over-flags by design', 'Only Space database version 10 is supported; Finnish operating satellites are not yet protected', 'AP30, AP30A and AP30B aren’t screened', 'Station results come from the pfd calculation at each station; a band with no limit mask stays uncalculated, and antenna direction isn’t used'],
+  terrestrial: ['Land-mobile notices from the configured neighbours only, within an approximate 300 km screen', 'P.1546 without terrain; the 400-470 MHz T/R 25-08 threshold is extended above 470 MHz on Traficom’s instruction; Russian-border applicability is provisional', 'Notices that could not be calculated are listed for expert review; they are not clear results'],
 };
 
 // An artifact screened before terrestrial rules existed keeps this status until it is screened again.
@@ -292,7 +292,7 @@ function uploadFile(input: NewRun, onProgress?: (fraction: number) => void): Pro
 
 export function runFromArtifact(a: ArtifactOut, message = ''): Run {
   const status = a.screen_status === 'failed' ? 'failed' : a.screen_status === 'pending' ? 'running' : 'succeeded';
-  const done = a.screen_status === 'no_rules' ? 'The file is stored, but no rules exist for terrestrial issues yet. This does not mean there are no concerns.' : 'Screening finished.';
+  const done = a.screen_status === 'no_rules' ? 'No screening rules ran on this stored file. Re-screen it with the current service. This does not mean there are no concerns.' : 'Screening finished.';
   return {
     id: `issue-${a.id}`, trigger: 'on_demand', domain: a.domain as Domain, issue: a.issue_no, fileName: fileName(a.source_url), sha256: a.sha256, sizeBytes: a.size_bytes, startedAt: utc(a.fetched_at),
     status, stageIndex: status === 'running' ? 1 : status === 'failed' ? 1 : 3, issueId: issueKey(a.domain, a.issue_no),
@@ -301,22 +301,24 @@ export function runFromArtifact(a: ArtifactOut, message = ''): Run {
 }
 
 const SOURCES: ReferenceSource[] = [
-  { name: 'M4 band summary', version: 'generetated-files/m4_satellite_filter.csv', detail: '212 bands from 30 MHz up. Merges 3400–4200 MHz, so it can miss cases in 3.4–3.8 GHz.', url: null, status: 'partial' },
-  { name: 'ITU coordination data', version: 'Each IFIC’s provn tables', detail: 'Finds filings where ITU names Finland.', url: null, status: 'loaded' },
-  { name: 'Traficom frequencies of interest', version: 'v05112026 (synthetic)', detail: 'Compares receive frequency only. Stations with no receive frequency are skipped.', url: null, status: 'partial' },
-  { name: 'ITU Radio Regulations limits', version: '2024 edition', detail: 'The pfd engine and limits are in the code, but no screening rule uses them yet, so no limit is checked.', url: 'https://www.itu.int/pub/r-reg-rr', status: 'planned' },
-  { name: 'ECC Decision (25)02', version: 'Approved 27 June 2025; Finland: implementation planned, 31 Jan 2027', detail: 'pfd from satellites in 862–870 MHz must not exceed −142 dB(W/(m²·4 kHz)) on the Earth’s surface. Checked as a CEPT condition, not an RR limit, with the Decision’s list of compliant systems. Its limit on unwanted emissions outside the band can’t be checked from filings.', url: 'https://docdb.cept.org/download/4784', status: 'loaded' },
-  { name: 'ECC T/R 25-08 and ITU-R P.1546', version: 'June 2025; P.1546-6', detail: 'Terrestrial rules not added yet.', url: 'https://docdb.cept.org/document/909', status: 'planned' },
+  { name: 'Regulation M4 allocation table', version: 'Traficom API snapshot, 7 Nov 2026', detail: 'National allocation bands in data/national/m4_bands.csv, with sub-band directions, Finnish restrictions, reserved use and cited RR footnotes. Used by M4 and station screening; restrictions are displayed without changing severity.', url: 'https://opendata.traficom.fi/api/v13/Taajuusjakotaulukko', status: 'loaded' },
+  { name: 'ITU coordination data', version: 'Each IFIC: provn and tr_provn', detail: 'Finds API/A, CR/C and notification-stage filings naming Finland. Notification cases have no assumed response deadline; AP30-family screening remains unsupported.', url: null, status: 'loaded' },
+  { name: 'Traficom frequencies of interest', version: 'v05112026 (synthetic)', detail: 'Protects both RX and TX bands. PFD is evaluated at station coordinates where inputs and masks permit; lists are paged. TX-site fields do not represent the location of a remote receiver.', url: null, status: 'loaded' },
+  { name: 'Finnish earth stations and RR footnotes naming Finland', version: 'M4 API snapshot; RR 2024', detail: 'Protects the receiving bands of the named Sodankyla site, currently without coordinates. Shows 16 extracted Finland-related RR footnotes with source pages; their text needs expert verification.', url: 'https://www.itu.int/pub/r-reg-rr', status: 'partial' },
+  { name: 'ITU Radio Regulations PFD criteria', version: '2024 edition', detail: 'GSO and non-GSO rules evaluate sourced Article 21 limits and Appendix 5 coordination triggers. Non-GSO upper bounds are distinguished from sampled exceedances; unsupported masks and missing inputs remain review items.', url: 'https://www.itu.int/pub/r-reg-rr', status: 'partial' },
+  { name: 'ECC Decision (25)02', version: '27 June 2025; Finland implementation planned 31 Jan 2027', detail: 'Checks the sourced -142 dB(W/(m2.4kHz)) condition in 862-870 MHz and the Decision’s list of compliant systems. This is a CEPT condition, not an RR limit. Unwanted emissions outside the band cannot be evaluated from these filings.', url: 'https://docdb.cept.org/download/4784', status: 'partial' },
+  { name: 'ECC T/R 25-08 and ITU-R P.1546', version: 'June 2025; P.1546-6', detail: 'Land-mobile field strengths at the Finnish boundary use P.1546 without terrain. Annex 1 indicative thresholds are extended above 470 MHz on Traficom’s instruction. Russian-border applicability remains provisional; missing antenna heights stay uncalculated.', url: 'https://docdb.cept.org/document/909', status: 'partial' },
+  { name: 'Natural Earth boundary and land mask', version: '1:50m reference data', detail: 'Approximate Finnish boundary/coast evaluation points and land/sea path classification; lakes count as land. The distance screen is an engineering approximation.', url: 'https://www.naturalearthdata.com/', status: 'loaded' },
 ];
 
 export const httpApi: Api = {
   mode: 'live',
   capabilities: { upload: true, checkItuNow: true, rescreen: true, reviewStatuses: ['accepted', 'rejected', 'pending'], letterStorage: 'browser', customRules: true, stationLists: true, coverage: true },
-  severityNote: 'Set by the screening service from fixed rules. How station cases are ranked is the project’s choice, not Traficom’s.',
+  severityNote: 'Deterministic rules set severity; the 3 dB watch band and ranking weights are project choices. Calculated exceedances use worst-case assumptions. Expert review is required; severity does not establish interference or a regulatory breach.',
   listSeverityRules: async () => [
-    { severity: 'High', rule: 'ITU names Finland in the filing’s coordination data, a visible satellite transmits in a passive band with no space-to-Earth allocation, or a pfd calculation exceeds a limit, including at a station in Traficom’s list' },
-    { severity: 'Medium', rule: 'A visible satellite transmits in a band with Finnish terrestrial use and no space-to-Earth allocation, or on a station’s RX or TX band where pfd is within 3 dB of the limit, only an upper bound is near it, or nothing could be calculated' },
-    { severity: 'Low', rule: 'On a station’s band, pfd is calculated below the limit at every listed station, or the satellite is below every listed station’s horizon' },
+    { severity: 'High', rule: 'BR names Finland; passive-band M4 concerns; unflagged calculated PFD exceedances, including at stations; or a terrestrial indicative-threshold exceedance with score at least 50, subject to the caps below.' },
+    { severity: 'Medium', rule: 'M4 allocation concerns; PFD within the project watch band, upper-bound concerns, missing calculations or flagged inputs. Station severity follows its strongest evidence. Terrestrial results use medium for missing criteria, sensitivities or special interests, and cap flagged or notifier-declared FIN-coordinated exceedances at medium.' },
+    { severity: 'Low', rule: 'Calculated PFD more than 3 dB below its criterion, a sufficiently low upper bound, or no visible station; terrestrial results below the indicative threshold without sensitivity, FIN coordination or special-interest reasons for medium. These are not compliance findings.' },
   ],
   listIssues: async () => {
     const [rows, cases] = await Promise.all([artifacts(), allCases(), loadRuleNames()]);

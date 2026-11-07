@@ -31,7 +31,7 @@ export function Reference() {
 
       <section className="panel">
         <h2>Power flux density limits in use</h2>
-        {data.limits.length === 0 ? <p className="muted">None yet. The pfd engine hasn’t been added to the screening service, so no case can confirm that a limit is exceeded.</p> : (
+        {data.limits.length === 0 ? <p className="muted">No criterion rows were returned. Check the service and configured masks; an empty list does not establish that a filing is clear.</p> : (
           <>
             <p className="muted">dB(W/m²), where δ is the arrival angle. Check these against the Radio Regulations PDF before relying on them.</p>
             <div className="table-wrap">

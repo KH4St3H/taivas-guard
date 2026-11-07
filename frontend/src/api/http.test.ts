@@ -86,7 +86,7 @@ describe('summariseIssue', () => {
 
   it('states the terrestrial limits once terrestrial rules have run', () => {
     const s = summariseIssue(artifact({ domain: 'terrestrial', screen_status: 'done' }), []);
-    expect(s.limitations.join(' ')).toContain('stop at 470 MHz');
+    expect(s.limitations.join(' ')).toContain('extended above 470 MHz');
     expect(s.limitations.join(' ')).not.toContain('no rules');
   });
 });
