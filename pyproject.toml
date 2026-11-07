@@ -1,0 +1,32 @@
+[project]
+name = "ific-guard"
+version = "0.1.0"
+description = "Monitors ITU BR IFIC publications and flags items relevant to Finland for expert review."
+requires-python = ">=3.11,<3.14"
+dependencies = [
+    "access-parser==0.0.6",
+    "anthropic>=1,<2",
+    "croniter>=3,<7",
+    "fastapi>=0.115,<1",
+    "httpx>=0.27,<1",
+    "openpyxl>=3.1.5",
+    "psycopg[binary]>=3.2,<4",
+    "pydantic-settings>=2.4,<3",
+    "python-multipart>=0.0.9,<1",
+    "sqlalchemy>=2.0.30,<3",
+    "uvicorn>=0.30,<1",
+]
+
+[dependency-groups]
+dev = ["pytest>=8,<10"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["ific_guard"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
