@@ -1,0 +1,102 @@
+{
+  "case_count": 29,
+  "code_sha256": {
+    "__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "cli.py": "e96b23d23ab365dc8c9988c860623a025b37bfe8822e512ad9bdd425d62b58a0",
+    "config.py": "4d9ddd9056de797a1540c2800195678333fc6bbd46eb55e130ffd298c7c63c35",
+    "db.py": "afd0276cb67bc21490a049e54df3d17dfe4c5c2a539f40d1f1c4828eca5a2222",
+    "engines/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "engines/p1546.py": "bf4c2db85f77d7a8d88baa70404dfa09eebca765b11341303ce9649cd10bef26",
+    "engines/pfd.py": "2e9cd78a5388a4fabc7bcc225bdcc87e252f73ca27d470fe90b1814db6b3a933",
+    "events.py": "97a681667f85a7a63985209e3190046492c5ece8ce9e832d2106616b718755d0",
+    "export.py": "e271bd85f7b9617fd4a67ef2e7b3c9a0afffedd9159af8428b2f8521c5372c8f",
+    "llm/__init__.py": "e0079df209be1ab624cd842454ac309efb7d2bf0dbe05622b2ce91eb7eb2bed3",
+    "llm/build_refdocs.py": "100578e0c674ba61e31215bfa06de83f8003e9bee8ee8b7e8b59313b40150f39",
+    "llm/drafts.py": "6e25b09b81e71e42e29c83519810da9db9f8a9c3186182617e224e11f1ef413d",
+    "llm/guardrail.py": "97df051f12001d1aef06dd3ea7a7b9f51ed69a5e8e429e357bf8e4a63dfe5b8b",
+    "llm/model.py": "98a4bb657af0ea009dbf6bd9dce7e02c52b06fa99e7b24c4589fe547249b33a1",
+    "llm/retrieval.py": "7f1ecd303d0238b67c67bb51a5d81f0175eb28733f833ef2ff36bf46bbfa7187",
+    "llm/template.py": "7c0a537608844872e0d08bcab0ac9d3bdc9b3c72f845fa55d367cc3e8bd18226",
+    "models.py": "e70b2c41fccea85116ae2c9ef0109260367c77e3e4826c81a7f24e33fb465ad2",
+    "notifier/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "notifier/app.py": "14aa9e114356dbd9f197f032bbdc1c2e115baa8ae10ee55a4dea085fc3da7baf",
+    "notifier/mailer.py": "7b7eac13da79b67e7cd2c2cac44d0a39c68414785df5cf6c4e013040545a78aa",
+    "notifier/runner.py": "4fd983d6b20ce3176ac7ee6a6267d4d8994c08c8df8af2a70ece09f2f57be0c0",
+    "schemas.py": "37e593ece74a761e368f0024940b06c0c6af43d62058e8eb1178e0ff4be47f30",
+    "screening/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "screening/app.py": "08c319361ba49206d9f61a07664d9d173f54067ca485d4c78b6aa1ba70da55f1",
+    "screening/engine.py": "42b4232328483fa0f0b08a71aa8e6d3201221ae1ae5593250f64f2d9682f9296",
+    "screening/m4.py": "df4e376d1c936882d1638f3a4bebedf77c2e416ed7608bf28201699398a4ded8",
+    "screening/rule_stations.py": "8b6eb4ccf8b62f845597e6f14aaf6c8a9923d467a8047ecd3618b4bb62e96b98",
+    "screening/rules.py": "bd9cbcfcced50c6e454f552bc46a1805281c681bee9df7335d335aa2906789c4",
+    "screening/space.py": "a4fea9b8d45cdedad6819cd4fe2572fe61b7ff1b33a1d6bee08a34438c912a09",
+    "screening/stations.py": "c89f668f53b5fda671a70e5bb103293ec030dcb9d65896687067a214ecc31a25",
+    "service.py": "d1cafab92b752e47280e237650787c3e3b41ef91836704bd89179ae669715fba",
+    "sync/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "sync/app.py": "d9a868857f309792567623722e011f5fdc9c7c118d730d48a205b0cffac4c872",
+    "sync/fetch.py": "88fd25ee6ac033284fd941eaf49f189466e74d39d63f89730b1bb0657f731761",
+    "sync/runner.py": "42d1ea94208bf1e84f09f56a5cbb444a0303f9036e67ef3145f451ccef8fd38f",
+    "sync/sources.py": "9f8e7c0f5257cd3d6e96bba848d9206323e57b89448f196b31f28c42ab262af2",
+    "terrestrial/__init__.py": "b1192ebb2ceb740477dd225c0bf2abf4801148b53c5d9df707fb1a4a99607d39",
+    "terrestrial/adapter.py": "953378a335e902e98683677011e4ffee3e4dde2ba9ad4482e41bd316042ab1e4",
+    "terrestrial/diff.py": "4082c008511b7be30aad48509806f3313f8ea0ea778aa3bebf4f2d2271573eb5",
+    "terrestrial/rule_field_strength.py": "14135b36ccd27e5266a0863cb7326bcaac0de3d384fdf3c40b0a4451cd320c44",
+    "terrestrial/trends.py": "d857ba5d6ce1ab9cc9f9246e01ddc882499bab5ba91fccfea2eae63b882b8f86"
+  },
+  "code_version": {
+    "commit": "e66e8a634637c4fa73f75622cddfd4a8eca18009",
+    "dirty": false
+  },
+  "config": {
+    "data_sha256": {
+      "field_strength.json": "8cfa3eaa234bb8ecb21c0a1e2e977946314dd18ab067f190c23ff2c3900ff378",
+      "finland_boundary.json": "0d93ff3f681aed4074974b0a777ae0cdc3c6f122f32ce4738db28e73e10c0786",
+      "land_near_finland.json": "7a6abddf031822bc35f6b8a61fd30b3bba09d603e130bea9baac96b1f7df546b"
+    },
+    "m4_filter_sha256": "58481965d7cb3d26dd9126e43b8f325a693430189ea472a9de58b4290a67544c",
+    "neighbour_adms": [
+      "RUS",
+      "S",
+      "EST",
+      "NOR",
+      "DNK"
+    ],
+    "terrestrial_distance_limits_km": {
+      "default": 300.0
+    }
+  },
+  "domain": "terrestrial",
+  "format_version": 1,
+  "generated_at": "2026-11-07T06:59:21.921470+00:00",
+  "issue_no": 3076,
+  "limitations": [
+    "Possible concerns for expert review, not confirmed interference or regulatory breaches.",
+    "T/R 25-08 Annex 1 values are indicative coordination thresholds. The document does not say whether they apply on the Russian border, and no bilateral agreement was checked.",
+    "No value above 470 MHz is in the repository, so those notices report a field strength without a comparison.",
+    "No terrain. Land/sea paths come from Natural Earth 1:50m, with lakes as land. Antenna patterns are not used.",
+    "The 300 km screen and its polyline are engineering approximations, not regulatory values or a legal border.",
+    "fxm_coord, action, target, pwr_eiv and pwr_xyz meanings are inferred from data, as the ITU ReadMe could not be read.",
+    "Article 11 totals do not fully reconcile with notice rows; see funnel.json.",
+    "No comment deadline is given: none for terrestrial notices is in the repository.",
+    "Mobile stations without a notified antenna height are not calculated; see funnel.json."
+  ],
+  "mdb_sha256": "7358853076caab70e2a18c1d86cc1d22be40a28d0a17202aa6ad35729fce234d",
+  "output_sha256": {
+    "cases.csv": "50a695b0653c1ab9130c33ce0cb876828dc9896b5f0bae6518cc27d776fa8bb1",
+    "cases.json": "96158cb8bbc4744da52b3b5e3203dcf024b15826d289e0e270955bf6a84548e4",
+    "funnel.json": "d09e028245f35c7e9b346a01800cbb5a19382a9acf6b09a8d2b0c1e2cd5df1b2"
+  },
+  "provisional_format": true,
+  "rule_ids": [
+    "terrestrial-p1546",
+    "terrestrial-not-calculated"
+  ],
+  "run_time_s": 8.287329,
+  "scope": {
+    "funnel_file": "funnel.json",
+    "service": "land mobile, station classes FB and ML"
+  },
+  "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
+  "source_size_bytes": 2406450,
+  "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip"
+}
