@@ -2,7 +2,7 @@
 
 `.github/workflows/deploy.yml` runs on every push to `main`, or by hand from the Actions tab. It runs the backend and frontend tests, unless they're turned off (below), copies the code to the server over SSH, and runs `docker compose -p ific-guard up -d --build`. The deploy fails if any of the three services doesn't answer within 2 minutes, and prints their logs.
 
-What it deploys is the Compose stack: sync, screening, notifier, Postgres and the migration. The review UI isn't part of it; see "The review UI" below.
+What it deploys is the Compose stack (sync, screening, notifier, Postgres and the migration) and the built review UI, which Caddy serves; see "The review UI" below.
 
 ## Server, once
 
@@ -65,4 +65,32 @@ Revert the commit on `main` and push, or run the workflow by hand from an earlie
 
 ## The review UI
 
-The UI runs as a Vite dev server whose proxy adds the API key, which doesn't suit a server. To deploy it, it needs a container that serves `frontend/dist` and proxies `/api/sync` and `/api/screening`, behind a sign-in, because anyone who can open it could act with the key.
+Each deploy builds the UI on GitHub and copies `frontend/dist` to the server. Caddy serves it and passes `/api/sync` and `/api/screening` to the services, adding the API key itself, so the browser never holds it. Because of that, anyone who can open the site can act with the key, so the site sits behind a password.
+
+```caddyfile
+import /etc/caddy/ific-guard-key.caddy   # (ific_api_key) { header_up X-API-Key "<IFIC_API_KEY from .env>" }, root-only
+
+taivas.mehrshad.fi {
+	encode zstd gzip
+	basic_auth {
+		traficom <hash from: caddy hash-password>
+	}
+	handle_path /api/sync/* {
+		reverse_proxy 127.0.0.1:8001 {
+			import ific_api_key
+		}
+	}
+	handle_path /api/screening/* {
+		reverse_proxy 127.0.0.1:8002 {
+			import ific_api_key
+		}
+	}
+	handle {
+		root * /opt/ific-guard/frontend/dist
+		try_files {path} /index.html
+		file_server
+	}
+}
+```
+
+If you change `IFIC_API_KEY` in `.env`, change it in `/etc/caddy/ific-guard-key.caddy` too, then run `caddy reload --config /etc/caddy/Caddyfile`. The site needs a DNS A record pointing at the server before Caddy can get its certificate.
