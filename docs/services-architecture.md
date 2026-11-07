@@ -131,7 +131,7 @@ New checks plug in here, including the pfd engine and special-interest station o
 | Rule | Fires when | Severity |
 |---|---|---|
 | `fin-named-by-br` | Tier 1: `FIN` appears in `provn` or `tr_provn` for an in-scope notice | High |
-| `m4-no-space-to-earth` | A visible satellite transmits in a band with Finnish terrestrial or passive use and no space-to-Earth allocation in `m4_satellite_filter.csv` | Medium; high for a passive band |
+| `m4-no-space-to-earth` | A visible satellite transmits in a band with Finnish terrestrial or passive use and no space-to-Earth allocation in `data/national/m4_bands.csv` (built by `tools/build_m4_bands.py`) | Medium; high for a passive band |
 
 - **Scope:** API/A and CR/C notices, with suppressions skipped.
 - **Visibility:** GSO from 47°W to 97°E. Non-GSO reaching at least 55° latitude. Missing orbit data keeps the notice in, following the conservative principle.
@@ -196,6 +196,8 @@ CSV/JSON stays identical. The suite now passes 68 tests.
 - Cron, on SQLite with an every-minute schedule: runs started on the minute with no errors.
 - Discovery finds Space and Terrestrial 3074-3083 with `IFIC_MIN_ISSUE=3074`, and downloading Space 3074 and Terrestrial 3076 directly gave the same hashes as the shared copies.
 
+- Integration branch `integration/wave-1`, combining the export, M4 table, station rule, P.1546 engine and draft letters: 392 tests pass, and the Docker image builds, with all rules and services loading inside it. The full Compose stack has not been run on it. Space 3074 gives 106 cases.
+
 **Open or not yet verified**
 
 | Item | Detail |
@@ -213,7 +215,6 @@ CSV/JSON stays identical. The suite now passes 68 tests.
 | Terrestrial has no rules | Files sync, but report `no_rules`, deliberately not "no concerns" | Land-mobile adapter and P.1546 engine |
 | Cases span issues | A case seen in two issues counts once, so a digest or count for one issue can omit it. **Export per issue, not from "new" cases** | Ticket 03 |
 | Older issues untested | The brief says all existing issues must be evaluable. Space discovery looks back 3 years, and older databases may differ | Ticket 15. Upload works as a way in meanwhile |
-| `m4_satellite_filter.csv` merges 3400-4200 MHz as one shared band | **False negatives in 3.4-3.8 GHz**, which ARCHITECTURE.md names as a key national case | Rebuild from Traficom's API, which has sub-band rows |
 | No beam coverage or pfd check | `m4-no-space-to-earth` over-flags and cannot confirm an exceedance | pfd engine, then GIMS contours |
 | AP30, AP30A, AP30B not screened | The brief puts them in scope; issue 3083's plan tables are empty, so this is untested | Add notice handling using an issue that contains them |
 | DuckDB store not connected | Rules read the `.mdb` directly | Load `schema.sql` tables inside `screening` |

@@ -14,17 +14,17 @@ Status values come from `docs/agents/triage-labels.md`. Size is a rough relative
 |---|---|---|---|---|---|
 | 01 | Baseline: commit, fix stray text, fetch shared data | Done | S | none | Required |
 | 02 | Ask Traficom the open questions | Human | S | none | Required |
-| 03 | Space 3074 evaluation export | Agent | M | none | Required |
-| 04 | M4 bands from Traficom's API | Agent | M | none | Required |
-| 05 | Station loader and overlap rule | Agent | M | none | Required |
-| 06 | pfd engine and limit masks | Agent | L | none | Required |
+| 03 | Space 3074 evaluation export | Done, merged | M | none | Required |
+| 04 | M4 bands from Traficom's API | Done, `agent/04-m4-bands` | M | none | Required |
+| 05 | Station loader and overlap rule | Done, merged | M | none | Required |
+| 06 | pfd engine and limit masks | Done, by `ar6aaz` | L | none | Required |
 | 07 | pfd rule on real filings | Agent | M | 06 | Required |
-| 08 | Terrestrial adapter, diff and filter | Agent | L | none | Required |
-| 09 | P.1546 engine and T/R 25-08 triggers | Agent | L | none | Required |
+| 08 | Terrestrial adapter, diff and filter | Partly done in PR #1 | L | none | Required |
+| 09 | P.1546 engine and T/R 25-08 triggers | Done, `agent/09-p1546` | L | none | Required |
 | 10 | Terrestrial findings and 3076 export | Agent | M | 03, 08, 09 | Required |
 | 11 | Neighbour trends and anomalies | Agent | S | 08 | Required |
-| 12 | Review UI | Done | M | none | Wanted |
-| 13 | Explanations and draft letters | Agent | M | none | Required |
+| 12 | Review UI | Done, React in `frontend/`, by `ar6aaz` | M | none | Wanted |
+| 13 | Explanations and draft letters | Done, `agent/13-llm-drafts` | M | none | Required |
 | 14 | Final run, evaluation files and demo | Coordinator | M | all others | Required |
 | 15 | Older IFIC issues | Agent | M | 03 | Required |
 
@@ -117,6 +117,7 @@ Screening rules without a calculation use `method: "screening"` and leave the nu
 - **Baseline verified (2026-11-07):** services and stray-text fix were already committed at `bc9c594`; 41 baseline tests pass. All four verified archives and MDBs are in this checkout's ignored `data/shared/`. See [ticket 01](issues/01-baseline.md). The old macOS shared-data path does not apply here.
 - **Sequential implementation:** the user requested issues one by one. Work continues in the existing `services-foundation-v2` checkout without parallel agents. The user subsequently authorized committing and pulling this branch; nothing has been pushed. Ticket 02 remains a human question list; ticket 03 uses a clearly provisional export format.
 - **Space 3074 export complete:** [ticket 03](issues/03-space-3074-export.md) produced 51 possible concerns (10 high, 41 medium), identical CSV/JSON across two runs, five source-row checks, and 45 passing tests. Export re-evaluates the source artifact so mutable cross-issue review state cannot contaminate historical results. AP30-family coverage remains a declared gap.
+- **Integration branch:** `integration/wave-2` adds 04, 09 and 13 to `services-foundation-v2`, which already has 03, 05, 06 and 12.
 - **The deadline does not constrain this plan** (team decision, 2026-11-07).
 - **Issues arrive two ways:** from ITU on a cron schedule, or uploaded as an `.mdb` or a `.zip` containing one. Both are built (`IFIC_SYNC_CRON`, `POST /issues/upload`).
 - **Terrestrial neighbours are Russia, Sweden, Estonia, Norway and Denmark** (team decision). ITU codes `RUS`, `S`, `EST`, `NOR`, `DNK`, confirmed in `ref_adm`, in setting `neighbour_adms`. Sweden's code is `S`, not `SWE`. Treated as a terrestrial scope only, because the brief says a satellite from anywhere can reach Finland.

@@ -2,9 +2,11 @@ files/
 
 .DS_Store
 .env
-# Runtime data stays out of git. Cited reference data under data/masks/ is source.
+# Runtime data stays out of git. Cited reference data here is source.
 /data/*
 !/data/masks/
+!/data/national/
+!/data/refdocs/
 .venv/
 __pycache__/
 .pytest_cache/
@@ -12,3 +14,5 @@ __pycache__/
 
 node_modules/
 dist/
+.claude/
+.local/
