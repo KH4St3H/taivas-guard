@@ -89,7 +89,7 @@ def test_zero_findings_keeps_headers_and_rule_scope(tmp_path, fake_reader):
     fake_reader.tables["srs_ooak"] = [{"version_no": 10}]
     manifest = export_issue("space", 3074, tmp_path / "out")
     assert manifest["case_count"] == 0
-    assert manifest["rule_ids"] == ["fin-named-by-br", "m4-no-space-to-earth", "station-rx-overlap"]
+    assert manifest["rule_ids"] == ["fin-named-by-br", "m4-no-space-to-earth", "station-rx-overlap", "pfd"]
     assert manifest["scope"]["ap30_coverage"] == "not implemented"
     assert (tmp_path / "out/cases.json").read_text().strip() == "[]"
     assert (tmp_path / "out/cases.csv").read_text().startswith("rank,domain,issue_no,")

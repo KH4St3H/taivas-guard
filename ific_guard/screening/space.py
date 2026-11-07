@@ -93,6 +93,7 @@ class SpaceNotice:
     provision: str | None
     published: date | None
     name: str | None = None
+    ref_body: str | None = None  # the body a non-GSO orbit is referred to; T is the Earth
     gso_lon_deg: float | None = None
     inclinations_deg: list[float] = field(default_factory=list)
     assignments: list[Row] = field(default_factory=list)  # rows from `freq`
@@ -127,12 +128,13 @@ class SpaceIssue:
                 notice = out.get(int(row["ntc_id"]))
                 if notice:
                     notice.name = _text(row.get("sat_name"))
+                    if table == "non_geo":
+                        notice.ref_body = _text(row.get("ref_body"))
                     if table == "geo" and row.get("long_nom") is not None:
                         notice.gso_lon_deg = round(float(row["long_nom"]), 3)
-        for row in self._reader.table("orbit"):
-            notice = out.get(int(row["ntc_id"]))
-            if notice and row.get("inclin_ang") is not None:
-                notice.inclinations_deg.append(float(row["inclin_ang"]))
+        for ntc_id, rows in self.orbits.items():
+            if notice := out.get(ntc_id):
+                notice.inclinations_deg.extend(float(r["inclin_ang"]) for r in rows if r.get("inclin_ang") is not None)
         for row in self._reader.table("freq"):
             notice = out.get(int(row["ntc_id"]))
             if notice:
@@ -141,7 +143,57 @@ class SpaceIssue:
 
     @cached_property
     def group_notice(self) -> dict[int, int]:
-        return {int(r["grp_id"]): int(r["ntc_id"]) for r in self._reader.table("grp")}
+        return {group_id: int(row["ntc_id"]) for group_id, row in self.groups.items()}
+
+    @cached_property
+    def groups(self) -> dict[int, Row]:
+        """Group rows keyed once, avoiding repeated full-table joins in rules."""
+        return {int(row["grp_id"]): row for row in self._reader.table("grp")}
+
+    @cached_property
+    def emissions(self) -> dict[int, list[Row]]:
+        """Notified emission rows keyed by group, including rows with no power value."""
+        out: dict[int, list[Row]] = defaultdict(list)
+        for row in self._reader.table("emiss"):
+            out[int(row["grp_id"])].append(row)
+        return dict(out)
+
+    @cached_property
+    def orbits(self) -> dict[int, list[Row]]:
+        out: dict[int, list[Row]] = defaultdict(list)
+        for row in self._reader.table("orbit"):
+            out[int(row["ntc_id"])].append(row)
+        return dict(out)
+
+    @cached_property
+    def orbit_links(self) -> dict[tuple[int, str | None, str | None], set[int]]:
+        """Orbit rows each beam flies on, keyed like `beams`. No entry means the filing does not say."""
+        out: dict[tuple[int, str | None, str | None], set[int]] = defaultdict(set)
+        for row in self._reader.table("orbit_lnk"):
+            key = (int(row["ntc_id"]), _text(row.get("emi_rcp")), _text(row.get("beam_name")))
+            out[key].add(int(row["orb_id"]))
+        return dict(out)
+
+    @cached_property
+    def first_phases(self) -> dict[tuple[int, int], float]:
+        """Phase angle of the lowest-numbered satellite with one, per orbit row."""
+        first: dict[tuple[int, int], tuple[int, float]] = {}
+        for row in self._reader.table("phase"):
+            if row.get("phase_ang") is None:
+                continue
+            key, satellite = (int(row["ntc_id"]), int(row["orb_id"])), int(row["orb_sat_id"])
+            if key not in first or satellite < first[key][0]:
+                first[key] = (satellite, float(row["phase_ang"]))
+        return {key: value[1] for key, value in first.items()}
+
+    @cached_property
+    def beams(self) -> dict[tuple[int, str | None, str | None], list[Row]]:
+        """Beam rows keyed by the join specified by the Space Preface."""
+        out: dict[tuple[int, str | None, str | None], list[Row]] = defaultdict(list)
+        for row in self._reader.table("s_beam"):
+            key = (int(row["ntc_id"]), _text(row.get("emi_rcp")), _text(row.get("beam_name")))
+            out[key].append(row)
+        return dict(out)
 
     def provisions_for_adm(self, adm: str) -> dict[int, dict[str, set]]:
         """Where the BR names an administration, per notice: provisions and affected groups."""
