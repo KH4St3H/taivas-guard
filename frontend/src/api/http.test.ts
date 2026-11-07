@@ -32,6 +32,12 @@ describe('mapCase', () => {
 
 describe('mapBands', () => {
   it('tolerates a case with no bands', () => expect(mapBands({})).toEqual([]));
+  it('reads Finnish restrictions and RR footnotes naming Finland', () => {
+    const [b] = mapBands({ bands: [{ low_mhz: 430, high_mhz: 432, m4_restrictions: ['Restrictions on use (RR 5.113).'], m4_national_use: ['Military use'], m4_rr_footnotes: ['5.113'], rr_footnotes_naming_finland: [{ footnote: '5.275', kind: 'Additional allocation', pdf_page: 104 }] }] });
+    expect(b.restrictions).toEqual(['Restrictions on use (RR 5.113).']);
+    expect(b.nationalUse).toEqual(['Military use']);
+    expect(b.rrFootnotesNamingFinland).toEqual([{ footnote: '5.275', kind: 'Additional allocation', pdfPage: 104 }]);
+  });
 });
 
 describe('mapSummary', () => {

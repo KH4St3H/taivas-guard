@@ -298,10 +298,13 @@ def test_bandwidth_quality_flags_reach_the_case():
 
 def test_rule_is_enabled_and_records_the_real_dataset():
     rule = next(r for r in space_rules(get_settings()) if r.id == "station-rx-overlap")
-    assert rule.total == 873 and len(rule.protected) == 870
+    # Traficom's 873 sheet rows plus the receiving earth station at Sodankylä Tähtelä (ticket 21).
+    assert rule.total == 874 and len(rule.protected) == 871
     hits = list(rule.run(SpaceIssue(FakeReader(notice=[notice(1)], geo=gso(1), freq=[freq(1, 2219, 2246)]))))
-    assert hits[0].details["assumptions"][0].startswith("3 of 873 stations")
+    assert hits[0].details["assumptions"][0].startswith("3 of 874 stations")
     assert hits[0].details["station_dataset"]["file"] == st.STATIONS_PATH.name
+    assert hits[0].details["station_dataset"]["records"] == 873
+    assert hits[0].details["station_dataset"]["earth_stations"] == {"file": st.EARTH_STATIONS_PATH.name, "records": 1}
     assert len(hits[0].details["station_dataset"]["sha256"]) == 64
     assert hits[0].details["classes"]["FX"] > 100
 

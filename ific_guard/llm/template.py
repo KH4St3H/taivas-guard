@@ -131,6 +131,14 @@ def _station_paragraphs(d: dict[str, Any]) -> list[str]:
     ]
 
 
+def _finnish_notes(band: dict[str, Any]) -> str:
+    """Finland's restrictions and the RR footnotes naming Finland, as written in the sources."""
+    parts = [f"Finnish restriction: {r}" for r in band.get("m4_restrictions", [])]
+    parts += [f"national use: {u}" for u in band.get("m4_national_use", [])]
+    parts += [f"RR No. {f['footnote']} names Finland" for f in band.get("rr_footnotes_naming_finland", [])]
+    return "".join(f"; {p}" for p in parts)
+
+
 def _section_label(section: str) -> str:
     name = _SECTION_NAMES.get(provision_number(section))
     return f"{section} ({name})" if name else section
@@ -162,6 +170,7 @@ def facts(case: CaseView) -> dict[str, Any]:
                 "finnish_use": b.get("finnish_use"),
                 "passive": b.get("passive"),
                 "m4_table_pages": b.get("m4_table_pages"),
+                **{k: b[k] for k in ("m4_restrictions", "m4_national_use", "m4_rr_footnotes", "rr_footnotes_naming_finland") if b.get(k)},
                 **({"m4_space_to_earth": b["m4_space_to_earth"]} if "m4_space_to_earth" in b else {}),
             }
             for b in d["bands"]
@@ -220,7 +229,7 @@ def _concern_paragraphs(case: CaseView) -> list[str]:
             f"- {_band(b)}: M4 primary services {b.get('m4_primary_services') or 'not listed'}; space-to-Earth in M4: "
             f"{b.get('m4_space_to_earth', 'not checked')}"
             + (f"; M4 Frequency Allocation Table page(s) {b['m4_table_pages']}" if b.get("m4_table_pages") else "")
-            + ("; passive or radio astronomy band" if b.get("passive") else "")
+            + ("; passive or radio astronomy band" if b.get("passive") else "") + _finnish_notes(b)
             for b in d.get("bands", [])
         ]
         return [
@@ -232,7 +241,7 @@ def _concern_paragraphs(case: CaseView) -> list[str]:
         lines = [
             f"- {_band(b)}: M4 primary services {b.get('m4_primary_services') or 'not listed'}; "
             f"Finnish use: {b.get('finnish_use') or 'not listed'}; M4 Frequency Allocation Table page(s) {b.get('m4_table_pages')}"
-            + ("; passive or radio astronomy band" if b.get("passive") else "")
+            + ("; passive or radio astronomy band" if b.get("passive") else "") + _finnish_notes(b)
             for b in d["bands"]
         ]
         return [

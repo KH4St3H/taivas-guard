@@ -1,0 +1,4 @@
+site,direction,low_mhz,high_mhz,protected,api_row_ids,api_comment,lat_deg,lon_deg,coordinates_source
+Sodankylä Tähtelä,rx,7700,8500,true,4332 4337 4342 4348 4353 4360,Receiving satellite earth station to be used in the frequency band 7700–8500 MHz in Sodankylä Tähtelä.,,,"needed: not in Traficom's API or the IFICs; look the site up in ITU Space Explorer or ask Traficom (ticket 21)"
+Sodankylä Tähtelä,tx,2025,2070,false,3846 3883,Transmitting satellite earth station in the 2025-2070 MHz frequency range in Sodankylä Tähtelä.,,,"not needed: a transmitting site, so not protected from satellite downlinks"
+Kirkkonummi,tx,2036.25,2036.25,false,3845,Transmitting earth station to be used for remote sensing satellite services in the frequency band 2036.25 MHz in Kirkkonummi.,,,"not needed: a transmitting site, so not protected from satellite downlinks"

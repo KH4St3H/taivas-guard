@@ -146,6 +146,10 @@ export function mapBands(details: Record<string, unknown>): BandMatch[] {
     passive: b.passive === true, pages: String(b.m4_table_pages ?? ''), groupCount: Array.isArray(b.group_ids) ? b.group_ids.length : 0,
     stationIds: strings(b.station_ids), stationCount: typeof b.station_count === 'number' ? b.station_count : strings(b.station_ids).length, classes: (b.classes as Record<string, number>) ?? {},
     m4SpaceToEarth: typeof b.m4_space_to_earth === 'string' ? b.m4_space_to_earth : null,
+    restrictions: strings(b.m4_restrictions), nationalUse: strings(b.m4_national_use), rrFootnotesCited: strings(b.m4_rr_footnotes),
+    rrFootnotesNamingFinland: Array.isArray(b.rr_footnotes_naming_finland)
+      ? (b.rr_footnotes_naming_finland as Record<string, unknown>[]).map((f) => ({ footnote: String(f.footnote), kind: String(f.kind ?? ''), pdfPage: Number(f.pdf_page) }))
+      : [],
   }));
 }
 
