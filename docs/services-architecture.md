@@ -43,7 +43,7 @@ flowchart LR
     NATIONAL[M4, special-interest<br/>stations] --> SCREEN
 
     NOTIFY -->|SMTP| MAIL[Experts and operators]
-    UI[Streamlit review UI] -->|REST| SCREEN
+    UI[React review UI] -->|REST| SCREEN
 ```
 
 ## 3. Services
@@ -229,7 +229,7 @@ The full breakdown is in `.scratch/ific-guard-delivery/map.md`.
 3. Add a special-interest station overlap rule.
 4. Add the pfd engine as a rule, which is what allows a case to say a limit is exceeded.
 5. Add the terrestrial land-mobile adapter, the diff between issues, and P.1546 for Terrestrial 3076.
-6. Connect the Streamlit UI to `/cases`, then add LLM explanations and draft letters to the case detail.
+6. Add LLM explanations and draft letters to the case detail. The review UI in `frontend/` already uses the services.
 
 After the hackathon: Alembic, SSO, staleness alerts, a stuck-event view and metrics.
 

@@ -18,6 +18,8 @@ export function Analyze() {
   const [issue, setIssue] = useState('');
   const [dragging, setDragging] = useState(false);
   const [starting, setStarting] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const [screen, setScreen] = useState<{ text: string; bad: boolean } | null>(null);
   const input = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
@@ -49,6 +51,7 @@ export function Analyze() {
   function reset() {
     if (input.current) input.current.value = '';
     setScreen(null);
+    setUploadError(null);
     setStep({ name: 'idle' });
   }
 
@@ -65,15 +68,21 @@ export function Analyze() {
   async function start() {
     if (step.name !== 'ready' || !domain) return;
     setStarting(true);
-    const run = await api.createRun({ file: step.file, sha256: step.sha, domain, issue: issue ? Number(issue) : null });
-    navigate(`/runs/${run.id}`);
+    setProgress(0);
+    setUploadError(null);
+    try {
+      const run = await api.createRun({ file: step.file, sha256: step.sha, domain, issue: issue ? Number(issue) : null }, setProgress);
+      navigate(`/runs/${run.id}`);
+    } catch (e) {
+      setUploadError((e as Error).message);
+      setStarting(false);
+    }
   }
 
   return (
     <div className="narrow">
       <h1>Analyse a file</h1>
       <p className="lead">Check an IFIC issue now rather than waiting for the scheduled run. This is useful for an older issue, a correction, or a file ITU sent you directly.</p>
-      {!caps.upload && <p className="notice notice-warn"><strong>Upload isn’t available yet.</strong> The services have no upload route, so your file stays in your browser. You can still check a file here, and we’ll show you how to load it.</p>}
 
       {step.name !== 'ready' && (
         <label
@@ -136,20 +145,16 @@ export function Analyze() {
             <p className="notice notice-warn"><strong>This run is a simulation.</strong> The pipeline isn’t connected, so the file stays in your browser and won’t produce results. The checks above are real.</p>
           )}
 
-          {!caps.upload && !step.known && (
-            step.check.type === 'zip' && domain && issue ? (
-              <div className="notice">
-                <strong>To analyse this file,</strong> run this on the server from the repo root. Screening starts by itself.
-                <code className="command">uv run python -m ific_guard.cli import "{step.file.name}" --domain {domain} --issue {issue}</code>
-                Use the file’s full path if it’s in another folder.
-              </div>
-            ) : (
-              <p className="notice">{step.check.type === 'mdb' ? <><strong>The import command needs a ZIP.</strong> Zip this database, then choose the ZIP here to get the command.</> : <><strong>Choose the type and IFIC number</strong> to get the import command.</>}</p>
-            )
+          {uploadError && <p className="alert" role="alert">{uploadError}</p>}
+          {starting && api.mode === 'live' && (
+            <div className="progress" role="status">
+              <span className="muted">Uploading {Math.round(progress * 100)}%{progress >= 1 ? '. Checking the file on the server…' : ''}</span>
+              <div className="meter"><div className="meter-fill" style={{ width: `${progress * 100}%` }} /></div>
+            </div>
           )}
 
           <div className="actions">
-            {caps.upload && <button type="button" className="btn btn-primary" disabled={!domain || starting} onClick={() => void start()}>{step.known ? 'Run it again anyway' : 'Start analysis'}</button>}
+            {caps.upload && (!step.known || !caps.rescreen) && <button type="button" className="btn btn-primary" disabled={!domain || starting} onClick={() => void start()}>{starting ? 'Uploading…' : step.known && !caps.rescreen ? 'Run it again anyway' : 'Start analysis'}</button>}
             {caps.rescreen && step.known && <button type="button" className="btn btn-primary" onClick={() => void rescreen(step.known!)}>Screen it again</button>}
           </div>
         </section>
@@ -158,9 +163,9 @@ export function Analyze() {
       <section className="panel subtle">
         <h2>What happens to a file</h2>
         <ol className="steps-plain">
-          <li>Your browser checks that it’s really a ZIP or Access file, and fingerprints it. Nothing is uploaded at this step.</li>
-          <li>The pipeline reads the tables and compares them against Finnish frequency use and the Radio Regulations.</li>
-          <li>Findings appear for expert review, each linked to its source row. Nothing is ever sent automatically.</li>
+          <li>Your browser checks that it’s really a ZIP or Access file, and fingerprints it. Nothing is uploaded until you start the analysis.</li>
+          <li>The server checks the file again and stores it, then screening compares it against Finnish frequency use.</li>
+          <li>Cases appear for expert review, each tied to its source notices. No letter is ever sent automatically.</li>
         </ol>
       </section>
     </div>

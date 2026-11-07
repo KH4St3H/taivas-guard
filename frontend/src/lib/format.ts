@@ -20,6 +20,15 @@ export function formatBytes(n: number): string {
 
 export const dateOr = (iso: string | null, fallback = 'Not recorded') => (iso ? formatDate(iso) : fallback);
 
+export function formatDuration(seconds: number): string {
+  const minutes = Math.round(seconds / 60);
+  if (minutes < 1) return 'under a minute';
+  if (minutes < 60) return `${minutes} min`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 48) return minutes % 60 ? `${hours} h ${minutes % 60} min` : `${hours} h`;
+  return `${Math.round(hours / 24)} days`;
+}
+
 export const shortHash = (h: string) => `${h.slice(0, 12)}…`;
 
 export const db = (n: number, digits = 1) => `${n > 0 ? '+' : n < 0 ? '−' : ''}${Math.abs(n).toFixed(digits)}`;

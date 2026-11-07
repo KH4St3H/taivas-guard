@@ -186,7 +186,7 @@ Weights are configuration, visible in the UI and tunable by experts.
 
 | Output | Format | Purpose |
 |---|---|---|
-| Review UI | Streamlit | Ranked findings, drill-down (notice → M4 row → calculation → citations), accept / reject / edit |
+| Review UI | React, in `frontend/` | Ranked findings, drill-down (notice → M4 row → calculation → citations), accept / reject / edit |
 | Draft letters | .docx per administration | Expert-reviewed correspondence; can feed SpaceCom comments |
 | Evaluation files | CSV + JSON per issue | Separate submissions for Space IFIC 3074 and Terrestrial IFIC 3076 |
 | Trends panel | UI | New neighbouring-country activity by band, geography, station class, bandwidth |
@@ -225,7 +225,7 @@ ific-guard/
   outputs/     ific_3074/  ific_3076/
   tests/       test_pfd.py  test_p1546.py  test_filter.py
   schema.sql
-  app.py       Streamlit UI
+  frontend/    React review UI
 ```
 
 ## 7. Standard assumptions (shown on every finding)

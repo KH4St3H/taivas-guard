@@ -339,3 +339,8 @@ textarea { width: 100%; resize: vertical; }
   .filters label, .filters select, .filters input[type="search"] { width: 100%; }
   .filters .check { width: auto; }
 }
+.id-list { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.id-list li { margin: 0; background: var(--subtle); border-radius: 6px; padding: 2px 8px; }
+.progress { margin-top: 14px; }
+.progress .meter { max-width: none; margin-top: 6px; }
+.show-all { margin-top: 12px; font-size: 13.5px; }

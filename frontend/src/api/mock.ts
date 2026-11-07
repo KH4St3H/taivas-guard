@@ -70,7 +70,7 @@ function mergePairs<T>(rows: T[], key: (r: T) => string, id: (r: T) => number, p
 
 function buildSpace(raw: SpaceRaw): Finding[] {
   const issueId = `space-${raw.issue}`;
-  const common = (r: RawPfd | RawBr) => ({ issueId, domain: 'space' as Domain, issue: raw.issue, firstIssue: raw.issue, lastIssue: raw.issue, adm: r.adm, orbit: r.orbit, provision: r.provision, sections: r.sections, file: raw.file, review: blankReview(), terrestrial: null, summary: null, bands: [], visibility: [], basis: null, result: null, updatedAt: null });
+  const common = (r: RawPfd | RawBr) => ({ issueId, domain: 'space' as Domain, issue: raw.issue, firstIssue: raw.issue, lastIssue: raw.issue, adm: r.adm, orbit: r.orbit, provision: r.provision, sections: r.sections, file: raw.file, review: blankReview(), terrestrial: null, summary: null, stationIds: [], stationClasses: {}, bands: [], visibility: [], basis: null, result: null, updatedAt: null });
   const pfd = mergePairs(raw.findings, (r) => `${r.network}|${r.calc.fMinMhz}|${r.calc.fMaxMhz}`, (r) => r.ntcId, (r) => r.targetNtcId !== null, (a, b) => a.calc.marginDb === b.calc.marginDb).map(({ row: r, ids }): Finding => {
     const { severity, reasons } = scorePfd(r.calc.marginDb, r.stationCount);
     const conf = confidencePfd(r.calc.angleDeg, r.orbit, r.calc.altitudeKm);
@@ -93,7 +93,7 @@ function buildSpace(raw: SpaceRaw): Finding[] {
 function buildTerr(raw: TerrRaw): Finding[] {
   const issueId = `terrestrial-${raw.issue}`;
   return raw.nearBorder.map((n): Finding => ({
-    id: `${issueId}-${n.terrakey}`, issueId, domain: 'terrestrial', issue: raw.issue, firstIssue: raw.issue, lastIssue: raw.issue, summary: null, bands: [], visibility: [], basis: null, result: null, updatedAt: null, kind: 'near_border', kindLabel: 'Near the border', title: n.site, adm: n.adm, orbit: null, band: `${n.fMhz} MHz`, sourceId: String(n.terrakey), relatedSourceIds: [], provision: null, sections: [n.noticeType], coordProvisions: [],
+    id: `${issueId}-${n.terrakey}`, issueId, domain: 'terrestrial', issue: raw.issue, firstIssue: raw.issue, lastIssue: raw.issue, summary: null, stationIds: [], stationClasses: {}, bands: [], visibility: [], basis: null, result: null, updatedAt: null, kind: 'near_border', kindLabel: 'Near the border', title: n.site, adm: n.adm, orbit: null, band: `${n.fMhz} MHz`, sourceId: String(n.terrakey), relatedSourceIds: [], provision: null, sections: [n.noticeType], coordProvisions: [],
     severity: 'unscored', severityReasons: ['P.1546 field strength not calculated yet'], confidence: 'not_calculated', confidenceReasons: ['Only distance and band are known so far'], marginDb: null, stationCount: 0, stations: [], calc: null, terrestrial: { terrakey: n.terrakey, stationClass: n.stationClass, fMhz: n.fMhz, bandwidthKhz: n.bandwidthKhz, intent: n.intent, noticeType: n.noticeType, site: n.site, lat: n.lat, lon: n.lon, borderKm: n.borderKm, powerDbw: n.powerDbw, powerType: n.powerType, gainDbi: n.gainDbi, heightM: n.heightM },
     windowDeadline: null, assumptions: ['Distance is to the nearest of 14 rough border points', 'Strongest listed antenna record shown'], citations: ['ECC T/R 25-08 (criterion to be confirmed)', 'ITU-R P.1546-6 (not run)'],
     evidence: [{ table: 'fxm_terra', key: `terrakey = ${n.terrakey}` }, { table: 'fxm_ant', key: `terrakey = ${n.terrakey}` }], file: raw.file, review: blankReview(),
@@ -166,7 +166,7 @@ export const mockApi: Api = {
   getMonitor: async (): Promise<MonitorStatus> => ({
     active: false, running: false,
     domains: [{ domain: 'space', latestIssue: 3083, publishedOn: '2026-10-27', ageDays: null, stale: false }, { domain: 'terrestrial', latestIssue: 3083, publishedOn: '2026-10-27', ageDays: null, stale: false }],
-    lastCheck: { at: '2026-11-07T00:00:00Z', label: 'By hand', status: 'ok', errors: [] }, nextExpectedOn: '2026-11-10',
+    lastCheck: { at: '2026-11-07T00:00:00Z', label: 'By hand', status: 'ok', errors: [] }, schedule: null, nextCheckInS: null, nextExpectedOn: '2026-11-10',
     note: 'Sample mode has no monitoring. The latest release was checked by hand on ITU’s download page. The next date assumes the usual two-week cycle.',
   }),
   listFindings: async (issueId) => (findings.get(issueId) ?? []).map(withReview),

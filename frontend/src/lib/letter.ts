@@ -52,6 +52,19 @@ Finland has been identified under ${f.coordProvisions.join(', ')} in relation to
 [Expert: state agreement or disagreement under the applicable provision, with information on the Finnish assignments concerned and any suggestions for resolving the matter.]
 ${close}`;
   }
+  if (f.kind === 'station-rx-overlap') {
+    return `${header}
+Dear colleagues,
+
+Finland has examined the above filing. It includes space-to-Earth transmissions in the following band(s), which overlap the receive frequencies of Finnish stations:
+
+${f.bands.map((b) => `- ${b.lowMhz}–${b.highMhz} MHz`).join('\n')}
+
+This is a possible concern only. The comparison is by frequency: no power flux-density has been calculated, and neither beam coverage nor station location has been checked.
+
+[Expert: decide whether this needs raising, and state the Finnish assignments relied on.]
+${close}`;
+  }
   if (f.bands.length) {
     return `${header}
 Dear colleagues,

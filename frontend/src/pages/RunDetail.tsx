@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { api } from '../api';
-import { PIPELINE_STAGES, type Run } from '../api/types';
+import { LIVE_STAGES, PIPELINE_STAGES, type Run } from '../api/types';
 import { Hash, Loading, RunStatusBadge, triggerLabel } from '../components/ui';
 import { formatBytes, formatDateTime } from '../lib/format';
 
@@ -16,7 +16,7 @@ export function RunDetail() {
       const r = await api.getRun(id);
       if (!live) return;
       setRun(r);
-      if (r?.status === 'running') timer = window.setTimeout(tick, 500);
+      if (r?.status === 'running') timer = window.setTimeout(tick, api.mode === 'live' ? 2000 : 500);
     };
     void tick();
     return () => { live = false; clearTimeout(timer); };
@@ -25,6 +25,8 @@ export function RunDetail() {
   if (run === undefined) return <Loading />;
   if (run === null) return <div className="empty"><h1>Run not found</h1><Link to="/runs">Back to runs</Link></div>;
   const done = run.status !== 'running';
+  const live = api.mode === 'live';
+  const stages: readonly string[] = live ? LIVE_STAGES : PIPELINE_STAGES;
 
   return (
     <div className="narrow">
@@ -42,9 +44,9 @@ export function RunDetail() {
       </dl>
 
       <section className="panel">
-        <h2>Progress{run.trigger === 'on_demand' && run.status !== 'succeeded' ? ' (simulated)' : ''}</h2>
+        <h2>Progress{!live && run.trigger === 'on_demand' && run.status !== 'succeeded' ? ' (simulated)' : ''}</h2>
         <ol className="stages" aria-live="polite">
-          {PIPELINE_STAGES.map((s, i) => {
+          {stages.map((s, i) => {
             const state = i < run.stageIndex ? 'done' : i === run.stageIndex && !done ? 'now' : 'wait';
             return (
               <li key={s} className={`stage stage-${state}`}>
@@ -57,7 +59,7 @@ export function RunDetail() {
       </section>
 
       {done && (
-        <p className={run.status === 'simulated' ? 'notice notice-warn' : 'notice'} role="status">
+        <p className={run.status === 'failed' ? 'alert' : run.status === 'simulated' ? 'notice notice-warn' : 'notice'} role="status">
           {run.message}
           {run.issueId && <> <Link to={`/findings?issue=${run.issueId}`}>View findings</Link></>}
         </p>

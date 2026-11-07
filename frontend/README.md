@@ -48,10 +48,11 @@ Without a matching key the app still reads, and saving shows an error that expla
 | Findings list | `GET /cases?limit=1000` on screening | Filtered and ranked in the browser, because the API has no issue filter |
 | Finding detail | `GET /cases/{id}` | Reads the `Case.details` keys in `.scratch/ific-guard-delivery/map.md`, including calculated results once rules provide them |
 | Accept, reject | `PATCH /cases/{id}` | |
+| Analyse a file | `POST /issues/upload` on sync | The browser checks the file first and shows upload progress, then the run page follows `screen_status` |
 | Check ITU now | `POST /sync` | |
 | Screen it again | `POST /issues/{id}/screen` | Offered when a chosen file matches a stored issue's SHA-256 |
 
-A case belongs to every stored issue from `first_issue` to `last_issue`, because the API doesn't record exactly which issues it appeared in.
+A case belongs to every stored issue from `first_issue` to `last_issue`, because the API doesn't record exactly which issues it appeared in. For an exact per-issue result, use `python -m ific_guard.cli export`.
 
 ## Gaps in the API that affect the UI
 
@@ -59,11 +60,10 @@ Each gap shows as a clear message or a missing control, not invented data.
 
 | Gap | What the UI does |
 |---|---|
-| No upload route | Checks the file in the browser, then gives the `cli import` command. Files already stored can be screened again |
 | No case history or reviewer identity | Shows the last-updated time only |
 | No letter field | Generates a draft from a fixed template; edits are saved in that browser only |
 | No confidence or funnel data | Hides confidence, and shows cases by rule instead of a funnel |
-| Issue date missing after `cli import` | Shows "Not recorded", and the monitor can report the domain as overdue |
+| Release date missing after an import or upload | Shows "Not recorded", and the monitor can report the domain as overdue |
 
 ## Sample mode
 

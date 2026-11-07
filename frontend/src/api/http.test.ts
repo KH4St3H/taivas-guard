@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { caseInIssue, errorMessage, mapBands, mapCase, mapSummary, rankFindings, summariseIssue, type ArtifactOut, type CaseOut, type CaseSummary } from './http';
+import { draftLetter } from '../lib/letter';
+import { formatDuration } from '../lib/format';
+import { caseInIssue, errorMessage, fileName, mapBands, mapCase, mapSummary, rankFindings, ruleLabel, runFromArtifact, summariseIssue, type ArtifactOut, type CaseOut, type CaseSummary } from './http';
 
 const summary = (over: Partial<CaseSummary> = {}): CaseSummary => ({ id: 1, domain: 'space', rule_id: 'fin-named-by-br', severity: 'high', title: 'BR names Finland in SAT (USA)', adm: 'USA', network: 'SAT', first_issue: 3083, last_issue: 3083, comment_deadline: '2027-02-27', review_status: 'pending', ...over });
 const full = (over: Partial<CaseOut> = {}): CaseOut => ({ ...summary(), notice_ids: ['11', '31'], details: {}, source_sha256: 'abc', review_note: null, created_at: '2026-11-07T00:00:00', updated_at: '2026-11-07T00:00:00', ...over });
@@ -86,5 +88,66 @@ describe('errorMessage', () => {
     expect(errorMessage('screening', 401, null)).toContain('IFIC_API_KEY');
     expect(errorMessage('sync', 500, null)).toContain('sync service');
     expect(errorMessage('sync', 409, 'A sync is already running.')).toBe('A sync is already running.');
+  });
+});
+
+describe('station overlap cases', () => {
+  const details = { method: 'screening', station_ids: ['600529@R215', '601452@R224'], classes: { 'no class': 2 }, sections: ['9.6'], assumptions: ['61 of 873 stations have no RX frequency and were skipped'], bands: [{ low_mhz: 18875, high_mhz: 19067.5, classes: { 'no class': 2 }, station_ids: ['600529@R215', '601452@R224'], group_ids: [1] }] };
+  const f = mapCase(full({ rule_id: 'station-rx-overlap', severity: 'medium', details }), 'space-3083', 'ific3083.zip');
+
+  it('reads stations from the case, overall and per band', () => {
+    expect(f.kindLabel).toBe('Overlaps a Finnish receiver');
+    expect(f.stationCount).toBe(2);
+    expect(f.stationIds).toEqual(['600529@R215', '601452@R224']);
+    expect(f.stationClasses).toEqual({ 'no class': 2 });
+    expect(f.bands[0].stationIds).toHaveLength(2);
+  });
+  it('drafts a letter about receivers, not about allocations or exceeded limits', () => {
+    const letter = draftLetter(f);
+    expect(letter).toContain('overlap the receive frequencies');
+    expect(letter).toContain('possible concern only');
+    expect(letter).toContain('18875–19067.5 MHz');
+    expect(letter).not.toContain('no space-to-Earth allocation');
+    expect(letter).not.toMatch(/exceed/i);
+  });
+});
+
+describe('screening-only letters', () => {
+  it('never claim a limit was exceeded', () => {
+    const allocation = mapCase(full({ rule_id: 'm4-no-space-to-earth', details: { bands: [{ low_mhz: 1400, high_mhz: 1427, finnish_use: 'Radio astronomy' }] } }), 'x', 'y');
+    const named = mapCase(full({ details: { provisions: ['9.14'] } }), 'x', 'y');
+    for (const f of [allocation, named]) expect(draftLetter(f)).not.toMatch(/exceed/i);
+    expect(draftLetter(allocation)).toContain('no space-to-Earth allocation');
+    expect(draftLetter(named)).toContain('9.14');
+  });
+});
+
+describe('file names', () => {
+  it('reads each kind of source', () => {
+    expect(fileName('https://www.itu.int/sns/ific10/ific3083.zip')).toBe('ific3083.zip');
+    expect(fileName('import:ific3074.zip')).toBe('ific3074.zip');
+    expect(fileName('upload:brific3076.mdb')).toBe('brific3076.mdb');
+  });
+});
+
+describe('runFromArtifact', () => {
+  it('follows screening status, and marks no rules as not a clean result', () => {
+    expect(runFromArtifact(artifact({ screen_status: 'pending' })).status).toBe('running');
+    expect(runFromArtifact(artifact({ screen_status: 'failed' })).status).toBe('failed');
+    const done = runFromArtifact(artifact({ screen_status: 'done' }));
+    expect(done).toMatchObject({ status: 'succeeded', id: 'issue-7', issueId: 'space-3083', fileName: 'ific3083.zip' });
+    expect(runFromArtifact(artifact({ domain: 'terrestrial', screen_status: 'no_rules' })).message).toContain('does not mean there are no concerns');
+    expect(runFromArtifact(artifact(), 'Already stored. ').message).toContain('Already stored.');
+  });
+});
+
+describe('labels and durations', () => {
+  it('leaves an unknown rule readable', () => expect(ruleLabel('new-rule')).toBe('new-rule'));
+  it('formats the next check', () => {
+    expect(formatDuration(20)).toBe('under a minute');
+    expect(formatDuration(600)).toBe('10 min');
+    expect(formatDuration(5 * 3600 + 720)).toBe('5 h 12 min');
+    expect(formatDuration(7200)).toBe('2 h');
+    expect(formatDuration(5 * 86400)).toBe('5 days');
   });
 });

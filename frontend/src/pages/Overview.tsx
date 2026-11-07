@@ -4,7 +4,7 @@ import { api } from '../api';
 import type { Domain, Finding, IssueSummary, MonitorStatus } from '../api/types';
 import { Funnel } from '../components/Funnel';
 import { Hash, Loading, ScreenStatusBadge, SeverityBadge, useLoad } from '../components/ui';
-import { dateOr, daysUntil, db, formatDateTime } from '../lib/format';
+import { dateOr, daysUntil, db, formatDateTime, formatDuration } from '../lib/format';
 
 export function Overview() {
   const [params, setParams] = useSearchParams();
@@ -29,7 +29,9 @@ export function Overview() {
       </>
     );
   }
-  const latest = (d: Domain) => issues.filter((i) => i.domain === d).sort((a, b) => b.issue - a.issue)[0];
+  // A file that failed screening shouldn't become the headline, or a bad upload would hide the real latest issue.
+  const newestFirst = (d: Domain) => issues.filter((i) => i.domain === d).sort((a, b) => b.issue - a.issue);
+  const latest = (d: Domain) => newestFirst(d).find((i) => i.screenStatus !== 'failed') ?? newestFirst(d)[0];
   const domain = (params.get('view') === 'terrestrial' ? 'terrestrial' : 'space') as Domain;
   const issue = latest(domain) ?? issues[0];
   const evaluation = issues.filter((i) => i.evaluationIssue);
@@ -144,6 +146,7 @@ function MonitorPanel({ monitor, onChange }: { monitor: MonitorStatus; onChange:
           <div key={d.domain}><dt>Latest {d.domain}</dt><dd>{d.latestIssue ? `${d.latestIssue}${d.publishedOn ? `, ${dateOr(d.publishedOn)}` : ''}` : 'None yet'}</dd></div>
         ))}
         {monitor.lastCheck && <div><dt>Last check</dt><dd>{formatDateTime(monitor.lastCheck.at)}<span className="muted block">{monitor.lastCheck.label}, {monitor.lastCheck.status}</span></dd></div>}
+        {monitor.nextCheckInS !== null && <div><dt>Next check</dt><dd>In {formatDuration(monitor.nextCheckInS)}{monitor.schedule && <span className="muted block">Schedule: <code>{monitor.schedule}</code></span>}</dd></div>}
         {monitor.nextExpectedOn && <div><dt>Next release expected</dt><dd>{dateOr(monitor.nextExpectedOn)}</dd></div>}
       </dl>
       {stale.length > 0 && <p className="notice notice-warn"><strong>Overdue:</strong> no recent {stale.map((d) => d.domain).join(' or ')} issue. The sync may be broken, or the date may not have been recorded on import.</p>}

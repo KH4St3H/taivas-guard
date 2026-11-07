@@ -51,6 +51,7 @@ export function FindingDetail() {
           </section>
 
           {f.bands.length > 0 && <BandsPanel f={f} />}
+          {f.stationIds.length > 0 && <StationIdsPanel f={f} />}
           {f.calc && <Calculation f={f} />}
           {f.result && <ResultPanel f={f} />}
           {f.terrestrial && <TerrestrialPanel f={f} />}
@@ -120,24 +121,62 @@ export function FindingDetail() {
   );
 }
 
+const SHOW_IDS = 30;
+
+/** Station IDs arrive as number@Rrow, where the row is in Traficom's sheet. */
+const stationLabel = (id: string) => id.replace(/@R(\d+)$/, ' (row $1)');
+const classSummary = (classes: Record<string, number>) => Object.entries(classes).map(([name, n]) => `${name}: ${n}`).join(', ');
+
+const SHOW_BANDS = 12;
+
 function BandsPanel({ f }: { f: Finding }) {
+  const stationRule = f.kind === 'station-rx-overlap';
+  const [showAll, setShowAll] = useState(false);
+  const bands = showAll ? f.bands : f.bands.slice(0, SHOW_BANDS);
   return (
     <section className="panel">
       <h2>Bands involved</h2>
-      <p className="muted">Bands where this filing transmits and M4 has no space-to-Earth allocation.</p>
+      <p className="muted">{stationRule ? 'Bands where this filing transmits and a station in Traficom’s list receives. The comparison is by frequency only.' : 'Bands where this filing transmits and M4 has no space-to-Earth allocation.'}</p>
       <div className="table-wrap">
         <table>
-          <thead><tr><th>Band, MHz</th><th>Finnish use</th><th>M4 primary services</th><th>M4 table page</th><th className="num">Groups</th></tr></thead>
-          <tbody>
-            {f.bands.map((b) => (
-              <tr key={`${b.lowMhz}-${b.highMhz}`}>
-                <td className="nowrap tnum">{b.lowMhz}–{b.highMhz}{b.passive && <span className="badge sev-high passive">Passive</span>}</td>
-                <td>{b.finnishUse || '–'}</td><td>{b.primaryServices || '–'}</td><td>{b.pages || '–'}</td><td className="num">{b.groupCount}</td>
-              </tr>
-            ))}
-          </tbody>
+          {stationRule ? (
+            <>
+              <thead><tr><th>Band, MHz</th><th className="num">Stations</th><th>Licence classes</th><th className="num">Groups</th></tr></thead>
+              <tbody>
+                {bands.map((b) => (
+                  <tr key={`${b.lowMhz}-${b.highMhz}`}>
+                    <td className="nowrap tnum">{b.lowMhz}–{b.highMhz}</td><td className="num">{b.stationIds.length}</td><td>{classSummary(b.classes) || '–'}</td><td className="num">{b.groupCount}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </>
+          ) : (
+            <>
+              <thead><tr><th>Band, MHz</th><th>Finnish use</th><th>M4 primary services</th><th>M4 table page</th><th className="num">Groups</th></tr></thead>
+              <tbody>
+                {bands.map((b) => (
+                  <tr key={`${b.lowMhz}-${b.highMhz}`}>
+                    <td className="nowrap tnum">{b.lowMhz}–{b.highMhz}{b.passive && <span className="badge sev-high passive">Passive</span>}</td>
+                    <td>{b.finnishUse || '–'}</td><td>{b.primaryServices || '–'}</td><td>{b.pages || '–'}</td><td className="num">{b.groupCount}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </>
+          )}
         </table>
       </div>
+      {f.bands.length > SHOW_BANDS && <button type="button" className="linkbtn show-all" onClick={() => setShowAll(!showAll)}>{showAll ? 'Show fewer' : `Show all ${f.bands.length} bands`}</button>}
+    </section>
+  );
+}
+
+function StationIdsPanel({ f }: { f: Finding }) {
+  const shown = f.stationIds.slice(0, SHOW_IDS);
+  return (
+    <section className="panel">
+      <h2>Finnish stations affected</h2>
+      <p className="muted">{f.stationIds.length} in Traficom’s synthetic list{classSummary(f.stationClasses) ? ` (${classSummary(f.stationClasses)})` : ''}.{f.stationIds.length > SHOW_IDS ? ` Showing the first ${SHOW_IDS}; export the case for all of them.` : ''}</p>
+      <ul className="id-list">{shown.map((id) => <li key={id}><code>{stationLabel(id)}</code></li>)}</ul>
     </section>
   );
 }

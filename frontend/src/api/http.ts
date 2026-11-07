@@ -1,13 +1,14 @@
 // Talks to the IFIC Guard services through the /api proxy. Their shapes are defined in
 // ific_guard/schemas.py and the Case.details contract in .scratch/ific-guard-delivery/map.md.
 import { SEVERITY_ORDER } from '../lib/severity';
-import type { Api, BandMatch, CalculatedResult, Domain, DomainFreshness, Finding, FunnelStage, IssueSummary, MonitorStatus, ReferenceSource, ReviewState, ScreenStatus, Severity, SyncRun } from './types';
+import type { Api, BandMatch, NewRun, Run, CalculatedResult, Domain, DomainFreshness, Finding, FunnelStage, IssueSummary, MonitorStatus, ReferenceSource, ReviewState, ScreenStatus, Severity, SyncRun } from './types';
 
 export interface ArtifactOut { id: number; domain: string; issue_no: number; published_on: string | null; source_url: string; sha256: string; size_bytes: number; fetched_at: string; screen_status: string; screened_at: string | null }
 export interface SyncRunOut { id: number; trigger: string; started_at: string; finished_at: string | null; status: string; discovered: number; fetched: number; errors: string[] }
 export interface CaseSummary { id: number; domain: string; rule_id: string; severity: string; title: string; adm: string | null; network: string | null; first_issue: number; last_issue: number; comment_deadline: string | null; review_status: string }
 export interface CaseOut extends CaseSummary { notice_ids: string[]; details: Record<string, unknown>; source_sha256: string; review_note: string | null; created_at: string; updated_at: string }
-export interface StatusOut { running: boolean; domains: Record<string, { latest_issue: number | null; published_on: string | null; age_days: number | null; stale: boolean }> }
+export interface UploadOut { artifact: ArtifactOut; new: boolean }
+export interface StatusOut { running: boolean; schedule?: string | null; next_run_in_s?: number | null; domains: Record<string, { latest_issue: number | null; published_on: string | null; age_days: number | null; stale: boolean }> }
 
 type Service = 'sync' | 'screening';
 const LABEL: Record<Service, string> = { sync: 'sync', screening: 'screening' };
@@ -46,6 +47,7 @@ async function call<T>(service: Service, path: string, init?: RequestInit): Prom
 const RULE_LABELS: Record<string, string> = {
   'fin-named-by-br': 'ITU names Finland',
   'm4-no-space-to-earth': 'No space-to-Earth allocation in Finland',
+  'station-rx-overlap': 'Overlaps a Finnish receiver',
 };
 export const ruleLabel = (id: string) => RULE_LABELS[id] ?? id;
 
@@ -54,7 +56,8 @@ const issueKey = (domain: string, issue: number) => `${domain}-${issue}`;
 const asSeverity = (s: string): Severity => (s === 'high' || s === 'medium' || s === 'low' ? s : 'unscored');
 const strings = (v: unknown): string[] => (Array.isArray(v) ? v.map(String) : []);
 const num = (v: unknown): number | null => (typeof v === 'number' ? v : null);
-const fileName = (url: string) => url.split('/').pop() ?? url;
+// Downloads store a URL; imports and uploads store import:name or upload:name.
+export const fileName = (source: string) => source.replace(/^(import|upload):/, '').split('/').pop() ?? source;
 const fileOf = (name: string, sha: string) => ({ zip: name, zipSha256: sha, mdb: '', mdbSha256: '' });
 
 const LETTERS = 'ific-guard-letters-v1';
@@ -76,6 +79,7 @@ export function mapBands(details: Record<string, unknown>): BandMatch[] {
   return (details.bands as Record<string, unknown>[]).map((b) => ({
     lowMhz: Number(b.low_mhz), highMhz: Number(b.high_mhz), primaryServices: String(b.m4_primary_services ?? ''), finnishUse: String(b.finnish_use ?? ''),
     passive: b.passive === true, pages: String(b.m4_table_pages ?? ''), groupCount: Array.isArray(b.group_ids) ? b.group_ids.length : 0,
+    stationIds: strings(b.station_ids), classes: (b.classes as Record<string, number>) ?? {},
   }));
 }
 
@@ -97,7 +101,7 @@ function base(c: CaseSummary, issueId: string) {
   return {
     id, issueId, domain: c.domain as Domain, issue: c.last_issue, firstIssue: c.first_issue, lastIssue: c.last_issue, kind: c.rule_id, kindLabel: ruleLabel(c.rule_id),
     title: c.network ?? c.title, summary: c.title, adm: c.adm ?? 'Unknown', orbit: null, provision: null, severity: asSeverity(c.severity), windowDeadline: c.comment_deadline,
-    confidence: null, confidenceReasons: [], stations: [], calc: null, terrestrial: null,
+    confidence: null, confidenceReasons: [], stations: [], stationIds: [], stationClasses: {}, calc: null, terrestrial: null,
   };
 }
 
@@ -120,6 +124,7 @@ export function mapCase(c: CaseOut, issueId: string, sourceName: string): Findin
     band: bands.length === 1 ? bandLabel(bands[0]) : bands.length > 1 ? `${bands.length} bands` : null,
     sourceId: first ?? '', relatedSourceIds: rest, sections: strings(d.sections), coordProvisions: provisions,
     severityReasons: [c.title], marginDb: result?.marginDb ?? null, stationCount: Array.isArray(d.station_ids) ? d.station_ids.length : null,
+    stationIds: strings(d.station_ids), stationClasses: (d.classes as Record<string, number>) ?? {},
     bands, visibility: strings(d.visibility), basis: typeof d.basis === 'string' ? d.basis : null, result, assumptions: strings(d.assumptions), citations: mapCitations(d),
     evidence: [
       { table: 'notice', key: `ntc_id in ${c.notice_ids.join(', ')}` },
@@ -138,7 +143,7 @@ export function rankFindings(rows: Finding[]): Finding[] {
 export const caseInIssue = (c: CaseSummary, domain: string, issue: number) => c.domain === domain && c.first_issue <= issue && issue <= c.last_issue;
 
 const GAPS: Record<Domain, string[]> = {
-  space: ['No pfd check yet, so a case can’t say a limit is exceeded', 'No beam coverage check, so the M4 rule over-flags by design', 'M4 band file merges 3400–4200 MHz, which can miss cases in 3.4–3.8 GHz', 'AP30, AP30A and AP30B aren’t screened', 'Special-interest stations aren’t compared yet'],
+  space: ['No pfd check yet, so a case can’t say a limit is exceeded', 'No beam coverage check, so the M4 rule over-flags by design', 'M4 band file merges 3400–4200 MHz, which can miss cases in 3.4–3.8 GHz', 'AP30, AP30A and AP30B aren’t screened', 'Station overlap compares frequency only, not location, power or antenna direction'],
   terrestrial: ['Terrestrial files are stored but no rules run yet', 'This does not mean there are no concerns'],
 };
 
@@ -173,21 +178,52 @@ export const toSyncRun = (r: SyncRunOut): SyncRun => ({ id: r.id, trigger: r.tri
 // The API returns naive UTC timestamps; mark them so the browser doesn't read them as local time.
 const utc = (t: string) => (/[zZ]|[+-]\d\d:\d\d$/.test(t) ? t : `${t}Z`);
 
+// Sends the file with progress, which fetch can't report.
+function uploadFile(input: NewRun, onProgress?: (fraction: number) => void): Promise<UploadOut> {
+  return new Promise((resolve, reject) => {
+    const form = new FormData();
+    form.append('file', input.file);
+    form.append('domain', input.domain);
+    if (input.issue) form.append('issue_no', String(input.issue));
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', '/api/sync/issues/upload');
+    xhr.upload.onprogress = (e) => { if (e.lengthComputable) onProgress?.(e.loaded / e.total); };
+    xhr.onerror = () => reject(new ApiError('The sync service can’t be reached.', null));
+    xhr.onload = () => {
+      let body: { detail?: unknown } | null = null;
+      try { body = JSON.parse(xhr.responseText) as { detail?: unknown }; } catch { /* an empty proxy error has no body */ }
+      if (xhr.status >= 200 && xhr.status < 300 && body) resolve(body as unknown as UploadOut);
+      else reject(new ApiError(errorMessage('sync', xhr.status, typeof body?.detail === 'string' ? body.detail : null), xhr.status));
+    };
+    xhr.send(form);
+  });
+}
+
+export function runFromArtifact(a: ArtifactOut, message = ''): Run {
+  const status = a.screen_status === 'failed' ? 'failed' : a.screen_status === 'pending' ? 'running' : 'succeeded';
+  const done = a.screen_status === 'no_rules' ? 'The file is stored, but no rules exist for terrestrial issues yet. This does not mean there are no concerns.' : 'Screening finished.';
+  return {
+    id: `issue-${a.id}`, trigger: 'on_demand', domain: a.domain as Domain, issue: a.issue_no, fileName: fileName(a.source_url), sha256: a.sha256, sizeBytes: a.size_bytes, startedAt: utc(a.fetched_at),
+    status, stageIndex: status === 'running' ? 1 : status === 'failed' ? 1 : 3, issueId: issueKey(a.domain, a.issue_no),
+    message: status === 'failed' ? 'Screening failed. Check the screening service’s log, then try screening it again.' : `${message}${done}`,
+  };
+}
+
 const SOURCES: ReferenceSource[] = [
   { name: 'M4 band summary', version: 'generetated-files/m4_satellite_filter.csv', detail: '212 bands from 30 MHz up. Merges 3400–4200 MHz, so it can miss cases in 3.4–3.8 GHz.', url: null, status: 'partial' },
   { name: 'ITU coordination data', version: 'Each IFIC’s provn tables', detail: 'Finds filings where ITU names Finland.', url: null, status: 'loaded' },
-  { name: 'Traficom frequencies of interest', version: 'v05112026 (synthetic)', detail: 'Station overlap rule not added yet.', url: null, status: 'planned' },
-  { name: 'ITU Radio Regulations limits', version: '2024 edition', detail: 'pfd engine not added yet, so no limit is checked.', url: 'https://www.itu.int/pub/r-reg-rr', status: 'planned' },
+  { name: 'Traficom frequencies of interest', version: 'v05112026 (synthetic)', detail: 'Compares receive frequency only. Stations with no receive frequency are skipped.', url: null, status: 'partial' },
+  { name: 'ITU Radio Regulations limits', version: '2024 edition', detail: 'The pfd engine and limits are in the code, but no screening rule uses them yet, so no limit is checked.', url: 'https://www.itu.int/pub/r-reg-rr', status: 'planned' },
   { name: 'ECC T/R 25-08 and ITU-R P.1546', version: 'June 2025; P.1546-6', detail: 'Terrestrial rules not added yet.', url: 'https://docdb.cept.org/document/909', status: 'planned' },
 ];
 
 export const httpApi: Api = {
   mode: 'live',
-  capabilities: { upload: false, checkItuNow: true, rescreen: true, reviewStatuses: ['accepted', 'rejected', 'pending'], letterStorage: 'browser' },
+  capabilities: { upload: true, checkItuNow: true, rescreen: true, reviewStatuses: ['accepted', 'rejected', 'pending'], letterStorage: 'browser' },
   severityNote: 'Set by the screening service. These are placeholders until the planned ranking replaces them.',
   listSeverityRules: async () => [
     { severity: 'High', rule: 'ITU names Finland in the filing’s coordination data, or a visible satellite transmits in a passive band with no space-to-Earth allocation' },
-    { severity: 'Medium', rule: 'A visible satellite transmits in a band with Finnish terrestrial use and no space-to-Earth allocation' },
+    { severity: 'Medium', rule: 'A visible satellite transmits in a band with Finnish terrestrial use and no space-to-Earth allocation, or on the receive band of a station in Traficom’s list' },
   ],
   listIssues: async () => {
     const [rows, cases] = await Promise.all([artifacts(), allCases()]);
@@ -197,7 +233,7 @@ export const httpApi: Api = {
     const [status, runs] = await Promise.all([call<StatusOut>('sync', '/status'), call<SyncRunOut[]>('sync', '/runs?limit=1')]);
     const last = runs[0];
     const domains: DomainFreshness[] = Object.entries(status.domains).map(([domain, d]) => ({ domain: domain as Domain, latestIssue: d.latest_issue, publishedOn: d.published_on, ageDays: d.age_days, stale: d.stale }));
-    return { active: true, running: status.running, domains, lastCheck: last ? { at: utc(last.started_at), label: last.trigger === 'schedule' ? 'Scheduled' : 'Manual', status: last.status, errors: last.errors } : null, nextExpectedOn: null, note: null };
+    return { active: true, running: status.running, domains, lastCheck: last ? { at: utc(last.started_at), label: last.trigger === 'schedule' ? 'Scheduled' : 'Manual', status: last.status, errors: last.errors } : null, schedule: status.schedule ?? null, nextCheckInS: status.next_run_in_s ?? null, nextExpectedOn: null, note: null };
   },
   listFindings: async (issueId) => {
     const i = issueId.lastIndexOf('-');
@@ -229,10 +265,17 @@ export const httpApi: Api = {
     return f;
   },
   listRuns: async () => [],
-  getRun: async () => null,
+  getRun: async (id) => {
+    const artifactId = Number(id.replace(/^issue-/, ''));
+    const row = (await call<ArtifactOut[]>('sync', '/issues?limit=500')).find((a) => a.id === artifactId);
+    return row ? runFromArtifact(row) : null;
+  },
   listSyncRuns: async () => (await call<SyncRunOut[]>('sync', '/runs?limit=50')).map((r) => ({ ...toSyncRun(r), startedAt: utc(r.started_at), finishedAt: r.finished_at ? utc(r.finished_at) : null })),
   findIssueByHash: async (sha) => (await httpApi.listIssues()).find((i) => i.file.zipSha256 === sha) ?? null,
-  createRun: async () => { throw new ApiError('The services don’t accept file uploads yet.', null); },
+  createRun: async (input, onProgress) => {
+    const { artifact, new: isNew } = await uploadFile(input, onProgress);
+    return runFromArtifact(artifact, isNew ? '' : 'This exact file was already stored, so nothing new was added. ');
+  },
   checkItuNow: async () => { await call('sync', '/sync', { method: 'POST' }); },
   rescreen: async (issue) => { await call('screening', `/issues/${issue.artifactId}/screen`, { method: 'POST' }); },
   listReferenceSources: async () => SOURCES,

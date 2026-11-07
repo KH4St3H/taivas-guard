@@ -98,6 +98,8 @@ export interface BandMatch {
   passive: boolean;
   pages: string;
   groupCount: number;
+  stationIds: string[];
+  classes: Record<string, number>;
 }
 
 /** A calculated result in the shape agreed in Case.details. */
@@ -137,6 +139,8 @@ export interface Finding {
   marginDb: number | null;
   stationCount: number | null;
   stations: StationRef[];
+  stationIds: string[];
+  stationClasses: Record<string, number>;
   bands: BandMatch[];
   visibility: string[];
   basis: string | null;
@@ -193,6 +197,8 @@ export interface MonitorStatus {
   running: boolean;
   domains: DomainFreshness[];
   lastCheck: { at: string; label: string; status: string; errors: string[] } | null;
+  schedule: string | null;
+  nextCheckInS: number | null;
   nextExpectedOn: string | null;
   note: string | null;
 }
@@ -251,7 +257,7 @@ export interface Api {
   getRun(id: string): Promise<Run | null>;
   listSyncRuns(): Promise<SyncRun[]>;
   findIssueByHash(sha256: string): Promise<IssueSummary | null>;
-  createRun(input: NewRun): Promise<Run>;
+  createRun(input: NewRun, onProgress?: (fraction: number) => void): Promise<Run>;
   checkItuNow(): Promise<void>;
   rescreen(issue: IssueSummary): Promise<void>;
   listReferenceSources(): Promise<ReferenceSource[]>;
@@ -259,6 +265,8 @@ export interface Api {
   listSeverityRules(): Promise<{ severity: string; rule: string }[]>;
   severityNote: string;
 }
+
+export const LIVE_STAGES = ['File checked and stored', 'Screening', 'Results ready'] as const;
 
 export const PIPELINE_STAGES = [
   'Upload and fingerprint file',
