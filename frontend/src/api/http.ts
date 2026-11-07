@@ -1,7 +1,7 @@
 // Talks to the IFIC Guard services through the /api proxy. Their shapes are defined in
 // ific_guard/schemas.py and the Case.details contract in .scratch/ific-guard-delivery/map.md.
 import { SEVERITY_ORDER } from '../lib/severity';
-import type { Api, BandMatch, CeptCompliance, Coverage, NewRun, Run, CalculatedResult, CustomRule, CustomRuleRef, Domain, DomainFreshness, Finding, FunnelStage, IssueSummary, MonitorStatus, ReferenceSource, ReviewState, RuleDefinition, RuleSave, RuleSpec, RuleVersion, ScreenStatus, StationQuery, Severity, StationResult, SyncRun } from './types';
+import type { Api, BandMatch, CeptCompliance, Coverage, Trends, NewRun, Run, CalculatedResult, CustomRule, CustomRuleRef, Domain, DomainFreshness, Finding, FunnelStage, IssueSummary, MonitorStatus, ReferenceSource, ReviewState, RuleDefinition, RuleSave, RuleSpec, RuleVersion, ScreenStatus, StationQuery, Severity, StationResult, SyncRun } from './types';
 
 export interface ArtifactOut { id: number; domain: string; issue_no: number; published_on: string | null; source_url: string; sha256: string; size_bytes: number; fetched_at: string; screen_status: string; screened_at: string | null }
 export interface SyncRunOut { id: number; trigger: string; started_at: string; finished_at: string | null; status: string; discovered: number; fetched: number; errors: string[] }
@@ -311,7 +311,7 @@ const SOURCES: ReferenceSource[] = [
 
 export const httpApi: Api = {
   mode: 'live',
-  capabilities: { upload: true, checkItuNow: true, rescreen: true, reviewStatuses: ['accepted', 'rejected', 'pending'], letterStorage: 'browser', customRules: true, stationLists: true, coverage: true },
+  capabilities: { upload: true, checkItuNow: true, rescreen: true, reviewStatuses: ['accepted', 'rejected', 'pending'], letterStorage: 'browser', customRules: true, stationLists: true, coverage: true, trends: true },
   severityNote: 'Set by the screening service from fixed rules. How station cases are ranked is the project’s choice, not Traficom’s.',
   listSeverityRules: async () => [
     { severity: 'High', rule: 'ITU names Finland in the filing’s coordination data, a visible satellite transmits in a passive band with no space-to-Earth allocation, or a pfd calculation exceeds a limit, including at a station in Traficom’s list' },
@@ -399,6 +399,21 @@ export const httpApi: Api = {
     return { total: out.total, matching: out.matching, offset: out.offset, rows: mapStationRecords(out.rows), counts: out.counts, notVisible: out.not_visible, issueNo: out.issue_no, datasetChanged: out.dataset_changed };
   },
   caseStationsCsvUrl: (id, q) => `/api/screening/cases/${encodeURIComponent(id)}/stations.csv?${stationParams({ ...q, offset: undefined, limit: undefined })}`,
+  getTrends: async (domain) => {
+    type Out = { domain: Domain; issues: number[]; series: Trends['series']; rule: string; problems: string[]; assumptions: string[];
+      flags: Record<string, { name: string; issue: number; count: number; earlier_average: number }[]>;
+      totals?: Record<string, { filings: number; visible_from_finland: number }>;
+      largest_ngso?: Record<string, { ntc_id: number; network: string | null; adm: string | null; satellites: number; reason: string | null }[]> };
+    const o = await call<Out>('screening', `/trends?domain=${domain}`);
+    const byIssue = <A, B>(m: Record<string, A> | undefined, f: (a: A) => B) => (m ? Object.fromEntries(Object.entries(m).map(([k, v]) => [Number(k), f(v)])) : undefined);
+    return {
+      domain: o.domain, issues: o.issues, rule: o.rule, problems: o.problems, assumptions: o.assumptions,
+      series: Object.fromEntries(Object.entries(o.series).map(([dim, cats]) => [dim, Object.fromEntries(Object.entries(cats).map(([c, v]) => [c, byIssue(v, (n) => n)!]))])),
+      flags: Object.fromEntries(Object.entries(o.flags).map(([dim, fs]) => [dim, fs.map((f) => ({ name: f.name, issue: f.issue, count: f.count, earlierAverage: f.earlier_average }))])),
+      totals: byIssue(o.totals, (t) => ({ filings: t.filings, visibleFromFinland: t.visible_from_finland })),
+      largestNgso: byIssue(o.largest_ngso, (list) => list.map((x) => ({ ntcId: x.ntc_id, network: x.network, adm: x.adm, satellites: x.satellites, reason: x.reason }))),
+    };
+  },
   getCoverage: async (id) => {
     type Out = { issue_no: number; mapped: boolean; boundary: number[][][]; cell: { lat_step: number; lon_step: number }; orbit: Coverage['orbit']; gso_lon_deg: number | null; satellites: string[];
       cells: { lat: number; lon: number; angle_deg: number | null; minutes: number | null; pfd_db: number | null; margin_db: number | null }[];

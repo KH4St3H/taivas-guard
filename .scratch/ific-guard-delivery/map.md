@@ -41,7 +41,7 @@ Status values come from `docs/agents/triage-labels.md`. Size is a rough relative
 | 27 | Letters name the kind of criterion | Open, `ready-for-agent` | S | none | Auditability (06 E) |
 | 28 | README, Reference page and docs match the code | Open, `ready-for-agent` | S | 29 | Submission (07) |
 | 29 | Re-export 3074 and 3076, commit in the manifest | Open, `ready-for-agent` | M | 22, 23 | Submission (07), reproducibility (06 A) |
-| 30 | Trends in the app, terrestrial and space | Claimed by Person C | M | none | Side quest trends; guiding question |
+| 30 | Trends in the app, terrestrial and space | Done on `develop` | M | none | Side quest trends; guiding question |
 | 31 | Shrink stored station lists without resetting reviews | Done on `develop` | S | none | Keeps review decisions |
 | 32 | Update and rehearse the demo | Claimed by Person C | S | 24, 25, 28, 29 | Submission (07) |
 | 33 | Cross-check pfd with ITU's software | Open, `ready-for-human` | M | none | Credibility (06 A) |

@@ -407,3 +407,10 @@ label.check { display: flex; align-items: center; gap: 7px; font-size: 13.5px; c
 /* Consecutive rows of one network: the name is shown once, and the rows read as a group. */
 .rows tr.continues td { border-bottom-color: transparent; }
 /* A continued row's network cell stays empty for sight; screen readers still hear the network name. */
+
+/* Trends */
+.trend-flags { list-style: none; padding: 0; margin: 0 0 8px; }
+.trend-flags li { padding: 7px 0; border-bottom: 1px solid var(--line); margin: 0; }
+.trend-flags li:last-child { border-bottom: 0; }
+.trend-up { color: var(--serious); font-size: 11px; }
+.trend-value-up { font-weight: 650; }

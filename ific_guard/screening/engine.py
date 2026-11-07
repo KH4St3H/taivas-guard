@@ -77,6 +77,16 @@ def save_hits(artifact_id: int, hits: list[Hit], domain: str = SPACE) -> tuple[i
     return opened, changed
 
 
+def _store_trend_summary(artifact_id: int, domain: str, issue_no: int, issue: Any) -> None:
+    """Counts for the Trends page, from the issue already in memory. A failure here never fails screening."""
+    from .trends import store, summarise
+
+    try:
+        store(artifact_id, domain, issue_no, summarise(domain, issue))
+    except Exception:
+        log.exception("trend summary for %s %s failed; the Trends page will retry it", domain, issue_no)
+
+
 def screen_artifact(
     artifact_id: int, reader: TableReader | None = None, rules: list[Rule] | None = None
 ) -> dict[str, Any]:
@@ -102,6 +112,7 @@ def screen_artifact(
         for hit in hits:
             hit.details.setdefault("database_version", issue.database_version)
     opened, changed = save_hits(artifact_id, hits, domain)
+    _store_trend_summary(artifact_id, domain, issue_no, issue)
     status = "done"
 
     with session_scope() as s:
