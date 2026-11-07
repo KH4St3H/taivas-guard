@@ -1,0 +1,135 @@
+"""Reads the parts of a Space IFIC database that screening needs."""
+import logging
+from collections import defaultdict
+from dataclasses import dataclass, field
+from datetime import date
+from functools import cached_property
+from pathlib import Path
+from typing import Any, Protocol
+
+logging.getLogger("access_parser").setLevel(logging.CRITICAL)
+
+Row = dict[str, Any]
+
+# Sections the brief puts in scope. AP30/30A/30B filings are added here once an issue with them is tested.
+IN_SCOPE_REASONS = {"A", "C"}  # A = advance publication (9.1/IA), C = coordination request (9.6)
+SATELLITE_NOTICE_TYPES = {"G", "N"}  # G = GSO, N = non-GSO, S = earth station
+
+
+class TableReader(Protocol):
+    def table(self, name: str) -> list[Row]: ...
+
+
+class MdbReader:
+    """Reads Access tables with a pure-Python parser, so no system packages are needed."""
+
+    def __init__(self, path: str | Path):
+        from access_parser import AccessParser
+
+        self._db = AccessParser(str(path))
+
+    def table(self, name: str) -> list[Row]:
+        columns = self._db.parse_table(name)
+        names = list(columns)
+        return [dict(zip(names, values)) for values in zip(*columns.values())] if names else []
+
+
+def _text(value: Any) -> str | None:
+    if value is None:
+        return None
+    text = str(value).strip()
+    return text or None
+
+
+def _as_date(value: Any) -> date | None:
+    text = _text(value)
+    if not text:
+        return None
+    try:
+        return date.fromisoformat(text[:10])
+    except ValueError:
+        return None
+
+
+def add_months(start: date, months: int) -> date:
+    index = start.month - 1 + months
+    year, month = start.year + index // 12, index % 12 + 1
+    days = [31, 29 if year % 4 == 0 and (year % 100 or year % 400 == 0) else 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+    return date(year, month, min(start.day, days[month - 1]))
+
+
+@dataclass
+class SpaceNotice:
+    ntc_id: int
+    family_id: int  # a modification and the notice it modifies share one family
+    adm: str | None
+    ntc_type: str | None
+    reason: str | None
+    provision: str | None
+    published: date | None
+    name: str | None = None
+    gso_lon_deg: float | None = None
+    inclinations_deg: list[float] = field(default_factory=list)
+    assignments: list[Row] = field(default_factory=list)  # rows from `freq`
+
+
+class SpaceIssue:
+    """Notices in screening scope, with what the rules need attached. Suppressions carry no data."""
+
+    def __init__(self, reader: TableReader):
+        self._reader = reader
+
+    @cached_property
+    def notices(self) -> dict[int, SpaceNotice]:
+        out: dict[int, SpaceNotice] = {}
+        for row in self._reader.table("notice"):
+            if _text(row.get("ntf_rsn")) not in IN_SCOPE_REASONS or _text(row.get("act_code")) == "S":
+                continue
+            ntc_id = int(row["ntc_id"])
+            target = row.get("tgt_ntc_id")
+            out[ntc_id] = SpaceNotice(
+                ntc_id=ntc_id,
+                family_id=int(target) if target not in (None, "") else ntc_id,
+                adm=_text(row.get("adm")),
+                ntc_type=_text(row.get("ntc_type")),
+                reason=_text(row.get("ntf_rsn")),
+                provision=_text(row.get("prov")),
+                published=_as_date(row.get("d_wic")),
+            )
+        for table in ("geo", "non_geo"):
+            for row in self._reader.table(table):
+                notice = out.get(int(row["ntc_id"]))
+                if notice:
+                    notice.name = _text(row.get("sat_name"))
+                    if table == "geo" and row.get("long_nom") is not None:
+                        notice.gso_lon_deg = round(float(row["long_nom"]), 3)
+        for row in self._reader.table("orbit"):
+            notice = out.get(int(row["ntc_id"]))
+            if notice and row.get("inclin_ang") is not None:
+                notice.inclinations_deg.append(float(row["inclin_ang"]))
+        for row in self._reader.table("freq"):
+            notice = out.get(int(row["ntc_id"]))
+            if notice:
+                notice.assignments.append(row)
+        return out
+
+    @cached_property
+    def group_notice(self) -> dict[int, int]:
+        return {int(r["grp_id"]): int(r["ntc_id"]) for r in self._reader.table("grp")}
+
+    def provisions_for_adm(self, adm: str) -> dict[int, dict[str, set]]:
+        """Where the BR names an administration, per notice: provisions and affected groups."""
+        found: dict[int, dict[str, set]] = defaultdict(lambda: {"provisions": set(), "groups": set()})
+        for row in self._reader.table("provn"):
+            if _text(row.get("adm")) == adm or _text(row.get("ctry")) == adm:
+                ntc_id = self.group_notice.get(int(row["grp_id"]))
+                if ntc_id in self.notices:
+                    found[ntc_id]["groups"].add(int(row["grp_id"]))
+                    if prov := _text(row.get("coord_prov")):
+                        found[ntc_id]["provisions"].add(prov)
+        for row in self._reader.table("tr_provn"):
+            if _text(row.get("adm")) == adm or _text(row.get("ctry")) == adm:
+                ntc_id = int(row["ntc_id"])
+                if ntc_id in self.notices and (prov := _text(row.get("coord_prov"))):
+                    found[ntc_id]["provisions"].add(prov)
+        return dict(found)

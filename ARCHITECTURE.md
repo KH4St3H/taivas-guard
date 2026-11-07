@@ -59,6 +59,8 @@ flowchart TD
 
 Deterministic components: adapters, store, filter, engines, ranking. LLM-assisted: explanation and drafting only.
 
+Automatic IFIC updates, email notifications and the FastAPI services around this pipeline are described in [docs/services-architecture.md](docs/services-architecture.md).
+
 ## 4. Components
 
 ### 4.1 Domain adapters
