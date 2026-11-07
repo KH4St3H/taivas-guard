@@ -1,6 +1,6 @@
 # 16 Protect TX as well as RX frequencies
 
-Status: ready-for-agent
+Status: resolved
 Type: task
 Size: M
 Blocked by: none
@@ -51,3 +51,19 @@ That is 630 newly screened bands.
 - Modelling a coverage radius or far-end location. Screening uses frequency, and the pfd rule already evaluates points across Finland.
 - Linking pfd results to stations. See ticket 18.
 - Changing severity or scoring to compensate for more cases. Report the counts first.
+
+## Answer
+
+Done on `agent/16-protect-tx`, code commit 8c70006. Not merged yet.
+
+`Station.protected_bands` returns bands labelled `rx`, `tx` or `both`, and both rules use it. Space cases gain `matched_on` and a per-band `sides` count. Terrestrial station entries replace `rx_band_mhz` with `matched_bands`, and say so where the field is not at a receiver. The rule id `station-rx-overlap` is kept so existing cases stay stable, though the name is now narrower than the rule. The frontend wording and draft letter were updated; the bundled samples in `frontend/src/data/` were not regenerated.
+
+| | 3074 RX only | 3074 RX and TX | 3076 RX only | 3076 RX and TX |
+|---|---:|---:|---:|---:|
+| Cases | 182 | 182 | 29 | 29 |
+| Found only through TX | | 0 | | 0 |
+| Severity (high, medium, low) | 30, 124, 28 | 30, 124, 28 | 1, 20, 8 | 1, 22, 6 |
+
+- **Space:** station links rise from 2,839 to 4,975 across the same 51 `station-rx-overlap` cases, and distinct stations from 572 to 604. Details and spot-checks are in `outputs/ific_3074/verification.md`. No TX-only case exists, so the spot-checks use TX-only stations inside existing cases.
+- **Terrestrial:** cases listing a station rise from 6 to 14. Two rise from low to medium purely through a station match while 13.1 dB below the threshold at the boundary (`outputs/ific_3076/verification.md`). Severity logic was left alone, as this ticket asked. Raise it with Traficom alongside ticket 02 question 4.
+- **Verified:** 540 Python tests passed before the docs commit, plus 32 frontend tests and the type check. Two exports of each issue match byte for byte. Not reviewed by an expert.

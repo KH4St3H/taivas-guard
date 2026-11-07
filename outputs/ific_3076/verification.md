@@ -13,7 +13,7 @@ These are possible concerns for expert review. None is confirmed interference or
 | Calculated, no criterion in the repository (above 470 MHz) | 6 |
 | Not calculated: mobile station with no notified antenna height | 8 |
 
-Severity: 1 high, 20 medium, 8 low. Five of the six above the threshold have `fxm_coord` rows saying coordination with FIN is completed, declared by the notifier, so they rank medium until checked against Traficom's records. The one high, 93075637 (KRL LYASKELYA, 152.9 MHz, 9.0 dB above), has no such row.
+Severity: 1 high, 22 medium, 6 low. Five of the six above the threshold have `fxm_coord` rows saying coordination with FIN is completed, declared by the notifier, so they rank medium until checked against Traficom's records. The one high, 93075637 (KRL LYASKELYA, 152.9 MHz, 9.0 dB above), has no such row.
 
 ## Filter funnel
 
@@ -55,9 +55,21 @@ Two runs produced identical files. The manifest differs only in time and duratio
 
 | File | SHA-256 |
 |---|---|
-| cases.csv | 50a695b0653c1ab9130c33ce0cb876828dc9896b5f0bae6518cc27d776fa8bb1 |
-| cases.json | 96158cb8bbc4744da52b3b5e3203dcf024b15826d289e0e270955bf6a84548e4 |
-| funnel.json | d09e028245f35c7e9b346a01800cbb5a19382a9acf6b09a8d2b0c1e2cd5df1b2 |
+| cases.csv | a54c5ffc22888768754a60aaeea556f806d77b475d43176208eaaea0082077dc |
+| cases.json | 604191df3256e423d95a8bf41aa4f82670961e6b780565fafe1dcc2c2661d352 |
+| funnel.json | d90fcab2e1986f586dd12b180bcf20c64f51a4b6e7954d4ef0c4f850c8207373 |
+
+## Effect of protecting TX frequencies (ticket 16)
+
+Traficom said "every TX is received in Finland" (Discord, 2026-11-07), so special-interest stations now match on RX and TX bands. No case was added or lost.
+
+| Measure | RX only | RX and TX |
+|---|---:|---:|
+| Cases | 29 | 29 |
+| Cases listing a special-interest station | 6 | 14 |
+| Severity | 1 high, 20 medium, 8 low | 1 high, 22 medium, 6 low |
+
+In 8 of the 14, no listed station has an RX match, so each listed field is at the station's site and is marked as not being the field at a receiver. Two cases rose from low to medium, LEN KINGISEPP at 424.075 and 424.475 MHz, only because a listed station now overlaps. Both remain 13.1 dB below the indicative threshold at the Finnish boundary, so an expert may want to review whether a TX-only match should raise severity.
 
 ## Not verified
 

@@ -29,7 +29,9 @@ Answers came on Discord, 2026-11-07 8:39-8:55, from Pekka, Otto and the Traficom
 
 ## Integration and delivery
 
-- [ ] **Regenerate the 3074 export.** The committed `outputs/ific_3074/manifest.json` lists three rules and no pfd rule, so the file predates ticket 07 and lacks the calculation the brief cares most about. Do this after ticket 16.
+- [ ] **Merge `agent/16-protect-tx` into `integration/wave-3`.** It regenerates both exports, including the first committed 3074 export with pfd results (182 cases). `cases.json` is now 29 MB.
+- [ ] **Decide whether a TX-only match should raise terrestrial severity.** Two 3076 cases rose from low to medium on a station match alone (ticket 16). Ticket 16 left the logic unchanged.
+- [ ] **Regenerate `frontend/src/data/` samples.** They predate ticket 16.
 - [ ] **Push `agent/12-drafts-ui` (`1422f80`), then merge it.** It exists only in this Codespace and connects the case page to the draft API. On `wave-3` the UI still keeps letters in the browser (`http.ts:260`), and ticket 14's demo needs a draft letter. Expect frontend conflicts.
 - [ ] **Compare `01d4341` with `wave-3`'s terrestrial filter.** It is also local only, on `agent/08-terrestrial`, `agent/10-terrestrial-findings` and `agent/11-trends`. `wave-3` uses the version in `adapter.py`, and lacks this commit's `filter.py`, `geography.py` and `summary.py`. Keep anything better, then drop it.
 - [ ] **Check local worktrees for lost work.** `wt-07`, `wt-11` and `wt-15` have uncommitted files on commits older than their remote branches. Compare them before deleting.
@@ -47,7 +49,7 @@ Ask these first, because they change what is submitted:
 - [ ] **Terrestrial calculation points:** the Finnish border or coast, or the Excel station locations. Passed to Jaakko, no reply seen. `rule_field_strength.py:84` uses boundary and coast points, stated as an assumption.
 - [ ] **Terrestrial limits:** trigger values and time percentage per neighbour, the Russian border, bilateral agreements, above 470 MHz, and 793-795 MHz (Q6, Q8-10).
 - [ ] **Demo video:** may we show rows of the Excel table and an unfinished prototype?
-- [ ] **Over-flagging:** how much is acceptable (Q4)? Bring ticket 16's counts.
+- [ ] **Over-flagging:** how much is acceptable (Q4)? Bring ticket 16's counts: no new cases, but 75% more station links on 3074.
 
 Useful, but work can continue without them:
 

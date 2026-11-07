@@ -74,8 +74,8 @@
     },
     "by_severity": {
       "high": 1,
-      "low": 8,
-      "medium": 20
+      "low": 6,
+      "medium": 22
     },
     "with_data_quality_items": [
       "93005610",
