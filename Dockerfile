@@ -7,6 +7,7 @@ WORKDIR /app
 COPY pyproject.toml uv.lock ./
 COPY ific_guard ./ific_guard
 COPY generetated-files/m4_satellite_filter.csv ./generetated-files/m4_satellite_filter.csv
+COPY docs/challenge/Traficom_SinceAI_Frequencies_of_interest_v05112026.xlsx ./docs/challenge/Traficom_SinceAI_Frequencies_of_interest_v05112026.xlsx
 RUN uv sync --frozen --no-dev
 
 RUN useradd --create-home app && mkdir -p /app/data && chown -R app /app/data
