@@ -20,6 +20,7 @@ export function Findings() {
   const kind = params.get('kind') ?? '';
   const adm = params.get('adm') ?? '';
   const stations = params.get('stations') === '1';
+  const m4 = params.get('m4') ?? '';
 
   const set = (key: string, value: string) => {
     const next = new URLSearchParams(params);
@@ -29,15 +30,16 @@ export function Findings() {
 
   const filtered = useMemo(() => (rows ?? []).filter((f) =>
     (!severity || f.severity === severity) && (!review || f.review.status === review) && (!kind || f.kind === kind) && (!adm || f.adm === adm)
-    && (!stations || (f.stationCount ?? 0) > 0) && (!q || `${f.title} ${f.summary ?? ''} ${f.adm} ${f.band ?? ''} ${f.sourceId}`.toLowerCase().includes(q.toLowerCase())),
-  ), [rows, severity, review, kind, adm, stations, q]);
+    && (!stations || (f.stationCount ?? 0) > 0) && (!m4 || f.m4PrimaryServices.includes(m4)) && (!q || `${f.title} ${f.summary ?? ''} ${f.adm} ${f.band ?? ''} ${f.sourceId}`.toLowerCase().includes(q.toLowerCase())),
+  ), [rows, severity, review, kind, adm, stations, m4, q]);
 
   if (!issues) return <Loading error={error} />;
   const issue = issues.find((i) => i.id === issueId);
   const admins = [...new Set((rows ?? []).map((f) => f.adm))].sort();
+  const m4Services = [...new Set((rows ?? []).flatMap((f) => f.m4PrimaryServices))].sort();
   const kinds = [...new Map((rows ?? []).map((f) => [f.kind, f.kindLabel])).entries()];
   const hasStations = (rows ?? []).some((f) => f.stationCount !== null);
-  const filtersOn = q || severity || review || kind || adm || stations;
+  const filtersOn = q || severity || review || kind || adm || stations || m4;
 
   async function runExport(format: 'csv' | 'json') {
     setExporting(null);
@@ -93,6 +95,15 @@ export function Findings() {
             {admins.map((a) => <option key={a}>{a}</option>)}
           </select>
         </label>
+        {(m4Services.length > 0 || m4) && (
+          <label>M4 primary service
+            <select value={m4} onChange={(e) => set('m4', e.target.value)} title="A primary service in M4 on any of the bands involved">
+              <option value="">All</option>
+              {m4 && !m4Services.includes(m4) && <option value={m4}>{m4}</option>}
+              {m4Services.map((s) => <option key={s} value={s}>{s}</option>)}
+            </select>
+          </label>
+        )}
         <label>Review
           <select value={review} onChange={(e) => set('review', e.target.value)}>
             <option value="">All</option>
@@ -112,14 +123,14 @@ export function Findings() {
           {issue?.screenStatus === 'failed' && <p className="alert" role="alert"><strong>Screening failed for this issue,</strong> so this list may be incomplete.</p>}
           {filtered.length === 0 ? (
             issue?.screenStatus !== 'no_rules' && <div className="empty panel"><h2>{filtersOn ? 'No findings match these filters' : 'No findings in this issue'}</h2></div>
-          ) : rows.some((f) => f.terrestrial) ? <TerrTable rows={filtered} /> : <SpaceTable rows={filtered} />}
+          ) : rows.some((f) => f.terrestrial) ? <TerrTable rows={filtered} m4={m4} /> : <SpaceTable rows={filtered} m4={m4} />}
         </>
       )}
     </>
   );
 }
 
-function SpaceTable({ rows }: { rows: Finding[] }) {
+function SpaceTable({ rows, m4 }: { rows: Finding[]; m4: string }) {
   const hasBand = rows.some((f) => f.band);
   const hasMargin = rows.some((f) => f.marginDb !== null);
   const hasStations = rows.some((f) => f.stationCount !== null);
@@ -131,7 +142,7 @@ function SpaceTable({ rows }: { rows: Finding[] }) {
           {rows.map((f) => (
             <tr key={f.id}>
               <td><SeverityBadge value={f.severity} /></td>
-              <td><Link to={`/findings/${f.id}`}><strong>{f.title}</strong></Link><span className="muted block">{f.adm}{f.orbit ? ` · ${f.orbit}` : ''}{f.sections.length ? ` · ${f.sections.join(', ')}` : ''}</span></td>
+              <td><Link to={`/findings/${f.id}${m4 ? `?m4=${encodeURIComponent(m4)}` : ''}`}><strong>{f.title}</strong></Link><span className="muted block">{f.adm}{f.orbit ? ` · ${f.orbit}` : ''}{f.sections.length ? ` · ${f.sections.join(', ')}` : ''}</span></td>
               {hasBand && <td className="nowrap">{f.band ?? '–'}</td>}
               <td>{f.kindLabel}</td>
               {hasMargin && <td className="num">{f.marginDb !== null ? db(f.marginDb) : '–'}</td>}
@@ -146,7 +157,7 @@ function SpaceTable({ rows }: { rows: Finding[] }) {
   );
 }
 
-function TerrTable({ rows }: { rows: Finding[] }) {
+function TerrTable({ rows, m4 }: { rows: Finding[]; m4: string }) {
   return (
     <div className="table-wrap panel flush">
       <table className="rows">
@@ -155,7 +166,7 @@ function TerrTable({ rows }: { rows: Finding[] }) {
           {rows.map((f) => (
             <tr key={f.id}>
               <td><SeverityBadge value={f.severity} /></td>
-              <td><Link to={`/findings/${f.id}`}><strong>{f.title}</strong></Link><span className="muted block">{f.adm} · class {f.terrestrial?.stationClass}</span></td>
+              <td><Link to={`/findings/${f.id}${m4 ? `?m4=${encodeURIComponent(m4)}` : ''}`}><strong>{f.title}</strong></Link><span className="muted block">{f.adm} · class {f.terrestrial?.stationClass}</span></td>
               <td className="num">{f.terrestrial?.fMhz}</td>
               <td>{f.terrestrial?.intent}</td>
               <td className="num">{f.terrestrial?.borderKm}</td>

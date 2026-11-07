@@ -68,6 +68,7 @@ SANE_EFFECTIVE_HEIGHT_ABS_MAX_M = 1500.0
 SANE_IMPLIED_INPUT_MIN_DBW = -10.0  # 0.1 W into an antenna
 
 STATION_LIST_MAX = 5
+STATION_SAMPLE = 100  # ids kept on a case; the count covers every station
 
 TR_DOC = "ECC Recommendation T/R 25-08 (edition 6 June 2025)"
 TR_URL = "https://docdb.cept.org/download/4789"
@@ -604,7 +605,8 @@ class FieldStrengthRule:
             "fxm_coord": coordination,
             "screen_distance": _screen_distance(item),
             "filter_counts": stages,
-            "station_ids": sorted(s["station_id"] for s in stations),
+            "station_count": len(stations),
+            "station_ids": sorted(s["station_id"] for s in stations[:STATION_SAMPLE]),
             "stations_overlapping": stations[:STATION_LIST_MAX],
             "special_interest": bool(stations),
             "primary_allocation": bool(m4 and m4["terrestrial_primary"]),

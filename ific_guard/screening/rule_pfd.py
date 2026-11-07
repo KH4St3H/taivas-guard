@@ -35,7 +35,7 @@ from ..engines.pfd_ngso import (
 from .rules import Hit, Rule, _deadline, _families
 from .scoring import ScoringWeights, score_finding
 from .space import SATELLITE_NOTICE_TYPES, SpaceIssue, SpaceNotice
-from .station_links import CALCULATED, StationEvidence, record_for, status_counts
+from .station_links import CALCULATED, STATION_SAMPLE, StationEvidence, record_for, station_summary
 from .stations import Station, StationIndex
 
 WATCH_DB = 3.0  # ARCHITECTURE.md 4.7: the watch list is within about 3 dB below the limit
@@ -481,15 +481,8 @@ STATION_ASSUMPTIONS = [
 ]
 
 
-def _station_details(links: list[dict[str, Any]]) -> dict[str, Any]:
-    linked = [r for r in links if r["status"] != "not_visible"]
-    return {
-        "station_ids": sorted(r["station_id"] for r in linked),
-        "stations_overlapping": linked,
-        "station_status_counts": status_counts(links),
-        "stations_not_visible": sorted(r["station_id"] for r in links if r["status"] == "not_visible"),
-        "special_interest": bool(linked),
-    }
+def _station_details(links: list[dict[str, Any]], limit: int | None = STATION_SAMPLE) -> dict[str, Any]:
+    return station_summary(links, limit)
 
 
 def _hit(
@@ -502,6 +495,7 @@ def _hit(
     data_quality: list[dict[str, Any]],
     settings: Settings,
     links: list[dict[str, Any]] | None = None,
+    station_limit: int | None = STATION_SAMPLE,
 ) -> Hit:
     worst = max(calculations, key=_rank) if calculations else None
     reasons = Counter(row["reason"] for row in missing)
@@ -531,7 +525,7 @@ def _hit(
         details["input_flagged"] = flagged
         details["result_counts"] = dict(sorted(Counter(c["result"] for c in calculations).items()))
     if links:
-        details.update(_station_details(links))
+        details.update(_station_details(links, station_limit))
         details["assumptions"] += STATION_ASSUMPTIONS
     ranking = score_finding(details, ScoringWeights.from_settings(settings))
     details["severity_score"] = ranking["score"]
@@ -563,17 +557,22 @@ def _hit(
         title += f"; {_plural(len(not_visible), 'record')} not visible from Finland"
     if (worst or missing) and data_quality:
         title += f"; {_plural(len(data_quality), 'data-quality item')}"
-    if details.get("station_ids"):
-        above = sum(1 for r in details["stations_overlapping"] if r["status"] == "exceeds")
-        title += f"; {_plural(len(details['station_ids']), 'listed station')} in band" + (f", exceeds at {above}" if above else "")
+    if details.get("station_count"):
+        above = details["station_status_counts"].get("exceeds", 0)
+        title += f"; {_plural(details['station_count'], 'listed station')} in band" + (f", exceeds at {above}" if above else "")
     return Hit(rule_id, family_id, severity, title, head.adm, head.name, sorted(n.ntc_id for n in notices), details, _deadline(notices, settings.comment_window_months))
 
 
 class PfdRule:
     id = "pfd"
 
-    def __init__(self, settings: Settings, stations: Iterable[Station] = ()):
+    def __init__(
+        self, settings: Settings, stations: Iterable[Station] = (), station_limit: int | None = STATION_SAMPLE,
+        families: set[int] | None = None,
+    ):
         self.settings = settings
+        self.station_limit = station_limit  # None lists every station, for GET /cases/{id}/stations
+        self.families = families  # None runs every family
         self.points: tuple[GroundPoint, ...] | None = None
         self._visible: dict[float, bool] = {}
         self.stations = StationIndex(stations)
@@ -599,6 +598,8 @@ class PfdRule:
         shapes_by_key: dict[tuple[int, str | None], tuple[list[OrbitShape], int]] = {}
         grouped = _families(n for n in issue.notices.values() if n.ntc_type in SATELLITE_NOTICE_TYPES)
         for family_id, family in grouped.items():
+            if self.families is not None and family_id not in self.families:
+                continue
             for orbit_type, orbit_prefix, code in (("GSO", "gso", "G"), ("NGSO", "ngso", "N")):
                 notices = [n for n in family if n.ntc_type == code]
                 if not notices:
@@ -619,7 +620,7 @@ class PfdRule:
                     if calculations or missing or not_visible or quality:
                         yield _hit(
                             rule_id, family_id, notices, calculations, missing, not_visible,
-                            list(quality.values()), self.settings, self.evidence.for_case(family_id, rule_id),
+                            list(quality.values()), self.settings, self.evidence.for_case(family_id, rule_id), self.station_limit,
                         )
 
     # Station records. A station is evaluated only when its band overlaps the part of the assignment the mask covers.
@@ -923,7 +924,7 @@ def pfd_summary(hits: Iterable[Hit]) -> dict[str, Any]:
     }
 
 
-def pfd_rule(settings: Settings, stations: Iterable[Station] | None = None) -> PfdRule:
+def pfd_rule(settings: Settings, stations: Iterable[Station] | None = None, **options: Any) -> PfdRule:
     from .stations import load_stations
 
-    return PfdRule(settings, load_stations() if stations is None else stations)
+    return PfdRule(settings, load_stations() if stations is None else stations, **options)

@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { api } from '../api';
 import { Loading, useLoad } from '../components/ui';
 
@@ -52,6 +53,7 @@ export function Reference() {
             <tbody>{data.severity.map((r) => <tr key={r.severity}><td>{r.severity}</td><td>{r.rule}</td></tr>)}</tbody>
           </table>
         </div>
+        {api.capabilities.customRules && <p className="fine">Rules written by experts set their own severity. See <Link to="/rules">Screening rules</Link>.</p>}
       </section>
     </>
   );

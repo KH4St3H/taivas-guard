@@ -88,3 +88,31 @@ class StationEvidence:
 
     def for_range(self, ntc_id: int, low: float, high: float, station_id: str) -> dict[str, Any] | None:
         return self.by_range.get((ntc_id, low, high, station_id))
+
+
+# A case keeps the worst stations and counts, not every station: with the full national register a case
+# can overlap millions, and the case is stored, hashed and sent whole. GET /cases/{id}/stations
+# recomputes the full list on request. None keeps everything (that recomputation uses it).
+STATION_SAMPLE = 100
+BAND_ID_SAMPLE = 20
+
+
+def capped(items: list[Any], limit: int | None) -> list[Any]:
+    return items if limit is None else items[:limit]
+
+
+def station_summary(records: list[dict[str, Any]], limit: int | None = STATION_SAMPLE) -> dict[str, Any]:
+    """Counts over every record, and the worst `limit` of them. `records` must already be ordered worst first."""
+    linked = [r for r in records if r["status"] != "not_visible"]
+    not_visible = sorted(r["station_id"] for r in records if r["status"] == "not_visible")
+    shown = capped(linked, limit)
+    return {
+        "station_count": len(linked),
+        "station_ids": sorted(r["station_id"] for r in shown),
+        "stations_overlapping": shown,
+        "stations_listed": len(shown),
+        "station_status_counts": status_counts(records),
+        "stations_not_visible": capped(not_visible, limit),
+        "stations_not_visible_count": len(not_visible),
+        "special_interest": bool(linked),
+    }

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { draftLetter } from '../lib/letter';
 import { formatDuration } from '../lib/format';
-import { caseInIssue, errorMessage, fileName, mapBands, mapCase, mapSummary, rankFindings, ruleLabel, runFromArtifact, summariseIssue, type ArtifactOut, type CaseOut, type CaseSummary } from './http';
+import { caseInIssue, definitionIn, definitionOf, errorMessage, fileName, mapBands, mapCase, mapSummary, rankFindings, ruleLabel, runFromArtifact, summariseIssue, type ArtifactOut, type CaseOut, type CaseSummary } from './http';
 
 const summary = (over: Partial<CaseSummary> = {}): CaseSummary => ({ id: 1, domain: 'space', rule_id: 'fin-named-by-br', severity: 'high', title: 'BR names Finland in SAT (USA)', adm: 'USA', network: 'SAT', first_issue: 3083, last_issue: 3083, comment_deadline: '2027-02-27', review_status: 'pending', ...over });
 const full = (over: Partial<CaseOut> = {}): CaseOut => ({ ...summary(), notice_ids: ['11', '31'], details: {}, source_sha256: 'abc', review_note: null, created_at: '2026-11-07T00:00:00', updated_at: '2026-11-07T00:00:00', ...over });
@@ -40,6 +40,10 @@ describe('mapSummary', () => {
     expect(f.title).toBe('BR names Finland in SAT (USA)');
     expect(f.windowDeadline).toBe('2027-02-27');
     expect(f.review.status).toBe('pending');
+  });
+  it('carries M4 primary services on list rows, and none when the service omits them', () => {
+    expect(mapSummary({ ...summary(), m4_primary_services: ['FIXED', 'MOBILE'] }, 'x').m4PrimaryServices).toEqual(['FIXED', 'MOBILE']);
+    expect(mapSummary(summary(), 'x').m4PrimaryServices).toEqual([]);
   });
   it('doesn’t treat an unknown severity as a real one', () => expect(mapSummary(summary({ severity: 'odd' }), 'x').severity).toBe('unscored'));
 });
@@ -182,5 +186,42 @@ describe('labels and durations', () => {
     expect(formatDuration(5 * 3600 + 720)).toBe('5 h 12 min');
     expect(formatDuration(7200)).toBe('2 h');
     expect(formatDuration(5 * 86400)).toBe('5 days');
+  });
+});
+
+describe('rules written by experts', () => {
+  it('round-trips a rule definition between the service and the UI', () => {
+    const wire = { orbit: 'gso' as const, visible_from_finland: false, adm_in: ['RUS'], adm_not_in: [], provision_in: ['9.6'], direction: 'receive' as const,
+      frequency_ranges: [{ low_mhz: 5925, high_mhz: 6425 }], m4: { space_to_earth: 'any' as const, earth_to_space: 'yes' as const, terrestrial_primary: 'no' as const, passive: 'any' as const, primary_services_any: ['FIXED'] } };
+    const ui = definitionOf(wire);
+    expect(ui.frequencyRanges).toEqual([{ lowMhz: 5925, highMhz: 6425 }]);
+    expect(ui.m4.earthToSpace).toBe('yes');
+    expect(definitionIn(ui)).toEqual(wire);
+  });
+
+  it('labels and explains a case from a custom rule', () => {
+    expect(ruleLabel('custom-42')).toBe('Custom rule 42');
+    const f = mapCase(full({ rule_id: 'custom-3', details: {
+      custom_rule: { id: 3, name: 'Uplinks', version: 2 }, conditions: ['The satellite receives'],
+      matched_assignments: [{ group_id: 9, freq_min_mhz: 14100, freq_max_mhz: 14200, direction: 'receive' }], matched_assignment_count: 140,
+    } }), 'space-3083', 'x');
+    expect(f.customRule).toEqual({ id: 3, name: 'Uplinks', version: 2, conditions: ['The satellite receives'], matchedAssignments: [{ groupId: 9, fMinMhz: 14100, fMaxMhz: 14200, direction: 'receive' }], matchedCount: 140 });
+    expect(mapCase(full(), 'x', 'y').customRule).toBeNull();
+  });
+});
+
+describe('large station lists', () => {
+  it('counts stations from the stored total, not the sample the case keeps', () => {
+    const f = mapCase(full({ rule_id: 'station-rx-overlap', details: {
+      station_count: 2_400_000, stations_listed: 1, station_ids: ['1@R13'], station_status_counts: { below: 2_400_000 },
+      stations_overlapping: [{ station_id: '1@R13', status: 'below', matched_bands: [{ side: 'rx' }] }],
+      bands: [{ low_mhz: 1, high_mhz: 2, station_count: 2_400_000, station_ids: ['1@R13'] }],
+    } }), 'space-3083', 'x');
+    expect([f.stationCount, f.stationsListed, f.stationResults?.length, f.bands[0].stationCount]).toEqual([2_400_000, 1, 1, 2_400_000]);
+  });
+
+  it('falls back to the id list on cases saved before the cap', () => {
+    const f = mapCase(full({ details: { station_ids: ['1@R13', '2@R14'], bands: [{ low_mhz: 1, high_mhz: 2, station_ids: ['1@R13'] }] } }), 'x', 'y');
+    expect([f.stationCount, f.bands[0].stationCount]).toEqual([2, 1]);
   });
 });

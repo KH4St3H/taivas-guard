@@ -107,7 +107,9 @@ def export_issue(domain: str, issue_no: int, out: Path, *, sha256: str | None = 
         rules = terrestrial_rules(settings, issue_no, artifact.sha256)
     else:
         issue = SpaceIssue(reader)
-        rules = space_rules(settings)
+        from .screening.custom_rules import load_enabled
+
+        rules = [*space_rules(settings), *load_enabled(settings)]
     hits = [hit for rule in rules for hit in rule.run(issue)]
     if terrestrial:
         funnel = rules[0].funnel

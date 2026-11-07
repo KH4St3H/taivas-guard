@@ -94,7 +94,11 @@ def screen_artifact(
         hits = [hit for rule in active for hit in rule.run(issue)]
     else:
         issue = SpaceIssue(reader or MdbReader(mdb_path))
-        hits = [hit for rule in (rules if rules is not None else space_rules(settings)) for hit in rule.run(issue)]
+        if rules is None:
+            from .custom_rules import load_enabled
+
+            rules = [*space_rules(settings), *load_enabled(settings)]
+        hits = [hit for rule in rules for hit in rule.run(issue)]
         for hit in hits:
             hit.details.setdefault("database_version", issue.database_version)
     opened, changed = save_hits(artifact_id, hits, domain)

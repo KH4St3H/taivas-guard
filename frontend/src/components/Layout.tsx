@@ -10,6 +10,7 @@ const NAV = [
   { to: '/', label: 'Latest issue', end: true, icon: <Icon><path d="M4 18a8 8 0 0 1 16 0" /><path d="M8 18a4 4 0 0 1 8 0" /><circle cx="12" cy="18" r="1" /><path d="M2 12a14 14 0 0 1 20 0" /></Icon> },
   { to: '/findings', label: 'Findings', icon: <Icon><path d="M4 6h16" /><path d="M4 12h16" /><path d="M4 18h10" /></Icon> },
   { to: '/runs', label: 'Runs', icon: <Icon><path d="M12 7v5l3 2" /><circle cx="12" cy="12" r="9" /></Icon> },
+  { to: '/rules', label: 'Screening rules', icon: <Icon><path d="M4 6h10" /><path d="M4 12h7" /><path d="M4 18h10" /><circle cx="18" cy="6" r="2" /><circle cx="15" cy="12" r="2" /><circle cx="18" cy="18" r="2" /></Icon> },
   { to: '/reference', label: 'Rules and data', icon: <Icon><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3Z" /><path d="M5 17a3 3 0 0 1 3-3h11" /></Icon> },
 ];
 

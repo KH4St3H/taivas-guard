@@ -98,7 +98,8 @@ export interface BandMatch {
   passive: boolean;
   pages: string;
   groupCount: number;
-  stationIds: string[];
+  stationIds: string[]; // a sample when stationCount is larger
+  stationCount: number;
   classes: Record<string, number>;
   /** What M4 allocates for space-to-Earth across the band, on station cases. */
   m4SpaceToEarth: string | null;
@@ -132,6 +133,16 @@ export interface CalculatedResult {
   worstPoint: Record<string, unknown> | null;
 }
 
+/** On a case raised by a rule an expert wrote: which rule and version, and what it matched. */
+export interface CustomRuleRef {
+  id: number;
+  name: string;
+  version: number;
+  conditions: string[];
+  matchedAssignments: { groupId: number; fMinMhz: number; fMaxMhz: number; direction: string }[];
+  matchedCount: number;
+}
+
 export interface Finding {
   id: string;
   issueId: string;
@@ -161,7 +172,13 @@ export interface Finding {
   stationIds: string[];
   stationClasses: Record<string, number>;
   stationResults?: StationResult[];
+  /** How many of the stations the case itself keeps: the worst ones. The rest come from listCaseStations. */
+  stationsListed?: number;
+  stationStatusCounts?: Record<string, number>;
   bands: BandMatch[];
+  /** Distinct M4 primary services across `bands`. List rows carry this even though they carry no bands. */
+  m4PrimaryServices: string[];
+  customRule?: CustomRuleRef | null;
   visibility: string[];
   basis: string | null;
   calc: PfdCalculation | null;
@@ -262,6 +279,85 @@ export interface Capabilities {
   rescreen: boolean;
   reviewStatuses: ReviewStatus[];
   letterStorage: 'browser' | 'server';
+  customRules: boolean; // experts can write screening rules
+  stationLists: boolean; // a case's full station list can be recomputed on request
+}
+
+export interface StationQuery {
+  offset?: number;
+  limit?: number;
+  status?: string;
+  licence?: string;
+}
+
+/** One page of a case's full station list, recomputed from the issue file. */
+export interface StationPage {
+  total: number;
+  matching: number;
+  offset: number;
+  rows: StationResult[];
+  counts: { status: Record<string, number>; licence: Record<string, number> };
+  notVisible: number;
+  issueNo: number;
+  datasetChanged: boolean;
+}
+
+export type Tri = 'any' | 'yes' | 'no';
+
+export interface RuleDefinition {
+  orbit: 'any' | 'gso' | 'ngso';
+  visibleFromFinland: boolean;
+  admIn: string[];
+  admNotIn: string[];
+  provisionIn: string[];
+  direction: 'transmit' | 'receive' | 'either';
+  frequencyRanges: { lowMhz: number; highMhz: number }[];
+  m4: { spaceToEarth: Tri; earthToSpace: Tri; terrestrialPrimary: Tri; passive: Tri; primaryServicesAny: string[] };
+}
+
+export interface RuleSpec {
+  name: string;
+  description: string;
+  severity: 'high' | 'medium' | 'low';
+  titleTemplate: string;
+  definition: RuleDefinition;
+}
+
+export interface RuleVersion extends RuleSpec {
+  version: number;
+  enabled: boolean;
+  savedBy: string;
+  note: string;
+  savedAt: string;
+}
+
+export interface CustomRule extends RuleSpec {
+  id: number;
+  ruleId: string;
+  enabled: boolean;
+  version: number;
+  conditions: string[];
+  caseCount: number;
+  updatedAt: string;
+  versions: RuleVersion[];
+}
+
+export interface RuleSave extends RuleSpec {
+  enabled: boolean;
+  savedBy: string;
+  note: string;
+}
+
+export interface RulePreview {
+  issueNo: number;
+  total: number;
+  byAdm: Record<string, number>;
+  hits: { network: string | null; adm: string | null; title: string; severity: Severity; noticeIds: number[]; bands: number; assignments: number }[];
+}
+
+export interface RuleOptions {
+  m4PrimaryServices: string[];
+  titleFields: Record<string, string>;
 }
 
 /** Anything implementing this can drive the UI: sample data or the live services. */
@@ -283,6 +379,15 @@ export interface Api {
   listReferenceSources(): Promise<ReferenceSource[]>;
   listLimits(): Promise<LimitRow[]>;
   listSeverityRules(): Promise<{ severity: string; rule: string }[]>;
+  listRules(): Promise<CustomRule[]>;
+  getRule(id: number): Promise<CustomRule | null>;
+  ruleOptions(): Promise<RuleOptions>;
+  saveRule(rule: RuleSave, id?: number): Promise<CustomRule>;
+  previewRule(spec: RuleSpec, artifactId: number): Promise<RulePreview>;
+  /** Queues every stored space issue, so cases follow the current rules. Returns the issue numbers. */
+  rescreenSpace(): Promise<number[]>;
+  listCaseStations(id: string, query: StationQuery): Promise<StationPage>;
+  caseStationsCsvUrl(id: string, query: StationQuery): string | null;
   severityNote: string;
 }
 

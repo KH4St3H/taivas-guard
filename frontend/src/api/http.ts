@@ -1,11 +1,11 @@
 // Talks to the IFIC Guard services through the /api proxy. Their shapes are defined in
 // ific_guard/schemas.py and the Case.details contract in .scratch/ific-guard-delivery/map.md.
 import { SEVERITY_ORDER } from '../lib/severity';
-import type { Api, BandMatch, NewRun, Run, CalculatedResult, Domain, DomainFreshness, Finding, FunnelStage, IssueSummary, MonitorStatus, ReferenceSource, ReviewState, ScreenStatus, Severity, StationResult, SyncRun } from './types';
+import type { Api, BandMatch, NewRun, Run, CalculatedResult, CustomRule, CustomRuleRef, Domain, DomainFreshness, Finding, FunnelStage, IssueSummary, MonitorStatus, ReferenceSource, ReviewState, RuleDefinition, RuleSave, RuleSpec, RuleVersion, ScreenStatus, StationQuery, Severity, StationResult, SyncRun } from './types';
 
 export interface ArtifactOut { id: number; domain: string; issue_no: number; published_on: string | null; source_url: string; sha256: string; size_bytes: number; fetched_at: string; screen_status: string; screened_at: string | null }
 export interface SyncRunOut { id: number; trigger: string; started_at: string; finished_at: string | null; status: string; discovered: number; fetched: number; errors: string[] }
-export interface CaseSummary { id: number; domain: string; rule_id: string; severity: string; title: string; adm: string | null; network: string | null; first_issue: number; last_issue: number; comment_deadline: string | null; review_status: string }
+export interface CaseSummary { id: number; domain: string; rule_id: string; severity: string; title: string; adm: string | null; network: string | null; first_issue: number; last_issue: number; comment_deadline: string | null; review_status: string; m4_primary_services?: string[] }
 export interface CaseOut extends CaseSummary { notice_ids: string[]; details: Record<string, unknown>; source_sha256: string; review_note: string | null; created_at: string; updated_at: string }
 export interface UploadOut { artifact: ArtifactOut; new: boolean }
 export interface StatusOut { running: boolean; schedule?: string | null; next_run_in_s?: number | null; domains: Record<string, { latest_issue: number | null; published_on: string | null; age_days: number | null; stale: boolean }> }
@@ -38,6 +38,8 @@ async function call<T>(service: Service, path: string, init?: RequestInit): Prom
     try {
       const body = (await res.json()) as { detail?: unknown };
       if (typeof body.detail === 'string') detail = body.detail;
+      // FastAPI lists validation errors; show their messages, without pydantic's "Value error," prefix.
+      else if (Array.isArray(body.detail)) detail = (body.detail as { msg?: string }[]).map((e) => String(e.msg ?? '').replace(/^Value error, /, '')).filter(Boolean).join(' ') || null;
     } catch { /* an empty proxy error has no body */ }
     throw new ApiError(errorMessage(service, res.status, detail), res.status);
   }
@@ -49,7 +51,58 @@ const RULE_LABELS: Record<string, string> = {
   'm4-no-space-to-earth': 'No space-to-Earth allocation in Finland',
   'station-rx-overlap': 'On a Finnish station’s frequency',
 };
-export const ruleLabel = (id: string) => RULE_LABELS[id] ?? id;
+export const ruleLabel = (id: string) => RULE_LABELS[id] ?? (id.startsWith('custom-') ? `Custom rule ${id.slice(7)}` : id);
+
+// Rules experts write are named in the service; load the names once so lists can label their cases.
+let ruleNames: Promise<void> | null = null;
+const loadRuleNames = () => (ruleNames ??= call<RuleOut[]>('screening', '/rules')
+  .then((rows) => { for (const r of rows) RULE_LABELS[r.rule_id] = r.name; })
+  .catch(() => { ruleNames = null; })); // an older service has no rules endpoint; ids are shown instead
+
+interface DefinitionOut {
+  orbit: RuleDefinition['orbit']; visible_from_finland: boolean; adm_in: string[]; adm_not_in: string[]; provision_in: string[];
+  direction: RuleDefinition['direction']; frequency_ranges: { low_mhz: number; high_mhz: number }[];
+  m4: { space_to_earth: RuleDefinition['m4']['spaceToEarth']; earth_to_space: RuleDefinition['m4']['earthToSpace']; terrestrial_primary: RuleDefinition['m4']['terrestrialPrimary']; passive: RuleDefinition['m4']['passive']; primary_services_any: string[] };
+}
+interface SpecOut { name: string; description: string; severity: RuleSpec['severity']; title_template: string; definition: DefinitionOut }
+interface RuleVersionOut extends SpecOut { version: number; enabled: boolean; saved_by: string; note: string; saved_at: string }
+export interface RuleOut extends SpecOut { id: number; rule_id: string; enabled: boolean; version: number; conditions: string[]; case_count: number; updated_at: string; versions: RuleVersionOut[] }
+interface PreviewOut { issue_no: number; total: number; by_adm: Record<string, number>; hits: { network: string | null; adm: string | null; title: string; severity: string; notice_ids: number[]; bands: number; assignments: number }[] }
+
+export const definitionOf = (d: DefinitionOut): RuleDefinition => ({
+  orbit: d.orbit, visibleFromFinland: d.visible_from_finland, admIn: d.adm_in, admNotIn: d.adm_not_in, provisionIn: d.provision_in, direction: d.direction,
+  frequencyRanges: d.frequency_ranges.map((r) => ({ lowMhz: r.low_mhz, highMhz: r.high_mhz })),
+  m4: { spaceToEarth: d.m4.space_to_earth, earthToSpace: d.m4.earth_to_space, terrestrialPrimary: d.m4.terrestrial_primary, passive: d.m4.passive, primaryServicesAny: d.m4.primary_services_any },
+});
+export const definitionIn = (d: RuleDefinition): DefinitionOut => ({
+  orbit: d.orbit, visible_from_finland: d.visibleFromFinland, adm_in: d.admIn, adm_not_in: d.admNotIn, provision_in: d.provisionIn, direction: d.direction,
+  frequency_ranges: d.frequencyRanges.map((r) => ({ low_mhz: r.lowMhz, high_mhz: r.highMhz })),
+  m4: { space_to_earth: d.m4.spaceToEarth, earth_to_space: d.m4.earthToSpace, terrestrial_primary: d.m4.terrestrialPrimary, passive: d.m4.passive, primary_services_any: d.m4.primaryServicesAny },
+});
+const specOf = (r: SpecOut): RuleSpec => ({ name: r.name, description: r.description, severity: r.severity, titleTemplate: r.title_template, definition: definitionOf(r.definition) });
+const specIn = (r: RuleSpec): SpecOut => ({ name: r.name, description: r.description, severity: r.severity, title_template: r.titleTemplate, definition: definitionIn(r.definition) });
+const versionOf = (v: RuleVersionOut): RuleVersion => ({ ...specOf(v), version: v.version, enabled: v.enabled, savedBy: v.saved_by, note: v.note, savedAt: utc(v.saved_at) });
+export const ruleOf = (r: RuleOut): CustomRule => {
+  RULE_LABELS[r.rule_id] = r.name;
+  return { ...specOf(r), id: r.id, ruleId: r.rule_id, enabled: r.enabled, version: r.version, conditions: r.conditions, caseCount: r.case_count, updatedAt: utc(r.updated_at), versions: r.versions.map(versionOf) };
+};
+
+const stationParams = (q: StationQuery) => {
+  const p = new URLSearchParams();
+  for (const [k, v] of Object.entries(q)) if (v !== undefined && v !== '') p.set(k, String(v));
+  return p.toString();
+};
+
+function mapCustomRule(d: Record<string, unknown>): CustomRuleRef | null {
+  const rule = d.custom_rule as { id?: number; name?: string; version?: number } | undefined;
+  if (!rule || typeof rule.id !== 'number') return null;
+  const assignments = Array.isArray(d.matched_assignments) ? (d.matched_assignments as Record<string, unknown>[]) : [];
+  return {
+    id: rule.id, name: String(rule.name ?? ''), version: Number(rule.version ?? 0), conditions: strings(d.conditions),
+    matchedAssignments: assignments.map((a) => ({ groupId: Number(a.group_id), fMinMhz: Number(a.freq_min_mhz), fMaxMhz: Number(a.freq_max_mhz), direction: String(a.direction) })),
+    matchedCount: typeof d.matched_assignment_count === 'number' ? d.matched_assignment_count : assignments.length,
+  };
+}
 
 const EVALUATED = new Set(['space-3074', 'terrestrial-3076']);
 const issueKey = (domain: string, issue: number) => `${domain}-${issue}`;
@@ -79,15 +132,18 @@ export function mapBands(details: Record<string, unknown>): BandMatch[] {
   return (details.bands as Record<string, unknown>[]).map((b) => ({
     lowMhz: Number(b.low_mhz), highMhz: Number(b.high_mhz), primaryServices: String(b.m4_primary_services ?? ''), finnishUse: String(b.finnish_use ?? ''),
     passive: b.passive === true, pages: String(b.m4_table_pages ?? ''), groupCount: Array.isArray(b.group_ids) ? b.group_ids.length : 0,
-    stationIds: strings(b.station_ids), classes: (b.classes as Record<string, number>) ?? {},
+    stationIds: strings(b.station_ids), stationCount: typeof b.station_count === 'number' ? b.station_count : strings(b.station_ids).length, classes: (b.classes as Record<string, number>) ?? {},
     m4SpaceToEarth: typeof b.m4_space_to_earth === 'string' ? b.m4_space_to_earth : null,
   }));
 }
 
 /** Per-station evidence from `stations_overlapping`, worst first as the service orders it. */
 export function mapStationResults(details: Record<string, unknown>): StationResult[] {
-  if (!Array.isArray(details.stations_overlapping)) return [];
-  return (details.stations_overlapping as Record<string, unknown>[]).map((r) => ({
+  return Array.isArray(details.stations_overlapping) ? mapStationRecords(details.stations_overlapping as Record<string, unknown>[]) : [];
+}
+
+export function mapStationRecords(records: Record<string, unknown>[]): StationResult[] {
+  return records.map((r) => ({
     id: String(r.station_id), licence: typeof r.licence_class === 'string' ? r.licence_class : null,
     sides: Array.isArray(r.matched_bands) ? [...new Set((r.matched_bands as Record<string, unknown>[]).map((b) => String(b.side)))].sort() : [],
     status: typeof r.status === 'string' ? r.status : 'calculated', valueDb: num(r.value_db), limitDb: num(r.limit_db), marginDb: num(r.margin_db),
@@ -114,6 +170,7 @@ function base(c: CaseSummary, issueId: string) {
   return {
     id, issueId, domain: c.domain as Domain, issue: c.last_issue, firstIssue: c.first_issue, lastIssue: c.last_issue, kind: c.rule_id, kindLabel: ruleLabel(c.rule_id),
     title: c.network ?? c.title, summary: c.title, adm: c.adm ?? 'Unknown', orbit: null, provision: null, severity: asSeverity(c.severity), windowDeadline: c.comment_deadline,
+    m4PrimaryServices: c.m4_primary_services ?? [],
     confidence: null, confidenceReasons: [], stations: [], stationIds: [], stationClasses: {}, calc: null, terrestrial: null,
   };
 }
@@ -136,9 +193,11 @@ export function mapCase(c: CaseOut, issueId: string, sourceName: string): Findin
     ...base(c, issueId),
     band: bands.length === 1 ? bandLabel(bands[0]) : bands.length > 1 ? `${bands.length} bands` : null,
     sourceId: first ?? '', relatedSourceIds: rest, sections: strings(d.sections), coordProvisions: provisions,
-    severityReasons: [c.title], marginDb: result?.marginDb ?? null, stationCount: Array.isArray(d.station_ids) ? d.station_ids.length : null,
+    severityReasons: [c.title], marginDb: result?.marginDb ?? null, stationCount: typeof d.station_count === 'number' ? d.station_count : Array.isArray(d.station_ids) ? d.station_ids.length : null,
+    stationsListed: typeof d.stations_listed === 'number' ? d.stations_listed : undefined,
+    stationStatusCounts: (d.station_status_counts as Record<string, number> | undefined) ?? undefined,
     stationIds: strings(d.station_ids), stationClasses: (d.classes as Record<string, number>) ?? {}, stationResults: mapStationResults(d),
-    bands, visibility: strings(d.visibility), basis: typeof d.basis === 'string' ? d.basis : null, result, assumptions: strings(d.assumptions), citations: mapCitations(d),
+    bands, customRule: mapCustomRule(d), visibility: strings(d.visibility), basis: typeof d.basis === 'string' ? d.basis : null, result, assumptions: strings(d.assumptions), citations: mapCitations(d),
     evidence: [
       { table: 'notice', key: `ntc_id in ${c.notice_ids.join(', ')}` },
       ...(Array.isArray(d.group_ids) ? [{ table: 'grp', key: `${d.group_ids.length} group(s) named in the coordination data` }] : []),
@@ -235,7 +294,7 @@ const SOURCES: ReferenceSource[] = [
 
 export const httpApi: Api = {
   mode: 'live',
-  capabilities: { upload: true, checkItuNow: true, rescreen: true, reviewStatuses: ['accepted', 'rejected', 'pending'], letterStorage: 'browser' },
+  capabilities: { upload: true, checkItuNow: true, rescreen: true, reviewStatuses: ['accepted', 'rejected', 'pending'], letterStorage: 'browser', customRules: true, stationLists: true },
   severityNote: 'Set by the screening service from fixed rules. How station cases are ranked is the project’s choice, not Traficom’s.',
   listSeverityRules: async () => [
     { severity: 'High', rule: 'ITU names Finland in the filing’s coordination data, a visible satellite transmits in a passive band with no space-to-Earth allocation, or a pfd calculation exceeds a limit, including at a station in Traficom’s list' },
@@ -243,7 +302,7 @@ export const httpApi: Api = {
     { severity: 'Low', rule: 'On a station’s band, pfd is calculated below the limit at every listed station, or the satellite is below every listed station’s horizon' },
   ],
   listIssues: async () => {
-    const [rows, cases] = await Promise.all([artifacts(), allCases()]);
+    const [rows, cases] = await Promise.all([artifacts(), allCases(), loadRuleNames()]);
     return rows.map((a) => summariseIssue(a, cases));
   },
   getMonitor: async (): Promise<MonitorStatus> => {
@@ -256,13 +315,13 @@ export const httpApi: Api = {
     const i = issueId.lastIndexOf('-');
     const domain = issueId.slice(0, i);
     const issue = Number(issueId.slice(i + 1));
-    const cases = await allCases();
+    const [cases] = await Promise.all([allCases(), loadRuleNames()]);
     return rankFindings(cases.filter((c) => caseInIssue(c, domain, issue)).map((c) => mapSummary(c, issueId)));
   },
   getFinding: async (id) => {
     let c: CaseOut;
     try {
-      c = await call<CaseOut>('screening', `/cases/${encodeURIComponent(id)}`);
+      [c] = await Promise.all([call<CaseOut>('screening', `/cases/${encodeURIComponent(id)}`), loadRuleNames()]);
     } catch (e) {
       if (e instanceof ApiError && e.status === 404) return null;
       throw e;
@@ -295,6 +354,35 @@ export const httpApi: Api = {
   },
   checkItuNow: async () => { await call('sync', '/sync', { method: 'POST' }); },
   rescreen: async (issue) => { await call('screening', `/issues/${issue.artifactId}/screen`, { method: 'POST' }); },
+  listRules: async () => (await call<RuleOut[]>('screening', '/rules')).map(ruleOf),
+  getRule: async (id) => {
+    try {
+      return ruleOf(await call<RuleOut>('screening', `/rules/${id}`));
+    } catch (e) {
+      if (e instanceof ApiError && e.status === 404) return null;
+      throw e;
+    }
+  },
+  ruleOptions: async () => {
+    const o = await call<{ m4_primary_services: string[]; title_fields: Record<string, string> }>('screening', '/rules/options');
+    return { m4PrimaryServices: o.m4_primary_services, titleFields: o.title_fields };
+  },
+  saveRule: async (rule: RuleSave, id?: number) => {
+    const body = JSON.stringify({ ...specIn(rule), enabled: rule.enabled, saved_by: rule.savedBy, note: rule.note });
+    const out = await call<RuleOut>('screening', id === undefined ? '/rules' : `/rules/${id}`, { method: id === undefined ? 'POST' : 'PUT', headers: { 'Content-Type': 'application/json' }, body });
+    return ruleOf(out);
+  },
+  previewRule: async (spec, artifactId) => {
+    const out = await call<PreviewOut>('screening', '/rules/preview', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ spec: specIn(spec), artifact_id: artifactId }) });
+    return { issueNo: out.issue_no, total: out.total, byAdm: out.by_adm, hits: out.hits.map((h) => ({ network: h.network, adm: h.adm, title: h.title, severity: asSeverity(h.severity), noticeIds: h.notice_ids, bands: h.bands, assignments: h.assignments })) };
+  },
+  listCaseStations: async (id, q) => {
+    const out = await call<{ total: number; matching: number; offset: number; rows: Record<string, unknown>[]; counts: { status: Record<string, number>; licence: Record<string, number> }; not_visible: number; issue_no: number; dataset_changed: boolean }>(
+      'screening', `/cases/${encodeURIComponent(id)}/stations?${stationParams(q)}`);
+    return { total: out.total, matching: out.matching, offset: out.offset, rows: mapStationRecords(out.rows), counts: out.counts, notVisible: out.not_visible, issueNo: out.issue_no, datasetChanged: out.dataset_changed };
+  },
+  caseStationsCsvUrl: (id, q) => `/api/screening/cases/${encodeURIComponent(id)}/stations.csv?${stationParams({ ...q, offset: undefined, limit: undefined })}`,
+  rescreenSpace: async () => (await call<{ issues: number[] }>('screening', '/rules/rescreen', { method: 'POST' })).issues,
   listReferenceSources: async () => SOURCES,
   listLimits: async () => [],
 };

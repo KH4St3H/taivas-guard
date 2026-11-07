@@ -38,11 +38,12 @@ def test_write_endpoints_need_the_key_and_stay_closed_without_one(app, method, p
 def test_expert_can_list_read_and_review_a_case():
     with session_scope() as s:
         s.add(Case(fingerprint="1", domain="space", rule_id="r", severity="high", title="T", adm="USA", network="SAT",
-                   notice_ids=["1"], details={"bands": []}, material_hash="m", first_issue=3083, last_issue=3083,
+                   notice_ids=["1"], details={"bands": [{"m4_primary_services": "MOBILE; FIXED"}, {"m4_primary_services": "FIXED"}]}, material_hash="m", first_issue=3083, last_issue=3083,
                    changed_artifact_id=1, source_sha256="f" * 64))
     client = TestClient(screening_app)
     assert [c["id"] for c in client.get("/cases", params={"severity": "high"}).json()] == [1]
     assert client.get("/cases", params={"severity": "low"}).json() == []
+    assert client.get("/cases").json()[0]["m4_primary_services"] == ["FIXED", "MOBILE"]
     assert client.get("/cases/1").json()["source_sha256"] == "f" * 64
     assert client.get("/cases/99").status_code == 404
     reviewed = client.patch("/cases/1", json={"review_status": "accepted", "review_note": "Write to USA"}, headers=KEY)

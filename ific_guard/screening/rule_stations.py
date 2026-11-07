@@ -15,7 +15,7 @@ from .m4 import M4Row, load_m4_rows
 from .rules import Hit, _deadline, _families, visible_from_finland
 from .scoring import ScoringWeights, score_finding
 from .space import SATELLITE_NOTICE_TYPES, SpaceIssue, SpaceNotice
-from .station_links import CALCULATED, SEVERITY_NOTE, ordered, record_for, severity_of, status_counts, worst
+from .station_links import BAND_ID_SAMPLE, CALCULATED, SEVERITY_NOTE, STATION_SAMPLE, capped, ordered, record_for, severity_of, station_summary, worst
 from .stations import BW_MISMATCH, NO_CHANNEL_BW, SIDE_TX, STATIONS_PATH, ProtectedBand, Station, StationIndex, load_stations
 
 if TYPE_CHECKING:
@@ -69,7 +69,9 @@ TITLE_EVIDENCE = {
 }
 
 
-def _bands(hits: dict[tuple[Station, ProtectedBand], set[int]], m4_rows: list[M4Row] | None = None) -> list[dict[str, Any]]:
+def _bands(
+    hits: dict[tuple[Station, ProtectedBand], set[int]], m4_rows: list[M4Row] | None = None, id_limit: int | None = BAND_ID_SAMPLE,
+) -> list[dict[str, Any]]:
     """Joins the protected bands hit into contiguous bands, so a case stays readable."""
     merged: list[dict[str, Any]] = []
     for station, protected in sorted(hits, key=lambda hit: (hit[1].low_mhz, hit[1].high_mhz, hit[0].row, hit[1].side)):
@@ -85,7 +87,8 @@ def _bands(hits: dict[tuple[Station, ProtectedBand], set[int]], m4_rows: list[M4
             "low_mhz": round(b["low"], 6),
             "high_mhz": round(b["high"], 6),
             "classes": _class_summary(b["stations"]),
-            "station_ids": sorted(s.key for s in b["stations"]),
+            "station_count": len(b["stations"]),
+            "station_ids": capped(sorted(s.key for s in b["stations"]), id_limit),
             "sides": dict(sorted(Counter(b["sides"]).items())),
             "group_ids": sorted(b["groups"]),
             **(_m4(b["low"], b["high"], m4_rows) if m4_rows is not None else {}),
@@ -94,12 +97,12 @@ def _bands(hits: dict[tuple[Station, ProtectedBand], set[int]], m4_rows: list[M4
     ]
 
 
-def _matched_on(hits: Iterable[tuple[Station, ProtectedBand]]) -> dict[str, list[str]]:
-    """Which stations matched on which side, so a reader can tell a TX-only result from an RX one."""
+def _matched_on(hits: Iterable[tuple[Station, ProtectedBand]]) -> dict[str, int]:
+    """How many stations matched on each side, so a reader can tell a TX-only result from an RX one."""
     sides: dict[str, set[str]] = defaultdict(set)
     for station, protected in hits:
         sides[protected.side].add(station.key)
-    return {side: sorted(keys) for side, keys in sorted(sides.items())}
+    return {side: len(keys) for side, keys in sorted(sides.items())}
 
 
 class StationOverlapRule:
@@ -114,6 +117,7 @@ class StationOverlapRule:
     def __init__(
         self, settings: Settings, stations: list[Station], dataset: dict[str, Any] | None = None,
         pfd: "PfdRule | None" = None, m4_rows: list[M4Row] | None = None,
+        station_limit: int | None = STATION_SAMPLE, families: set[int] | None = None,
     ):
         self.settings = settings
         self.index = StationIndex(stations)
@@ -122,6 +126,8 @@ class StationOverlapRule:
         self.dataset = dataset or {}
         self.pfd = pfd
         self.m4_rows = m4_rows
+        self.station_limit = station_limit  # None lists every station, for GET /cases/{id}/stations
+        self.families = families  # None runs every family
 
     def _assumptions(self) -> list[str]:
         skipped = self.total - len(self.protected)
@@ -166,6 +172,8 @@ class StationOverlapRule:
     def run(self, issue: SpaceIssue) -> Iterable[Hit]:
         satellites = (n for n in issue.notices.values() if n.ntc_type in SATELLITE_NOTICE_TYPES)
         for family_id, notices in _families(satellites).items():
+            if self.families is not None and family_id not in self.families:
+                continue
             all_hits: dict[tuple[Station, ProtectedBand], set[int]] = defaultdict(set)
             checks: dict[Station, dict[tuple[int, float, float], tuple[ProtectedBand, ...]]] = defaultdict(dict)
             reasons = set()
@@ -190,16 +198,13 @@ class StationOverlapRule:
             stations = {station for station, _ in hits}
             classes = _class_summary(stations)
             matched_on = _matched_on(hits)
-            flagged = {
-                flag: sorted(s.key for s in stations if flag in s.quality_flags)
-                for flag in BAND_FLAGS
-                if any(flag in s.quality_flags for s in stations)
-            }
+            flagged = {flag: n for flag in BAND_FLAGS if (n := sum(1 for s in stations if flag in s.quality_flags))}
             top = worst(records)
-            bands = _bands(hits, self.m4_rows)
+            bands = _bands(hits, self.m4_rows, None if self.station_limit is None else BAND_ID_SAMPLE)
+            summary = station_summary(records, self.station_limit)
             details: dict[str, Any] = {
                 "method": "screening",
-                "station_ids": sorted(s.key for s in stations) if linked else [],
+                **summary,
                 "classes": classes,
                 "matched_on": matched_on,
                 "bands": bands,
@@ -209,11 +214,7 @@ class StationOverlapRule:
                 "assumptions": self._assumptions(),
                 "station_dataset": self.dataset,
                 "source": {"domain": "space", "notice_ids": [str(n) for n in notice_ids]},
-                "stations_overlapping": linked,
-                "station_status_counts": status_counts(records),
-                "stations_not_visible": sorted(r["station_id"] for r in records if r["status"] == "not_visible"),
                 "evidence_status": top["status"],
-                "special_interest": bool(linked),
                 "primary_allocation": any(b.get("m4_terrestrial_primary") for b in bands),
                 "passive_band": any(b.get("passive") for b in bands),
             }

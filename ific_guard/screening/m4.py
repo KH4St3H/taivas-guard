@@ -290,6 +290,7 @@ class M4Row:
     passive: bool
     terrestrial_primary: bool
     pages: str
+    space_up_allocated: bool = False
 
 
 def load_m4_rows(path: Path) -> list[M4Row]:
@@ -300,7 +301,7 @@ def load_m4_rows(path: Path) -> list[M4Row]:
         M4Row(
             float(r["band_low_mhz"]), float(r["band_high_mhz"]), r["primary_services"], r["finnish_terrestrial_use"],
             flag(r["space_down_allocated"]), r.get("space_down_unresolved", ""), flag(r["passive_or_radio_astronomy"]),
-            flag(r["terrestrial_primary"]), r["m4_table_pages"],
+            flag(r["terrestrial_primary"]), r["m4_table_pages"], flag(r.get("space_up_allocated", "")),
         )
         for r in rows
     ]

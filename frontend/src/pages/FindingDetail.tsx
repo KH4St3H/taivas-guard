@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { api } from '../api';
-import type { Finding, ReviewStatus } from '../api/types';
+import type { Finding, ReviewStatus, StationPage, StationResult } from '../api/types';
 import { CommentWindow, ConfidenceText, Hash, Loading, ReviewBadge, SeverityBadge, useLoad } from '../components/ui';
 import { admName } from '../lib/adm';
 import { exportText } from '../lib/export';
-import { db, formatDateTime, refBandwidth, signed } from '../lib/format';
+import { db, formatDateTime, m4Services, refBandwidth, signed } from '../lib/format';
 import { draftLetter } from '../lib/letter';
 import { pfdSteps } from '../lib/pfd';
 
@@ -47,9 +47,10 @@ export function FindingDetail() {
             {f.coordProvisions.length > 0 && <p>Provisions: <strong>{f.coordProvisions.join(', ')}</strong>. ITU’s list is for information only (RR No. 9.36.1), so an expert still decides.</p>}
             {f.visibility.length > 0 && <p className="muted">Visibility: {f.visibility.join('; ')}</p>}
             {unconfirmed && <p className="notice notice-warn"><strong>Possible concern.</strong> No calculation backs this case, so it doesn’t show that any limit is exceeded.</p>}
-            <p className="fine">Severity follows fixed rules listed under <Link to="/reference">Rules and data</Link>. No AI was involved in this assessment.</p>
+            <p className="fine">{f.customRule ? <>Severity is set by the rule an expert wrote, under <Link to="/rules">Screening rules</Link>.</> : <>Severity follows fixed rules listed under <Link to="/reference">Rules and data</Link>.</>} No AI was involved in this assessment.</p>
           </section>
 
+          {f.customRule && <CustomRulePanel f={f} />}
           {f.bands.length > 0 && <BandsPanel f={f} />}
           {(f.stationResults?.length ?? 0) > 0 ? <StationResultsPanel f={f} /> : f.stationIds.length > 0 && <StationIdsPanel f={f} />}
           {f.calc && <Calculation f={f} />}
@@ -123,20 +124,64 @@ export function FindingDetail() {
 
 const SHOW_IDS = 30;
 
-/** Station IDs arrive as number@Rrow, where the row is in Traficom's sheet. */
-const stationLabel = (id: string) => id.replace(/@R(\d+)$/, ' (row $1)');
+/** Station IDs arrive as number@Rrow, or number@SsheetRrow beyond the first sheet of Traficom's register. */
+const stationLabel = (id: string) => id.replace(/@S(\d+)R(\d+)$/, ' (sheet $1, row $2)').replace(/@R(\d+)$/, ' (row $1)');
 const classSummary = (classes: Record<string, number>) => Object.entries(classes).map(([name, n]) => `${name}: ${n}`).join(', ');
 
 const SHOW_BANDS = 12;
+const SHOW_ASSIGNMENTS = 12;
+
+function CustomRulePanel({ f }: { f: Finding }) {
+  const r = f.customRule!;
+  const [showAll, setShowAll] = useState(false);
+  const shown = showAll ? r.matchedAssignments : r.matchedAssignments.slice(0, SHOW_ASSIGNMENTS);
+  return (
+    <section className="panel">
+      <h2>Rule that raised it</h2>
+      <p><Link to={`/rules/${r.id}`}><strong>{r.name}</strong></Link>, version {r.version}. Written by an expert, not taken from a regulation. It matched because:</p>
+      <ul className="conditions">{r.conditions.map((c) => <li key={c}>{c}.</li>)}</ul>
+      <h3>Matched assignments</h3>
+      <div className="table-wrap">
+        <table>
+          <thead><tr><th className="num">Group</th><th className="num">From, MHz</th><th className="num">To, MHz</th><th>Satellite</th></tr></thead>
+          <tbody>{shown.map((a, i) => <tr key={`${a.groupId}-${a.fMinMhz}-${i}`}><td className="num">{a.groupId}</td><td className="num">{a.fMinMhz}</td><td className="num">{a.fMaxMhz}</td><td>{a.direction === 'receive' ? 'Receives' : 'Transmits'}</td></tr>)}</tbody>
+        </table>
+      </div>
+      {r.matchedAssignments.length > SHOW_ASSIGNMENTS && <button type="button" className="linkbtn show-all" onClick={() => setShowAll(!showAll)}>{showAll ? 'Show fewer' : `Show all ${r.matchedAssignments.length}`}</button>}
+      {r.matchedCount > r.matchedAssignments.length && <p className="fine">{r.matchedCount} assignments matched; the case keeps the first {r.matchedAssignments.length}.</p>}
+    </section>
+  );
+}
 
 function BandsPanel({ f }: { f: Finding }) {
   const stationRule = f.kind === 'station-rx-overlap';
   const [showAll, setShowAll] = useState(false);
-  const bands = showAll ? f.bands : f.bands.slice(0, SHOW_BANDS);
+  // Same `m4` parameter as the Findings list, so a filtered list opens its cases already filtered.
+  const [params, setParams] = useSearchParams();
+  const m4 = params.get('m4') ?? '';
+  const services = [...new Set(f.bands.flatMap((b) => m4Services(b.primaryServices)))].sort();
+  const matching = m4 && services.includes(m4) ? f.bands.filter((b) => m4Services(b.primaryServices).includes(m4)) : f.bands;
+  const bands = showAll ? matching : matching.slice(0, SHOW_BANDS);
+  const setM4 = (value: string) => {
+    const next = new URLSearchParams(params);
+    if (value) next.set('m4', value); else next.delete('m4');
+    setParams(next, { replace: true });
+  };
   return (
     <section className="panel">
       <h2>Bands involved</h2>
-      <p className="muted">{stationRule ? 'Bands where this filing transmits on an RX or TX frequency of a station in Traficom’s list, with what M4 allocates there. Results at each station are in the next panel.' : 'Bands where this filing transmits and M4 has no space-to-Earth allocation.'}</p>
+      <p className="muted">{f.customRule ? 'Bands of the Finnish table (M4) where the matched frequencies fall.' : stationRule ? 'Bands where this filing transmits on an RX or TX frequency of a station in Traficom’s list, with what M4 allocates there. Results at each station are in the next panel.' : 'Bands where this filing transmits and M4 has no space-to-Earth allocation.'}</p>
+      {services.length > 1 && (
+        <form className="filters" onSubmit={(e) => e.preventDefault()} aria-label="Filter bands">
+          <label>M4 primary service
+            <select value={services.includes(m4) ? m4 : ''} onChange={(e) => setM4(e.target.value)}>
+              <option value="">All</option>
+              {services.map((s) => <option key={s} value={s}>{s}</option>)}
+            </select>
+          </label>
+          {matching !== f.bands && <p className="result-count" role="status">{matching.length} of {f.bands.length} bands · <button type="button" className="linkbtn" onClick={() => setM4('')}>Show all bands</button></p>}
+        </form>
+      )}
       <div className="table-wrap">
         <table>
           {stationRule ? (
@@ -145,7 +190,7 @@ function BandsPanel({ f }: { f: Finding }) {
               <tbody>
                 {bands.map((b) => (
                   <tr key={`${b.lowMhz}-${b.highMhz}`}>
-                    <td className="nowrap tnum">{b.lowMhz}–{b.highMhz}{b.passive && <span className="badge sev-high passive">Passive</span>}</td><td className="num">{b.stationIds.length}</td><td>{classSummary(b.classes) || '–'}</td>
+                    <td className="nowrap tnum">{b.lowMhz}–{b.highMhz}{b.passive && <span className="badge sev-high passive">Passive</span>}</td><td className="num">{b.stationCount}</td><td>{classSummary(b.classes) || '–'}</td>
                     <td>{b.primaryServices || '–'}</td><td>{b.m4SpaceToEarth ?? '–'}</td><td className="num">{b.groupCount}</td>
                   </tr>
                 ))}
@@ -166,19 +211,110 @@ function BandsPanel({ f }: { f: Finding }) {
           )}
         </table>
       </div>
-      {f.bands.length > SHOW_BANDS && <button type="button" className="linkbtn show-all" onClick={() => setShowAll(!showAll)}>{showAll ? 'Show fewer' : `Show all ${f.bands.length} bands`}</button>}
+      {matching.length > SHOW_BANDS && <button type="button" className="linkbtn show-all" onClick={() => setShowAll(!showAll)}>{showAll ? 'Show fewer' : `Show all ${matching.length} bands`}</button>}
     </section>
   );
 }
 
 function StationIdsPanel({ f }: { f: Finding }) {
   const shown = f.stationIds.slice(0, SHOW_IDS);
+  const total = f.stationCount ?? f.stationIds.length;
   return (
     <section className="panel">
       <h2>Finnish stations affected</h2>
-      <p className="muted">{f.stationIds.length} in Traficom’s synthetic list{classSummary(f.stationClasses) ? ` (${classSummary(f.stationClasses)})` : ''}.{f.stationIds.length > SHOW_IDS ? ` Showing the first ${SHOW_IDS}; export the case for all of them.` : ''}</p>
+      <p className="muted">{total} in Traficom’s synthetic list{classSummary(f.stationClasses) ? ` (${classSummary(f.stationClasses)})` : ''}.{total > shown.length ? ` Showing ${shown.length}.` : ''}</p>
       <ul className="id-list">{shown.map((id) => <li key={id}><code>{stationLabel(id)}</code></li>)}</ul>
+      <AllStations f={f} />
     </section>
+  );
+}
+
+const PAGE = 100;
+
+/** The full list, recomputed by the service on request: a case keeps only its worst stations. */
+function AllStations({ f }: { f: Finding }) {
+  const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState<{ offset: number; status: string; licence: string }>({ offset: 0, status: '', licence: '' });
+  const [state, setState] = useState<{ loading: boolean; page?: StationPage; error?: string }>({ loading: false });
+  useEffect(() => {
+    if (!open) return;
+    let live = true;
+    setState((s) => ({ ...s, loading: true, error: undefined }));
+    api.listCaseStations(f.id, { ...query, limit: PAGE }).then(
+      (page) => live && setState({ loading: false, page }),
+      (e: Error) => live && setState({ loading: false, error: e.message }),
+    );
+    return () => { live = false; };
+  }, [open, query, f.id]);
+  if (!api.capabilities.stationLists) return null;
+  const csv = api.caseStationsCsvUrl(f.id, { status: query.status, licence: query.licence });
+  const total = f.stationCount ?? 0;
+  if (!open) {
+    return (
+      <div className="actions">
+        <button type="button" className="btn btn-secondary" onClick={() => setOpen(true)}>Browse all {total.toLocaleString('en-GB')} stations</button>
+        {csv && <a className="btn btn-secondary" href={csv} download>Download all as CSV</a>}
+        <span className="fine">Recomputed from the issue file when asked. On a large register the first request can take minutes.</span>
+      </div>
+    );
+  }
+  const page = state.page;
+  const set = (change: Partial<typeof query>) => setQuery({ ...query, offset: 0, ...change });
+  return (
+    <div className="all-stations">
+      <h3>All stations</h3>
+      {page && (
+        <form className="filters" onSubmit={(e) => e.preventDefault()} aria-label="Filter stations">
+          <label>Result
+            <select value={query.status} onChange={(e) => set({ status: e.target.value })}>
+              <option value="">All</option>
+              {Object.entries(page.counts.status).map(([s, n]) => <option key={s} value={s}>{STATUS_TEXT[s] ?? s} ({n.toLocaleString('en-GB')})</option>)}
+            </select>
+          </label>
+          <label>Licence class
+            <select value={query.licence} onChange={(e) => set({ licence: e.target.value })}>
+              <option value="">All</option>
+              {Object.entries(page.counts.licence).map(([s, n]) => <option key={s} value={s}>{s} ({n.toLocaleString('en-GB')})</option>)}
+            </select>
+          </label>
+          {csv && <a className="btn btn-secondary" href={csv} download>Download {query.status || query.licence ? 'these' : 'all'} as CSV</a>}
+        </form>
+      )}
+      {state.loading && <p className="muted" role="status">{page ? 'Loading…' : 'Recomputing the station list from the issue file. On a large register this can take minutes.'}</p>}
+      {state.error && <p className="alert" role="alert">{state.error}</p>}
+      {page && page.datasetChanged && <p className="notice notice-warn">The station register has changed since this case was screened, so this list is from the current register and may not match the case.</p>}
+      {page && (
+        <>
+          <StationTable rows={page.rows} />
+          <div className="actions">
+            <span className="result-count" role="status">{page.matching === 0 ? 'No stations match' : `${(page.offset + 1).toLocaleString('en-GB')}–${Math.min(page.offset + PAGE, page.matching).toLocaleString('en-GB')} of ${page.matching.toLocaleString('en-GB')}`}{page.notVisible > 0 ? ` · ${page.notVisible.toLocaleString('en-GB')} more below the satellite’s horizon` : ''}</span>
+            <button type="button" className="btn btn-secondary" disabled={state.loading || page.offset === 0} onClick={() => setQuery({ ...query, offset: Math.max(0, page.offset - PAGE) })}>Previous</button>
+            <button type="button" className="btn btn-secondary" disabled={state.loading || page.offset + PAGE >= page.matching} onClick={() => setQuery({ ...query, offset: page.offset + PAGE })}>Next</button>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+function StationTable({ rows }: { rows: StationResult[] }) {
+  return (
+    <div className="table-wrap">
+      <table>
+        <thead><tr><th>Station</th><th>Side</th><th>Result</th><th className="num">Value, dB</th><th className="num">Limit, dB</th><th className="num">Margin, dB</th><th className="num">Angle</th></tr></thead>
+        <tbody>
+          {rows.map((r) => (
+            <tr key={r.id}>
+              <td className="tnum">{stationLabel(r.id)}{r.licence && <span className="muted block">{r.licence}</span>}</td>
+              <td>{r.sides.join(', ').toUpperCase() || '–'}{r.atSiteOnly && <span className="muted block">At the site, not the receiver</span>}</td>
+              <td>{STATUS_TEXT[r.status] ?? r.status}{r.locationFlagged && <span className="muted block">Location flagged in the sheet</span>}</td>
+              <td className="num">{dbOr(r.valueDb)}</td><td className="num">{dbOr(r.limitDb)}</td><td className="num"><strong>{r.marginDb === null ? '–' : db(r.marginDb)}</strong></td>
+              <td className="num">{r.angleDeg === null ? '–' : `${r.angleDeg.toFixed(1)}°`}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 }
 
@@ -195,28 +331,16 @@ function StationResultsPanel({ f }: { f: Finding }) {
   const [showAll, setShowAll] = useState(false);
   const shown = showAll ? results : results.slice(0, SHOW_STATIONS);
   const atSite = results.some((r) => r.atSiteOnly);
+  const total = f.stationCount ?? results.length;
+  const counts = f.stationStatusCounts ? Object.entries(f.stationStatusCounts).filter(([s]) => s !== 'not_visible').map(([s, n]) => `${STATUS_TEXT[s] ?? s} ${n.toLocaleString('en-GB')}`).join(', ') : '';
   return (
     <section className="panel">
       <h2>Finnish stations affected</h2>
-      <p className="muted">{results.length} in Traficom’s synthetic list, worst first{classSummary(f.stationClasses) ? ` (${classSummary(f.stationClasses)})` : ''}. A value is calculated at the station’s coordinates under worst-case assumptions. An upper bound applies to the filing, so it is never shown as a value at a station.</p>
-      <div className="table-wrap">
-        <table>
-          <thead><tr><th>Station</th><th>Side</th><th>Result</th><th className="num">Value, dB</th><th className="num">Limit, dB</th><th className="num">Margin, dB</th><th className="num">Angle</th></tr></thead>
-          <tbody>
-            {shown.map((r) => (
-              <tr key={r.id}>
-                <td className="tnum">{stationLabel(r.id)}{r.licence && <span className="muted block">{r.licence}</span>}</td>
-                <td>{r.sides.join(', ').toUpperCase() || '–'}{r.atSiteOnly && <span className="muted block">At the site, not the receiver</span>}</td>
-                <td>{STATUS_TEXT[r.status] ?? r.status}{r.locationFlagged && <span className="muted block">Location flagged in the sheet</span>}</td>
-                <td className="num">{dbOr(r.valueDb)}</td><td className="num">{dbOr(r.limitDb)}</td><td className="num"><strong>{r.marginDb === null ? '–' : db(r.marginDb)}</strong></td>
-                <td className="num">{r.angleDeg === null ? '–' : `${r.angleDeg.toFixed(1)}°`}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <p className="muted">{total.toLocaleString('en-GB')} in Traficom’s synthetic list{classSummary(f.stationClasses) ? ` (${classSummary(f.stationClasses)})` : ''}{total > results.length ? `. This case keeps the worst ${results.length}` : ', worst first'}{counts ? `. By result: ${counts}` : ''}. A value is calculated at the station’s coordinates under worst-case assumptions. An upper bound applies to the filing, so it is never shown as a value at a station.</p>
+      <StationTable rows={shown} />
       {atSite && <p className="fine">For a TX match, the station’s coordinates are not where that band is received, so its margin is at the site, not at the receiver.</p>}
-      {results.length > SHOW_STATIONS && <button type="button" className="linkbtn show-all" onClick={() => setShowAll(!showAll)}>{showAll ? 'Show fewer' : `Show all ${results.length} stations`}</button>}
+      {results.length > SHOW_STATIONS && <button type="button" className="linkbtn show-all" onClick={() => setShowAll(!showAll)}>{showAll ? 'Show fewer' : `Show the worst ${results.length}`}</button>}
+      <AllStations f={f} />
     </section>
   );
 }
