@@ -97,7 +97,7 @@ export function Analyze() {
           ) : (
             <span>
               <svg className="dropzone-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 16V5" /><path d="m7 10 5-5 5 5" /><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3" /></svg>
-              <strong>Drop a file here, or <span className="linklike">browse</span></strong><span className="muted block" id={ids.hint}>.zip or .mdb, up to 1 GB. Space and terrestrial IFIC files are both supported.</span></span>
+              <strong>Drop a file here, or <span className="linklike">browse</span></strong><span className="muted block" id={ids.hint}>.zip or .mdb, up to 4 GB. Space and terrestrial IFIC files are both supported.</span></span>
           )}
         </label>
       )}
