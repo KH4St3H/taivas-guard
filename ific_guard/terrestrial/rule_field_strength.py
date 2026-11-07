@@ -23,6 +23,7 @@ from ..config import Settings
 from ..db import session_scope
 from ..engines.p1546 import IMPLEMENTATION, P1546RangeError, PathSegment, field_strength
 from ..models import Artifact
+from ..engines.pfd import MASK_DIR
 from ..screening.rules import Hit
 from ..screening.scoring import score_finding
 from ..screening.space import MdbReader
@@ -46,7 +47,6 @@ log = logging.getLogger(__name__)
 RULE_ID = "terrestrial-p1546"
 NOT_CALCULATED_RULE_ID = "terrestrial-not-calculated"
 
-MASK_DIR = Path(__file__).resolve().parents[2] / "data" / "masks"
 MASKS_PATH = MASK_DIR / "field_strength.json"
 BOUNDARY_PATH = MASK_DIR / "finland_boundary.json"
 LAND_PATH = MASK_DIR / "land_near_finland.json"

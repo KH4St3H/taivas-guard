@@ -8,6 +8,7 @@ from functools import cached_property
 from pathlib import Path
 from typing import Any, Protocol
 
+log = logging.getLogger(__name__)
 logging.getLogger("access_parser").setLevel(logging.CRITICAL)
 
 Row = dict[str, Any]
@@ -26,12 +27,36 @@ class TableReader(Protocol):
     def table(self, name: str) -> list[Row]: ...
 
 
+def _tolerate_invalid_dates() -> None:
+    """Makes the parser read an impossible date as null and log it.
+
+    It otherwise raises on a date cell holding NaN or an out-of-range value, which loses the whole
+    issue: Space 3077 has 22 such cells in `grp`.
+    """
+    from access_parser import utils
+
+    parse = utils.mdb_date_to_readable
+    if getattr(parse, "tolerant", False):
+        return
+
+    def tolerant(value):
+        try:
+            return parse(value)
+        except (ValueError, OverflowError):
+            log.warning("invalid date %r read as null", value)
+            return None
+
+    tolerant.tolerant = True
+    utils.mdb_date_to_readable = tolerant
+
+
 class MdbReader:
     """Reads Access tables with a pure-Python parser, so no system packages are needed."""
 
     def __init__(self, path: str | Path):
         from access_parser import AccessParser
 
+        _tolerate_invalid_dates()
         self._db = AccessParser(str(path))
 
     def table(self, name: str) -> list[Row]:

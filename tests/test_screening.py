@@ -1,3 +1,4 @@
+import struct
 from datetime import date
 
 from sqlalchemy import select
@@ -151,3 +152,22 @@ def test_terrestrial_issue_with_no_filtered_notices_reports_done_and_publishes_t
     with session_scope() as s:
         assert s.get_one(Artifact, artifact_id).screen_status == "done"
         assert s.scalars(select(Event)).one().topic == events.ISSUE_SCREENED
+
+
+def test_impossible_date_reads_as_null_and_a_good_one_still_parses():
+    from access_parser import utils
+
+    from ific_guard.screening.space import _tolerate_invalid_dates
+
+    _tolerate_invalid_dates()
+    assert utils.mdb_date_to_readable(9223091111617103207) is None  # the NaN cell found in Space 3077
+    good = struct.unpack("<q", struct.pack("<d", 45000.5))[0]
+    assert utils.mdb_date_to_readable(good) is not None
+
+
+def test_terrestrial_masks_follow_the_directory_the_image_sets():
+    from ific_guard.engines import pfd
+    from ific_guard.terrestrial import rule_field_strength as rule
+
+    assert rule.MASK_DIR is pfd.MASK_DIR
+
