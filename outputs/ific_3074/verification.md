@@ -15,10 +15,16 @@ Both real-data runs produced byte-identical CSV and JSON files:
 
 | File | SHA-256 |
 |---|---|
-| cases.csv | 23f31016a08ab4ab28620c1baf65fe2b9190d69257918ebf206b87aed9ddce34 |
-| cases.json | 117b862c1c3a4fd7b43cde3838b399590506241e18248f8ef867c9e6abf8311a |
+| cases.csv | fcd70baa05e33406770aa7551a3d1e428f82a032718582b2df64c832897fb50b |
+| cases.json | d5fbf07e8d3947ef29ac6b4fff95dc77cd663f2542afd8e9de9afbfc97d834ee |
 
-Measured export times were 70.53 and 54.73 seconds on this Windows machine.
+These hashes use LF line endings on every platform. Earlier values in this file
+covered Windows line endings, so they did not verify after a git checkout; the
+case content did not change.
+
+The files were regenerated on macOS from a clean commit, using Space 3074 downloaded
+directly from ITU, and took 35.35 seconds. Earlier measured export times were 70.53
+and 54.73 seconds on a Windows machine.
 An observed process peak working set during the first export was 774,938,624
 bytes (739 MiB); this was sampled during execution, not a final peak measurement.
 The second run used streaming MDB hashing and adds per-source-file code hashes
@@ -66,5 +72,5 @@ The known 3.4–3.8 GHz M4 gap, missing station overlap and missing pfd
 calculations remain tracked separately; all are also stated in the manifest.
 
 The operational pipeline separately returned `status: done`, `opened: 51`,
-`changed: 0` for artifact 1. Final regression suite: **45 passed** in 3.60 s,
-with one Starlette/httpx deprecation warning. No notifications were delivered.
+`changed: 0` for artifact 1. Final regression suite: **77 passed** on macOS,
+with two dependency deprecation warnings. No notifications were delivered.
