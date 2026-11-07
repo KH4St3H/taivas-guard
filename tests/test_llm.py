@@ -546,6 +546,17 @@ def test_endpoint_uses_the_model_with_the_key_and_falls_back_on_invented_text(mo
     assert body["violations"][0]["value"] == "99"
 
 
+def test_drafting_endpoint_names_the_model_only_when_one_is_configured(monkeypatch):
+    client = TestClient(screening_app)
+    monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+    monkeypatch.delenv("ANTHROPIC_AUTH_TOKEN", raising=False)
+    assert client.get("/drafting").json() == {"model": None}
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-test")
+    monkeypatch.setenv("IFIC_LLM_MODEL", "claude-test")
+    body = client.get("/drafting").json()
+    assert body == {"model": "claude-test"} and "sk-test" not in json.dumps(body)
+
+
 def test_endpoint_without_a_configured_model_falls_back(monkeypatch):
     monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
     monkeypatch.delenv("ANTHROPIC_AUTH_TOKEN", raising=False)

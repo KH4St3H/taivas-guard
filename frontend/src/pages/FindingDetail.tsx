@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { api } from '../api';
-import type { Finding, ReviewStatus, StationPage, StationResult } from '../api/types';
+import type { CaseDraft, Finding, ReviewStatus, StationPage, StationResult } from '../api/types';
 import { FindingMap } from '../components/FindingMap';
 import { CommentWindow, ConfidenceText, Hash, Loading, ReviewBadge, SeverityBadge, useLoad } from '../components/ui';
 import { admName } from '../lib/adm';
@@ -436,15 +436,68 @@ function TerrestrialPanel({ f }: { f: Finding }) {
   );
 }
 
+type Version = 'template' | 'ai';
+
+/** The drafting service's letter, with an optional AI rewrite. In sample mode, or if the service fails, the browser template. */
 function Letter({ f, onChange }: { f: Finding; onChange: (f: Finding) => void }) {
-  const template = draftLetter(f);
-  const [text, setText] = useState(f.review.letter ?? template);
+  const live = api.capabilities.drafts;
+  const browserTemplate = draftLetter(f);
+  const [drafts, setDrafts] = useState<{ template?: CaseDraft; ai?: CaseDraft; loading: boolean; error?: string }>({ loading: live });
+  const [model, setModel] = useState<string | null>(null);
+  const [view, setView] = useState<Version>('template');
+  const [rewrite, setRewrite] = useState<{ busy: boolean; rejected?: CaseDraft; error?: string }>({ busy: false });
+  const [text, setText] = useState(f.review.letter ?? browserTemplate);
+  const [touched, setTouched] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
   useEffect(() => {
-    setText(f.review.letter ?? template);
+    setText(f.review.letter ?? browserTemplate);
+    setView('template');
+    setTouched(false);
+    setRewrite({ busy: false });
+    if (!live) return;
+    let current = true;
+    setDrafts({ loading: true });
+    api.getDraft(f.id).then(
+      (template) => {
+        if (!current) return;
+        setDrafts({ loading: false, template });
+        if (f.review.letter === null) setText((t) => (t === browserTemplate ? template.letter : t));
+      },
+      (e: Error) => current && setDrafts({ loading: false, error: e.message }),
+    );
+    api.draftingModel().then((m) => current && setModel(m), () => current && setModel(null));
+    return () => { current = false; };
   }, [f.id]); // eslint-disable-line react-hooks/exhaustive-deps
-  const dirty = text !== (f.review.letter ?? template);
+
+  const shown = view === 'ai' ? drafts.ai : drafts.template;
+  const base = shown?.letter ?? browserTemplate;
+  const dirty = text !== (f.review.letter ?? base);
+  const choose = (v: Version) => {
+    setView(v);
+    setText((v === 'ai' ? drafts.ai : drafts.template)?.letter ?? browserTemplate);
+    setTouched(false);
+    setSaved(false);
+  };
+
+  async function rewriteWithAi() {
+    setRewrite({ busy: true });
+    try {
+      const d = await api.getDraft(f.id, true);
+      if (d.source === 'llm') {
+        setDrafts((s) => ({ ...s, ai: d }));
+        setRewrite({ busy: false });
+        setView('ai');
+        setText(d.letter);
+        setTouched(false);
+      } else {
+        setRewrite({ busy: false, rejected: d });
+      }
+    } catch (e) {
+      setRewrite({ busy: false, error: (e as Error).message });
+    }
+  }
 
   async function save() {
     setError(null);
@@ -456,21 +509,54 @@ function Letter({ f, onChange }: { f: Finding; onChange: (f: Finding) => void })
     }
   }
 
+  const label = !live ? 'Filled from a fixed template in this browser'
+    : drafts.loading ? 'Loading the draft…'
+    : drafts.error ? 'Drafting service unavailable, so filled from the browser template'
+    : view === 'ai' ? `Written by AI (${drafts.ai?.model ?? 'model'}), checked by the guardrail`
+    : 'From the drafting service’s template, no AI';
+
   return (
     <section className="panel">
       <div className="panel-head">
         <h2>Draft letter</h2>
-        <span className="muted">Filled from a fixed template, no AI yet</span>
+        <span className="muted">{label}</span>
       </div>
+      {shown && <p>{shown.explanation}</p>}
+      {drafts.error && <p className="notice notice-warn">{drafts.error}</p>}
+      {view === 'ai' && <p className="notice"><strong>Written by AI.</strong> The guardrail checked every number, date and citation against the case and found nothing invented, but read it against the template before using it. The reference data at the end is always written by code.</p>}
+      {rewrite.rejected && (
+        <div className="notice notice-warn">
+          <p><strong>The AI rewrite wasn’t used:</strong> {rewrite.rejected.fallbackReason ?? 'the guardrail rejected it'}. The template is shown instead.</p>
+          {rewrite.rejected.violations.length > 0 && <ul>{rewrite.rejected.violations.map((v, i) => <li key={`${v.kind}-${v.value}-${i}`}><strong>{v.kind}</strong> <code>{v.value}</code>: {v.why}</li>)}</ul>}
+        </div>
+      )}
       <label className="visually-hidden" htmlFor="letter">Draft letter text</label>
-      <textarea id="letter" className="letter" rows={18} value={text} onChange={(e) => { setText(e.target.value); setSaved(false); }} />
+      <textarea id="letter" className="letter" rows={18} value={text} onChange={(e) => { setText(e.target.value); setTouched(true); setSaved(false); }} />
       <div className="actions">
-        <button type="button" className="btn btn-secondary" disabled={!dirty} onClick={() => void save()}>Save edits</button>
+        {/* An unedited AI version can be kept too: reloading would otherwise need another paid call. */}
+        <button type="button" className="btn btn-secondary" disabled={!dirty && !(view === 'ai' && text !== f.review.letter)} onClick={() => void save()}>{!dirty && view === 'ai' ? 'Save this version' : 'Save edits'}</button>
         <button type="button" className="btn btn-secondary" onClick={() => exportText(`draft-${f.sourceId || f.id}.txt`, text)}>Download</button>
+        {drafts.ai && <button type="button" className="btn btn-secondary" aria-pressed={view === 'template'} onClick={() => choose(view === 'ai' ? 'template' : 'ai')}>{view === 'ai' ? 'Show the template version' : 'Show the AI version'}</button>}
+        {model && drafts.template && !drafts.ai && <button type="button" className="btn btn-secondary" disabled={rewrite.busy} onClick={() => void rewriteWithAi()}>{rewrite.busy ? 'Rewriting…' : 'Rewrite with AI'}</button>}
+        {f.review.letter !== null && text !== f.review.letter && <button type="button" className="linkbtn" onClick={() => { setText(f.review.letter ?? base); setTouched(false); }}>Back to your saved edit</button>}
         {saved && <span className="muted" role="status">Saved</span>}
+        {touched && !saved && dirty && <span className="muted">Unsaved changes</span>}
       </div>
+      {rewrite.error && <p className="alert" role="alert">{rewrite.error}</p>}
       {error && <p className="alert" role="alert">{error}</p>}
-      <p className="fine">{api.capabilities.letterStorage === 'browser' ? 'Edits are saved in this browser only. ' : ''}IFIC Guard never sends letters. An expert reviews each one and sends it through Traficom’s own channel.</p>
+      {shown && shown.citations.length > 0 && (
+        <>
+          <h3>Sources the draft relies on</h3>
+          <ul className="evidence">{shown.citations.map((c) => <li key={`${c.doc}-${c.clause}`}>{c.doc}: {c.clause}{c.page ? <span className="muted"> ({c.page})</span> : null}</li>)}</ul>
+        </>
+      )}
+      {shown && shown.reviewNotes.length > 0 && (
+        <>
+          <h3>For the reviewer, not part of the letter</h3>
+          <ul>{shown.reviewNotes.map((n) => <li key={n}>{n}</li>)}</ul>
+        </>
+      )}
+      <p className="fine">{model && !drafts.ai && drafts.template ? `Rewrite with AI sends the case data and the template to ${model}, which can cost money. ` : ''}{api.capabilities.letterStorage === 'browser' ? 'Edits are saved in this browser only. ' : ''}IFIC Guard never sends letters. An expert reviews each one and sends it through Traficom’s own channel.</p>
     </section>
   );
 }
