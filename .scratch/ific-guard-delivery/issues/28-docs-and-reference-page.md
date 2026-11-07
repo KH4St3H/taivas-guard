@@ -1,6 +1,6 @@
 # 28 README, Reference page and docs match the code
 
-Status: ready-for-agent
+Status: resolved
 Type: task
 Size: S
 Blocked by: 29
@@ -24,3 +24,7 @@ Brief 07 asks for "information on the input/output" and documentation; 06 E for 
 
 - Every rule id the code can produce is in the README table.
 - No statement on the Reference page contradicts the code.
+
+## Answer ? 2026-11-07
+
+Updated README rule IDs including CEPT/custom rules, output counts, reach map, station pagination, endpoints and draft-service integration limits. Updated Reference sources, severity explanations and stale status text; updated services architecture current status and separated historical verification. Final files are tied to clean export commit 941282f. Frontend: 40 tests pass and TypeScript/production build passes. M15 exclusion is recorded under ticket 34.

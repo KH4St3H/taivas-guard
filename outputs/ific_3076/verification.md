@@ -1,3 +1,42 @@
+# Terrestrial IFIC 3076 verification — submission refresh, 2026-11-07
+
+## Current evaluation
+
+29 possible concerns for expert review. Generated from clean Git commit `941282f644cf7f771c5e9a79d284990953f35f8c` with `dirty: false`, using a newly created SQLite database and isolated data directory. The manifests were generated in an ignored staging directory before replacing tracked outputs. Both commits are retained in the submitted history; the later artifact commit contains these files.
+
+The Docker daemon was unavailable on this Windows machine. This refresh uses the application's importer, deterministic exporter and screening handlers directly, not a repeated Compose/cron rehearsal. Earlier Docker verification is preserved below as historical evidence. No real email is sent; the notifier uses the file backend. Custom-rule storage starts empty, so these evaluations contain built-in rules only.
+
+| Rule | Previous tracked export | Refreshed export |
+|---|---:|---:|
+| `terrestrial-not-calculated` | 8 | 8 |
+| `terrestrial-p1546` | 21 | 21 |
+
+| Severity | Previous | Refreshed |
+|---|---:|---:|
+| high | 1 | 1 |
+| medium | 22 | 22 |
+| low | 6 | 6 |
+
+Rule counts and severity totals are unchanged from the tracked develop export. There are 21 calculated notices and eight flagged missing-antenna-height notices, all Russian. Six calculations are above and 15 below the provisional indicative threshold. All six above-470 MHz calculations use the previously merged Traficom extension of the 400–470 MHz criterion; no case remains in `calculated_no_criterion` for this issue. Changes relative to the earlier main export were already implemented on develop in ticket 20, not introduced by this refresh.
+
+The newly downloaded Terrestrial 3075 archive has SHA-256 `6f63a3dee548422cc722fd95adf7ce99f13abd8c786459d535c73e3320ed92f7`. It was imported before evaluating 3076. The 29 findings comprise 21 new and eight modified assignments. The adapter/funnel checks identify 103 new and 11 modified Russian land-mobile notices before the distance screen. The evaluation's source is the locally supplied 3076 MDB; its source hash and size therefore identify the MDB, rather than the earlier download archive. The new importer/exporter run preserves the underlying source data and records this provenance difference explicitly.
+
+## Verification
+
+The full backend suite with `IFIC_SHARED_DATA` pointing at the three real fixtures passed: **626 passed, zero skipped**. The frontend suite passed **40 tests**, and TypeScript checking plus the production build passed. A single upstream deprecation warning remains. The earlier Octave and independent hand checks below were not rerun during this refresh.
+
+All output hashes were recomputed and verified:
+
+| File | SHA-256 |
+|---|---|
+| `cases.csv` | `e483ac6082d8402eb487f33e33f3fce2e7a5c3927fc4a1972c0ab2f78bf171cd` |
+| `cases.json` | `a2adc1e6be863a07e59b6c0aea0164a2c8cc8a6c3297b949d1f0343a83a8323a` |
+| `funnel.json` | `f4ab5f538bc7465a3b81ef2cfb4f6f9521cd153e97f6569fd38b2376b1a8a205` |
+
+Reproduce from a clean checkout: import Space 3074, Terrestrial 3075 and Terrestrial 3076 into a fresh database; export each requested issue into an ignored staging directory; verify the manifests; then copy both folders to `outputs/`. The default export refuses a dirty or unidentified code version; `--allow-dirty` is for explicit exploratory use. Raw files remain outside Git.
+
+## Historical verification (superseded export)
+
 # Terrestrial IFIC 3076 verification
 
 These are possible concerns for expert review. None is confirmed interference or a breach of a regulation.

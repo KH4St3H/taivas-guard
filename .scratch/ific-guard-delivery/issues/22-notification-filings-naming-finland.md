@@ -1,6 +1,6 @@
 # 22 Screen notification-stage filings that name Finland
 
-Status: ready-for-agent
+Status: resolved
 Type: task
 Size: S
 Blocked by: none
@@ -21,3 +21,7 @@ Brief, section 06 D: "minimises material false positives and false negatives". T
 - On 3074, the three notices above raise cases, and no other rule's count changes.
 - A test covers an `N` notice naming Finland, and an `N` notice that doesn't.
 - `uv run pytest` passes.
+
+## Answer ? 2026-11-07
+
+Implemented in b606e99. The BR-names-Finland rule sees A/C/N coordination notices; technical rules retain their A/C notice view. Notification findings include source sections, explicit stage/response guidance, and no assumed deadline. Real 3074 finds all three requested notices and 11 BR cases total. Regression tests include named/unnamed notifications and missing provision data. Full final suite: 626 passed, zero skipped.

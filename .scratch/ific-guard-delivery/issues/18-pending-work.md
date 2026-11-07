@@ -26,7 +26,7 @@ Answers came on Discord, 2026-11-07 8:39-8:55, from Pekka, Otto and the Traficom
 - [ ] **No space-side trends.** The brief mentions "trends and planned usage of new satellites systems"; `trends.py` covers terrestrial only. Decide whether to add a small version.
 - [ ] **pfd results never count as special interest.** Now ticket 19.
 - [ ] **No ITU tool cross-check is recorded.** `ARCHITECTURE.md:152` plans to compare some 3074 networks with ITU's PFD GSO software, and the brief names GIBC. Nothing in `outputs/` records this. Run it if the tools are available, or say it was not done.
-- [ ] **M15 is unused.** `ARCHITECTURE.md:111` plans low-severity notes only, and the brief calls it less relevant. Decide, and state it either way.
+- [x] **M15 scope decided (ticket 34): excluded, with the reason in README and ARCHITECTURE.** `ARCHITECTURE.md:111` plans low-severity notes only, and the brief calls it less relevant. Decide, and state it either way.
 
 ## Integration and delivery
 

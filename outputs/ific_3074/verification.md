@@ -1,3 +1,54 @@
+# Space IFIC 3074 verification — submission refresh, 2026-11-07
+
+## Current evaluation
+
+175 possible concerns for expert review. Generated from clean Git commit `941282f644cf7f771c5e9a79d284990953f35f8c` with `dirty: false`, using a newly created SQLite database and isolated data directory. The manifests were generated in an ignored staging directory before replacing tracked outputs. Both commits are retained in the submitted history; the later artifact commit contains these files.
+
+The Docker daemon was unavailable on this Windows machine. This refresh uses the application's importer, deterministic exporter and screening handlers directly, not a repeated Compose/cron rehearsal. Earlier Docker verification is preserved below as historical evidence. No real email is sent; the notifier uses the file backend. Custom-rule storage starts empty, so these evaluations contain built-in rules only.
+
+| Rule | Previous tracked export | Refreshed export |
+|---|---:|---:|
+| `fin-named-by-br` | 8 | 11 |
+| `m4-no-space-to-earth` | 47 | 41 |
+| `pfd-gso-app5` | 2 | 2 |
+| `pfd-gso-art21` | 16 | 16 |
+| `pfd-ngso-app5` | 6 | 6 |
+| `pfd-ngso-art21` | 52 | 52 |
+| `pfd-ngso-cept` | 0 | 1 |
+| `station-rx-overlap` | 51 | 46 |
+
+| Severity | Previous | Refreshed |
+|---|---:|---:|
+| high | 30 | 43 |
+| medium | 123 | 94 |
+| low | 29 | 38 |
+
+The total changes from 182 to 175:
+
+- Ticket 22 adds three `fin-named-by-br` cases: 125500060, 125500061 and 125500066. All identify the notification stage, retain the source provision, and have a null comment deadline. The BR rule now has 11 cases; technical rules still receive only A/C notices.
+- Ticket 23 removes six M4 and six station cases: LUNAR-R1 through LUNAR-R5 and USASAT-MK1. None of those networks appears under either rule now. PFD still records their unevaluated non-Earth geometry; it does not claim they are harmless.
+- Previously merged CEPT support adds one high `pfd-ngso-cept` case for CSN-SSO. This is an ECC condition, distinct from RR limits and Appendix 5 triggers.
+- Previously merged Finnish earth-station protection adds one low station case for SUNCET. The named receiving site has no coordinates; a sufficiently low filing-wide upper bound supports its status, not a calculated field at that site.
+- Previously merged station-specific PFD evidence promotes nine station cases from medium to high (CSN-SSO, CHINASAT-H-60.5E, AST-NG-C-4, CHINASAT-G-33.5E, F-SAT-NG-15_B, USASAT-NGSO-8F, INSAT-COM(71E), ION SCV-025 and ION SCV-026), and moves eight from medium to low (FUNADE, LVI, USASAT-30T-1, KITASATS, STARERA-3, PUXING-1, ARGUS-CHN and JZ-3). These are evidence/ranking changes, not new expert-confirmed interference findings.
+- Finnish restrictions and RR footnotes add annotations without a new rule or severity change. Stored station samples are capped at 100, with complete counts and an endpoint for the full list; the cap itself changes no case count. Compact JSON retains every calculation and source row and reduces the file from 31,473,700 to 21,805,392 bytes.
+
+The two independently executed export runs have identical logical case records; the final run uses compact JSON. Both runs find exactly the three added notification cases and zero lunar M4/station cases. All RR PFD rule case counts are unchanged. No expert-labelled accuracy evaluation is claimed.
+
+## Verification
+
+The full backend suite with `IFIC_SHARED_DATA` pointing at the three real fixtures passed: **626 passed, zero skipped**. The frontend suite passed **40 tests**, and TypeScript checking plus the production build passed. A single upstream deprecation warning remains. The earlier Octave and independent hand checks below were not rerun during this refresh.
+
+All output hashes were recomputed and verified:
+
+| File | SHA-256 |
+|---|---|
+| `cases.csv` | `15df7d67b766648f5d5f0032aa9150df2dd4def8619be167fa33a0acad8f8056` |
+| `cases.json` | `268ba11fc66ca21b827b8860a2325820565a6df1a451b9c0d70bff4d6245e872` |
+
+Reproduce from a clean checkout: import Space 3074, Terrestrial 3075 and Terrestrial 3076 into a fresh database; export each requested issue into an ignored staging directory; verify the manifests; then copy both folders to `outputs/`. The default export refuses a dirty or unidentified code version; `--allow-dirty` is for explicit exploratory use. Raw files remain outside Git.
+
+## Historical verification (superseded export)
+
 # Space IFIC 3074 verification — 2026-11-07
 
 ## Current export (clean Compose run, code commit ba6f09a)
