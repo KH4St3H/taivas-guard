@@ -59,6 +59,9 @@ class Settings(BaseSettings):
 
     # terrestrial: administrations whose notices are in scope (ITU codes: Russia, Sweden, Estonia, Norway, Denmark)
     neighbour_adms: list[str] = ["RUS", "S", "EST", "NOR", "DNK"]
+    # Screening distance only; this is an engineering default, not a regulatory threshold.
+    # Keys are "default" or inclusive frequency ranges such as "380-400" (MHz).
+    terrestrial_distance_limits_km: dict[str, float] = {"default": 300.0}
 
     @field_validator("sync_cron")
     @classmethod

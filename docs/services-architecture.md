@@ -177,6 +177,24 @@ With the default `IFIC_MIN_ISSUE=3074`, the first sync downloads about 20 zips. 
 
 ## 9. Current status
 
+### Historical issue support observed on 2026-11-07
+
+| Sample / range | How obtained | Observed format/version | Screens? |
+|---|---|---|---|
+| 3074, 3083 (2026) | `sns/wic/demowic26.html` → `sns/ific10/ific{N}.zip` | Space SNS, version 10 | Yes; 3074 real export produced 106 findings on this branch |
+| 2925 (2020) | `sns/wic/demowic20.html` → `sns/ific8/ific2925.zip` | Space SNS, version 8 | No; clearly rejected as unsupported |
+| 2809 (2015) | `sns/wic/demowic15.html` → `sns/ific61/ific2809.zip` | Space SNS, version 7 | No; clearly rejected as unsupported |
+| 2559 (2005) | `sns/wic/demowic05.html` → `sns/ific5/ific2559.zip` | Space SNS, version 5 | No; clearly rejected as unsupported |
+| 2010 and 1998 pages | Yearly URLs returned HTTP 200 but no rows matching the current parser | Format/version not verified | No sample obtained |
+| Terrestrial 2800 and 3000 | `.../BRIFIC/MDB/brific{N}.zip` | ZIPs reachable; no `srs_ooak` table (space versioning does not apply) | Terrestrial adapter scope, not this space reader |
+| Terrestrial 2500 and 2200 | Same known URL pattern | HTTP 404 | No sample obtained |
+
+Space discovery walks back to 1998. A 404 or an unreadable historical page is
+logged and skipped, but a failure on the current year's page is surfaced. Space
+screening reads `srs_ooak.version_no` before interpreting the database. The
+version is retained in each case's evidence as `database_version`; a missing or
+unsupported value fails screening rather than producing an empty result.
+
 Per-issue evidence is now retained in the additive `case_occurrence` table.
 Each row links an artifact to its cross-issue review case and stores the exact
 hit from that artifact's latest successful screening. Re-screening replaces

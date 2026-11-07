@@ -74,6 +74,7 @@ def export_issue(domain: str, issue_no: int, out: Path, *, sha256: str | None = 
         record["notice_ids"] = [str(n) for n in sorted(hit.notice_ids)]
         record["comment_deadline"] = hit.comment_deadline.isoformat() if hit.comment_deadline else None
         record["details"].setdefault("method", "screening")
+        record["details"]["database_version"] = issue.database_version
         record["details"]["source"] = {
             "domain": domain, "issue_no": issue_no,
             "notice_ids": record["notice_ids"], "sha256": artifact.sha256,
