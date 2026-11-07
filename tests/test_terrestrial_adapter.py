@@ -37,6 +37,7 @@ def test_filter_excludes_missing_coordinates_and_distant_stations():
 
     assert filter_near_finland(notices, neighbour_adms=["RUS"], distance_limits_km={"default": 10}) == []
     assert distance_to_finland(None, 28.7) is None
+    assert distance_to_finland(60.5, 28.7).precision.startswith("approximate")
 
 
 def test_article_11_totals_are_available_for_reconciliation():
@@ -50,3 +51,11 @@ def test_article_11_totals_are_available_for_reconciliation():
     parsed = TerrestrialIssue(current.reader)
     assert parsed.article11_totals == {"1": 12, "2": 3}
     assert parsed.published_assignment_count == 15
+    assert parsed.article11_reconciliation == {
+        "article11_total": 15,
+        "fxm_terra_rows": 1,
+        "fxm_notice_rows": 0,
+        "fxm_recorded_rows": 1,
+        "publication_history_rows": 0,
+        "unreconciled_article11_minus_notice_rows": 15,
+    }

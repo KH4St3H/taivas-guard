@@ -66,6 +66,7 @@ class BorderPath:
     border_latitude_deg: float
     border_longitude_deg: float
     land_sea_segments: tuple[tuple[float, str], ...] | None = None
+    precision: str = "approximate screening polyline; not a legal border or coastline"
     note: str = "Land/sea segmentation requires the P.1546 coastline dataset."
 
 
@@ -196,6 +197,20 @@ class TerrestrialIssue:
     @property
     def published_assignment_count(self) -> int:
         return sum(self.article11_totals.values())
+
+    @property
+    def article11_reconciliation(self) -> dict[str, int]:
+        """Return explicit counts; Article 11 includes more than this adapter's rows."""
+        assignments = self.all_assignments.values()
+        notice_rows = sum(str(row.get("is_notice", "")).upper() == "TRUE" for row in assignments)
+        return {
+            "article11_total": self.published_assignment_count,
+            "fxm_terra_rows": len(self.all_assignments),
+            "fxm_notice_rows": notice_rows,
+            "fxm_recorded_rows": len(self.all_assignments) - notice_rows,
+            "publication_history_rows": len(self.publication_history),
+            "unreconciled_article11_minus_notice_rows": self.published_assignment_count - notice_rows,
+        }
 
 
 def distance_to_finland(lat: float | None, lon: float | None) -> BorderPath | None:
