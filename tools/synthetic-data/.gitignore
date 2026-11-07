@@ -1,0 +1,5 @@
+node_modules/
+countries.geojson
+records.json
+validation.json
+preview-source.tmp
