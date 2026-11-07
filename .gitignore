@@ -2,7 +2,8 @@ files/
 
 .DS_Store
 .env
-data/
+data/*
+!data/national/
 .venv/
 __pycache__/
 .pytest_cache/

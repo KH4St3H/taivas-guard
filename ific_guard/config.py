@@ -31,7 +31,7 @@ class Settings(BaseSettings):
     max_mdb_bytes: int = 6 * 1024**3
 
     # screening
-    m4_filter_path: Path = Path("generetated-files/m4_satellite_filter.csv")
+    m4_filter_path: Path = Path("data/national/m4_bands.csv")
     # GSO arc visible from Finland (RR geometry, elevation 0 deg); see docs/services-architecture.md
     gso_visible_west_deg: float = -47.0
     gso_visible_east_deg: float = 97.0

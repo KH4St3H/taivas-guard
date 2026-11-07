@@ -3,15 +3,14 @@
 No rule here says a filing breaks a regulation. Exceeding a limit needs the pfd engine
 (ARCHITECTURE.md section 4.5), which plugs in as another Rule.
 """
-import csv
 from collections import defaultdict
 from collections.abc import Iterable
 from dataclasses import dataclass
 from datetime import date
-from pathlib import Path
 from typing import Any, Protocol
 
 from ..config import Settings
+from .m4 import M4Band, load_m4_conflict_bands
 from .space import SATELLITE_NOTICE_TYPES, SpaceIssue, SpaceNotice, add_months
 
 FINLAND = "FIN"
@@ -80,37 +79,6 @@ class FinlandNamedRule:
             )
 
 
-@dataclass(frozen=True)
-class M4Band:
-    low_mhz: float
-    high_mhz: float
-    primary_services: str
-    finnish_use: str
-    passive: bool
-    concern: str
-    pages: str
-
-
-def load_m4_conflict_bands(path: Path) -> list[M4Band]:
-    """Bands with Finnish terrestrial or passive use and no space-to-Earth allocation in Finland."""
-    with path.open(newline="", encoding="utf-8") as f:
-        rows = list(csv.DictReader(f))
-    flag = lambda value: value.strip().lower() == "true"  # noqa: E731
-    return [
-        M4Band(
-            float(r["band_low_mhz"]),
-            float(r["band_high_mhz"]),
-            r["primary_services"],
-            r["finnish_terrestrial_use"],
-            flag(r["passive_or_radio_astronomy"]),
-            r["concern_if_satellite_transmits"],
-            r["m4_table_pages"],
-        )
-        for r in rows
-        if not flag(r["space_down_allocated"]) and (flag(r["terrestrial_primary"]) or flag(r["passive_or_radio_astronomy"]))
-    ]
-
-
 class M4NoDownlinkRule:
     """A satellite visible from Finland transmits in a band M4 gives no space-to-Earth allocation.
 
@@ -157,6 +125,16 @@ class M4NoDownlinkRule:
                 continue
             head = notices[0]
             passive = any(b.passive for b in matched)
+            assumptions = ["Beam coverage over Finland is not checked.", "No power or pfd calculation was done."]
+            if unresolved := sorted({b.space_down_unresolved for b in matched if b.space_down_unresolved}):
+                assumptions.append(
+                    f"M4 gives no direction for {'; '.join(unresolved)}; not counted as a space-to-Earth allocation."
+                )
+            if any(b.no_row_gaps_mhz for b in matched):
+                assumptions.append(
+                    "Parts of a matched band have no M4 sub-band row (no_row_gaps_mhz); "
+                    "its primary terrestrial service is assumed to apply there."
+                )
             yield Hit(
                 rule_id=self.id,
                 family_id=family_id,
@@ -179,12 +157,15 @@ class M4NoDownlinkRule:
                             "passive": b.passive,
                             "m4_table_pages": b.pages,
                             "group_ids": sorted(groups),
+                            **({"m4_api_row_ids": b.api_row_ids, "m4_snapshot": b.source} if b.api_row_ids else {}),
+                            **({"space_down_unresolved": b.space_down_unresolved} if b.space_down_unresolved else {}),
+                            **({"no_row_gaps_mhz": b.no_row_gaps_mhz} if b.no_row_gaps_mhz else {}),
                         }
                         for b, groups in sorted(matched.items(), key=lambda kv: kv[0].low_mhz)
                     ],
                     "visibility": sorted(reasons),
                     "sections": sorted({n.provision for n in notices if n.provision}),
-                    "assumptions": ["Beam coverage over Finland is not checked.", "No power or pfd calculation was done."],
+                    "assumptions": assumptions,
                 },
                 comment_deadline=_deadline(notices, self.settings.comment_window_months),
             )
