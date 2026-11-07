@@ -12,11 +12,13 @@ type Step =
   | { name: 'ready'; file: File; check: FileCheck; sha: string; known: IssueSummary | null };
 
 export function Analyze() {
+  const caps = api.capabilities;
   const [step, setStep] = useState<Step>({ name: 'idle' });
   const [domain, setDomain] = useState<Domain | ''>('');
   const [issue, setIssue] = useState('');
   const [dragging, setDragging] = useState(false);
   const [starting, setStarting] = useState(false);
+  const [screen, setScreen] = useState<{ text: string; bad: boolean } | null>(null);
   const input = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const ids = { domain: useId(), issue: useId(), hint: useId() };
@@ -37,6 +39,7 @@ export function Analyze() {
       const sha = await sha256Hex(file);
       setDomain(check.domain ?? '');
       setIssue(check.issue ? String(check.issue) : '');
+      setScreen(null);
       setStep({ name: 'ready', file, check, sha, known: await api.findIssueByHash(sha) });
     } catch (e) {
       setStep({ name: 'idle', error: `Couldn’t read ${file.name}: ${(e as Error).message}` });
@@ -45,7 +48,18 @@ export function Analyze() {
 
   function reset() {
     if (input.current) input.current.value = '';
+    setScreen(null);
     setStep({ name: 'idle' });
+  }
+
+  async function rescreen(known: IssueSummary) {
+    setScreen(null);
+    try {
+      await api.rescreen(known);
+      setScreen({ text: `IFIC ${known.issue} is queued for screening. Results update on its findings page.`, bad: false });
+    } catch (e) {
+      setScreen({ text: (e as Error).message, bad: true });
+    }
   }
 
   async function start() {
@@ -59,6 +73,7 @@ export function Analyze() {
     <div className="narrow">
       <h1>Analyse a file</h1>
       <p className="lead">Check an IFIC issue now rather than waiting for the scheduled run. This is useful for an older issue, a correction, or a file ITU sent you directly.</p>
+      {!caps.upload && <p className="notice notice-warn"><strong>Upload isn’t available yet.</strong> The services have no upload route, so your file stays in your browser. You can still check a file here, and we’ll show you how to load it.</p>}
 
       {step.name !== 'ready' && (
         <label
@@ -71,7 +86,9 @@ export function Analyze() {
           {step.name === 'checking' ? (
             <span role="status"><strong>Checking {step.file.name}…</strong><span className="muted block">Large files can take a minute. Nothing has left your browser.</span></span>
           ) : (
-            <span><strong>Drop a file here, or <span className="linklike">browse</span></strong><span className="muted block" id={ids.hint}>.zip or .mdb, up to 1 GB. Space and terrestrial IFIC files are both supported.</span></span>
+            <span>
+              <svg className="dropzone-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 16V5" /><path d="m7 10 5-5 5 5" /><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3" /></svg>
+              <strong>Drop a file here, or <span className="linklike">browse</span></strong><span className="muted block" id={ids.hint}>.zip or .mdb, up to 1 GB. Space and terrestrial IFIC files are both supported.</span></span>
           )}
         </label>
       )}
@@ -92,10 +109,12 @@ export function Analyze() {
 
           {step.known && (
             <div className="notice" role="status">
-              <strong>We already have results for this exact file.</strong> It matches IFIC {step.known.issue} ({step.known.domain}), released {formatDate(step.known.releasedOn)}.{' '}
+              <strong>We already have results for this exact file.</strong> It matches IFIC {step.known.issue} ({step.known.domain}){step.known.releasedOn ? `, released ${formatDate(step.known.releasedOn)}` : ''}.{' '}
               <Link to={`/findings?issue=${step.known.id}`}>View those results</Link>
             </div>
           )}
+
+          {screen && <p className={screen.bad ? 'alert' : 'notice'} role="status">{screen.text}</p>}
 
           <div className="form-row">
             <div className="field">
@@ -113,12 +132,25 @@ export function Analyze() {
             </div>
           </div>
 
-          {api.mode === 'sample' && (
+          {caps.upload && api.mode === 'sample' && (
             <p className="notice notice-warn"><strong>This run is a simulation.</strong> The pipeline isn’t connected, so the file stays in your browser and won’t produce results. The checks above are real.</p>
           )}
 
+          {!caps.upload && !step.known && (
+            step.check.type === 'zip' && domain && issue ? (
+              <div className="notice">
+                <strong>To analyse this file,</strong> run this on the server from the repo root. Screening starts by itself.
+                <code className="command">uv run python -m ific_guard.cli import "{step.file.name}" --domain {domain} --issue {issue}</code>
+                Use the file’s full path if it’s in another folder.
+              </div>
+            ) : (
+              <p className="notice">{step.check.type === 'mdb' ? <><strong>The import command needs a ZIP.</strong> Zip this database, then choose the ZIP here to get the command.</> : <><strong>Choose the type and IFIC number</strong> to get the import command.</>}</p>
+            )
+          )}
+
           <div className="actions">
-            <button type="button" className="btn btn-primary" disabled={!domain || starting} onClick={() => void start()}>{step.known ? 'Run it again anyway' : 'Start analysis'}</button>
+            {caps.upload && <button type="button" className="btn btn-primary" disabled={!domain || starting} onClick={() => void start()}>{step.known ? 'Run it again anyway' : 'Start analysis'}</button>}
+            {caps.rescreen && step.known && <button type="button" className="btn btn-primary" onClick={() => void rescreen(step.known!)}>Screen it again</button>}
           </div>
         </section>
       )}
@@ -126,7 +158,7 @@ export function Analyze() {
       <section className="panel subtle">
         <h2>What happens to a file</h2>
         <ol className="steps-plain">
-          <li>Your browser checks that it’s really a ZIP or Access file, and fingerprints it.</li>
+          <li>Your browser checks that it’s really a ZIP or Access file, and fingerprints it. Nothing is uploaded at this step.</li>
           <li>The pipeline reads the tables and compares them against Finnish frequency use and the Radio Regulations.</li>
           <li>Findings appear for expert review, each linked to its source row. Nothing is ever sent automatically.</li>
         </ol>

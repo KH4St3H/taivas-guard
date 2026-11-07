@@ -1,11 +1,10 @@
 import { api } from '../api';
 import { Loading, useLoad } from '../components/ui';
-import { SEVERITY_RULES } from '../lib/severity';
 
 const STATUS = { loaded: 'In use', partial: 'Partly in use', planned: 'Not used yet' } as const;
 
 export function Reference() {
-  const { data, error } = useLoad(async () => ({ sources: await api.listReferenceSources(), limits: await api.listLimits() }), []);
+  const { data, error } = useLoad(async () => ({ sources: await api.listReferenceSources(), limits: await api.listLimits(), severity: await api.listSeverityRules() }), []);
   if (!data) return <Loading error={error} />;
   return (
     <>
@@ -20,7 +19,7 @@ export function Reference() {
             <tbody>{data.sources.map((s) => (
               <tr key={s.name}>
                 <td>{s.url ? <a href={s.url} target="_blank" rel="noreferrer">{s.name}</a> : s.name}</td>
-                <td>{s.version}</td>
+                <td className="wrap">{s.version}</td>
                 <td className="nowrap"><span className={`badge src-${s.status}`}>{STATUS[s.status]}</span></td>
                 <td>{s.detail}</td>
               </tr>
@@ -31,22 +30,26 @@ export function Reference() {
 
       <section className="panel">
         <h2>Power flux density limits in use</h2>
-        <p className="muted">dB(W/m²), where δ is the arrival angle. Check these against the Radio Regulations PDF before relying on them.</p>
-        <div className="table-wrap">
-          <table>
-            <thead><tr><th>Limit</th><th>Reference bandwidth</th><th>Rule</th></tr></thead>
-            <tbody>{data.limits.map((l) => <tr key={l.citation}><td className="nowrap">{l.citation}</td><td>{l.refBandwidth}</td><td>{l.rule}</td></tr>)}</tbody>
-          </table>
-        </div>
+        {data.limits.length === 0 ? <p className="muted">None yet. The pfd engine hasn’t been added to the screening service, so no case can confirm that a limit is exceeded.</p> : (
+          <>
+            <p className="muted">dB(W/m²), where δ is the arrival angle. Check these against the Radio Regulations PDF before relying on them.</p>
+            <div className="table-wrap">
+              <table>
+                <thead><tr><th>Limit</th><th>Reference bandwidth</th><th>Rule</th></tr></thead>
+                <tbody>{data.limits.map((l) => <tr key={l.citation}><td className="nowrap">{l.citation}</td><td>{l.refBandwidth}</td><td>{l.rule}</td></tr>)}</tbody>
+              </table>
+            </div>
+          </>
+        )}
       </section>
 
       <section className="panel">
         <h2>How severity is scored</h2>
-        <p className="muted">Starter rules for the demo. Traficom’s experts should set the real ones.</p>
+        <p className="muted">{api.severityNote}</p>
         <div className="table-wrap">
           <table>
             <thead><tr><th>Severity</th><th>Rule</th></tr></thead>
-            <tbody>{SEVERITY_RULES.map((r) => <tr key={r.severity}><td>{r.severity}</td><td>{r.rule}</td></tr>)}</tbody>
+            <tbody>{data.severity.map((r) => <tr key={r.severity}><td>{r.severity}</td><td>{r.rule}</td></tr>)}</tbody>
           </table>
         </div>
       </section>

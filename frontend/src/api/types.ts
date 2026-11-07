@@ -22,16 +22,23 @@ export interface FunnelStage {
   n: number;
 }
 
+export type ScreenStatus = 'pending' | 'done' | 'no_rules' | 'failed';
+
 export interface IssueSummary {
   id: string; // e.g. "space-3083"
+  artifactId: number | null;
   domain: Domain;
   issue: number;
-  releasedOn: string;
+  releasedOn: string | null;
+  screenStatus: ScreenStatus;
+  screenedAt: string | null;
   commentDeadline: string | null;
   file: SourceFile;
+  sourceUrl: string | null;
   evaluationIssue: boolean; // named in the Traficom brief
   counts: { label: string; value: number }[];
-  funnel: FunnelStage[];
+  funnel: FunnelStage[]; // ordered narrowing, when the source provides one
+  ruleCounts: FunnelStage[];
   severityCounts: Record<Severity, number>;
   brListedNetworks: number;
   limitations: string[];
@@ -83,35 +90,65 @@ export interface TerrestrialDetail {
   heightM: number | null;
 }
 
+export interface BandMatch {
+  lowMhz: number;
+  highMhz: number;
+  primaryServices: string;
+  finnishUse: string;
+  passive: boolean;
+  pages: string;
+  groupCount: number;
+}
+
+/** A calculated result in the shape agreed in Case.details. */
+export interface CalculatedResult {
+  method: string;
+  inputs: Record<string, unknown>;
+  valueDb: number | null;
+  limitDb: number | null;
+  marginDb: number | null;
+  maskId: string | null;
+  worstPoint: Record<string, unknown> | null;
+}
+
 export interface Finding {
   id: string;
   issueId: string;
   domain: Domain;
   issue: number;
-  kind: FindingKind;
+  firstIssue: number;
+  lastIssue: number;
+  kind: string;
+  kindLabel: string;
   title: string;
+  summary: string | null;
   adm: string;
   orbit: string | null;
-  band: string;
-  sourceId: number;
-  relatedSourceIds: number[];
+  band: string | null;
+  sourceId: string;
+  relatedSourceIds: string[];
   provision: string | null;
   sections: string[];
   coordProvisions: string[];
   severity: Severity;
   severityReasons: string[];
-  confidence: Confidence;
+  confidence: Confidence | null;
   confidenceReasons: string[];
   marginDb: number | null;
-  stationCount: number;
+  stationCount: number | null;
   stations: StationRef[];
+  bands: BandMatch[];
+  visibility: string[];
+  basis: string | null;
   calc: PfdCalculation | null;
+  result: CalculatedResult | null;
   terrestrial: TerrestrialDetail | null;
   windowDeadline: string | null;
   assumptions: string[];
   citations: string[];
   evidence: { table: string; key: string }[];
   file: SourceFile;
+  updatedAt: string | null;
   review: ReviewState;
 }
 
@@ -143,13 +180,33 @@ export interface Run {
   message: string;
 }
 
+export interface DomainFreshness {
+  domain: Domain;
+  latestIssue: number | null;
+  publishedOn: string | null;
+  ageDays: number | null;
+  stale: boolean;
+}
+
 export interface MonitorStatus {
-  connected: boolean;
-  latestKnownIssue: number;
-  latestKnownDate: string;
-  checkedOn: string;
-  nextExpectedOn: string;
-  note: string;
+  active: boolean;
+  running: boolean;
+  domains: DomainFreshness[];
+  lastCheck: { at: string; label: string; status: string; errors: string[] } | null;
+  nextExpectedOn: string | null;
+  note: string | null;
+}
+
+/** One pass of the service that checks ITU for new issues. */
+export interface SyncRun {
+  id: number;
+  trigger: string;
+  startedAt: string;
+  finishedAt: string | null;
+  status: string;
+  discovered: number;
+  fetched: number;
+  errors: string[];
 }
 
 export interface ReferenceSource {
@@ -173,9 +230,18 @@ export interface NewRun {
   issue: number | null;
 }
 
-/** Anything implementing this can drive the UI: the mock now, HTTP later. */
+export interface Capabilities {
+  upload: boolean; // can analyse a file sent from the browser
+  checkItuNow: boolean;
+  rescreen: boolean;
+  reviewStatuses: ReviewStatus[];
+  letterStorage: 'browser' | 'server';
+}
+
+/** Anything implementing this can drive the UI: sample data or the live services. */
 export interface Api {
   mode: 'sample' | 'live';
+  capabilities: Capabilities;
   listIssues(): Promise<IssueSummary[]>;
   getMonitor(): Promise<MonitorStatus>;
   listFindings(issueId: string): Promise<Finding[]>;
@@ -183,10 +249,15 @@ export interface Api {
   updateReview(id: string, change: { status?: ReviewStatus; note?: string; letter?: string }): Promise<Finding>;
   listRuns(): Promise<Run[]>;
   getRun(id: string): Promise<Run | null>;
+  listSyncRuns(): Promise<SyncRun[]>;
   findIssueByHash(sha256: string): Promise<IssueSummary | null>;
   createRun(input: NewRun): Promise<Run>;
+  checkItuNow(): Promise<void>;
+  rescreen(issue: IssueSummary): Promise<void>;
   listReferenceSources(): Promise<ReferenceSource[]>;
   listLimits(): Promise<LimitRow[]>;
+  listSeverityRules(): Promise<{ severity: string; rule: string }[]>;
+  severityNote: string;
 }
 
 export const PIPELINE_STAGES = [

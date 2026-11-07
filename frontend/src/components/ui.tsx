@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import type { Confidence, ReviewStatus, RunStatus, RunTrigger, Severity } from '../api/types';
+import type { Confidence, ReviewStatus, RunStatus, RunTrigger, ScreenStatus, Severity } from '../api/types';
 import { daysUntil, formatDate, shortHash } from '../lib/format';
 
 const SEV: Record<Severity, { icon: string; label: string }> = {
@@ -26,6 +26,14 @@ export function ReviewBadge({ value }: { value: ReviewStatus }) {
 const RUN: Record<RunStatus, string> = { running: 'Running', succeeded: 'Complete', failed: 'Failed', simulated: 'Simulated only' };
 export function RunStatusBadge({ value }: { value: RunStatus }) {
   return <span className={`badge run-${value}`}>{RUN[value]}</span>;
+}
+const SCREEN: Record<ScreenStatus, string> = { pending: 'Screening', done: 'Screened', no_rules: 'No rules yet', failed: 'Screening failed' };
+export function ScreenStatusBadge({ value }: { value: ScreenStatus }) {
+  return <span className={`badge screen-${value}`}>{SCREEN[value] ?? value}</span>;
+}
+const SYNC: Record<string, string> = { running: 'Running', ok: 'Complete', partial: 'Partial', failed: 'Failed' };
+export function SyncStatusBadge({ value }: { value: string }) {
+  return <span className={`badge sync-${value}`}>{SYNC[value] ?? value}</span>;
 }
 export const triggerLabel = (t: RunTrigger) => ({ scheduled: 'Scheduled', on_demand: 'On demand', sample: 'Sample' })[t];
 

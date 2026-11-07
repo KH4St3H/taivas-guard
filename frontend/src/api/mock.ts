@@ -4,7 +4,7 @@ import s3083 from '../data/space-3083.json';
 import s3074 from '../data/space-3074.json';
 import t3083 from '../data/terrestrial-3083.json';
 import t3076 from '../data/terrestrial-3076.json';
-import { confidencePfd, scorePfd, SEVERITY_ORDER } from '../lib/severity';
+import { confidencePfd, scorePfd, SEVERITY_ORDER, SEVERITY_RULES } from '../lib/severity';
 import { PIPELINE_STAGES } from './types';
 import type { Api, Domain, Finding, FunnelStage, IssueSummary, LimitRow, MonitorStatus, NewRun, PfdCalculation, ReferenceSource, ReviewState, Run, Severity, SourceFile, StationRef, TerrestrialDetail } from './types';
 
@@ -70,19 +70,19 @@ function mergePairs<T>(rows: T[], key: (r: T) => string, id: (r: T) => number, p
 
 function buildSpace(raw: SpaceRaw): Finding[] {
   const issueId = `space-${raw.issue}`;
-  const common = (r: RawPfd | RawBr) => ({ issueId, domain: 'space' as Domain, issue: raw.issue, adm: r.adm, orbit: r.orbit, provision: r.provision, sections: r.sections, file: raw.file, review: blankReview(), terrestrial: null });
+  const common = (r: RawPfd | RawBr) => ({ issueId, domain: 'space' as Domain, issue: raw.issue, firstIssue: raw.issue, lastIssue: raw.issue, adm: r.adm, orbit: r.orbit, provision: r.provision, sections: r.sections, file: raw.file, review: blankReview(), terrestrial: null, summary: null, bands: [], visibility: [], basis: null, result: null, updatedAt: null });
   const pfd = mergePairs(raw.findings, (r) => `${r.network}|${r.calc.fMinMhz}|${r.calc.fMaxMhz}`, (r) => r.ntcId, (r) => r.targetNtcId !== null, (a, b) => a.calc.marginDb === b.calc.marginDb).map(({ row: r, ids }): Finding => {
     const { severity, reasons } = scorePfd(r.calc.marginDb, r.stationCount);
     const conf = confidencePfd(r.calc.angleDeg, r.orbit, r.calc.altitudeKm);
     return {
-      ...common(r), id: `${issueId}-pfd-${r.ntcId}-${r.calc.groupId}-${r.band.replace(/\D+/g, '-').replace(/^-|-$/g, '')}`, kind: 'pfd_screen', title: r.network, band: `${r.calc.fMinMhz}–${r.calc.fMaxMhz} MHz`, sourceId: r.ntcId, relatedSourceIds: [...new Set(ids)].filter((i) => i !== r.ntcId), coordProvisions: [],
+      ...common(r), id: `${issueId}-pfd-${r.ntcId}-${r.calc.groupId}-${r.band.replace(/\D+/g, '-').replace(/^-|-$/g, '')}`, kind: 'pfd_screen', kindLabel: 'Above a limit', title: r.network, band: `${r.calc.fMinMhz}–${r.calc.fMaxMhz} MHz`, sourceId: String(r.ntcId), relatedSourceIds: [...new Set(ids)].filter((i) => i !== r.ntcId).map(String), coordProvisions: [],
       severity, severityReasons: reasons, confidence: conf.confidence, confidenceReasons: conf.reasons, marginDb: r.calc.marginDb, stationCount: r.stationCount, stations: r.stations, calc: r.calc,
       windowDeadline: windowFor(r.sections, raw.deadline), assumptions: PFD_ASSUMPTIONS, citations: [r.band, 'RR No. 21.16'],
       evidence: [{ table: 'notice', key: `ntc_id = ${r.ntcId}` }, { table: 'grp', key: `grp_id = ${r.calc.groupId}` }, { table: 'emiss', key: `grp_id = ${r.calc.groupId}, design_emi = ${r.calc.emission}` }, { table: 's_beam', key: `ntc_id = ${r.ntcId}, beam_name = ${r.calc.beam}` }],
     };
   });
   const br = mergePairs(raw.brListed, (r) => r.network, (r) => r.ntcId, (r) => r.targetNtcId !== null).map(({ row: r, ids }): Finding => ({
-    ...common(r), id: `${issueId}-br-${r.ntcId}`, kind: 'br_listed', title: r.network, band: r.band.replace('-', '–'), sourceId: r.ntcId, relatedSourceIds: ids.filter((i) => i !== r.ntcId), coordProvisions: r.coordProvisions,
+    ...common(r), id: `${issueId}-br-${r.ntcId}`, kind: 'br_listed', kindLabel: 'ITU lists Finland', title: r.network, band: r.band.replace('-', '–'), sourceId: String(r.ntcId), relatedSourceIds: ids.filter((i) => i !== r.ntcId).map(String), coordProvisions: r.coordProvisions,
     severity: 'medium', severityReasons: [`ITU lists Finland under ${r.coordProvisions.join(', ')}`, 'ITU’s list is for information only (RR No. 9.36.1), so an expert still decides'], confidence: 'medium', confidenceReasons: ['Read directly from the filing; no calculation involved'], marginDb: null, stationCount: r.stationCount, stations: [], calc: null,
     windowDeadline: windowFor(r.sections, raw.deadline), assumptions: ['Band is the full range of the listed groups, so station overlap may be overstated'], citations: ['RR No. 9.36.1', ...r.coordProvisions.map((p) => `RR provision ${p}`)],
     evidence: [{ table: 'provn', key: `adm = 'FIN', ${r.groupCount} group(s) of ntc_id ${r.ntcId}` }, { table: 'pub_ssn', key: `ntc_id = ${r.ntcId}` }],
@@ -93,7 +93,7 @@ function buildSpace(raw: SpaceRaw): Finding[] {
 function buildTerr(raw: TerrRaw): Finding[] {
   const issueId = `terrestrial-${raw.issue}`;
   return raw.nearBorder.map((n): Finding => ({
-    id: `${issueId}-${n.terrakey}`, issueId, domain: 'terrestrial', issue: raw.issue, kind: 'near_border', title: n.site, adm: n.adm, orbit: null, band: `${n.fMhz} MHz`, sourceId: n.terrakey, relatedSourceIds: [], provision: null, sections: [n.noticeType], coordProvisions: [],
+    id: `${issueId}-${n.terrakey}`, issueId, domain: 'terrestrial', issue: raw.issue, firstIssue: raw.issue, lastIssue: raw.issue, summary: null, bands: [], visibility: [], basis: null, result: null, updatedAt: null, kind: 'near_border', kindLabel: 'Near the border', title: n.site, adm: n.adm, orbit: null, band: `${n.fMhz} MHz`, sourceId: String(n.terrakey), relatedSourceIds: [], provision: null, sections: [n.noticeType], coordProvisions: [],
     severity: 'unscored', severityReasons: ['P.1546 field strength not calculated yet'], confidence: 'not_calculated', confidenceReasons: ['Only distance and band are known so far'], marginDb: null, stationCount: 0, stations: [], calc: null, terrestrial: { terrakey: n.terrakey, stationClass: n.stationClass, fMhz: n.fMhz, bandwidthKhz: n.bandwidthKhz, intent: n.intent, noticeType: n.noticeType, site: n.site, lat: n.lat, lon: n.lon, borderKm: n.borderKm, powerDbw: n.powerDbw, powerType: n.powerType, gainDbi: n.gainDbi, heightM: n.heightM },
     windowDeadline: null, assumptions: ['Distance is to the nearest of 14 rough border points', 'Strongest listed antenna record shown'], citations: ['ECC T/R 25-08 (criterion to be confirmed)', 'ITU-R P.1546-6 (not run)'],
     evidence: [{ table: 'fxm_terra', key: `terrakey = ${n.terrakey}` }, { table: 'fxm_ant', key: `terrakey = ${n.terrakey}` }], file: raw.file, review: blankReview(),
@@ -119,7 +119,7 @@ function spaceSummary(raw: SpaceRaw): IssueSummary {
   const id = `space-${raw.issue}`;
   const t = raw.counts.byType;
   return {
-    id, domain: 'space', issue: raw.issue, releasedOn: raw.date, commentDeadline: raw.deadline, file: raw.file, evaluationIssue: EVAL.has(id),
+    id, artifactId: null, screenStatus: 'done', screenedAt: null, sourceUrl: null, ruleCounts: [], domain: 'space', issue: raw.issue, releasedOn: raw.date, commentDeadline: raw.deadline, file: raw.file, evaluationIssue: EVAL.has(id),
     counts: [{ label: 'Filings', value: raw.counts.notices }, { label: 'Geostationary', value: t.G ?? 0 }, { label: 'Non-geostationary', value: t.N ?? 0 }, { label: 'Earth stations', value: t.S ?? 0 }, { label: 'Frequency groups', value: raw.counts.groups }],
     funnel: raw.funnel, severityCounts: severityCounts(id), brListedNetworks: raw.counts.brFinlandNetworks, limitations: SPACE_LIMITS,
   };
@@ -129,7 +129,7 @@ function terrSummary(raw: TerrRaw): IssueSummary {
   const id = `terrestrial-${raw.issue}`;
   const intent = raw.counts.byIntent;
   return {
-    id, domain: 'terrestrial', issue: raw.issue, releasedOn: raw.date, commentDeadline: null, file: raw.file, evaluationIssue: EVAL.has(id),
+    id, artifactId: null, screenStatus: 'done', screenedAt: null, sourceUrl: null, ruleCounts: [], domain: 'terrestrial', issue: raw.issue, releasedOn: raw.date, commentDeadline: null, file: raw.file, evaluationIssue: EVAL.has(id),
     counts: [{ label: 'Assignments', value: raw.counts.assignments }, { label: 'Added', value: intent.ADD ?? 0 }, { label: 'Modified', value: intent.MODIFY ?? 0 }, { label: 'Suppressed', value: intent.SUPPRESS ?? 0 }],
     funnel: [{ key: 'all', label: 'Assignments in the issue', n: raw.counts.assignments }, { key: 'lm', label: 'Foreign land-mobile', n: raw.counts.landMobileForeign }, { key: '300', label: 'Within 300 km of Finland', n: raw.counts.within300 }, { key: '100', label: 'Within 100 km of Finland', n: raw.counts.within100 }],
     severityCounts: severityCounts(id), brListedNetworks: 0, limitations: TERR_LIMITS,
@@ -156,10 +156,18 @@ function advance(run: Run): Run {
 
 export const mockApi: Api = {
   mode: 'sample',
+  capabilities: { upload: true, checkItuNow: false, rescreen: false, reviewStatuses: ['accepted', 'needs_info', 'rejected'], letterStorage: 'browser' },
+  severityNote: 'Starter rules for the demo. Traficom’s experts should set the real ones.',
+  listSeverityRules: async () => SEVERITY_RULES,
+  listSyncRuns: async () => [],
+  checkItuNow: async () => { throw new Error('Not available in sample mode.'); },
+  rescreen: async () => { throw new Error('Not available in sample mode.'); },
   listIssues: async () => issues,
   getMonitor: async (): Promise<MonitorStatus> => ({
-    connected: false, latestKnownIssue: 3083, latestKnownDate: '2026-10-27', checkedOn: '2026-11-07', nextExpectedOn: '2026-11-10',
-    note: 'Scheduled monitoring isn’t running yet. The latest release was checked by hand on ITU’s download page. The next date assumes the usual two-week cycle.',
+    active: false, running: false,
+    domains: [{ domain: 'space', latestIssue: 3083, publishedOn: '2026-10-27', ageDays: null, stale: false }, { domain: 'terrestrial', latestIssue: 3083, publishedOn: '2026-10-27', ageDays: null, stale: false }],
+    lastCheck: { at: '2026-11-07T00:00:00Z', label: 'By hand', status: 'ok', errors: [] }, nextExpectedOn: '2026-11-10',
+    note: 'Sample mode has no monitoring. The latest release was checked by hand on ITU’s download page. The next date assumes the usual two-week cycle.',
   }),
   listFindings: async (issueId) => (findings.get(issueId) ?? []).map(withReview),
   getFinding: async (id) => {

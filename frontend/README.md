@@ -1,53 +1,76 @@
 # IFIC Guard frontend
 
-The review UI for IFIC Guard: the latest ITU release and its results, on-demand file analysis, run history, and expert review of findings.
+The review UI for IFIC Guard: the latest ITU release and its results, checking a file on demand, run history, and expert review of cases. Written in React and TypeScript, and it talks to the services in `ific_guard/`.
+
+## Run it
+
+Start the services first (see `docs/services-architecture.md`, section 8). They need Python below 3.14:
 
 ```bash
-npm install
-npm run dev     # http://localhost:5173
-npm test        # file checks, pfd maths, severity rules
-npm run build   # type-check and production build
+uv sync --python 3.12
+cp .env.example .env                 # then set IFIC_API_KEY
+uv run python -m ific_guard.cli init-db
+uv run uvicorn ific_guard.sync.app:app --port 8001
+uv run uvicorn ific_guard.screening.app:app --port 8002
 ```
+
+Then the frontend:
+
+```bash
+cd frontend
+npm install
+npm run dev          # http://localhost:5173, live services
+npm run dev:sample   # sample data, no backend needed
+npm test             # API mapping, file checks, pfd maths
+npm run build        # type-check and production build
+```
+
+## How it reaches the services
+
+The services don't allow cross-origin calls, so the Vite dev server proxies them:
+
+| Browser path | Service | Override |
+|---|---|---|
+| `/api/sync/*` | `http://localhost:8001` | `IFIC_SYNC_URL` |
+| `/api/screening/*` | `http://localhost:8002` | `IFIC_SCREENING_URL` |
+
+**The API key stays on the server.** The proxy adds `X-API-Key` from `IFIC_API_KEY`, read from the environment or the repo's `.env`. It never reaches the browser, but anyone who can open the frontend can save reviews, so keep the port private. Real use needs sign-in and a production proxy; this only covers development and the demo.
+
+Without a matching key the app still reads, and saving shows an error that explains the fix.
+
+## What maps to what
+
+`src/api/http.ts` is the only file that knows the API's shapes. Pages use the `Api` interface in `src/api/types.ts`.
+
+| UI | API | Notes |
+|---|---|---|
+| Latest issue, Runs | `GET /issues`, `/status`, `/runs` on sync | Revisions of an issue collapse to the newest |
+| Findings list | `GET /cases?limit=1000` on screening | Filtered and ranked in the browser, because the API has no issue filter |
+| Finding detail | `GET /cases/{id}` | Reads the `Case.details` keys in `.scratch/ific-guard-delivery/map.md`, including calculated results once rules provide them |
+| Accept, reject | `PATCH /cases/{id}` | |
+| Check ITU now | `POST /sync` | |
+| Screen it again | `POST /issues/{id}/screen` | Offered when a chosen file matches a stored issue's SHA-256 |
+
+A case belongs to every stored issue from `first_issue` to `last_issue`, because the API doesn't record exactly which issues it appeared in.
+
+## Gaps in the API that affect the UI
+
+Each gap shows as a clear message or a missing control, not invented data.
+
+| Gap | What the UI does |
+|---|---|
+| No upload route | Checks the file in the browser, then gives the `cli import` command. Files already stored can be screened again |
+| No case history or reviewer identity | Shows the last-updated time only |
+| No letter field | Generates a draft from a fixed template; edits are saved in that browser only |
+| No confidence or funnel data | Hides confidence, and shows cases by rule instead of a funnel |
+| Issue date missing after `cli import` | Shows "Not recorded", and the monitor can report the domain as overdue |
 
 ## Sample mode
 
-There's no pipeline or API yet, so `src/api/mock.ts` serves sample data and a banner says so on every page.
-
-| Part | Status |
-|---|---|
-| Latest issue, findings and calculations | Real output of a one-off screen of real ITU files (3083, 3074, 3076). Screening flags, not regulatory findings |
-| File checks (type, ZIP contents, SHA-256, duplicate detection) | Real, and run in the browser |
-| Upload and run progress | **Simulated.** The file isn't uploaded or analysed, and the run ends by saying so |
-| ITU monitor | **Not running.** The latest release was checked by hand |
-| Review decisions and letter edits | Saved in this browser only |
-| Draft letters | Fixed template. No AI yet |
-
-Severity rules are starter values for the demo, listed on the Rules and data page.
-
-To rebuild the sample data from an IFIC file, see `scripts/export_sample.py` (needs `access-parser pandas openpyxl`). The downloads aren't in the repo; get them from ITU using a browser-style User-Agent.
-
-## Connecting the backend
-
-Implement the `Api` interface from `src/api/types.ts` over HTTP, and export it from `src/api/index.ts`. No page imports the mock directly. Suggested endpoints:
-
-| Method and path | `Api` method | Notes |
-|---|---|---|
-| `GET /issues` | `listIssues` | Issue summaries, including the funnel and known limitations |
-| `GET /monitor` | `getMonitor` | Scheduler state and the latest known ITU release |
-| `GET /issues/{id}/findings` | `listFindings` | Ranked by the backend |
-| `GET /findings/{id}` | `getFinding` | |
-| `PATCH /findings/{id}/review` | `updateReview` | `{status?, note?, letter?}`; the server appends the audit history |
-| `GET /runs`, `GET /runs/{id}` | `listRuns`, `getRun` | Polled every 500 ms while running |
-| `POST /runs` | `createRun` | Multipart: `file`, `sha256`, `domain`, `issue` |
-| `GET /files/{sha256}/issue` | `findIssueByHash` | 404 when the file is new |
-| `GET /reference/sources`, `GET /reference/limits` | `listReferenceSources`, `listLimits` | |
-
-Types mirror `Finding` in `ARCHITECTURE.md`, with units in field names. The server has to re-check uploaded files, because browser checks are only a convenience. Real auth is needed before this holds real assignments.
+`npm run dev:sample` uses `src/api/mock.ts`: real results from a one-off screen of IFIC 3083, 3074 and 3076, with a banner on every page. Upload is simulated there, and says so. To rebuild the data, see `scripts/export_sample.py` (needs `access-parser pandas openpyxl`).
 
 ## Not built yet
 
-- Backend, scheduler, and notifications when a new issue lands
-- Sign-in, roles, and a server-side audit log
+- Notifications view (`GET /notifications` on the notifier)
 - Comparing issues, and neighbour trends for the terrestrial side quest
-- Letters as `.docx`, and AI-written explanations with a number and citation check
-- Evaluation files in Traficom's format, once they confirm it
+- Letters as `.docx`, and AI-written explanations

@@ -9,6 +9,8 @@ import { RunDetail } from './pages/RunDetail';
 import { Findings } from './pages/Findings';
 import { FindingDetail } from './pages/FindingDetail';
 import { Reference } from './pages/Reference';
+import '@fontsource-variable/geist';
+import '@fontsource-variable/geist-mono';
 import './styles.css';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(

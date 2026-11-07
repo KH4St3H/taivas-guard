@@ -18,6 +18,8 @@ export function formatBytes(n: number): string {
   return `${(n / (1024 * 1024 * 1024)).toFixed(2)} GB`;
 }
 
+export const dateOr = (iso: string | null, fallback = 'Not recorded') => (iso ? formatDate(iso) : fallback);
+
 export const shortHash = (h: string) => `${h.slice(0, 12)}…`;
 
 export const db = (n: number, digits = 1) => `${n > 0 ? '+' : n < 0 ? '−' : ''}${Math.abs(n).toFixed(digits)}`;

@@ -17,7 +17,7 @@ const esc = (v: unknown) => {
 export function findingsCsv(rows: Finding[]): string {
   const head = ['finding_id', 'issue', 'domain', 'kind', 'network_or_site', 'administration', 'band', 'source_notice_id', 'sections', 'severity', 'confidence', 'margin_db', 'pfd_db', 'limit_db', 'angle_deg', 'finnish_stations', 'comment_deadline', 'review_status', 'citation', 'source_sha256'];
   const body = rows.map((f) =>
-    [f.id, f.issue, f.domain, f.kind, f.title, f.adm, f.band, f.sourceId, f.sections.join(' '), f.severity, f.confidence, f.marginDb, f.calc?.pfd, f.calc?.limit, f.calc?.angleDeg, f.stationCount, f.windowDeadline, f.review.status, f.citations[0], f.file.mdbSha256].map(esc).join(','),
+    [f.id, f.issue, f.domain, f.kind, f.title, f.adm, f.band, f.sourceId, f.sections.join(' '), f.severity, f.confidence, f.marginDb, f.calc?.pfd ?? f.result?.valueDb, f.calc?.limit ?? f.result?.limitDb, f.calc?.angleDeg, f.stationCount, f.windowDeadline, f.review.status, f.citations[0], f.file.zipSha256].map(esc).join(','),
   );
   return [head.join(','), ...body].join('\n');
 }
