@@ -1,0 +1,2 @@
+# Hashes in manifest.json cover these exact bytes, so git must not rewrite line endings.
+outputs/** text eol=lf

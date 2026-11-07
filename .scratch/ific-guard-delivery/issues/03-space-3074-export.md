@@ -16,7 +16,7 @@ A trial run already screened 3074 through `POST /issues/upload` with no errors, 
 
 ## Do
 
-1. Import `/Users/mehrshad/personal/radio/data/shared/ific3074.zip` with `python -m ific_guard.cli import` into a database under your worktree, then run screening.
+1. Import `data/shared/ific3074.zip` with `python -m ific_guard.cli import` into a database under your worktree, then run screening.
 2. Add a way to record which issues each case was found in, additively, so a per-issue export is exact. A separate table is acceptable here, as an exception to the map's rule against new columns.
 3. Add `python -m ific_guard.cli export --domain space --issue 3074 --out outputs/ific_3074/` writing:
    - `cases.csv`: one row per case, flat columns, ranked

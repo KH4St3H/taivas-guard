@@ -2,43 +2,46 @@
   "case_count": 51,
   "code_sha256": {
     "__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-    "cli.py": "07955ae7b0ed141568118767a93358b10f592034e90b7b91ffafad58ce3da38a",
-    "config.py": "86fa10f2edc07d68e1ed917134e4e02debb59e0496fffe38c1c61899154cc0a0",
-    "db.py": "d8c06b3c7d5c345a31a4e6d556b63f97c8bbbb2915b51161cf4e06c67becfc72",
-    "events.py": "65ce6adaad58d8dc6e0eaf328a18ec1be2288970501e48247946f89353c53a2f",
-    "export.py": "df55187b050be6411b46e716e5420e0183760c85f9e2e4c66c006cf86bacac31",
-    "models.py": "6060da258572ef719efb5eff3d67bb18d349f6531047a6f7db6812e94618371b",
+    "cli.py": "e96b23d23ab365dc8c9988c860623a025b37bfe8822e512ad9bdd425d62b58a0",
+    "config.py": "5c9209f90168f08ced4af4cc4c1d958a9b08a8686ba7ab32abdf5fd6089a01d4",
+    "db.py": "afd0276cb67bc21490a049e54df3d17dfe4c5c2a539f40d1f1c4828eca5a2222",
+    "events.py": "97a681667f85a7a63985209e3190046492c5ece8ce9e832d2106616b718755d0",
+    "export.py": "75ddd85bd46cdb62a8725316ca000b82b6b09c68baa429e5ba3ed2b0d13cd439",
+    "models.py": "e70b2c41fccea85116ae2c9ef0109260367c77e3e4826c81a7f24e33fb465ad2",
     "notifier/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-    "notifier/app.py": "071a79ffd1a9f0736f3ab1fe2dd11892ed1d6f0550fd21cfe9dbb1650343fff3",
-    "notifier/mailer.py": "932a5da9b3e02643e78d3765c0f7424148831f4801dcff64fc612051dab65363",
-    "notifier/runner.py": "42834ef2ff47d05e223dc34cb40fe8955843921f1d4cac663827d31c0fed0e56",
-    "schemas.py": "f99b16c9411ac09ded1ff4bc03931bec6bc65ba91d57bffc461329592f7a705d",
+    "notifier/app.py": "14aa9e114356dbd9f197f032bbdc1c2e115baa8ae10ee55a4dea085fc3da7baf",
+    "notifier/mailer.py": "7b7eac13da79b67e7cd2c2cac44d0a39c68414785df5cf6c4e013040545a78aa",
+    "notifier/runner.py": "4fd983d6b20ce3176ac7ee6a6267d4d8994c08c8df8af2a70ece09f2f57be0c0",
+    "schemas.py": "37e593ece74a761e368f0024940b06c0c6af43d62058e8eb1178e0ff4be47f30",
     "screening/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-    "screening/app.py": "d0b50f5d546e468776be131a4dfde79edf13aa117bd45dabd52ae45c4bf6371c",
-    "screening/engine.py": "8bad888d1efc319b8593ff09c6fd7800d9bc02b66e8f2a92f5d12ae738ed6a60",
-    "screening/rules.py": "9f65e9ef74227a30c40e4887af77e08d0fb2069f658d285e8c9512928603484b",
-    "screening/space.py": "0999db672ba6713a389b07c94740fe69976de9fc46671263a4e41e502b0aa1bc",
-    "service.py": "7c7807cc5ba4e672232f7b5cc8d886bdad4de25ab7d4c8af7e8efd54597a6d0e",
+    "screening/app.py": "901a2c084572c0c7e9821125320cd87f50e722c04774a8211120ec8557724267",
+    "screening/engine.py": "ec7917f53a6745e5d4b07e594dfae68c140d7ef3c7cc96718a798eacb8badd21",
+    "screening/rules.py": "f4f6833cdf9d2d4d8ca06445cfa8e18ed1e499e4304ad4b7f7ad160710aa8913",
+    "screening/space.py": "0d2700ec15cd4e28b27cf81623eced08ae7232d607b7ad633f4a091c06e02427",
+    "service.py": "d1cafab92b752e47280e237650787c3e3b41ef91836704bd89179ae669715fba",
     "sync/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-    "sync/app.py": "7eddebbd14da459d8a2143c02c357a42c5a3d852bada70c9c3209d9e0e30a45f",
-    "sync/fetch.py": "67380bde00149f9852bf838c6d6a667511ef9a883215a5372362449875513ec3",
-    "sync/runner.py": "c0d13a67d5a25fbfcfaec65fe6fa0417ebf1167a9b7451f23037a3e836164e78",
-    "sync/sources.py": "1f9fbf6b1da5cb0336842cf1afac947f120d73e5c5ee9d8eba462043e9f2c14a"
+    "sync/app.py": "d9a868857f309792567623722e011f5fdc9c7c118d730d48a205b0cffac4c872",
+    "sync/fetch.py": "88fd25ee6ac033284fd941eaf49f189466e74d39d63f89730b1bb0657f731761",
+    "sync/runner.py": "42d1ea94208bf1e84f09f56a5cbb444a0303f9036e67ef3145f451ccef8fd38f",
+    "sync/sources.py": "03460c50e7e5a112b5c56b7d836413dd1bc157e0c00528f6d40c82452bbb2736",
+    "terrestrial/__init__.py": "b1192ebb2ceb740477dd225c0bf2abf4801148b53c5d9df707fb1a4a99607d39",
+    "terrestrial/adapter.py": "27246f45d4c2cffea0157019598bf2a5e02c686a82fa91d998bc222c933cf0c4",
+    "terrestrial/diff.py": "4082c008511b7be30aad48509806f3313f8ea0ea778aa3bebf4f2d2271573eb5"
   },
   "code_version": {
-    "commit": "bc9c59423b14d89e74e882127499697ee0d73b76",
-    "dirty": true
+    "commit": "9b431ace5278d8659519b1f23ee8230288190f8c",
+    "dirty": false
   },
   "config": {
     "comment_window_months": 4,
     "gso_visible_east_deg": 97.0,
     "gso_visible_west_deg": -47.0,
-    "m4_filter_sha256": "0fdb244342e627ff23b5ddfe74a4a9d830277ba35d2ae888508382a0860ce4b8",
+    "m4_filter_sha256": "3f335e7ab38262904ee5fbe0308ab8cb1ba3e2600b472f5c8eeffbca70e1d262",
     "ngso_min_inclination_deg": 55.0
   },
   "domain": "space",
   "format_version": 1,
-  "generated_at": "2026-11-07T00:44:02.518012+00:00",
+  "generated_at": "2026-11-07T01:58:23.199884+00:00",
   "issue_no": 3074,
   "limitations": [
     "Possible concerns for expert review, not confirmed interference or regulatory breaches.",
@@ -50,15 +53,15 @@
   ],
   "mdb_sha256": "a9755213b6cdb7a26a1ca1dcf95ba69a362d3bcc2cb088e91b6b8e01e4790e31",
   "output_sha256": {
-    "cases.csv": "23f31016a08ab4ab28620c1baf65fe2b9190d69257918ebf206b87aed9ddce34",
-    "cases.json": "117b862c1c3a4fd7b43cde3838b399590506241e18248f8ef867c9e6abf8311a"
+    "cases.csv": "fcd70baa05e33406770aa7551a3d1e428f82a032718582b2df64c832897fb50b",
+    "cases.json": "d5fbf07e8d3947ef29ac6b4fff95dc77cd663f2542afd8e9de9afbfc97d834ee"
   },
   "provisional_format": true,
   "rule_ids": [
     "fin-named-by-br",
     "m4-no-space-to-earth"
   ],
-  "run_time_s": 54.730213,
+  "run_time_s": 35.350657,
   "scope": {
     "ap30_coverage": "not implemented",
     "notice_reasons": [
