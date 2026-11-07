@@ -29,8 +29,6 @@ Answers came on Discord, 2026-11-07 8:39-8:55, from Pekka, Otto and the Traficom
 
 ## Integration and delivery
 
-- [ ] **Merge `agent/16-protect-tx` into `integration/wave-3`.** It regenerates both exports, including the first committed 3074 export with pfd results (182 cases). `cases.json` is now 29 MB.
-- [ ] **Decide whether a TX-only match should raise terrestrial severity.** Two 3076 cases rose from low to medium on a station match alone (ticket 16). Ticket 16 left the logic unchanged.
 - [ ] **Regenerate `frontend/src/data/` samples.** They predate ticket 16.
 - [ ] **Push `agent/12-drafts-ui` (`1422f80`), then merge it.** It exists only in this Codespace and connects the case page to the draft API. On `wave-3` the UI still keeps letters in the browser (`http.ts:260`), and ticket 14's demo needs a draft letter. Expect frontend conflicts.
 - [ ] **Compare `01d4341` with `wave-3`'s terrestrial filter.** It is also local only, on `agent/08-terrestrial`, `agent/10-terrestrial-findings` and `agent/11-trends`. `wave-3` uses the version in `adapter.py`, and lacks this commit's `filter.py`, `geography.py` and `summary.py`. Keep anything better, then drop it.

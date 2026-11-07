@@ -69,7 +69,7 @@ Traficom said "every TX is received in Finland" (Discord, 2026-11-07), so specia
 | Cases listing a special-interest station | 6 | 14 |
 | Severity | 1 high, 20 medium, 8 low | 1 high, 22 medium, 6 low |
 
-In 8 of the 14, no listed station has an RX match, so each listed field is at the station's site and is marked as not being the field at a receiver. Two cases rose from low to medium, LEN KINGISEPP at 424.075 and 424.475 MHz, only because a listed station now overlaps. Both remain 13.1 dB below the indicative threshold at the Finnish boundary, so an expert may want to review whether a TX-only match should raise severity.
+In 8 of the 14, no listed station has an RX match, so each listed field is at the station's site and is marked as not being the field at a receiver. Two cases rose from low to medium, LEN KINGISEPP at 424.075 and 424.475 MHz, only because a listed station now overlaps. Both remain 13.1 dB below the indicative threshold at the Finnish boundary, and the team decided a TX-only match may raise severity (2026-11-07).
 
 ## Not verified
 
