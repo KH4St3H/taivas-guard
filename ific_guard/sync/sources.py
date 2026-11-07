@@ -65,21 +65,35 @@ def parse_terrestrial_listing(html: str, page_url: str) -> list[IssueRef]:
 
 
 def discover_space(client: httpx.Client, settings: Settings, today: date | None = None) -> list[IssueRef]:
-    """Space issues sit on one page per year. Walk back until the oldest wanted issue is covered."""
+    """Space issues sit on one page per year. Walk back to the requested minimum issue.
+
+    A historical page can have a different layout or be unavailable.  Such a page is
+    skipped so one old publication cannot prevent newer pages (or the other domain)
+    from syncing.
+    """
     year = (today or date.today()).year
     refs: list[IssueRef] = []
-    for y in range(year, year - 3, -1):
+    oldest_supported_year = 1998
+    for y in range(year, oldest_supported_year - 1, -1):
         url = urljoin(settings.space_index_base, f"demowic{y % 100:02d}.html")
         response = client.get(url)
-        if response.status_code == 404:  # early January, before the new year's page exists
+        if response.status_code == 404:  # early January or an unavailable historical page
             continue
-        response.raise_for_status()
-        page = parse_space_listing(response.text, url)
+        try:
+            response.raise_for_status()
+            page = parse_space_listing(response.text, url)
+        except (httpx.HTTPError, ListingChanged):
+            continue
         refs.extend(page)
         if min(r.issue_no for r in page) <= settings.min_issue:
             break
     if not refs:
-        raise ListingChanged("No space listing page was found for the last three years")
+        raise ListingChanged("No space listing page could be read from the requested history")
+    if min(r.issue_no for r in refs) > settings.min_issue:
+        raise ListingChanged(
+            f"Space listing history ends at issue {min(r.issue_no for r in refs)}, "
+            f"but IFIC_MIN_ISSUE requests {settings.min_issue}"
+        )
     return [r for r in refs if r.issue_no >= settings.min_issue]
 
 

@@ -89,8 +89,10 @@ def screen_artifact(
         # Terrestrial rules arrive with the land-mobile adapter; say so rather than report "no concerns".
         status, opened, changed = "no_rules", 0, 0
     else:
-        issue = SpaceIssue(reader or MdbReader(mdb_path))
+        issue = SpaceIssue(reader or MdbReader(mdb_path), validate_version=reader is None)
         hits = [hit for rule in (rules if rules is not None else space_rules(settings)) for hit in rule.run(issue)]
+        for hit in hits:
+            hit.details.setdefault("database_version", issue.database_version)
         opened, changed = save_hits(artifact_id, hits, domain)
         status = "done"
 

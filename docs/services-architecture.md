@@ -177,6 +177,18 @@ With the default `IFIC_MIN_ISSUE=3074`, the first sync downloads about 20 zips. 
 
 ## 9. Current status
 
+### Historical space issues
+
+| Issue range | How to get it | Screens? |
+|---|---|---|
+| Current and recent issues using SNS version 10 (`ific10`) | Space yearly listing pages under `sns/wic/` | Yes |
+| Older listed issues, where the yearly page remains available | The same `sns/wic/demowic{YY}.html` pages; discovery walks back to 1998 and tolerates a legacy page that cannot be parsed | Yes when the database reports supported version 10 |
+| Database versions other than 10, or records no longer listed by ITU | BR IFIC DVD material or manual upload via `POST /issues/upload` | Rejected clearly as unsupported until a version-specific reader is added |
+
+Screening reads `srs_ooak.version_no` before interpreting a space database. The
+version is retained in each case's evidence as `database_version`; a missing or
+unsupported value fails screening rather than producing an empty result.
+
 Per-issue evidence is now retained in the additive `case_occurrence` table.
 Each row links an artifact to its cross-issue review case and stores the exact
 hit from that artifact's latest successful screening. Re-screening replaces

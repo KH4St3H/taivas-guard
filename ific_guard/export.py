@@ -58,7 +58,7 @@ def export_issue(domain: str, issue_no: int, out: Path, *, sha256: str | None = 
 
     started = perf_counter()
     reader = MdbReader(artifact.mdb_path)
-    issue = SpaceIssue(reader)
+    issue = SpaceIssue(reader, validate_version=getattr(reader, "is_mdb_reader", False))
     rules = space_rules(settings)
     hits = [hit for rule in rules for hit in rule.run(issue)]
     hits.sort(key=lambda h: (
@@ -74,6 +74,7 @@ def export_issue(domain: str, issue_no: int, out: Path, *, sha256: str | None = 
         record["notice_ids"] = [str(n) for n in sorted(hit.notice_ids)]
         record["comment_deadline"] = hit.comment_deadline.isoformat() if hit.comment_deadline else None
         record["details"].setdefault("method", "screening")
+        record["details"]["database_version"] = issue.database_version
         record["details"]["source"] = {
             "domain": domain, "issue_no": issue_no,
             "notice_ids": record["notice_ids"], "sha256": artifact.sha256,

@@ -1,5 +1,6 @@
 """Reads the parts of a Space IFIC database that screening needs."""
 import logging
+import re
 from collections import defaultdict
 from dataclasses import dataclass, field
 from datetime import date
@@ -14,6 +15,11 @@ Row = dict[str, Any]
 # Sections the brief puts in scope. AP30/30A/30B filings are added here once an issue with them is tested.
 IN_SCOPE_REASONS = {"A", "C"}  # A = advance publication (9.1/IA), C = coordination request (9.6)
 SATELLITE_NOTICE_TYPES = {"G", "N"}  # G = GSO, N = non-GSO, S = earth station
+SUPPORTED_DATABASE_VERSIONS = frozenset({"10"})
+
+
+class DatabaseVersionError(ValueError):
+    """The database schema is missing or is not supported by this reader."""
 
 
 class TableReader(Protocol):
@@ -22,6 +28,8 @@ class TableReader(Protocol):
 
 class MdbReader:
     """Reads Access tables with a pure-Python parser, so no system packages are needed."""
+
+    is_mdb_reader = True
 
     def __init__(self, path: str | Path):
         from access_parser import AccessParser
@@ -32,6 +40,25 @@ class MdbReader:
         columns = self._db.parse_table(name)
         names = list(columns)
         return [dict(zip(names, values)) for values in zip(*columns.values())] if names else []
+
+
+def read_database_version(reader: TableReader) -> str:
+    """Read the SNS schema version before interpreting version-sensitive tables."""
+    try:
+        rows = reader.table("srs_ooak")
+    except Exception as exc:
+        raise DatabaseVersionError("Unable to read database version from srs_ooak.version_no") from exc
+    if not rows or rows[0].get("version_no") in (None, ""):
+        raise DatabaseVersionError("Database version is unavailable: srs_ooak.version_no is empty")
+    raw = str(rows[0]["version_no"]).strip()
+    match = re.search(r"\d+", raw)
+    version = match.group(0) if match else raw
+    if version not in SUPPORTED_DATABASE_VERSIONS:
+        raise DatabaseVersionError(
+            f"Unsupported space database version {raw!r} (srs_ooak.version_no); "
+            f"supported versions: {', '.join(sorted(SUPPORTED_DATABASE_VERSIONS))}"
+        )
+    return version
 
 
 def _text(value: Any) -> str | None:
@@ -76,8 +103,9 @@ class SpaceNotice:
 class SpaceIssue:
     """Notices in screening scope, with what the rules need attached. Suppressions carry no data."""
 
-    def __init__(self, reader: TableReader):
+    def __init__(self, reader: TableReader, *, validate_version: bool = False):
         self._reader = reader
+        self.database_version = read_database_version(reader) if validate_version else None
 
     @cached_property
     def notices(self) -> dict[int, SpaceNotice]:
