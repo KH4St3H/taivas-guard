@@ -147,6 +147,9 @@ const GAPS: Record<Domain, string[]> = {
   terrestrial: ['Land-mobile notices from the configured neighbours only, within an approximate 300 km screen', 'P.1546 without terrain; T/R 25-08 thresholds stop at 470 MHz and are unconfirmed on the Russian border', 'Notices that could not be calculated are listed for expert review; they are not clear results'],
 };
 
+// An artifact screened before terrestrial rules existed keeps this status until it is screened again.
+const NO_RULES_GAPS = ['No rules ran on this stored file', 'This does not mean there are no concerns'];
+
 export function summariseIssue(a: ArtifactOut, cases: CaseSummary[]): IssueSummary {
   const domain = a.domain as Domain;
   const mine = cases.filter((c) => caseInIssue(c, a.domain, a.issue_no));
@@ -163,7 +166,7 @@ export function summariseIssue(a: ArtifactOut, cases: CaseSummary[]): IssueSumma
     id, artifactId: a.id, domain, issue: a.issue_no, releasedOn: a.published_on, screenStatus: a.screen_status as ScreenStatus, screenedAt: a.screened_at,
     commentDeadline: deadlines[deadlines.length - 1] ?? null, file: fileOf(fileName(a.source_url), a.sha256), sourceUrl: a.source_url, evaluationIssue: EVALUATED.has(id),
     counts: [{ label: 'Cases', value: mine.length }, ...ruleCounts.map((r) => ({ label: r.label, value: r.n }))], funnel: [], ruleCounts, severityCounts,
-    brListedNetworks: rules.get('fin-named-by-br') ?? 0, limitations: GAPS[domain] ?? [],
+    brListedNetworks: rules.get('fin-named-by-br') ?? 0, limitations: a.screen_status === 'no_rules' ? NO_RULES_GAPS : GAPS[domain] ?? [],
   };
 }
 
