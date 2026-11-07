@@ -310,7 +310,7 @@ export interface Coverage {
   satellites: string[];
   cells: { lat: number; lon: number; angleDeg: number | null; minutes: number | null; pfdDb: number | null; marginDb: number | null }[];
   pfd: { available: boolean; reason?: string; refBwHz?: number; groupId?: number; fLowMhz?: number; fHighMhz?: number; powerInRefBwDbw?: number; gainDbi?: number; maskId?: string | null };
-  stations: { total: number; withoutLocation: number; byClass: Record<string, number>; points?: { id: string; lat: number; lon: number; licence: string | null }[]; bins?: { lat: number; lon: number; count: number }[] };
+  stations: { total: number; segments?: { lowMhz: number; highMhz: number }[]; withoutLocation: number; byClass: Record<string, number>; points?: { id: string; lat: number; lon: number; licence: string | null }[]; bins?: { lat: number; lon: number; count: number }[] };
   notes: string[];
   assumptions: string[];
 }

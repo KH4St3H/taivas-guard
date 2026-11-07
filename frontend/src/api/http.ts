@@ -403,14 +403,14 @@ export const httpApi: Api = {
     type Out = { issue_no: number; mapped: boolean; boundary: number[][][]; cell: { lat_step: number; lon_step: number }; orbit: Coverage['orbit']; gso_lon_deg: number | null; satellites: string[];
       cells: { lat: number; lon: number; angle_deg: number | null; minutes: number | null; pfd_db: number | null; margin_db: number | null }[];
       pfd: { available: boolean; reason?: string; ref_bw_hz?: number; group_id?: number; f_low_mhz?: number; f_high_mhz?: number; power_in_ref_bw_dbw?: number; gain_dbi?: number; mask_id?: string | null };
-      stations: { total: number; without_location: number; by_class: Record<string, number>; points?: { id: string; lat: number; lon: number; licence: string | null }[]; bins?: { lat: number; lon: number; count: number }[] };
+      stations: { total: number; segments?: { low_mhz: number; high_mhz: number }[]; without_location: number; by_class: Record<string, number>; points?: { id: string; lat: number; lon: number; licence: string | null }[]; bins?: { lat: number; lon: number; count: number }[] };
       notes: string[]; assumptions: string[] };
     const o = await call<Out>('screening', `/cases/${encodeURIComponent(id)}/coverage`);
     return {
       issueNo: o.issue_no, mapped: o.mapped, boundary: o.boundary, cell: { latStep: o.cell.lat_step, lonStep: o.cell.lon_step }, orbit: o.orbit, gsoLonDeg: o.gso_lon_deg, satellites: o.satellites,
       cells: o.cells.map((c) => ({ lat: c.lat, lon: c.lon, angleDeg: c.angle_deg, minutes: c.minutes, pfdDb: c.pfd_db, marginDb: c.margin_db })),
       pfd: { available: o.pfd.available, reason: o.pfd.reason, refBwHz: o.pfd.ref_bw_hz, groupId: o.pfd.group_id, fLowMhz: o.pfd.f_low_mhz, fHighMhz: o.pfd.f_high_mhz, powerInRefBwDbw: o.pfd.power_in_ref_bw_dbw, gainDbi: o.pfd.gain_dbi, maskId: o.pfd.mask_id },
-      stations: { total: o.stations.total, withoutLocation: o.stations.without_location, byClass: o.stations.by_class, points: o.stations.points, bins: o.stations.bins },
+      stations: { total: o.stations.total, segments: o.stations.segments?.map((g) => ({ lowMhz: g.low_mhz, highMhz: g.high_mhz })), withoutLocation: o.stations.without_location, byClass: o.stations.by_class, points: o.stations.points, bins: o.stations.bins },
       notes: o.notes, assumptions: o.assumptions,
     };
   },

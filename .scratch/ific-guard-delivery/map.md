@@ -35,7 +35,7 @@ Status values come from `docs/agents/triage-labels.md`. Size is a rough relative
 | 20 | Terrestrial criterion above 470 MHz | Done at `909f2de` on `develop` | S | none | Required: Traficom answered Q10 |
 | 22 | Screen notification-stage filings that name Finland | Open, `ready-for-agent` | S | none | Accuracy (06 D): three known 3074 misses |
 | 23 | Set aside orbits not referred to the Earth | Open, `ready-for-agent` | S | none | Accuracy (06 D): six known 3074 false positives |
-| 24 | Map station layer on the satellite's own frequencies | Claimed by Person C | S | none | Output quality (06 C, D) |
+| 24 | Map station layer on the satellite's own frequencies | Done on `develop` | S | none | Output quality (06 C, D) |
 | 25 | Finding page drafts from the drafting service | Open, `ready-for-agent` | M | none | The visible AI part (02 step 9, title) |
 | 26 | Run the drafting path with a real model | Open, `ready-for-human` | S | 25 | Untested AI component |
 | 27 | Letters name the kind of criterion | Open, `ready-for-agent` | S | none | Auditability (06 E) |
