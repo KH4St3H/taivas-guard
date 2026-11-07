@@ -10,13 +10,14 @@ class ScoringWeights:
     primary_allocation: float = 10.0
     passive_band: float = 30.0
     near_limit: float = 15.0
+    envelope_margin_factor: float = 0.5  # an upper-bound margin counts for less than a time-sampled one
 
     @classmethod
     def from_settings(cls, settings: Any) -> "ScoringWeights":
         return cls(
             settings.pfd_margin_weight, settings.pfd_special_interest_weight,
             settings.pfd_primary_allocation_weight, settings.pfd_passive_band_weight,
-            settings.pfd_near_limit_weight,
+            settings.pfd_near_limit_weight, settings.pfd_envelope_margin_factor,
         )
 
 
@@ -28,9 +29,15 @@ def score_finding(details: Mapping[str, Any], weights: ScoringWeights = DEFAULT_
     margin = details.get("margin_db")
     score = 0.0
     reasons: list[str] = []
-    if isinstance(margin, (int, float)):
-        score += max(-30.0, min(70.0, float(margin) * weights.margin))
-        reasons.append(f"margin {float(margin):.2f} dB × {weights.margin:g}")
+    if details.get("input_flagged"):
+        reasons.append("margin not scored: an input is flagged as a data-quality item")
+    elif isinstance(margin, (int, float)):
+        factor = weights.margin
+        if details.get("margin_basis") == "envelope":
+            factor *= weights.envelope_margin_factor
+            reasons.append(f"margin is an upper bound, not a sampled result × {weights.envelope_margin_factor:g}")
+        score += max(-30.0, min(70.0, float(margin) * factor))
+        reasons.append(f"margin {float(margin):.2f} dB × {factor:g}")
         if -3 <= margin <= 0:
             score += weights.near_limit
             reasons.append(f"within 3 dB of the limit × {weights.near_limit:g}")
@@ -52,5 +59,6 @@ def score_finding(details: Mapping[str, Any], weights: ScoringWeights = DEFAULT_
             "primary_allocation": weights.primary_allocation,
             "passive_band": weights.passive_band,
             "near_limit": weights.near_limit,
+            "envelope_margin_factor": weights.envelope_margin_factor,
         },
     }

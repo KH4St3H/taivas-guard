@@ -42,6 +42,7 @@ class Settings(BaseSettings):
     pfd_primary_allocation_weight: float = 10.0
     pfd_passive_band_weight: float = 30.0
     pfd_near_limit_weight: float = 15.0
+    pfd_envelope_margin_factor: float = 0.5
 
     # notifier
     email_backend: Literal["console", "file", "smtp"] = "console"

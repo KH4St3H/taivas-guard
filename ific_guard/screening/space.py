@@ -93,6 +93,7 @@ class SpaceNotice:
     provision: str | None
     published: date | None
     name: str | None = None
+    ref_body: str | None = None  # the body a non-GSO orbit is referred to; T is the Earth
     gso_lon_deg: float | None = None
     inclinations_deg: list[float] = field(default_factory=list)
     assignments: list[Row] = field(default_factory=list)  # rows from `freq`
@@ -127,6 +128,8 @@ class SpaceIssue:
                 notice = out.get(int(row["ntc_id"]))
                 if notice:
                     notice.name = _text(row.get("sat_name"))
+                    if table == "non_geo":
+                        notice.ref_body = _text(row.get("ref_body"))
                     if table == "geo" and row.get("long_nom") is not None:
                         notice.gso_lon_deg = round(float(row["long_nom"]), 3)
         for row in self._reader.table("orbit"):
@@ -141,7 +144,7 @@ class SpaceIssue:
 
     @cached_property
     def group_notice(self) -> dict[int, int]:
-        return {int(r["grp_id"]): int(r["ntc_id"]) for r in self._reader.table("grp")}
+        return {group_id: int(row["ntc_id"]) for group_id, row in self.groups.items()}
 
     @cached_property
     def groups(self) -> dict[int, Row]:
@@ -162,6 +165,27 @@ class SpaceIssue:
         for row in self._reader.table("orbit"):
             out[int(row["ntc_id"])].append(row)
         return dict(out)
+
+    @cached_property
+    def orbit_links(self) -> dict[tuple[int, str | None, str | None], set[int]]:
+        """Orbit rows each beam flies on, keyed like `beams`. No entry means the filing does not say."""
+        out: dict[tuple[int, str | None, str | None], set[int]] = defaultdict(set)
+        for row in self._reader.table("orbit_lnk"):
+            key = (int(row["ntc_id"]), _text(row.get("emi_rcp")), _text(row.get("beam_name")))
+            out[key].add(int(row["orb_id"]))
+        return dict(out)
+
+    @cached_property
+    def first_phases(self) -> dict[tuple[int, int], float]:
+        """Phase angle of the lowest-numbered satellite with one, per orbit row."""
+        first: dict[tuple[int, int], tuple[int, float]] = {}
+        for row in self._reader.table("phase"):
+            if row.get("phase_ang") is None:
+                continue
+            key, satellite = (int(row["ntc_id"]), int(row["orb_id"])), int(row["orb_sat_id"])
+            if key not in first or satellite < first[key][0]:
+                first[key] = (satellite, float(row["phase_ang"]))
+        return {key: value[1] for key, value in first.items()}
 
     @cached_property
     def beams(self) -> dict[tuple[int, str | None, str | None], list[Row]]:
