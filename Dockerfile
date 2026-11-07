@@ -6,7 +6,9 @@ RUN pip install --no-cache-dir uv==0.13.0
 WORKDIR /app
 COPY pyproject.toml uv.lock ./
 COPY ific_guard ./ific_guard
-COPY generetated-files/m4_satellite_filter.csv ./generetated-files/m4_satellite_filter.csv
+# Not under /app/data: compose mounts a volume there, which would hide the table.
+COPY data/national/m4_bands.csv ./national/m4_bands.csv
+ENV IFIC_M4_FILTER_PATH=/app/national/m4_bands.csv
 RUN uv sync --frozen --no-dev
 
 RUN useradd --create-home app && mkdir -p /app/data && chown -R app /app/data
