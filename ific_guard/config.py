@@ -37,6 +37,11 @@ class Settings(BaseSettings):
     gso_visible_east_deg: float = 97.0
     ngso_min_inclination_deg: float = 55.0
     comment_window_months: int = 4
+    pfd_margin_weight: float = 10.0
+    pfd_special_interest_weight: float = 20.0
+    pfd_primary_allocation_weight: float = 10.0
+    pfd_passive_band_weight: float = 30.0
+    pfd_near_limit_weight: float = 15.0
 
     # notifier
     email_backend: Literal["console", "file", "smtp"] = "console"

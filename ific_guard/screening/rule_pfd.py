@@ -4,14 +4,13 @@ The rule deliberately reports missing joined values instead of dropping a group.
 exceedance is still worded as an exceedance under worst-case assumptions: GIMS contours are not
 available, so notified maximum gain is applied towards every Finnish point.
 """
-import math
 from collections.abc import Iterable
 from typing import Any
 
 from ..config import Settings
 from ..engines.pfd import GroundPoint, LimitMask, evaluate_gso, finland_points, load_masks, pfd_db
 from .rules import Hit, Rule, _deadline, _families
-from .scoring import score_finding
+from .scoring import ScoringWeights, score_finding
 from .space import SATELLITE_NOTICE_TYPES, SpaceIssue, SpaceNotice
 
 
@@ -48,7 +47,7 @@ def _citation(mask: LimitMask) -> dict[str, Any]:
 
 
 POWER_DENSITY_CITATION = {
-    "doc": "ITU Space Preface, IFIC 3074 schema, inspected source table description",
+    "doc": "IFIC Space Preface (secondary schema note; primary copy unavailable)",
     "clause": "emiss table, pwr_ds_max",
     "page_or_url": "docs/research-discarded/itu-primary-sources.md, p. 85",
 }
@@ -78,7 +77,7 @@ def _calculation(
         },
         "assumptions": [
             *result.assumptions,
-            "pwr_ds_max is notified power density in dBW/Hz (Space Preface, p. 85).",
+            "pwr_ds_max is treated as dBW/Hz per a secondary schema note; primary Space Preface confirmation is unavailable.",
             "Maximum gain and power density are used for the whole assignment.",
         ],
         "worst_point": {
@@ -97,44 +96,28 @@ def _calculation(
 
 def _ngso_calculation(
     notice: SpaceNotice,
-    orbit: dict[str, Any],
+    orbits: list[dict[str, Any]],
     issue: SpaceIssue,
     assignment: dict[str, Any],
     mask: LimitMask,
     points: tuple[GroundPoint, ...],
 ) -> dict[str, Any] | None:
     power, gain, join = _best_join(issue, assignment)
-    apogee, perigee, inclination = (_number(orbit, key) for key in ("apog_km", "perig_km", "inclin_ang"))
-    if power is None or gain is None or None in (apogee, perigee, inclination):
+    complete = [
+        row for row in orbits
+        if None not in (_number(row, "apog_km"), _number(row, "perig_km"), _number(row, "inclin_ang"))
+    ]
+    if power is None or gain is None or not complete:
         return None
-    radius = 6378.0 + (apogee + perigee) / 2
-    period_s = 2 * math.pi * (radius**3 / 398600.4418) ** 0.5
-    rate = 2 * math.pi / period_s
-    earth_rate = 7.2921159e-5
-    worst: tuple[float, GroundPoint, float, float, float] | None = None
-    for minute in range(1440):
-        argument = rate * minute * 60
-        x = radius * math.cos(argument)
-        y = radius * math.sin(argument) * math.cos(math.radians(inclination))
-        z = radius * math.sin(argument) * math.sin(math.radians(inclination))
-        for point in points:
-            lon = math.radians(point.lon_deg) + earth_rate * minute * 60
-            lat = math.radians(point.lat_deg)
-            ux, uy, uz = math.cos(lat) * math.cos(lon), math.cos(lat) * math.sin(lon), math.sin(lat)
-            cos_psi = (x * ux + y * uy + z * uz) / radius
-            if cos_psi < 6378.0 / radius:
-                continue
-            distance = (radius**2 + 6378.0**2 - 2 * radius * 6378.0 * cos_psi) ** 0.5
-            sin_psi = max(1e-12, (1 - cos_psi**2) ** 0.5)
-            angle = math.degrees(math.atan2(cos_psi - 6378.0 / radius, sin_psi))
-            value = pfd_db(power, mask.ref_bw_hz, gain, distance)
-            limit = mask.limit_db(angle)
-            margin = value - limit
-            if worst is None or margin > worst[0]:
-                worst = (margin, point, angle, value, limit)
-    if worst is None:
-        return None
-    margin, point, angle, value, limit = worst
+    perigee = min(_number(row, "perig_km") for row in complete)
+    apogee = max(_number(row, "apog_km") for row in complete)
+    inclination = max(_number(row, "inclin_ang") for row in complete)
+    # Perigee plus the lowest mask value is a conservative upper bound: it does not
+    # depend on an assumed node/phase and covers every orbit row in the notice.
+    value = pfd_db(power, mask.ref_bw_hz, gain, perigee)
+    angle, limit = 0.0, min(mask.limit_db(p) for p, _ in mask.breakpoints)
+    margin = value - limit
+    point = points[0]
     return {
         "method": "pfd_ngso",
         "calc_inputs": {
@@ -146,19 +129,23 @@ def _ngso_calculation(
             "apogee_km": apogee,
             "perigee_km": perigee,
             "propagation_minutes": 1440,
+            "orbit_rows_considered": len(orbits),
+            "perigee_bound_km": perigee,
+            "apogee_bound_km": apogee,
             **join,
         },
         "assumptions": [
-            "One-minute propagation over 24 hours uses a circular orbit at the mean notified altitude.",
-            "The notified orbital phase and ascending-node longitude are unknown; phase zero is used.",
-            "Free-space propagation and maximum gain apply at every Finnish point.",
+            "NGSO is bounded conservatively at the smallest notified perigee; eccentricity is not replaced by mean altitude.",
+            "The perigee bound and lowest mask value cover unknown node, phase, visibility and Finnish grid geometry.",
+            "This is an upper-bound screen, not a time-sampled orbit result; below-limit results remain expert review items.",
+            "pwr_ds_max is treated as dBW/Hz per a secondary schema note; primary Space Preface confirmation is unavailable.",
         ],
         "worst_point": {"lat": point.lat_deg, "lon": point.lon_deg, "angle_deg": angle},
         "value_db": value,
         "limit_db": limit,
         "margin_db": margin,
         "mask_id": mask.mask_id,
-        "citations": [_citation(mask)],
+        "citations": [_citation(mask), POWER_DENSITY_CITATION],
     }
 
 
@@ -168,6 +155,7 @@ def _hit(
     notices: list[SpaceNotice],
     calculations: list[dict[str, Any]],
     missing: list[dict[str, Any]],
+    dropped: list[dict[str, Any]],
     settings: Settings,
 ) -> Hit:
     worst = max(calculations, key=lambda item: item["margin_db"]) if calculations else None
@@ -175,25 +163,39 @@ def _hit(
         "method": worst["method"] if worst else "screening",
         "calculations": calculations,
         "missing": missing,
+        "dropped": dropped,
+        "dropped_count": len(dropped),
+        "unevaluated_count": len(missing),
+        "expert_review": True,
         "assumptions": [
-            "Results say exceeds under worst-case assumptions; boresight gain may over-estimate off-axis pfd.",
+            "Results are possible concerns for expert review; they do not establish compliance.",
             "Groups missing power density or gain are counted for expert review.",
         ],
     }
     if worst:
         details.update({key: worst[key] for key in ("calc_inputs", "worst_point", "value_db", "limit_db", "margin_db", "mask_id", "citations")})
         details["source_rows"] = {"notice_ids": [n.ntc_id for n in notices]}
-    ranking = score_finding(details)
+    ranking = score_finding(details, ScoringWeights.from_settings(settings))
     details["severity_score"] = ranking["score"]
     details["severity_reasons"] = ranking["reasons"]
-    severity = "high" if worst and worst["margin_db"] > 0 else "medium" if worst and worst["margin_db"] >= -3 else "low"
+    severity = "high" if worst and worst["margin_db"] > 0 else "medium"
     head = notices[0]
     label = "Article 21 limit" if "art21" in rule_id else "Appendix 5 coordination trigger"
+    orbit_label = "GSO" if rule_id.startswith("pfd-gso-") else "NGSO"
     title = f"{head.name or head.ntc_id} ({head.adm}) {label}"
-    if worst and worst["margin_db"] > 0:
+    title = f"{head.name or head.ntc_id} ({head.adm}) {orbit_label} {label}"
+    if not calculations:
+        missing_names = sorted(
+            {name for row in missing for name in row.get("missing", [])}
+            | {row.get("reason", "required inputs") for row in dropped}
+        )
+        title += f" not evaluated; missing {', '.join(missing_names) or 'required inputs'}"
+    elif len(missing):
+        title += f"; {len(missing)} assignment(s) not evaluated"
+    elif worst and worst["margin_db"] > 0:
         title += " exceeds under worst-case assumptions"
     else:
-        title += " is within the screened limit"
+        title += " is below the screened bound; expert review required"
     return Hit(rule_id, family_id, severity, title, head.adm, head.name, sorted(n.ntc_id for n in notices), details, _deadline(notices, settings.comment_window_months))
 
 
@@ -207,11 +209,15 @@ class PfdRule:
     def run(self, issue: SpaceIssue) -> Iterable[Hit]:
         grouped = _families(n for n in issue.notices.values() if n.ntc_type in SATELLITE_NOTICE_TYPES)
         for family_id, notices in grouped.items():
-            for kind, prefix in (("pfd_art21", "pfd-gso-art21"), ("pfd_app5", "pfd-gso-app5")):
+            for orbit_type, orbit_prefix in (("GSO", "gso"), ("NGSO", "ngso")):
+              for kind, kind_prefix in (("pfd_art21", "art21"), ("pfd_app5", "app5")):
                 calculations: list[dict[str, Any]] = []
                 missing: list[dict[str, Any]] = []
+                dropped: list[dict[str, Any]] = []
                 seen: set[tuple[int, float, float, float | None, float | None, str]] = set()
                 for notice in notices:
+                    if (notice.ntc_type == "G") != (orbit_type == "GSO"):
+                        continue
                     if notice.ntc_type == "N":
                         if not issue.orbits.get(notice.ntc_id):
                             missing.append({"ntc_id": notice.ntc_id, "missing": ["orbit"], "frequency_screen_only": True})
@@ -221,7 +227,6 @@ class PfdRule:
                     for assignment in notice.assignments:
                         if assignment.get("emi_rcp") != "E" or assignment.get("freq_min") is None or assignment.get("freq_max") is None:
                             continue
-                        orbit_type = "GSO" if notice.ntc_type == "G" else "NGSO"
                         masks = _masks_for(float(assignment["freq_min"]), float(assignment["freq_max"]), orbit_type, kind)
                         if not masks:
                             continue
@@ -261,13 +266,22 @@ class PfdRule:
                                 _calculation(notice, issue, assignment, mask, self._points())
                                 if notice.ntc_type == "G"
                                 else _ngso_calculation(
-                                    notice, issue.orbits[notice.ntc_id][0], issue, assignment, mask, self._ngso_points()
+                                    notice, issue.orbits[notice.ntc_id], issue, assignment, mask, self._ngso_points()
                                 )
                             )
                             if calculation:
                                 calculations.append(calculation)
-                if calculations or missing:
-                    yield _hit(prefix, family_id, notices, calculations, missing, self.settings)
+                            else:
+                                dropped.append({
+                                    "ntc_id": notice.ntc_id,
+                                    "group_id": int(assignment["grp_id"]),
+                                    "mask_id": mask.mask_id,
+                                    "reason": "no visible Finnish point or GSO longitude",
+                                })
+                if calculations or missing or dropped:
+                    yield _hit(
+                        f"pfd-{orbit_prefix}-{kind_prefix}", family_id, notices, calculations, missing, dropped, self.settings
+                    )
 
     def _points(self) -> tuple[GroundPoint, ...]:
         if self.points is None:
@@ -275,8 +289,8 @@ class PfdRule:
         return self.points
 
     def _ngso_points(self) -> tuple[GroundPoint, ...]:
-        # The one-minute propagation remains intact; this deterministic subset keeps a full
-        # real filing tractable until a vectorised orbit library is introduced.
+        # Retained as representative points for the reported bound; the bound itself is
+        # independent of grid coverage.
         points = self._points()
         return (points[0], points[len(points) // 4], points[len(points) // 2], points[(3 * len(points)) // 4], points[-1])
 

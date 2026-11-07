@@ -11,6 +11,14 @@ class ScoringWeights:
     passive_band: float = 30.0
     near_limit: float = 15.0
 
+    @classmethod
+    def from_settings(cls, settings: Any) -> "ScoringWeights":
+        return cls(
+            settings.pfd_margin_weight, settings.pfd_special_interest_weight,
+            settings.pfd_primary_allocation_weight, settings.pfd_passive_band_weight,
+            settings.pfd_near_limit_weight,
+        )
+
 
 DEFAULT_WEIGHTS = ScoringWeights()
 
