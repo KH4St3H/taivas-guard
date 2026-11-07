@@ -16,7 +16,7 @@ from ific_guard.llm import ClaudeModel, ModelError, ModelOutput, configured_mode
 from ific_guard.llm.drafts import build_prompt, evidence_for
 from ific_guard.llm.guardrail import Evidence, check_text, citations_in, dates_in, numbers_in
 from ific_guard.llm.retrieval import Passage, load_index, retrieve, wanted_provisions
-from ific_guard.llm.template import CaseView, draft_letter_body, explain_case, is_calculated, levels_of, review_notes
+from ific_guard.llm.template import CaseView, margin_of, draft_letter_body, explain_case, is_calculated, levels_of, review_notes
 from ific_guard.models import Case, Event, Notification
 from ific_guard.screening.app import app as screening_app
 
@@ -556,3 +556,44 @@ def test_llm_layer_has_no_mail_code_or_recipient_addresses():
     for path in (Path(__file__).parents[1] / "ific_guard" / "llm").glob("*.py"):
         text = path.read_text()
         assert "smtplib" not in text and "mailer" not in text and "@example" not in text, path
+
+
+def pfd_case(result="envelope_exceeds", basis="envelope", margin=2.8) -> Case:
+    return make_case(
+        rule_id="pfd-ngso-art21",
+        method="pfd_ngso",
+        result=result,
+        margin_basis=basis,
+        value_db=-151.2,
+        limit_db=-154.0,
+        margin_db=margin,
+        mask_id="art21-test",
+        citations=[{"doc": "RR", "clause": "Table 21-4", "printed_page": 165, "footnotes": ["NOTE 2"]}],
+    )
+
+
+def test_draft_accepts_the_citations_the_pfd_rule_writes():
+    result = draft(CaseView.of(pfd_case()))
+    assert any(c.get("printed_page") == 165 for c in result.citations)
+
+
+def test_upper_bound_above_a_limit_is_never_drafted_as_an_exceedance():
+    view = CaseView.of(pfd_case())
+    result = draft(view)
+    assert result.possible_concern_only is True
+    assert "exceeds the limit" not in result.letter
+    assert "establishes neither an exceedance nor compliance" in result.letter
+    assert "does not show that a limit is exceeded" in result.explanation
+    assert margin_of(view.details) is None
+
+
+def test_guardrail_stops_a_model_claiming_a_bound_passed_the_limit():
+    view = CaseView.of(pfd_case())
+    violations = check_text("The filing exceeds the limit.", evidence_for(view, []), True, margin_of(view.details))
+    assert [v for v in violations if v.kind == "claim"]
+
+
+def test_propagated_exceedance_is_still_drafted_as_one():
+    result = draft(CaseView.of(pfd_case("exceeds", "propagated_sample")))
+    assert result.possible_concern_only is False
+    assert "the calculated value exceeds the limit" in result.letter

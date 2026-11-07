@@ -46,7 +46,7 @@ class Draft(BaseModel):
     subject: str
     letter: str
     facts: dict[str, Any]
-    citations: list[dict[str, str]]
+    citations: list[dict[str, Any]]
     review_notes: list[str]
     passages_retrieved: list[str]
     passages_missing: list[str]
@@ -86,7 +86,7 @@ def _build(
         fallback_reason=fallback_reason,
         violations=violations or [],
         method=view.details["method"] if calculated else "screening",
-        possible_concern_only=not (calculated and view.details["margin_db"] > 0),
+        possible_concern_only=not ((margin_of(view.details) or 0) > 0),
         explanation=explanation,
         subject=_subject(view),
         letter=_assemble(view, body, passages),

@@ -56,8 +56,14 @@ def is_calculated(details: dict[str, Any]) -> bool:
     )
 
 
+def is_upper_bound(details: dict[str, Any]) -> bool:
+    """A non-GSO envelope bounds the margin from above, so a positive one does not show a limit passed."""
+    return is_calculated(details) and details.get("margin_basis") == "envelope"
+
+
 def margin_of(details: dict[str, Any]) -> float | None:
-    return float(details["margin_db"]) if is_calculated(details) else None
+    """The margin a text may treat as a result. An upper bound's is not one, so it can't support saying a limit is passed."""
+    return float(details["margin_db"]) if is_calculated(details) and not is_upper_bound(details) else None
 
 
 def levels_of(details: dict[str, Any]) -> dict[str, float]:
@@ -123,7 +129,7 @@ def facts(case: CaseView) -> dict[str, Any]:
     return out
 
 
-def citations(case: CaseView, passages: list[Passage]) -> list[dict[str, str]]:
+def citations(case: CaseView, passages: list[Passage]) -> list[dict[str, Any]]:
     """Every source a draft relies on: the case's own citations, then the retrieved clauses."""
     out = [dict(c) for c in case.details.get("citations", [])]
     out += [{"doc": p.doc, "clause": p.clause, "page_or_url": p.page_or_url} for p in passages]
@@ -164,6 +170,13 @@ def _position_paragraphs(case: CaseView) -> list[str]:
         ]
     method = _METHOD_NAMES[d["method"]]
     mask = f" (mask {d['mask_id']})" if d.get("mask_id") else ""
+    if is_upper_bound(d):
+        bound = (
+            f"Under the assumptions stated below, {method} gives an upper bound of {d['value_db']} dB against a limit of "
+            f"{d['limit_db']} dB{mask}, a margin of {d['margin_db']} dB. An upper bound may describe a state the satellite "
+            "never occupies, so it establishes neither an exceedance nor compliance. It is raised here for expert review."
+        )
+        return [bound, "Finland asks for the information needed to confirm or correct these assumptions."]
     numbers = f"a calculated value of {d['value_db']} dB against a limit of {d['limit_db']} dB{mask}, a margin of {d['margin_db']} dB"
     if d["margin_db"] > 0:
         outcome = "the calculated value exceeds the limit. This result is subject to expert review."
@@ -197,7 +210,10 @@ def explain_case(case: CaseView) -> str:
     network = case.network or "This filing"
     if is_calculated(d):
         outcome = (
-            f"The calculation gives a margin of {d['margin_db']} dB against the limit, under the listed assumptions."
+            f"The upper bound gives a margin of {d['margin_db']} dB against the limit, under the listed assumptions. "
+            "It does not show that a limit is exceeded."
+            if is_upper_bound(d)
+            else f"The calculation gives a margin of {d['margin_db']} dB against the limit, under the listed assumptions."
         )
     else:
         outcome = "No calculation has been made, so this is a possible concern and not a finding about any limit."
@@ -244,7 +260,7 @@ def review_notes(case: CaseView, passages: list[Passage], missing: list[str]) ->
     return notes
 
 
-def reference_block(case: CaseView, cited: list[dict[str, str]]) -> str:
+def reference_block(case: CaseView, cited: list[dict[str, Any]]) -> str:
     """The values the letter rests on, rendered by code so that no rewrite can change them."""
     d = case.details
     lines = [
