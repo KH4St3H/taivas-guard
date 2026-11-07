@@ -91,7 +91,7 @@ python -m ific_guard.cli export --domain terrestrial --issue 3076 --out outputs/
 
 Each export folder holds `cases.csv`, `cases.json` (with the full evidence and assumptions), `manifest.json` (source hash, code hashes, configuration) and `verification.md`. Terrestrial also has `funnel.json`, which shows how many notices each filter removed. See [`outputs/README.md`](outputs/README.md).
 
-The export format is provisional, because Traficom's format hasn't been confirmed.
+Traficom accepts this: they prefer Xls/csv or doc/pdf for quick evaluation, accept any open machine-readable format, prefer JSON over MDB, and named no mandatory fields.
 
 ## What was verified
 
@@ -137,7 +137,7 @@ The hand check recomputed 13 pfd results from raw rows with no difference above 
 - **`pep_max` caps power in the reference bandwidth**, treated as dBW. In 3074 it lowers the worst margin of 74 of 1,234 records and raises none.
 - **Inferred field meanings.** `orbit_lnk`, `long_asc`, `phase_ang`, `fxm_coord`, `action`, `target`, `pwr_eiv` and `pwr_xyz` are inferred from the data, because the ITU ReadMe could not be read.
 - **Non-GSO flights** are two-body with no J2, over one day, for one satellite per orbit shape from an assumed start. They can miss the worst case. The upper bound covers the notified altitudes for any node, phase or epoch, but it may describe a state the satellite never occupies.
-- **T/R 25-08 thresholds are indicative, and all 15 comparisons in 3076 are provisional.** The document doesn't say whether they apply on the Russian border, and no bilateral agreement was checked. Above the bands it covers, the case says no criterion is available.
+- **T/R 25-08 thresholds are indicative, and all 15 comparisons in 3076 are provisional.** The document doesn't say whether they apply on the Russian border, and no bilateral agreement was checked. Above 470 MHz the case currently says no criterion is available. Traficom has since said to apply the T/R 25-08 criteria for above 400 MHz there, which is ticket 20.
 - **The 300 km terrestrial screen and the Finnish border polyline are engineering approximations.** On 3076 the polyline dropped nothing within 300 km of the Natural Earth boundary and kept 7 notices at about 306 km.
 - **Draft letters say "limit" for every comparison**, including Appendix 5 triggers and T/R 25-08 thresholds. An expert should correct the term when editing a draft.
 - **Comment deadlines are estimates**: publication date plus four months.

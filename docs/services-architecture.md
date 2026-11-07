@@ -236,7 +236,7 @@ CSV/JSON stays identical.
 
 | Gap | Effect | Fix |
 |---|---|---|
-| Terrestrial criteria are partial | Land-mobile notices get a P.1546 field strength. T/R 25-08 Annex 1 thresholds apply only up to 470 MHz and are unconfirmed on the Russian border; above that the value has no comparison | Traficom's answer on the criteria (ticket 02) |
+| Terrestrial criteria are partial | Land-mobile notices get a P.1546 field strength. T/R 25-08 Annex 1 thresholds apply only up to 470 MHz and are unconfirmed on the Russian border; above that the value has no comparison yet | Traficom said to apply the T/R 25-08 criteria for above 400 MHz there: ticket 20 |
 | Cases span issues | A case seen in two issues counts once, so a digest or count for one issue can omit it. **Export per issue, not from "new" cases** | Ticket 03 |
 | Older issues reject | Only Space database version 10 screens. Versions 8, 7 and 5 are rejected with a clear error, not read | The brief asks for all existing issues | Add readers for each version |
 | Worst-case gain | pfd results apply maximum notified gain towards Finland, as Traficom said to assume, and frequency rules over-flag. `s_beam` has no boresight in 3074 | None planned: Traficom said beams "are not relevant" |

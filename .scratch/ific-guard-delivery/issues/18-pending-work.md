@@ -12,7 +12,7 @@ Everything still open as of 2026-11-07, checked against `integration/wave-3` at 
 
 Answers came on Discord, 2026-11-07 8:39-8:55, from Pekka, Otto and the Traficom account.
 
-- [ ] **Record the answers in ticket 02,** with who answered and when. Its answer section is empty.
+- [x] **Record the answers in ticket 02,** with who answered and when. Its answer section is empty.
 - [ ] **Search CEPT sources for pfd concerns.** Traficom: the RR table is "the main source", but "CEPT for instance can elaborate on the defined limits in Europe as you might want to focus on concerns instead of just hard limits". `limit_masks.json` cites only the RR. The brief lists `https://docdb.cept.org/implementation/overview`. Add only values read at the source.
 - [ ] **Remove GIMS as a future step.** Docs done; the `rule_pfd.py` docstring remains. Traficom: beams "are not relevant" and "the worst case scenario should always be assumed". Update `ARCHITECTURE.md:235` and `:243`, `docs/services-architecture.md:238`, and `rule_pfd.py:9`, and cite Traficom for worst case. Keep "exceeds under worst-case assumptions". The `:238` row also still says there is no pfd check, which ticket 07 fixed.
 - [ ] **State that the 3 dB watch band is our choice.** `WATCH_DB` comes from `ARCHITECTURE.md` section 4.7, not from Traficom.
@@ -43,10 +43,10 @@ Answers came on Discord, 2026-11-07 8:39-8:55, from Pekka, Otto and the Traficom
 
 Ask these first, because they change what is submitted:
 
-- [ ] **Output format:** format and mandatory fields for the 3074 and 3076 files (Q1). Both exports are provisional until then.
+- [x] **Output format:** answered. Xls/csv or doc/pdf preferred, any open machine-readable format is fine, JSON preferred over MDB, and no mandatory fields named.
 - [ ] **Terrestrial calculation points:** the Finnish border or coast, or the Excel station locations. Passed to Jaakko, no reply seen. `rule_field_strength.py:84` uses boundary and coast points, stated as an assumption.
-- [ ] **Terrestrial limits:** trigger values and time percentage per neighbour, the Russian border, bilateral agreements, above 470 MHz, and 793-795 MHz (Q6, Q8-10).
-- [ ] **Demo video:** may we show rows of the Excel table and an unfinished prototype?
+- [ ] **Terrestrial limits:** trigger values and time percentage per neighbour, the Russian border and bilateral agreements (Q6, Q8, Q9). Above 470 MHz is answered (Q10): ticket 20.
+- [x] **Demo video:** yes, "as you see best".
 - [ ] **Over-flagging:** how much is acceptable (Q4)? Bring ticket 16's counts: no new cases, but 75% more station links on 3074.
 
 Useful, but work can continue without them:

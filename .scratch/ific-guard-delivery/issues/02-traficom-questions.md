@@ -54,4 +54,44 @@ Discord is the preferred channel: `traficomsinceai2026`. From the brief, on Satu
 
 ## Answer
 
-(Record Traficom's answers here, with who answered and when.)
+Recorded 2026-11-07 from Traficom's replies on Discord. Quotes are verbatim. Where no name is given, the reply came from the Traficom account or wasn't attributed.
+
+### Q1: output format
+
+> Xls/csv or doc/pdf export preferred (for quick evaluation purposes), but of course technical output of your choice is plus. I personally prefer JSON over MDB, but generally any machine readable open format is fine.
+
+No mandatory fields were named. Our `cases.csv` plus `cases.json` fits the answer.
+
+### Q10: criterion above 470 MHz (Jaakko)
+
+> For frequencies above 470 MHz, you can apply the same criteria as those specified in CEPT Recommendation T/R 25-08 for the frequency range above 400 MHz.
+
+The work is in ticket 20.
+
+### Q15 and broadcasting: what is protected
+
+> Satellite downlink (space-to-Earth) is the interferer. Protected is the Finnish usage, i.e. RX frequencies in table, in some cases TX frequencies (if RX frequencies are not separately noted) is the ones to be protected. Note also, that TX frequencies are generally received in Finland (f. ex. BC and TV stations are received all around the transmitters, with even high gain antennas, fixed use have another end of the linki (i.e. receiving TX frequency of the link transmitter in the excel)) so possible high pfd's within Finland territory might raise concern.
+
+> [BC and BT rows] Whole coverage area around them, see previous note. General rule: every TX is received in Finland.
+
+Done in ticket 16. It also changes how ticket 19 treats TX matches.
+
+### Beams and worst case
+
+> The beams of the emission are not relevant and in the analysis the worst case scenario should always be assumed. The satellites move, spin, and might change their pointing direction constantly relative to Earth's surface (except GSO satellites).
+
+### pfd criterion
+
+> The PFD limit table found in the RR is the limit that is internationally agreed on and the main source of information. We also encourage to search for other sources along with the RR, since CEPT for instance can elaborate on the defined limits in Europe as you might want to focus on concerns instead of just hard limits. (Countries might have their own defined limits for some specific bands, but that is not relevant this time)
+
+The CEPT search is still open in ticket 18.
+
+### Demo video
+
+> Yes, as you see best.
+
+This permits showing rows of the Excel table and an unfinished prototype.
+
+### Still unanswered
+
+Q2-Q9, Q11-Q14, Q16 and Q17, plus whether to calculate terrestrial fields at the Finnish border or at the Excel station locations.

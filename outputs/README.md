@@ -1,6 +1,6 @@
 # Evaluation exports
 
-`ific_3074/` contains provisional Space IFIC 3074 screening results, and `ific_3076/`
+`ific_3074/` contains Space IFIC 3074 screening results, and `ific_3076/`
 the Terrestrial IFIC 3076 land-mobile results. These are possible concerns requiring
 expert review, not confirmed interference. Read `manifest.json` for the source hash,
 code hashes, configuration and coverage gaps.
@@ -29,7 +29,7 @@ mutable review cases from leaking into historical evaluation files.
 Ranking is severity, estimated deadline, severity score, margin, rule ID, then
 notice-family ID.
 Case files are deterministic for fixed inputs and code. Manifest generation time
-and measured runtime vary. The format remains provisional pending ticket 02.
+and measured runtime vary. Traficom accepts CSV, and any open machine-readable format; JSON is preferred over MDB, and no fields are mandatory (ticket 02).
 
 `hand-check.md` rechecks a sample of each rule from raw rows, and `neighbour-trends.md` counts neighbouring notices across issues 3074-3083.
 

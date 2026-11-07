@@ -40,7 +40,10 @@ Ticket 05 put "power, geometry or antenna-direction calculations" out of scope a
 1. **Find the stations for each pfd calculation.** Use `Station.protected_bands`, both RX and TX, overlapping the assignment's band. Share the code with `rule_stations.py` rather than copying it.
 2. **GSO: calculate at each station's coordinates.** Report the value, limit, margin and arrival angle per station. A station that can't see the satellite is a computed result: it gets no margin and is counted separately.
 3. **Non-GSO: keep the two kinds of result apart.** Test station points in the one-day flight and report them as sampled results. The upper-bound envelope has no location, so report it as applying to the filing, never as a value at a station. Don't call a bound an exceedance.
-4. **Label what a TX match means.** Ticket 16 records that a station's coordinates are not where its TX band is received, so a margin at the site for a TX match is not a margin at the receiver. Keep the existing wording that says so.
+4. **Treat a TX match as anywhere in Finland, not at the site.** Traficom (ticket 02): "every TX is received in Finland", broadcasting is received over the "whole coverage area", and a fixed link's TX is received at its other end, so "possible high pfd's within Finland territory might raise concern".
+   - For a TX match, use the worst result over the Finnish grid, which the rule already calculates, and name the station.
+   - Use the margin at the station's own coordinates only for RX matches.
+   - Never present a site value as the value at a TX receiver.
 5. **Set `station_ids` and `special_interest`** on linked pfd cases, so the scoring boost applies and the drafts list them.
 6. **Add the M4 allocation to station cases:** the primary services in the band, and whether M4 gives it a space-to-Earth allocation in Finland.
 7. **Base severity on the evidence,** replacing the fixed medium:
