@@ -23,7 +23,7 @@ Answers came on Discord, 2026-11-07 8:39-8:55, from Pekka, Otto and the Traficom
 - [ ] **Older issues are rejected.** Only database version 10 screens; versions 8, 7 and 5 (samples 2925, 2809, 2559) return an error, so "all existing IFICs" is not met. Needs a decision: build them, or declare the limit.
 - [ ] **5,429 records are unevaluated,** because we do not know which columns supply the X and Y mask parameters. Each one is a possible missed case. Ask Traficom, or find it in the Space Preface.
 - [ ] **No space-side trends.** The brief mentions "trends and planned usage of new satellites systems"; `trends.py` covers terrestrial only. Decide whether to add a small version.
-- [ ] **pfd results never count as special interest.** `scoring.py` gives a boost for `special_interest`, but only the terrestrial rule sets it. Link pfd results to stations using the bands from ticket 16.
+- [ ] **pfd results never count as special interest.** Now ticket 19.
 - [ ] **No ITU tool cross-check is recorded.** `ARCHITECTURE.md:152` plans to compare some 3074 networks with ITU's PFD GSO software, and the brief names GIBC. Nothing in `outputs/` records this. Run it if the tools are available, or say it was not done.
 - [ ] **M15 is unused.** `ARCHITECTURE.md:111` plans low-severity notes only, and the brief calls it less relevant. Decide, and state it either way.
 

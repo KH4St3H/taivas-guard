@@ -30,6 +30,7 @@ Status values come from `docs/agents/triage-labels.md`. Size is a rough relative
 | 16 | Protect TX as well as RX frequencies | Done, merged in `integration/wave-3` | M | none | Required |
 | 17 | AP30, AP30A and AP30B plan screening | Later, `needs-info` | L | none | Required by the brief, gap declared for now |
 | 18 | Pending work before submission (checklist) | Coordinator | L | none | Mixed, see ticket |
+| 19 | Link pfd results to special-interest stations | Open, on `develop` | L | none | Top priority for the user |
 
 "Required" follows the brief: datasets marked `**` are mandatory, it asks for GSO and non-GSO pfd, the side quest including trends, and for all existing issues to be evaluable. A UI is not named in the brief.
 
