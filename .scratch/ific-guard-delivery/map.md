@@ -33,6 +33,23 @@ Status values come from `docs/agents/triage-labels.md`. Size is a rough relative
 | 19 | Link pfd results to special-interest stations | Open, on `develop` | L | none | Top priority for the user |
 | 21 | Finnish restrictions, RR footnotes naming Finland, real earth stations | Done on `agent/21-finnish-restrictions`; earth station coordinates still needed | L | none | Wanted: Finnish data the brief says to use |
 | 20 | Terrestrial criterion above 470 MHz | Done at `909f2de` on `develop` | S | none | Required: Traficom answered Q10 |
+| 22 | Screen notification-stage filings that name Finland | Open, `ready-for-agent` | S | none | Accuracy (06 D): three known 3074 misses |
+| 23 | Set aside orbits not referred to the Earth | Open, `ready-for-agent` | S | none | Accuracy (06 D): six known 3074 false positives |
+| 24 | Map station layer on the satellite's own frequencies | Open, `ready-for-agent` | S | none | Output quality (06 C, D) |
+| 25 | Finding page drafts from the drafting service | Open, `ready-for-agent` | M | none | The visible AI part (02 step 9, title) |
+| 26 | Run the drafting path with a real model | Open, `ready-for-human` | S | 25 | Untested AI component |
+| 27 | Letters name the kind of criterion | Open, `ready-for-agent` | S | none | Auditability (06 E) |
+| 28 | README, Reference page and docs match the code | Open, `ready-for-agent` | S | 29 | Submission (07) |
+| 29 | Re-export 3074 and 3076, commit in the manifest | Open, `ready-for-agent` | M | 22, 23 | Submission (07), reproducibility (06 A) |
+| 30 | Trends in the app, terrestrial and space | Open, `ready-for-agent` | M | none | Side quest trends; guiding question |
+| 31 | Shrink stored station lists without resetting reviews | Open, `ready-for-agent` | S | none | Keeps review decisions |
+| 32 | Update and rehearse the demo | Open, `ready-for-human` | S | 24, 25, 28, 29 | Submission (07) |
+| 33 | Cross-check pfd with ITU's software | Open, `ready-for-human` | M | none | Credibility (06 A) |
+| 34 | Decide on Regulation M15 | Open, `needs-triage` | S | none | Brief 02 names it |
+| 35 | Questions for Traficom before submission | Open, `ready-for-human` | S | none | Accuracy reference, terrestrial framework |
+| 36 | Merge develop to main for submission | Open, `ready-for-human` | S | 28, 29 | Submission (07); needs approval |
+
+Tickets 22-36 come from a requirement-by-requirement check of the brief on 2026-11-07. The larger gaps it found stay where they were already tracked: protecting Finnish satellites and older database versions in ticket 18, AP30 in ticket 17.
 
 "Required" follows the brief: datasets marked `**` are mandatory, it asks for GSO and non-GSO pfd, the side quest including trends, and for all existing issues to be evaluable. A UI is not named in the brief.
 
