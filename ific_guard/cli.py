@@ -21,6 +21,7 @@ def main() -> None:
     export.add_argument("--issue", type=int, required=True)
     export.add_argument("--out", type=Path, required=True)
     export.add_argument("--sha256", help="Select a specific imported revision instead of the latest")
+    export.add_argument("--allow-dirty", action="store_true", help="Allow an uncommitted or unverifiable code version; recorded in the manifest")
     args = parser.parse_args()
 
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
@@ -29,7 +30,7 @@ def main() -> None:
         from .export import export_issue
 
         try:
-            result = export_issue(args.domain, args.issue, args.out, sha256=args.sha256)
+            result = export_issue(args.domain, args.issue, args.out, sha256=args.sha256, allow_dirty=args.allow_dirty)
         except ValueError as exc:
             parser.error(str(exc))
         print(json.dumps(result))

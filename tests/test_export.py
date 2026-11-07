@@ -16,6 +16,22 @@ from tests.conftest import make_zip
 from tests.test_screening import FakeReader, freq, notice
 
 
+@pytest.fixture(autouse=True)
+def clean_code_version(monkeypatch):
+    monkeypatch.setattr("ific_guard.export._code_version", lambda: {"commit": "c" * 40, "dirty": False})
+
+
+@pytest.mark.parametrize("version", [{"commit": "a" * 40, "dirty": True}, {"commit": None, "dirty": None}])
+def test_dirty_or_unknown_code_requires_explicit_override(tmp_path, fake_reader, monkeypatch, version):
+    source(tmp_path)
+    monkeypatch.setattr("ific_guard.export._code_version", lambda: version)
+    out = tmp_path / "out"
+    with pytest.raises(ValueError, match="--allow-dirty"):
+        export_issue("space", 3074, out)
+    assert not out.exists()
+    assert export_issue("space", 3074, out, allow_dirty=True)["code_version"] == version
+
+
 def source(tmp_path, issue=3074, sha="a" * 64):
     path = tmp_path / f"{issue}-{sha[:4]}.mdb"
     path.write_bytes(b"test database")

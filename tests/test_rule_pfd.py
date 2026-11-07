@@ -6,6 +6,7 @@ Expected numbers come from the closed forms below worked separately, not from th
   margin    = P + 10 log10(B_ref) + G - spread(d) - limit(a)
 """
 import math
+import os
 from pathlib import Path
 
 import pytest
@@ -18,7 +19,7 @@ from ific_guard.screening.scoring import score_finding
 from ific_guard.screening.space import MdbReader, SpaceIssue
 from tests.test_screening import FakeReader, freq, notice
 
-SHARED_3074 = Path("/Users/mehrshad/personal/radio/data/shared/ific3074.mdb")
+SHARED_3074 = Path(os.environ.get("IFIC_SHARED_DATA", Path(__file__).parents[1] / "data" / "shared")) / "ific3074.mdb"
 GROUP = {"grp_id": 1, "ntc_id": 1, "beam_name": "1", "emi_rcp": "E"}
 BEAM_30 = {"ntc_id": 1, "emi_rcp": "E", "beam_name": "1", "gain": 30}
 
