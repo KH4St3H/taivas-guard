@@ -108,7 +108,7 @@ class DomainAdapter:
 | M4 band summary | `m4_satellite_filter.csv` | 212 bands from 30 MHz up, with space/terrestrial/passive flags and a concern level |
 | Special-interest XLS (SinceAI platform) | `protected_station` | Station number, frequency, coordinates, antenna data |
 | Finnish satellite networks | `fin_satellite_band` | All `adm = 'FIN'` networks in the SRS |
-| M15 (licence-exempt) | optional | Low-severity notes only |
+| M15 (licence-exempt) | optional; excluded from this demonstrator | No M15-specific screening or low-severity notes. A licence-exempt band match alone does not establish a satellite interference concern; M4 remains the national allocation input. See the scope decision in README (ticket 34). |
 
 ### 4.4 Relevance filter
 

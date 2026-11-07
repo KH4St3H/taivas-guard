@@ -96,6 +96,11 @@ python -m ific_guard.cli export --domain terrestrial --issue 3076 --out outputs/
 
 ## Outputs
 
+### Regulation M15 scope decision
+
+M15 is excluded from this demonstrator (ticket 34). The brief names it as an optional dataset in section 05. We use M4 for national allocation comparisons and the supplied station bands for special interests. Adding a low-severity note solely because a satellite frequency overlaps a licence-exempt band would add noise without a verified satellite-to-receiver protection criterion. No M15-specific comparison or protection coverage is claimed; future support needs sourced applicability and technical criteria.
+
+
 | Output | What it is |
 |---|---|
 | [`outputs/ific_3074/`](outputs/ific_3074) | Space 3074: 182 cases (30 high, 123 medium, 29 low) |
