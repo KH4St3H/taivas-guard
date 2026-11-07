@@ -1,2 +1,4 @@
 # Hashes in manifest.json cover these exact bytes, so git must not rewrite line endings.
 outputs/** text eol=lf
+# The generated M4 table is compared byte-for-byte with its API snapshot build.
+data/national/*.csv text eol=lf

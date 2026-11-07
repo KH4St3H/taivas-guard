@@ -142,7 +142,7 @@ The hand check recomputed 13 pfd results from raw rows with no difference above 
 ### Things not evaluated
 
 - **5,429 non-GSO records in 3074 have no calculation** because their masks need parameters X or Y, which the IFIC data can't supply (5,398 and 31). They are counted, and shown for expert review.
-- **Only API/A and CR/C space filings are screened.** Notification-stage (`N`) filings aren't, which includes three 3074 notices naming Finland: 125500060, 125500061 and 125500066. AP30, AP30A and AP30B aren't screened, and 3074 has no rows to test them with.
+- **Technical space rules screen API/A and CR/C.** The BR-names-Finland rule also screens notification-stage (`N`) filings naming FIN, including 3074 notices 125500060, 125500061 and 125500066. These require expert review of the cited provisions; no response deadline is assumed. AP30, AP30A and AP30B remain unsupported.
 - **Only Space database version 10 screens.** Issues in versions 8, 7 and 5 are rejected with a clear error, so "all existing issues" isn't met for older issues. Space discovery walks back to 1998, and 3074-3083 are all version 10.
 - **Terrestrial covers land mobile only.** Other services and terrain (`pathinfo = 1`) aren't calculated.
 - **Article 22 epfd isn't calculated.** Neither is the sum of several satellites at one point.

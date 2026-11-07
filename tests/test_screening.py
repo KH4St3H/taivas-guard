@@ -94,6 +94,25 @@ def test_comment_deadline_clamps_to_month_end():
     assert add_months(date(2026, 10, 31), 4) == date(2027, 2, 28)
 
 
+def test_notification_named_by_br_is_reviewed_without_widening_other_rules():
+    issue = SpaceIssue(FakeReader(
+        notice=[notice(i, reason="N") for i in (1, 2, 3, 4)],
+        geo=[dict(ntc_id=i, long_nom=25) for i in (1, 2, 3, 4)],
+        freq=[freq(i, 3500, 3540) for i in (1, 2, 3, 4)],
+        grp=[dict(grp_id=10, ntc_id=1)],
+        provn=[dict(grp_id=10, adm="FIN", coord_prov="9.7")],
+        tr_provn=[dict(ntc_id=2, ctry="FIN", coord_prov="9.14"),
+                  dict(ntc_id=3, adm="FIN", coord_prov=None)],
+    ))
+    hits = list(FinlandNamedRule(get_settings()).run(issue))
+    assert {h.family_id for h in hits} == {1, 2, 3}
+    assert all(h.comment_deadline is None for h in hits)
+    assert all(h.details["stage"] == "notification" and "notification stage" in h.title for h in hits)
+    assert hits[0].details["sections"] == ["9.6"]
+    assert not issue.notices  # PFD, M4, stations and custom rules retain A/C scope.
+    assert not list(M4NoDownlinkRule(get_settings(), [BAND]).run(issue))
+
+
 def _artifact(domain="space", issue=3083, sha="a" * 64):
     with session_scope() as s:
         row = Artifact(domain=domain, issue_no=issue, source_url="u", sha256=sha, size_bytes=1, mdb_path="x")

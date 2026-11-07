@@ -70,15 +70,17 @@ class FinlandNamedRule:
 
     def run(self, issue: SpaceIssue) -> Iterable[Hit]:
         named = issue.provisions_for_adm(FINLAND)
-        for family_id, notices in _families(issue.notices[i] for i in named).items():
+        for family_id, notices in _families(issue.coordination_notices[i] for i in named).items():
             provisions = sorted({p for n in notices for p in named[n.ntc_id]["provisions"]})
             groups = sorted({g for n in notices for g in named[n.ntc_id]["groups"]})
             head = notices[0]
+            notification_stage = any(n.reason == "N" for n in notices)
             yield Hit(
                 rule_id=self.id,
                 family_id=family_id,
                 severity="high",
-                title=f"BR names Finland in {head.name or head.ntc_id} ({head.adm}) under {', '.join(provisions) or 'coordination data'}",
+                title=f"BR names Finland in {head.name or head.ntc_id} ({head.adm}) under {', '.join(provisions) or 'coordination data'}"
+                      + (" (notification stage)" if notification_stage else ""),
                 adm=head.adm,
                 network=head.name,
                 notice_ids=sorted(n.ntc_id for n in notices),
@@ -87,8 +89,14 @@ class FinlandNamedRule:
                     "group_ids": groups,
                     "sections": sorted({n.provision for n in notices if n.provision}),
                     "basis": "Administration FIN appears in the provn or tr_provn tables of this IFIC.",
+                    "notice_reasons": sorted({n.reason for n in notices if n.reason}),
+                    **({
+                        "stage": "notification",
+                        "response_guidance": "Notification-stage filing: expert review of the cited provisions is required; no applicable response window has been established.",
+                        "assumptions": ["No API/A or CR/C comment window is assumed for a notification-stage filing."],
+                    } if notification_stage else {}),
                 },
-                comment_deadline=_deadline(notices, self.settings.comment_window_months),
+                comment_deadline=None if notification_stage else _deadline(notices, self.settings.comment_window_months),
             )
 
 
