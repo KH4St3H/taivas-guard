@@ -18,15 +18,15 @@ Status values come from `docs/agents/triage-labels.md`. Size is a rough relative
 | 04 | M4 bands from Traficom's API | Done, `agent/04-m4-bands` | M | none | Required |
 | 05 | Station loader and overlap rule | Done, merged | M | none | Required |
 | 06 | pfd engine and limit masks | Done, by `ar6aaz` | L | none | Required |
-| 07 | pfd rule on real filings | Agent | M | 06 | Required |
-| 08 | Terrestrial adapter, diff and filter | Partly done in PR #1 | L | none | Required |
+| 07 | pfd rule on real filings | Done, merged in `integration/wave-3` | M | 06 | Required |
+| 08 | Terrestrial adapter, diff and filter | Done, merged in `integration/wave-3` | L | none | Required |
 | 09 | P.1546 engine and T/R 25-08 triggers | Done, `agent/09-p1546` | L | none | Required |
-| 10 | Terrestrial findings and 3076 export | Agent | M | 03, 08, 09 | Required |
-| 11 | Neighbour trends and anomalies | Agent | S | 08 | Required |
+| 10 | Terrestrial findings and 3076 export | Done, merged in `integration/wave-3` | M | 03, 08, 09 | Required |
+| 11 | Neighbour trends and anomalies | Done, merged in `integration/wave-3` | S | 08 | Required |
 | 12 | Review UI | Done, React in `frontend/`, by `ar6aaz` | M | none | Wanted |
 | 13 | Explanations and draft letters | Done, `agent/13-llm-drafts` | M | none | Required |
 | 14 | Final run, evaluation files and demo | Coordinator | M | all others | Required |
-| 15 | Older IFIC issues | Agent | M | 03 | Required |
+| 15 | Older IFIC issues | Done for version 10 only, merged in `integration/wave-3` | M | 03 | Required |
 
 "Required" follows the brief: datasets marked `**` are mandatory, it asks for GSO and non-GSO pfd, the side quest including trends, and for all existing issues to be evaluable. A UI is not named in the brief.
 
@@ -121,6 +121,10 @@ Screening rules without a calculation use `method: "screening"` and leave the nu
 - **The deadline does not constrain this plan** (team decision, 2026-11-07).
 - **Issues arrive two ways:** from ITU on a cron schedule, or uploaded as an `.mdb` or a `.zip` containing one. Both are built (`IFIC_SYNC_CRON`, `POST /issues/upload`).
 - **Terrestrial neighbours are Russia, Sweden, Estonia, Norway and Denmark** (team decision). ITU codes `RUS`, `S`, `EST`, `NOR`, `DNK`, confirmed in `ref_adm`, in setting `neighbour_adms`. Sweden's code is `S`, not `SWE`. Treated as a terrestrial scope only, because the brief says a satellite from anywhere can reach Finland.
+
+- **Wave 2 merged (2026-11-07):** `integration/wave-3` has 07, 08, 10, 11 and 15, with ticket 10's scoring placeholder replaced by `scoring.py`. 534 tests pass with `IFIC_SHARED_DATA` set. Not pushed. Tracked `outputs/` predate some of this and ticket 14 regenerates them. 07 and 10 were each recomputed once by the coordinator from source rows.
+- **Space database versions:** only version 10 screens. Versions 8, 7 and 5 exist (samples 2925, 2809, 2559) and are rejected with a clear error, so "all existing IFICs" is not yet met. Coordinator's recommendation, awaiting the user's decision.
+- **Open questions added for ticket 02:** whether T/R 25-08 applies on the Russian border and any Finland-Russia agreement; the criterion at 793-795 MHz; 10% or 1% time; whether notifier-declared FIN coordination keeps 5 notices at medium; a height for mobile stations with none; the `pwr_ds_max` unit and `orbit_lnk`, `long_asc`, `phase_ang` meanings from the primary Space Preface; which columns supply the X and Y mask parameters (5,429 records unevaluated).
 
 ## Fog
 

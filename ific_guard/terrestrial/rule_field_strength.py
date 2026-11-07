@@ -24,6 +24,7 @@ from ..db import session_scope
 from ..engines.p1546 import IMPLEMENTATION, P1546RangeError, PathSegment, field_strength
 from ..models import Artifact
 from ..screening.rules import Hit
+from ..screening.scoring import score_finding
 from ..screening.space import MdbReader
 from ..screening.stations import Station, load_stations
 from ..sync.sources import TERRESTRIAL
@@ -83,30 +84,6 @@ COMMON_ASSUMPTIONS = (
     "Evaluated at Natural Earth points on the Finnish boundary, including the coast. This is not the legal border, and T/R 25-08 does not define the evaluation point for a sea border.",
     "pwr_dbw with pwr_eiv E is read as e.r.p., and with I as e.i.r.p. This is inferred from the data, because the ITU ReadMe could not be read.",
 )
-
-
-# --- Replace with: from ..screening.scoring import score_finding (ticket 07). -----------------------
-def score_finding(details: dict[str, Any]) -> dict[str, Any]:
-    """PLACEHOLDER for ticket 07's scoring.score_finding, with the same keys and default weights."""
-    score, reasons = 0.0, []
-    margin = details.get("margin_db")
-    if isinstance(margin, (int, float)):
-        score += max(-30.0, min(70.0, margin * 10.0))
-        reasons.append(f"margin {margin:.2f} dB x 10")
-        if -3 <= margin <= 0:
-            score += 15.0
-            reasons.append("within 3 dB of the threshold x 15")
-    if details.get("special_interest"):
-        score += 20.0
-        reasons.append("special-interest station x 20")
-    if details.get("primary_allocation"):
-        score += 10.0
-        reasons.append("M4 primary allocation x 10")
-    if details.get("passive_band"):
-        score += 30.0
-        reasons.append("passive band x 30")
-    return {"score": round(max(0.0, min(100.0, score)), 3), "reasons": reasons}
-# ---------------------------------------------------------------------------------------------------
 
 
 @lru_cache(maxsize=1)
