@@ -102,7 +102,7 @@ def export_issue(domain: str, issue_no: int, out: Path, *, sha256: str | None = 
             "AP30/AP30A/AP30B are not screened; current scope is API/A and CR/C.",
             "No beam coverage or power-flux-density calculation.",
             "The current M4 file merges 3400-4200 MHz and can miss 3400-3800 MHz concerns.",
-            "Special-interest station overlap is not yet implemented.",
+            "Special-interest station overlap is frequency overlap only; stations with no RX frequency are skipped.",
             "Comment deadlines are estimates requiring expert confirmation.",
         ],
         "generated_at": datetime.now(UTC).isoformat(),
