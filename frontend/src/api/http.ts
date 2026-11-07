@@ -1,13 +1,17 @@
 // Talks to the IFIC Guard services through the /api proxy. Their shapes are defined in
 // ific_guard/schemas.py and the Case.details contract in .scratch/ific-guard-delivery/map.md.
 import { SEVERITY_ORDER } from '../lib/severity';
-import type { Api, BandMatch, CeptCompliance, Coverage, Trends, NewRun, Run, CalculatedResult, CustomRule, CustomRuleRef, Domain, DomainFreshness, Finding, FunnelStage, IssueSummary, MonitorStatus, ReferenceSource, ReviewState, RuleDefinition, RuleSave, RuleSpec, RuleVersion, ScreenStatus, StationQuery, Severity, StationResult, SyncRun } from './types';
+import type { Api, BandMatch, CaseDraft, CeptCompliance, Coverage, Trends, NewRun, Run, CalculatedResult, CustomRule, CustomRuleRef, Domain, DomainFreshness, Finding, FunnelStage, IssueSummary, MonitorStatus, ReferenceSource, ReviewState, RuleDefinition, RuleSave, RuleSpec, RuleVersion, ScreenStatus, StationQuery, Severity, StationResult, SyncRun } from './types';
 
 export interface ArtifactOut { id: number; domain: string; issue_no: number; published_on: string | null; source_url: string; sha256: string; size_bytes: number; fetched_at: string; screen_status: string; screened_at: string | null }
 export interface SyncRunOut { id: number; trigger: string; started_at: string; finished_at: string | null; status: string; discovered: number; fetched: number; errors: string[] }
 export interface CaseSummary { id: number; domain: string; rule_id: string; severity: string; title: string; adm: string | null; network: string | null; first_issue: number; last_issue: number; comment_deadline: string | null; review_status: string; m4_primary_services?: string[] }
 export interface CaseOut extends CaseSummary { notice_ids: string[]; details: Record<string, unknown>; source_sha256: string; review_note: string | null; created_at: string; updated_at: string }
 export interface UploadOut { artifact: ArtifactOut; new: boolean }
+export interface DraftOut {
+  source: 'template' | 'llm'; model: string | null; fallback_reason: string | null; violations: { kind: string; value: string; why: string }[]; method: string; possible_concern_only: boolean;
+  explanation: string; subject: string; letter: string; citations: Record<string, unknown>[]; review_notes: string[];
+}
 export interface StatusOut { running: boolean; schedule?: string | null; next_run_in_s?: number | null; domains: Record<string, { latest_issue: number | null; published_on: string | null; age_days: number | null; stale: boolean }> }
 
 type Service = 'sync' | 'screening';
@@ -44,6 +48,18 @@ async function call<T>(service: Service, path: string, init?: RequestInit): Prom
     throw new ApiError(errorMessage(service, res.status, detail), res.status);
   }
   return (await res.json()) as T;
+}
+
+export function mapDraft(d: DraftOut): CaseDraft {
+  const page = (c: Record<string, unknown>) => {
+    const where = c.page_or_url ?? c.url ?? (c.printed_page !== undefined ? `p. ${c.printed_page}` : null);
+    return where === null ? null : String(where);
+  };
+  return {
+    source: d.source, model: d.model, fallbackReason: d.fallback_reason, violations: d.violations, method: d.method, possibleConcernOnly: d.possible_concern_only,
+    explanation: d.explanation, subject: d.subject, letter: d.letter, reviewNotes: d.review_notes,
+    citations: d.citations.map((c) => ({ doc: String(c.doc ?? ''), clause: String(c.clause ?? ''), page: page(c) })),
+  };
 }
 
 const RULE_LABELS: Record<string, string> = {
@@ -313,7 +329,7 @@ const SOURCES: ReferenceSource[] = [
 
 export const httpApi: Api = {
   mode: 'live',
-  capabilities: { upload: true, checkItuNow: true, rescreen: true, reviewStatuses: ['accepted', 'rejected', 'pending'], letterStorage: 'browser', customRules: true, stationLists: true, coverage: true, trends: true },
+  capabilities: { upload: true, checkItuNow: true, rescreen: true, reviewStatuses: ['accepted', 'rejected', 'pending'], letterStorage: 'browser', customRules: true, stationLists: true, coverage: true, trends: true, drafts: true },
   severityNote: 'Deterministic rules set severity; the 3 dB watch band and ranking weights are project choices. Calculated exceedances use worst-case assumptions. Expert review is required; severity does not establish interference or a regulatory breach.',
   listSeverityRules: async () => [
     { severity: 'High', rule: 'BR names Finland; passive-band M4 concerns; unflagged calculated PFD exceedances, including at stations; or a terrestrial indicative-threshold exceedance with score at least 50, subject to the caps below.' },
@@ -431,6 +447,17 @@ export const httpApi: Api = {
       notes: o.notes, assumptions: o.assumptions,
     };
   },
+  getDraft: async (id, useLlm = false) => {
+    try {
+      return mapDraft(await call<DraftOut>('screening', `/cases/${encodeURIComponent(id)}/draft${useLlm ? '?use_llm=true' : ''}`));
+    } catch (e) {
+      if (useLlm && e instanceof ApiError && (e.status === 401 || e.status === 403)) {
+        throw new ApiError('Rewriting with AI is switched off. Set IFIC_API_KEY for the frontend server to match the services, then restart it.', e.status);
+      }
+      throw e;
+    }
+  },
+  draftingModel: async () => (await call<{ model: string | null }>('screening', '/drafting')).model,
   rescreenSpace: async () => (await call<{ issues: number[] }>('screening', '/rules/rescreen', { method: 'POST' })).issues,
   listReferenceSources: async () => SOURCES,
   listLimits: async () => [],
