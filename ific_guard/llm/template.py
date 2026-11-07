@@ -96,11 +96,12 @@ def _joined(values: list[str]) -> str:
 
 STATION_RULE = "station-rx-overlap"
 STATIONS_IN_TEXT = 10
+_CALCULATED_AT_STATION = {"exceeds", "exceeds_flagged", "within_3db", "below"}
 _STATUS_TEXT = {
     "exceeds": "calculated above the limit",
     "exceeds_flagged": "calculated above the limit, but an input or the station's location is flagged",
     "within_3db": "calculated within 3 dB below the limit",
-    "bound_above": "no value at the station; the filing's upper bound is near or above the limit",
+    "bound_above": "no value at the station; the filing's upper bound is near the limit or higher",
     "no_calculation": "no calculation",
     "below": "calculated below the limit",
     "bound_below": "no value at the station; the filing's upper bound is below the limit",
@@ -118,10 +119,12 @@ def _station_line(record: dict[str, Any]) -> str:
         if record.get("field_location"):
             line += "; at the station's site, which is not where this band is received"
         return line
-    line = f"- Station {record['station_id']} ({sides}): {_STATUS_TEXT.get(record['status'], record['status'])}"
-    if _is_number(record.get("margin_db")):
-        line += (f", {_db(record['value_db'])} dB against {_db(record['limit_db'])} dB, margin {_db(record['margin_db'])} dB"
-                 f" at {_db(record['angle_deg'])} degrees")
+    status = _STATUS_TEXT.get(record["status"], record["status"])
+    if record["status"] in _CALCULATED_AT_STATION and _is_number(record.get("margin_db")):
+        # Numbers first: after "the limit" a number would read as the limit to the guardrail.
+        status = (f"{_db(record['value_db'])} dB against {_db(record['limit_db'])} dB, margin {_db(record['margin_db'])} dB"
+                  f" at {_db(record['angle_deg'])} degrees, {status}")
+    line = f"- Station {record['station_id']} ({sides}): {status}"
     if record.get("field_location"):
         line += "; at the station's site, which is not where this band is received"
     return line
@@ -287,7 +290,7 @@ def _calculation_paragraphs(case: CaseView) -> list[str]:
         bound = (
             f"Under the assumptions stated below, {method} gives an upper bound of {_db(d['value_db'])} dB against a limit of "
             f"{_db(d['limit_db'])} dB{mask}, a margin of {_db(d['margin_db'])} dB. An upper bound may describe a state the satellite "
-            "never occupies, so it establishes neither an exceedance nor compliance. It is raised here for expert review."
+            "never occupies, so it shows neither that the limit is passed nor that it is met. It is raised here for expert review."
         )
         return [bound, "Finland asks for the information needed to confirm or correct these assumptions."]
     numbers = f"a calculated value of {_db(d['value_db'])} dB against a limit of {_db(d['limit_db'])} dB{mask}, a margin of {_db(d['margin_db'])} dB"
@@ -324,7 +327,7 @@ def explain_case(case: CaseView) -> str:
     if is_calculated(d):
         outcome = (
             f"The upper bound gives a margin of {_db(d['margin_db'])} dB against the limit, under the listed assumptions. "
-            "It does not show that a limit is exceeded."
+            "It does not show that the limit is passed."
             if is_upper_bound(d)
             else f"The calculation gives a margin of {_db(d['margin_db'])} dB against the limit, under the listed assumptions."
         )
@@ -418,9 +421,27 @@ def reference_block(case: CaseView, cited: list[dict[str, Any]]) -> str:
     return "\n".join(lines)
 
 
+def quoted_sources(details: dict[str, Any]) -> list[str]:
+    """Text the template quotes word for word from M4, which a rewrite may keep."""
+    return [text for b in details.get("bands", []) for text in [*b.get("m4_restrictions", []), *b.get("m4_national_use", [])]]
+
+
+def station_levels(details: dict[str, Any]) -> dict[str, list[float]]:
+    """Each listed station's own value, limit and margin, as the template quotes them."""
+    records = [r for r in (details.get("stations_overlapping") or [])[:STATIONS_IN_TEXT]
+               if r.get("status") in _CALCULATED_AT_STATION and _is_number(r.get("margin_db"))]
+    return {label: [_db(r[f"{label}_db"]) for r in records] for label in ("value", "limit", "margin")}
+
+
 def evidence_values(case: CaseView, passages: list[Passage]) -> list[Any]:
-    """Case data and passages as guardrail evidence. Provisions are added separately, by number."""
+    """Case data, passages and the template's own text as guardrail evidence. Provisions are added separately, by number.
+
+    The template is written by code from the case alone, so any number or citation it uses (a count such as
+    "90 more", an RR footnote naming Finland) is one a rewrite may keep.
+    """
     return [
+        draft_letter_body(case),
+        explain_case(case),
         facts(case),
         case.details,
         list(levels_of(case.details).values()),

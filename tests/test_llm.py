@@ -16,7 +16,7 @@ from ific_guard.llm import ClaudeModel, ModelError, ModelOutput, configured_mode
 from ific_guard.llm.drafts import build_prompt, evidence_for
 from ific_guard.llm.guardrail import Evidence, check_text, citations_in, dates_in, numbers_in
 from ific_guard.llm.retrieval import Passage, load_index, retrieve, wanted_provisions
-from ific_guard.llm.template import CaseView, margin_of, draft_letter_body, explain_case, is_calculated, levels_of, review_notes
+from ific_guard.llm.template import CaseView, quoted_sources, margin_of, draft_letter_body, explain_case, is_calculated, levels_of, review_notes
 from ific_guard.models import Case, Event, Notification
 from ific_guard.screening.app import app as screening_app
 
@@ -615,8 +615,8 @@ def test_upper_bound_above_a_limit_is_never_drafted_as_an_exceedance():
     result = draft(view)
     assert result.possible_concern_only is True
     assert "exceeds the limit" not in result.letter
-    assert "establishes neither an exceedance nor compliance" in result.letter
-    assert "does not show that a limit is exceeded" in result.explanation
+    assert "shows neither that the limit is passed nor that it is met" in result.letter
+    assert "does not show that the limit is passed" in result.explanation
     assert margin_of(view.details) is None
 
 
@@ -651,3 +651,55 @@ def test_terrestrial_template_names_p1546_as_the_cases_cite_it():
     body = draft_letter_body(view)
     assert "ITU-R P.1546-6" in body
     assert check_text(body, evidence_for(view, []), True, 4.5, levels_of(view.details)) == []
+
+
+EXPORTS = [Path(__file__).resolve().parents[1] / "outputs" / name / "cases.json" for name in ("ific_3074", "ific_3076")]
+
+
+def _exported_views() -> list[CaseView]:
+    rows = [row for path in EXPORTS if path.exists() for row in json.loads(path.read_text())]
+    return [
+        CaseView(id=i, domain=r["domain"], rule_id=r["rule_id"], severity=r["severity"], title=r["title"], adm=r.get("adm"),
+                 network=r.get("network"), notice_ids=r["notice_ids"], details=r["details"], first_issue=r["issue_no"],
+                 last_issue=r["issue_no"], comment_deadline=date.fromisoformat(r["comment_deadline"]) if r.get("comment_deadline") else None,
+                 source_sha256=r["source_sha256"])
+        for i, r in enumerate(rows, 1)
+    ]
+
+
+def test_every_exported_template_passes_its_own_guardrail():
+    """A rewrite that keeps the template's facts must pass, or every real model run falls back for nothing."""
+    views = _exported_views()
+    if not views:
+        pytest.skip("no exported cases")
+    failures = {}
+    for view in views:
+        evidence, details = evidence_for(view, []), view.details
+        for text in (draft_letter_body(view), explain_case(view)):
+            if found := check_text(text, evidence, is_calculated(details), margin_of(details), levels_of(details)):
+                failures[(view.rule_id, view.network)] = [v.model_dump() for v in found[:3]]
+    assert not failures
+
+
+def test_guardrail_still_rejects_what_the_template_does_not_say():
+    view = next(v for v in _exported_views() if v.rule_id == "station-rx-overlap" and v.details.get("stations_overlapping")) \
+        if EXPORTS[0].exists() else None
+    if view is None:
+        pytest.skip("no exported station case")
+    evidence, d = evidence_for(view, []), view.details
+    check = lambda text: {v.kind for v in check_text(text, evidence, is_calculated(d), margin_of(d), levels_of(d))}
+    assert "label" in check("The margin is 99.99 dB.")  # neither the case's margin nor any listed station's
+    assert "number" in check("It affects 12345 stations.")
+    assert "claim" in check("The filing violates the Radio Regulations.")
+
+
+def test_quoted_restrictions_pass_but_the_same_words_as_a_claim_do_not():
+    view = next((v for v in _exported_views() if v.rule_id == "m4-no-space-to-earth"
+                 and any("not allowed" in t for t in quoted_sources(v.details))), None)
+    if view is None:
+        pytest.skip("no exported case quoting such a restriction")
+    evidence, d = evidence_for(view, []), view.details
+    quote = next(t for t in quoted_sources(d) if "not allowed" in t)
+    check = lambda text: {v.kind for v in check_text(text, evidence, False, None, {})}
+    assert "claim" not in check(f"Finnish restriction: {quote}")
+    assert "claim" in check("This transmission is not allowed in Finland.")

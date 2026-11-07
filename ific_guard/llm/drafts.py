@@ -23,8 +23,10 @@ from .template import (
     is_calculated,
     levels_of,
     margin_of,
+    quoted_sources,
     reference_block,
     review_notes,
+    station_levels,
 )
 
 log = logging.getLogger(__name__)
@@ -102,6 +104,9 @@ def evidence_for(view: CaseView, passages: list[Passage]) -> Evidence:
     evidence = Evidence().add(*evidence_values(view, passages))
     evidence.add_provisions(view.details.get("provisions", []))
     evidence.add_provisions(view.details.get("sections", []))
+    evidence.add_quotes([*quoted_sources(view.details), view.title])  # the title is the rule's own summary, quoted as written
+    for label, values in station_levels(view.details).items():
+        evidence.add_station_levels(label, values)
     return evidence
 
 

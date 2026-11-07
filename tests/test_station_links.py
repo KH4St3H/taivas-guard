@@ -179,7 +179,8 @@ def test_station_draft_quotes_values_at_stations_and_not_a_missing_allocation():
     _, hits = both(gso_reader(lon=25.0, power=-20.0, pep=60.0), [at(100, 62.0, 25.0, rx=8030.0, bw=5.0)])
     letter = _draft_of(hits[0])
     margin = round(hits[0].details["stations_overlapping"][0]["margin_db"], 2)
-    assert "Station 1000@R100 (RX): calculated above the limit" in letter and f"margin {margin} dB" in letter
+    line = next(l for l in letter.splitlines() if l.startswith("- Station 1000@R100 (RX): "))
+    assert f"margin {margin} dB" in line and line.endswith("degrees, calculated above the limit")
     assert "receive or transmit frequencies of Finnish stations" in letter
     assert "gives no space-to-Earth allocation" not in letter
 
