@@ -132,10 +132,9 @@ class SpaceIssue:
                         notice.ref_body = _text(row.get("ref_body"))
                     if table == "geo" and row.get("long_nom") is not None:
                         notice.gso_lon_deg = round(float(row["long_nom"]), 3)
-        for row in self._reader.table("orbit"):
-            notice = out.get(int(row["ntc_id"]))
-            if notice and row.get("inclin_ang") is not None:
-                notice.inclinations_deg.append(float(row["inclin_ang"]))
+        for ntc_id, rows in self.orbits.items():
+            if notice := out.get(ntc_id):
+                notice.inclinations_deg.extend(float(r["inclin_ang"]) for r in rows if r.get("inclin_ang") is not None)
         for row in self._reader.table("freq"):
             notice = out.get(int(row["ntc_id"]))
             if notice:
