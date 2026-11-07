@@ -71,6 +71,7 @@ class Space:
         for row in rows(db, "orbit"):
             self.orbit[int(row["ntc_id"])].append(row)
         self.ref_body = {int(r["ntc_id"]): r["ref_body"] for r in rows(db, "non_geo")}
+        self.phase = rows(db, "phase")
         self.freq_by_group = collections.defaultdict(list)
         for row in self.freq:
             if row["grp_id"] is not None:
@@ -229,6 +230,97 @@ def check_pfd(space, cases, sample, out):
     out.extend(lines)
 
 
+MU, EARTH_TURN_DEG_PER_MIN = 398600.4418, 360.98564736629 / 1440
+
+
+def sheet_point(table, header, key):
+    """A station's coordinates read from its sheet row, with the sheet's decimal commas."""
+    cells = dict(zip(header, table[int(key.split("@R")[1]) - 1]))
+    return float(str(cells["Latitude"]).replace(",", ".")), float(str(cells["Longitude"]).replace(",", "."))
+
+
+def unit(lat, lon):
+    a, b = math.radians(lat), math.radians(lon)
+    return math.cos(a) * math.cos(b), math.cos(a) * math.sin(b), math.sin(a)
+
+
+def satellite_at(orbit, phase_deg, minute):
+    """Two-body position (unit vector, radius) at a minute, from raw orbit elements, as in the rule's stated assumptions."""
+    rp, ra = RE + float(orbit["perig_km"]), RE + float(orbit["apog_km"])
+    a, e = (rp + ra) / 2, (ra - rp) / (ra + rp)
+    omega = float(orbit["perig_arg"] or 0.0)
+    nu0 = math.radians(phase_deg - omega)
+    e0 = 2 * math.atan2(math.sqrt(1 - e) * math.sin(nu0 / 2), math.sqrt(1 + e) * math.cos(nu0 / 2))
+    mean = e0 - e * math.sin(e0) + math.sqrt(MU / a**3) * 60 * minute
+    ecc = mean
+    for _ in range(50):
+        ecc -= (ecc - e * math.sin(ecc) - mean) / (1 - e * math.cos(ecc))
+    nu = 2 * math.atan2(math.sqrt(1 + e) * math.sin(ecc / 2), math.sqrt(1 - e) * math.cos(ecc / 2))
+    u = math.radians(omega) + nu
+    node = float(orbit["long_asc"] if orbit["long_asc"] is not None else orbit["right_asc"])
+    t = math.radians(node - EARTH_TURN_DEG_PER_MIN * minute)
+    i = math.radians(float(orbit["inclin_ang"]))
+    x = math.cos(t) * math.cos(u) - math.sin(t) * math.sin(u) * math.cos(i)
+    y = math.sin(t) * math.cos(u) + math.cos(t) * math.sin(u) * math.cos(i)
+    return (x, y, math.sin(u) * math.sin(i)), a * (1 - e * math.cos(ecc))
+
+
+def check_station_margins(space, cases, xlsx, out):
+    """Recomputes station margins from raw rows and the sheet's coordinates, not from the case's own geometry."""
+    masks = load_masks()
+    sheet = list(load_workbook(xlsx, read_only=True).worksheets[0].iter_rows(values_only=True))
+    header = sheet[next(i for i, row in enumerate(sheet) if row and "RX frequency" in row)]
+    out.append("\n## pfd at listed stations\n")
+    pfd = [c for c in cases if c["rule_id"].startswith("pfd")]
+    linked = [c for c in pfd if c["details"].get("station_ids")]
+    out.append(f"{len(linked)} of {len(pfd)} pfd cases name a station. Coordinates from the sheet; power, gain, orbit and phase from raw rows.\n")
+    worst_delta = 0.0
+    for rule, basis in (("pfd-gso", "calculated_at_station"), ("pfd-ngso", "propagated_sample_at_station")):
+        records = [(c, r) for c in linked if c["rule_id"].startswith(rule) for r in c["details"]["stations_overlapping"] if r.get("basis") == basis]
+        for case, record in sorted(records, key=lambda x: -x[1]["margin_db"])[:2]:
+            ntc, group = int(record["ntc_id"]), int(record["group_id"])
+            mask = masks.by_id(record["mask_id"])
+            usable = [r for r in space.emiss[group] if r["pwr_ds_max"] is not None and not (r["pep_max"] is not None and r["pwr_ds_max"] > r["pep_max"])]
+            power = max(power_in_ref(r, mask.ref_bw_hz) for r in usable)
+            beam = space.grp[group]["beam_name"]
+            gain = max(float(b["gain"]) for b in space.beam(ntc, beam) if b["gain"] is not None)
+            lat, lon = sheet_point(sheet, header, record["station_id"])
+            px, py, pz = unit(lat, lon)
+            if rule == "pfd-gso":
+                longitude = float(space.geo[ntc]["long_nom"])
+                cos_psi = math.cos(math.radians(lat)) * math.cos(math.radians(longitude - lon))
+                distance = math.sqrt(RE**2 + RS**2 - 2 * RE * RS * cos_psi)
+                angle = math.degrees(math.atan2(cos_psi - RE / RS, math.sqrt(1 - cos_psi**2)))
+                where = f"GSO {longitude:g} E"
+            else:
+                orbit = next(o for o in space.orbit[ntc] if int(o["orb_id"]) == int(record["orb_id"]))
+                phases = [p for p in space.phase if int(p["ntc_id"]) == ntc and int(p["orb_id"]) == int(record["orb_id"]) and p["phase_ang"] is not None]
+                phase = float(min(phases, key=lambda p: int(p["orb_sat_id"]))["phase_ang"])
+                (sx, sy, sz), radius = satellite_at(orbit, phase, int(record["minute"]))
+                cos_psi = sx * px + sy * py + sz * pz
+                distance = math.sqrt(radius**2 + RE**2 - 2 * radius * RE * cos_psi)
+                angle = math.degrees(math.asin((radius * cos_psi - RE) / distance))
+                where = f"orbit {record['orb_id']}, minute {record['minute']}"
+            margin = power + gain - spread(distance) - mask.limit_db(angle)
+            delta = margin - record["margin_db"]
+            worst_delta = max(worst_delta, abs(delta))
+            out.append(
+                f"- {case['rule_id']} {case['network']} ntc {ntc} group {group}, station {record['station_id']} at {lat:.4f},{lon:.4f} "
+                f"({where}): P {power:.2f} dBW, G {gain:g} dBi, d {distance:.1f} km, angle {angle:.3f} deg. "
+                f"Hand margin {margin:+.4f}, reported {record['margin_db']:+.4f}, difference {delta:+.6f} dB."
+            )
+    out.append(f"\nLargest difference across the station sample: {worst_delta:.6f} dB.")
+    above_grid = []
+    for case in linked:
+        for record in case["details"]["stations_overlapping"]:
+            if record["status"] not in ("exceeds", "exceeds_flagged"):
+                continue
+            grid = [k for k in case["details"]["calculations"] if k["ntc_id"] == record["ntc_id"] and k["mask_id"] == record["mask_id"] and k["band"] == record["band"]]
+            if not any(k["result"] == "exceeds" for k in grid):
+                above_grid.append((case["network"], record["station_id"]))
+    out.append(f"Station exceedances whose own calculation does not also exceed over Finland: {above_grid or 'none'}.")
+
+
 def check_non_earth(space, cases, out):
     out.append("\n## Filings that do not orbit the Earth\n")
     tally = collections.Counter()
@@ -298,6 +390,7 @@ def main():
     check_m4(space, space_cases, sample, out)
     check_stations(space, space_cases, sample, args.xlsx, out)
     check_pfd(space, space_cases, sample, out)
+    check_station_margins(space, space_cases, args.xlsx, out)
     check_non_earth(space, space_cases, out)
     check_terrestrial(load_cases(args.outputs / "ific_3076" / "cases.json"), sample, args.shared, out)
     print("\n".join(out))

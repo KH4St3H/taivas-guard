@@ -9,6 +9,10 @@ Three outcomes without a number are kept apart: not visible from Finland is a co
 missing inputs need review; inconsistent inputs are data-quality items. GIMS contours are not
 available, so notified maximum gain is applied towards Finland: "exceeds" always means under
 worst-case assumptions, and being below a limit is never a compliance finding.
+
+Each calculation is also evaluated at the special-interest stations whose RX or TX band overlaps the
+part of the assignment the mask covers (ticket 19). Those records go to `StationEvidence`, which
+the station rule reads, so both kinds of case rest on one calculation.
 """
 import math
 from collections import Counter
@@ -18,11 +22,12 @@ from functools import lru_cache
 from typing import Any
 
 from ..config import Settings
-from ..engines.pfd import GroundPoint, LimitMask, evaluate_gso, finland_points, load_masks
+from ..engines.pfd import GroundPoint, LimitMask, evaluate_gso, finland_points, gso_geometry, load_masks, pfd_db
 from ..engines.pfd_ngso import (
     ENVELOPE_STEP_DEG,
     PROPAGATION_MINUTES,
     PROPAGATION_STEP_MINUTES,
+    StationFlights,
     best_sample,
     envelope,
     propagate,
@@ -30,6 +35,8 @@ from ..engines.pfd_ngso import (
 from .rules import Hit, Rule, _deadline, _families
 from .scoring import ScoringWeights, score_finding
 from .space import SATELLITE_NOTICE_TYPES, SpaceIssue, SpaceNotice
+from .station_links import CALCULATED, StationEvidence, record_for, status_counts
+from .stations import Station, StationIndex
 
 WATCH_DB = 3.0  # ARCHITECTURE.md 4.7: the watch list is within about 3 dB below the limit
 MIN_ROWS_FOR_STATISTICS = 1000
@@ -465,6 +472,26 @@ def _headline(worst: dict[str, Any]) -> str:
     return f" below the limit at the evaluated points; not a compliance finding; expert review required{flagged}"
 
 
+STATION_ASSUMPTIONS = [
+    "Stations are those in Traficom's list whose RX or TX band overlaps the part of an assignment the mask covers. A GSO "
+    "value at a station is calculated at its coordinates. A non-GSO value at a station is a sample from the same one-day "
+    "flight, not a bound; the upper bound has no location, so it applies to the filing and is never given as a station value.",
+    "A station's coordinates are not where its TX band is received, so a margin at the site for a TX match is not a margin "
+    "at the receiver (field_location says so).",
+]
+
+
+def _station_details(links: list[dict[str, Any]]) -> dict[str, Any]:
+    linked = [r for r in links if r["status"] != "not_visible"]
+    return {
+        "station_ids": sorted(r["station_id"] for r in linked),
+        "stations_overlapping": linked,
+        "station_status_counts": status_counts(links),
+        "stations_not_visible": sorted(r["station_id"] for r in links if r["status"] == "not_visible"),
+        "special_interest": bool(linked),
+    }
+
+
 def _hit(
     rule_id: str,
     family_id: int,
@@ -474,6 +501,7 @@ def _hit(
     not_visible: list[dict[str, Any]],
     data_quality: list[dict[str, Any]],
     settings: Settings,
+    links: list[dict[str, Any]] | None = None,
 ) -> Hit:
     worst = max(calculations, key=_rank) if calculations else None
     reasons = Counter(row["reason"] for row in missing)
@@ -502,6 +530,9 @@ def _hit(
         details["source_rows"] = {"notice_ids": [n.ntc_id for n in notices]}
         details["input_flagged"] = flagged
         details["result_counts"] = dict(sorted(Counter(c["result"] for c in calculations).items()))
+    if links:
+        details.update(_station_details(links))
+        details["assumptions"] += STATION_ASSUMPTIONS
     ranking = score_finding(details, ScoringWeights.from_settings(settings))
     details["severity_score"] = ranking["score"]
     details["severity_reasons"] = ranking["reasons"]
@@ -532,18 +563,38 @@ def _hit(
         title += f"; {_plural(len(not_visible), 'record')} not visible from Finland"
     if (worst or missing) and data_quality:
         title += f"; {_plural(len(data_quality), 'data-quality item')}"
+    if details.get("station_ids"):
+        above = sum(1 for r in details["stations_overlapping"] if r["status"] == "exceeds")
+        title += f"; {_plural(len(details['station_ids']), 'listed station')} in band" + (f", exceeds at {above}" if above else "")
     return Hit(rule_id, family_id, severity, title, head.adm, head.name, sorted(n.ntc_id for n in notices), details, _deadline(notices, settings.comment_window_months))
 
 
 class PfdRule:
     id = "pfd"
 
-    def __init__(self, settings: Settings):
+    def __init__(self, settings: Settings, stations: Iterable[Station] = ()):
         self.settings = settings
         self.points: tuple[GroundPoint, ...] | None = None
         self._visible: dict[float, bool] = {}
+        self.stations = StationIndex(stations)
+        located = [s for s in self.stations.stations if s.lat_deg is not None and s.lon_deg is not None]
+        self.flights = StationFlights([GroundPoint(s.lat_deg, s.lon_deg, "station") for s in located])
+        self._evaluated: tuple[SpaceIssue, list[Hit], StationEvidence] | None = None
 
     def run(self, issue: SpaceIssue) -> Iterable[Hit]:
+        return self.evaluate(issue)[0]
+
+    def station_evidence(self, issue: SpaceIssue) -> StationEvidence:
+        return self.evaluate(issue)[1]
+
+    def evaluate(self, issue: SpaceIssue) -> tuple[list[Hit], StationEvidence]:
+        """Runs once per issue; the station rule reads the same result."""
+        if self._evaluated is None or self._evaluated[0] is not issue:
+            self.evidence = StationEvidence()
+            self._evaluated = (issue, list(self._run(issue)), self.evidence)
+        return self._evaluated[1], self._evaluated[2]
+
+    def _run(self, issue: SpaceIssue) -> Iterable[Hit]:
         screen = PowerScreen.of(issue)
         shapes_by_key: dict[tuple[int, str | None], tuple[list[OrbitShape], int]] = {}
         grouped = _families(n for n in issue.notices.values() if n.ntc_type in SATELLITE_NOTICE_TYPES)
@@ -558,6 +609,8 @@ class PfdRule:
                     not_visible: list[dict[str, Any]] = []
                     quality: dict[tuple[Any, ...], dict[str, Any]] = {}
                     seen: set[tuple[Any, ...]] = set()
+                    rule_id = f"pfd-{orbit_prefix}-{kind_prefix}"
+                    self._scope = (family_id, rule_id)
                     for notice in notices:
                         if orbit_type == "GSO":
                             self._gso_notice(issue, notice, kind, screen, calculations, missing, not_visible, quality, seen)
@@ -565,9 +618,87 @@ class PfdRule:
                             self._ngso_notice(issue, notice, kind, screen, calculations, missing, not_visible, quality, seen, shapes_by_key)
                     if calculations or missing or not_visible or quality:
                         yield _hit(
-                            f"pfd-{orbit_prefix}-{kind_prefix}", family_id, notices, calculations, missing, not_visible,
-                            list(quality.values()), self.settings,
+                            rule_id, family_id, notices, calculations, missing, not_visible,
+                            list(quality.values()), self.settings, self.evidence.for_case(family_id, rule_id),
                         )
+
+    # Station records. A station is evaluated only when its band overlaps the part of the assignment the mask covers.
+    def _overlap(self, low: float, high: float, mask: LimitMask | None):
+        if mask is not None:
+            low, high = max(low, mask.f_low_mhz), min(high, mask.f_high_mhz)
+        return self.stations.overlapping(low, high) if low < high else ()
+
+    def _link(self, notice: SpaceNotice, low: float, high: float, station: Station, record: dict[str, Any]) -> None:
+        self.evidence.add(*self._scope, notice.ntc_id, low, high, record)
+
+    def _link_status(self, notice, low, high, mask, status, reason) -> None:
+        for station, bands in self._overlap(low, high, mask):
+            self._link(notice, low, high, station, record_for(station, bands, status, reason=reason, mask_id=mask and mask.mask_id, ntc_id=notice.ntc_id))
+
+    def _station_basics(self, notice, mask, calculation) -> dict[str, Any]:
+        inputs = calculation["calc_inputs"]
+        return {
+            "ntc_id": notice.ntc_id, "group_id": inputs["group_id"], "mask_id": mask.mask_id,
+            "band": calculation["band"], "power_in_ref_bw_dbw": inputs["power_in_ref_bw_dbw"], "gain_dbi": inputs["gain_dbi"],
+        }
+
+    def _link_gso(self, notice, low, high, mask, calculation, power, peak, gain) -> None:
+        flagged = bool(calculation.get("data_quality_flags"))
+        for station, bands in self._overlap(low, high, mask):
+            if station.lat_deg is None or station.lon_deg is None:
+                self._link(notice, low, high, station, record_for(station, bands, "no_calculation", reason="station_has_no_coordinates", mask_id=mask.mask_id, ntc_id=notice.ntc_id))
+                continue
+            geometry = gso_geometry(station.lat_deg, station.lon_deg, notice.gso_lon_deg)
+            basics = self._station_basics(notice, mask, calculation)
+            if geometry is None:
+                self._link(notice, low, high, station, record_for(station, bands, "not_visible", reason="gso_below_this_station_horizon", **basics))
+                continue
+            value = pfd_db(power, mask.ref_bw_hz, gain, geometry.distance_km, peak)
+            limit = mask.limit_db(geometry.angle_deg)
+            status = _result(value - limit)
+            self._link(notice, low, high, station, record_for(
+                station, bands, "exceeds_flagged" if status == "exceeds" and flagged else status, basis="calculated_at_station",
+                value_db=value, limit_db=limit, margin_db=value - limit, angle_deg=geometry.angle_deg,
+                distance_km=geometry.distance_km, input_flagged=flagged, **basics,
+            ))
+
+    def _link_ngso(self, notice, low, high, mask, calculation, shapes: list[OrbitShape]) -> None:
+        flagged = bool(calculation.get("data_quality_flags"))
+        inputs = calculation["calc_inputs"]
+        offset = inputs["power_in_ref_bw_dbw"] + inputs["gain_dbi"]
+        envelope_margin = calculation["envelope"]["margin_db"]
+        flown = [s for s in shapes if not s.not_flown_reason]
+        bound = {"margin_db": envelope_margin, "applies_to": "the filing, not this station"}
+        for station, bands in self._overlap(low, high, mask):
+            basics = self._station_basics(notice, mask, calculation)
+            best = None
+            if station.lat_deg is not None and station.lon_deg is not None:
+                point = GroundPoint(station.lat_deg, station.lon_deg, "station")
+                for shape in flown:
+                    elements = (shape.perigee_km, shape.apogee_km, shape.inclination_deg, shape.perigee_arg_deg, shape.node_lon_deg, shape.phase_deg)
+                    found = best_sample(self.flights.at(elements, point), mask)
+                    if found and (best is None or found[2] > best[0][2]):
+                        best = (found, shape)
+            sampled = None
+            if best:
+                (sample, limit, relative), shape = best
+                sampled = {
+                    "value_db": offset + relative + limit, "limit_db": limit, "margin_db": offset + relative,
+                    "angle_deg": sample.angle_deg, "distance_km": sample.distance_km, "altitude_km": sample.altitude_km,
+                    "minute": sample.minute, "orb_id": shape.orb_id,
+                }
+            if sampled and sampled["margin_db"] > 0:
+                status = "exceeds_flagged" if flagged else "exceeds"
+            elif sampled and sampled["margin_db"] >= -WATCH_DB:
+                status = "within_3db"
+            elif envelope_margin >= -WATCH_DB:
+                status = "bound_above"
+            elif sampled:
+                status = "below"
+            else:
+                status = "bound_below"
+            extra = {"basis": "propagated_sample_at_station", **sampled} if sampled else {"basis": "no_sample_at_station", "not_seen_in_flight": bool(flown)}
+            self._link(notice, low, high, station, record_for(station, bands, status, filing_upper_bound=bound, input_flagged=flagged, **basics, **extra))
 
     def _gso_notice(self, issue, notice, kind, screen, calculations, missing, not_visible, quality, seen) -> None:
         for assignment in _downlinks(notice):
@@ -583,6 +714,7 @@ class PfdRule:
                         "ntc_id": notice.ntc_id, "group_id": join["group_id"], "mask_id": mask.mask_id,
                         "missing": ["gso_longitude"], "reason": "gso_longitude_missing",
                     })
+                    self._link_status(notice, low, high, mask, "no_calculation", "gso_longitude_missing")
                     continue
                 power, peak, mask_join = _emission_for_mask(issue, join, mask)
                 key = (notice.ntc_id, low, high, _dedupe_power(power, peak, mask), gain, mask.mask_id)
@@ -595,11 +727,15 @@ class PfdRule:
                         "ntc_id": notice.ntc_id, "group_id": join["group_id"], "mask_id": mask.mask_id,
                         "reason": "gso_below_horizon_from_every_finnish_point", "gso_lon_deg": notice.gso_lon_deg,
                     })
+                    self._link_status(notice, low, high, mask, "not_visible", "gso_below_horizon_from_every_finnish_point")
                     continue
                 if not _have_inputs(power, gain, mask_join, notice, low, high, mask, missing):
+                    self._link_status(notice, low, high, mask, "no_calculation", "power_or_gain_missing")
                     continue
                 calculation = _gso_calculation(notice, power, peak, gain, mask_join, assignment, mask, self._points())
                 _add(calculation, power, screen, mask_join, notice, calculations, quality)
+                if calculation is not None:
+                    self._link_gso(notice, low, high, mask, calculation, power, peak, gain)
 
     def _ngso_notice(self, issue, notice, kind, screen, calculations, missing, not_visible, quality, seen, shapes_by_key) -> None:
         rows = issue.orbits.get(notice.ntc_id, [])
@@ -620,6 +756,8 @@ class PfdRule:
                         "ref_body": notice.ref_body,
                         "frequency_screen_only": True,
                     })
+                    for mask in masks:
+                        self._link_status(notice, low, high, mask, "no_calculation", "orbit_not_earth_centred" if not_earth else "orbit_missing")
                 continue
             beam = join["beam_name"]
             cache_key = (notice.ntc_id, beam)
@@ -639,6 +777,8 @@ class PfdRule:
                     "ntc_id": notice.ntc_id, "group_id": join["group_id"], "missing": ["orbit_elements"],
                     "reason": "orbit_elements_incomplete", "masks": [m.mask_id for m in masks], "frequency_screen_only": True,
                 })
+                for mask in masks:
+                    self._link_status(notice, low, high, mask, "no_calculation", "orbit_elements_incomplete")
                 continue
             if not by_mask:
                 continue
@@ -653,6 +793,7 @@ class PfdRule:
                         "mask_id": mask.mask_id,
                         "frequency_screen_only": True,
                     })
+                    self._link_status(notice, low, high, mask, "no_calculation", "mask_parameter_not_evaluated")
                     continue
                 power, peak, mask_join = _emission_for_mask(issue, join, mask)
                 key = (notice.ntc_id, low, high, _dedupe_power(power, peak, mask), gain, mask.mask_id)
@@ -667,14 +808,18 @@ class PfdRule:
                         "orbit_shapes": [_shape_dict(s) for s in mask_shapes],
                         "finland_south_lat_deg": south,
                     })
+                    self._link_status(notice, low, high, mask, "not_visible", "orbit_cannot_reach_finland")
                     continue
                 if not _have_inputs(power, gain, mask_join, notice, low, high, mask, missing):
+                    self._link_status(notice, low, high, mask, "no_calculation", "power_or_gain_missing")
                     continue
                 calculation = _ngso_calculation(
                     notice, mask_shapes, power, peak, gain, mask_join, assignment, mask, self._ngso_points(), south
                 )
                 calculation["calc_inputs"]["orbit_rows_incomplete"] = incomplete
                 _add(calculation, power, screen, mask_join, notice, calculations, quality)
+                reachable = [s for s in mask_shapes if envelope(s.perigee_km, s.apogee_km, s.inclination_deg, mask, south) is not None]
+                self._link_ngso(notice, low, high, mask, calculation, reachable)
 
     def _gso_visible(self, lon: float, mask: LimitMask) -> bool:
         # Visibility depends on neither power nor the mask, so one answer per longitude will do.
@@ -778,5 +923,7 @@ def pfd_summary(hits: Iterable[Hit]) -> dict[str, Any]:
     }
 
 
-def pfd_rule(settings: Settings) -> Rule:
-    return PfdRule(settings)
+def pfd_rule(settings: Settings, stations: Iterable[Station] | None = None) -> PfdRule:
+    from .stations import load_stations
+
+    return PfdRule(settings, load_stations() if stations is None else stations)

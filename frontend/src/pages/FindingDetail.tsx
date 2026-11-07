@@ -51,7 +51,7 @@ export function FindingDetail() {
           </section>
 
           {f.bands.length > 0 && <BandsPanel f={f} />}
-          {f.stationIds.length > 0 && <StationIdsPanel f={f} />}
+          {(f.stationResults?.length ?? 0) > 0 ? <StationResultsPanel f={f} /> : f.stationIds.length > 0 && <StationIdsPanel f={f} />}
           {f.calc && <Calculation f={f} />}
           {f.result && <ResultPanel f={f} />}
           {f.terrestrial && <TerrestrialPanel f={f} />}
@@ -136,16 +136,17 @@ function BandsPanel({ f }: { f: Finding }) {
   return (
     <section className="panel">
       <h2>Bands involved</h2>
-      <p className="muted">{stationRule ? 'Bands where this filing transmits on an RX or TX frequency of a station in Traficom’s list. The comparison is by frequency only.' : 'Bands where this filing transmits and M4 has no space-to-Earth allocation.'}</p>
+      <p className="muted">{stationRule ? 'Bands where this filing transmits on an RX or TX frequency of a station in Traficom’s list, with what M4 allocates there. Results at each station are in the next panel.' : 'Bands where this filing transmits and M4 has no space-to-Earth allocation.'}</p>
       <div className="table-wrap">
         <table>
           {stationRule ? (
             <>
-              <thead><tr><th>Band, MHz</th><th className="num">Stations</th><th>Licence classes</th><th className="num">Groups</th></tr></thead>
+              <thead><tr><th>Band, MHz</th><th className="num">Stations</th><th>Licence classes</th><th>M4 primary services</th><th>M4 space-to-Earth</th><th className="num">Groups</th></tr></thead>
               <tbody>
                 {bands.map((b) => (
                   <tr key={`${b.lowMhz}-${b.highMhz}`}>
-                    <td className="nowrap tnum">{b.lowMhz}–{b.highMhz}</td><td className="num">{b.stationIds.length}</td><td>{classSummary(b.classes) || '–'}</td><td className="num">{b.groupCount}</td>
+                    <td className="nowrap tnum">{b.lowMhz}–{b.highMhz}{b.passive && <span className="badge sev-high passive">Passive</span>}</td><td className="num">{b.stationIds.length}</td><td>{classSummary(b.classes) || '–'}</td>
+                    <td>{b.primaryServices || '–'}</td><td>{b.m4SpaceToEarth ?? '–'}</td><td className="num">{b.groupCount}</td>
                   </tr>
                 ))}
               </tbody>
@@ -177,6 +178,45 @@ function StationIdsPanel({ f }: { f: Finding }) {
       <h2>Finnish stations affected</h2>
       <p className="muted">{f.stationIds.length} in Traficom’s synthetic list{classSummary(f.stationClasses) ? ` (${classSummary(f.stationClasses)})` : ''}.{f.stationIds.length > SHOW_IDS ? ` Showing the first ${SHOW_IDS}; export the case for all of them.` : ''}</p>
       <ul className="id-list">{shown.map((id) => <li key={id}><code>{stationLabel(id)}</code></li>)}</ul>
+    </section>
+  );
+}
+
+const STATUS_TEXT: Record<string, string> = {
+  exceeds: 'Above the limit', exceeds_flagged: 'Above, but input or location flagged', within_3db: 'Within 3 dB below',
+  bound_above: 'Only the filing’s upper bound is near or above', no_calculation: 'Not calculated', below: 'Below the limit',
+  bound_below: 'Filing’s upper bound below', not_visible: 'Below this station’s horizon', calculated: 'Calculated',
+};
+const SHOW_STATIONS = 30;
+const dbOr = (v: number | null) => (v === null ? '–' : signed(v));
+
+function StationResultsPanel({ f }: { f: Finding }) {
+  const results = f.stationResults ?? [];
+  const [showAll, setShowAll] = useState(false);
+  const shown = showAll ? results : results.slice(0, SHOW_STATIONS);
+  const atSite = results.some((r) => r.atSiteOnly);
+  return (
+    <section className="panel">
+      <h2>Finnish stations affected</h2>
+      <p className="muted">{results.length} in Traficom’s synthetic list, worst first{classSummary(f.stationClasses) ? ` (${classSummary(f.stationClasses)})` : ''}. A value is calculated at the station’s coordinates under worst-case assumptions. An upper bound applies to the filing, so it is never shown as a value at a station.</p>
+      <div className="table-wrap">
+        <table>
+          <thead><tr><th>Station</th><th>Side</th><th>Result</th><th className="num">Value, dB</th><th className="num">Limit, dB</th><th className="num">Margin, dB</th><th className="num">Angle</th></tr></thead>
+          <tbody>
+            {shown.map((r) => (
+              <tr key={r.id}>
+                <td className="tnum">{stationLabel(r.id)}{r.licence && <span className="muted block">{r.licence}</span>}</td>
+                <td>{r.sides.join(', ').toUpperCase() || '–'}{r.atSiteOnly && <span className="muted block">At the site, not the receiver</span>}</td>
+                <td>{STATUS_TEXT[r.status] ?? r.status}{r.locationFlagged && <span className="muted block">Location flagged in the sheet</span>}</td>
+                <td className="num">{dbOr(r.valueDb)}</td><td className="num">{dbOr(r.limitDb)}</td><td className="num"><strong>{r.marginDb === null ? '–' : db(r.marginDb)}</strong></td>
+                <td className="num">{r.angleDeg === null ? '–' : `${r.angleDeg.toFixed(1)}°`}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {atSite && <p className="fine">For a TX match, the station’s coordinates are not where that band is received, so its margin is at the site, not at the receiver.</p>}
+      {results.length > SHOW_STATIONS && <button type="button" className="linkbtn show-all" onClick={() => setShowAll(!showAll)}>{showAll ? 'Show fewer' : `Show all ${results.length} stations`}</button>}
     </section>
   );
 }

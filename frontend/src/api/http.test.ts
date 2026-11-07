@@ -102,7 +102,7 @@ describe('station overlap cases', () => {
   const f = mapCase(full({ rule_id: 'station-rx-overlap', severity: 'medium', details }), 'space-3083', 'ific3083.zip');
 
   it('reads stations from the case, overall and per band', () => {
-    expect(f.kindLabel).toBe('Overlaps a Finnish receiver');
+    expect(f.kindLabel).toBe('On a Finnish station’s frequency');
     expect(f.stationCount).toBe(2);
     expect(f.stationIds).toEqual(['600529@R215', '601452@R224']);
     expect(f.stationClasses).toEqual({ 'no class': 2 });
@@ -115,6 +115,33 @@ describe('station overlap cases', () => {
     expect(letter).toContain('18875–19067.5 MHz');
     expect(letter).not.toContain('no space-to-Earth allocation');
     expect(letter).not.toMatch(/exceed/i);
+  });
+});
+
+describe('station cases with pfd evidence', () => {
+  const details = {
+    method: 'pfd_gso', value_db: -111.2, limit_db: -113.2, margin_db: 2.0, station_ids: ['624714@R352', '1000@R100'],
+    bands: [{ low_mhz: 18415, high_mhz: 18525, station_ids: ['624714@R352'], group_ids: [1], m4_space_to_earth: 'allocated', m4_primary_services: 'FIXED' }],
+    stations_overlapping: [
+      { station_id: '624714@R352', status: 'exceeds', value_db: -111.2, limit_db: -113.2, margin_db: 2.0, angle_deg: 8.55, matched_bands: [{ side: 'tx' }], field_location: 'station site, not the receiver' },
+      { station_id: '1000@R100', status: 'bound_above', matched_bands: [{ side: 'rx' }], filing_upper_bound: { margin_db: 4.1 } },
+    ],
+  };
+  const f = mapCase(full({ rule_id: 'station-rx-overlap', severity: 'high', details }), 'space-3074', 'ific3074.zip');
+
+  it('maps each station’s result, and never turns a filing bound into a station value', () => {
+    const [tx, bound] = f.stationResults ?? [];
+    expect(tx).toMatchObject({ id: '624714@R352', sides: ['tx'], status: 'exceeds', marginDb: 2.0, atSiteOnly: true });
+    expect(bound).toMatchObject({ status: 'bound_above', marginDb: null, valueDb: null, filingBoundDb: 4.1, atSiteOnly: false });
+    expect(f.bands[0].m4SpaceToEarth).toBe('allocated');
+  });
+  it('drafts a letter quoting only values calculated at stations', () => {
+    const letter = draftLetter(f);
+    expect(letter).toContain('Station 624714@R352 (TX)');
+    expect(letter).toContain('at the site, which is not where this band is received');
+    expect(letter).toContain("space-to-Earth in Finland's frequency table: allocated");
+    expect(letter).not.toContain('Station 1000@R100');
+    expect(letter).toContain('1 more station, listed in the case');
   });
 });
 

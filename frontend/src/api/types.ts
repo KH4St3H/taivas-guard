@@ -100,6 +100,25 @@ export interface BandMatch {
   groupCount: number;
   stationIds: string[];
   classes: Record<string, number>;
+  /** What M4 allocates for space-to-Earth across the band, on station cases. */
+  m4SpaceToEarth: string | null;
+}
+
+/** What was found at one station in Traficom's list: a value at its coordinates, a bound, or nothing. */
+export interface StationResult {
+  id: string;
+  licence: string | null;
+  sides: string[];
+  status: string;
+  valueDb: number | null;
+  limitDb: number | null;
+  marginDb: number | null;
+  angleDeg: number | null;
+  /** True when no RX band matched, so the value is at the site and not where the band is received. */
+  atSiteOnly: boolean;
+  locationFlagged: boolean;
+  /** The filing's non-GSO upper bound. It applies to the filing, never to this station. */
+  filingBoundDb: number | null;
 }
 
 /** A calculated result in the shape agreed in Case.details. */
@@ -141,6 +160,7 @@ export interface Finding {
   stations: StationRef[];
   stationIds: string[];
   stationClasses: Record<string, number>;
+  stationResults?: StationResult[];
   bands: BandMatch[];
   visibility: string[];
   basis: string | null;

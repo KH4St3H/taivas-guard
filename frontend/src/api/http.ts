@@ -1,7 +1,7 @@
 // Talks to the IFIC Guard services through the /api proxy. Their shapes are defined in
 // ific_guard/schemas.py and the Case.details contract in .scratch/ific-guard-delivery/map.md.
 import { SEVERITY_ORDER } from '../lib/severity';
-import type { Api, BandMatch, NewRun, Run, CalculatedResult, Domain, DomainFreshness, Finding, FunnelStage, IssueSummary, MonitorStatus, ReferenceSource, ReviewState, ScreenStatus, Severity, SyncRun } from './types';
+import type { Api, BandMatch, NewRun, Run, CalculatedResult, Domain, DomainFreshness, Finding, FunnelStage, IssueSummary, MonitorStatus, ReferenceSource, ReviewState, ScreenStatus, Severity, StationResult, SyncRun } from './types';
 
 export interface ArtifactOut { id: number; domain: string; issue_no: number; published_on: string | null; source_url: string; sha256: string; size_bytes: number; fetched_at: string; screen_status: string; screened_at: string | null }
 export interface SyncRunOut { id: number; trigger: string; started_at: string; finished_at: string | null; status: string; discovered: number; fetched: number; errors: string[] }
@@ -47,7 +47,7 @@ async function call<T>(service: Service, path: string, init?: RequestInit): Prom
 const RULE_LABELS: Record<string, string> = {
   'fin-named-by-br': 'ITU names Finland',
   'm4-no-space-to-earth': 'No space-to-Earth allocation in Finland',
-  'station-rx-overlap': 'Overlaps a Finnish receiver',
+  'station-rx-overlap': 'On a Finnish station’s frequency',
 };
 export const ruleLabel = (id: string) => RULE_LABELS[id] ?? id;
 
@@ -80,6 +80,19 @@ export function mapBands(details: Record<string, unknown>): BandMatch[] {
     lowMhz: Number(b.low_mhz), highMhz: Number(b.high_mhz), primaryServices: String(b.m4_primary_services ?? ''), finnishUse: String(b.finnish_use ?? ''),
     passive: b.passive === true, pages: String(b.m4_table_pages ?? ''), groupCount: Array.isArray(b.group_ids) ? b.group_ids.length : 0,
     stationIds: strings(b.station_ids), classes: (b.classes as Record<string, number>) ?? {},
+    m4SpaceToEarth: typeof b.m4_space_to_earth === 'string' ? b.m4_space_to_earth : null,
+  }));
+}
+
+/** Per-station evidence from `stations_overlapping`, worst first as the service orders it. */
+export function mapStationResults(details: Record<string, unknown>): StationResult[] {
+  if (!Array.isArray(details.stations_overlapping)) return [];
+  return (details.stations_overlapping as Record<string, unknown>[]).map((r) => ({
+    id: String(r.station_id), licence: typeof r.licence_class === 'string' ? r.licence_class : null,
+    sides: Array.isArray(r.matched_bands) ? [...new Set((r.matched_bands as Record<string, unknown>[]).map((b) => String(b.side)))].sort() : [],
+    status: typeof r.status === 'string' ? r.status : 'calculated', valueDb: num(r.value_db), limitDb: num(r.limit_db), marginDb: num(r.margin_db),
+    angleDeg: num(r.angle_deg), atSiteOnly: typeof r.field_location === 'string', locationFlagged: r.location_flagged === true,
+    filingBoundDb: num((r.filing_upper_bound as Record<string, unknown> | undefined)?.margin_db),
   }));
 }
 
@@ -124,7 +137,7 @@ export function mapCase(c: CaseOut, issueId: string, sourceName: string): Findin
     band: bands.length === 1 ? bandLabel(bands[0]) : bands.length > 1 ? `${bands.length} bands` : null,
     sourceId: first ?? '', relatedSourceIds: rest, sections: strings(d.sections), coordProvisions: provisions,
     severityReasons: [c.title], marginDb: result?.marginDb ?? null, stationCount: Array.isArray(d.station_ids) ? d.station_ids.length : null,
-    stationIds: strings(d.station_ids), stationClasses: (d.classes as Record<string, number>) ?? {},
+    stationIds: strings(d.station_ids), stationClasses: (d.classes as Record<string, number>) ?? {}, stationResults: mapStationResults(d),
     bands, visibility: strings(d.visibility), basis: typeof d.basis === 'string' ? d.basis : null, result, assumptions: strings(d.assumptions), citations: mapCitations(d),
     evidence: [
       { table: 'notice', key: `ntc_id in ${c.notice_ids.join(', ')}` },
@@ -143,7 +156,7 @@ export function rankFindings(rows: Finding[]): Finding[] {
 export const caseInIssue = (c: CaseSummary, domain: string, issue: number) => c.domain === domain && c.first_issue <= issue && issue <= c.last_issue;
 
 const GAPS: Record<Domain, string[]> = {
-  space: ['No pfd check yet, so a case can’t say a limit is exceeded', 'No beam coverage check, so the M4 rule over-flags by design', 'M4 band file merges 3400–4200 MHz, which can miss cases in 3.4–3.8 GHz', 'AP30, AP30A and AP30B aren’t screened', 'Station overlap compares frequency only, not location, power or antenna direction'],
+  space: ['No beam coverage check: maximum notified gain is applied towards Finland, as Traficom said to assume, so the M4 rule over-flags by design', 'M4 band file merges 3400–4200 MHz, which can miss cases in 3.4–3.8 GHz', 'AP30, AP30A and AP30B aren’t screened', 'Station results come from the pfd calculation at each station; a band with no limit mask stays uncalculated, and antenna direction isn’t used'],
   terrestrial: ['Land-mobile notices from the configured neighbours only, within an approximate 300 km screen', 'P.1546 without terrain; T/R 25-08 thresholds stop at 470 MHz and are unconfirmed on the Russian border', 'Notices that could not be calculated are listed for expert review; they are not clear results'],
 };
 
@@ -223,10 +236,11 @@ const SOURCES: ReferenceSource[] = [
 export const httpApi: Api = {
   mode: 'live',
   capabilities: { upload: true, checkItuNow: true, rescreen: true, reviewStatuses: ['accepted', 'rejected', 'pending'], letterStorage: 'browser' },
-  severityNote: 'Set by the screening service. These are placeholders until the planned ranking replaces them.',
+  severityNote: 'Set by the screening service from fixed rules. How station cases are ranked is the project’s choice, not Traficom’s.',
   listSeverityRules: async () => [
-    { severity: 'High', rule: 'ITU names Finland in the filing’s coordination data, or a visible satellite transmits in a passive band with no space-to-Earth allocation' },
-    { severity: 'Medium', rule: 'A visible satellite transmits in a band with Finnish terrestrial use and no space-to-Earth allocation, or on an RX or TX band of a station in Traficom’s list' },
+    { severity: 'High', rule: 'ITU names Finland in the filing’s coordination data, a visible satellite transmits in a passive band with no space-to-Earth allocation, or a pfd calculation exceeds a limit, including at a station in Traficom’s list' },
+    { severity: 'Medium', rule: 'A visible satellite transmits in a band with Finnish terrestrial use and no space-to-Earth allocation, or on a station’s RX or TX band where pfd is within 3 dB of the limit, only an upper bound is near it, or nothing could be calculated' },
+    { severity: 'Low', rule: 'On a station’s band, pfd is calculated below the limit at every listed station, or the satellite is below every listed station’s horizon' },
   ],
   listIssues: async () => {
     const [rows, cases] = await Promise.all([artifacts(), allCases()]);
