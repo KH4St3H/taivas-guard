@@ -4,6 +4,7 @@ A listing that yields nothing raises ListingChanged: a silent empty result would
 "no new issue" and the system would stop updating without anyone noticing.
 """
 import re
+import logging
 from dataclasses import dataclass
 from datetime import date, datetime
 from urllib.parse import urljoin, urlsplit
@@ -11,6 +12,8 @@ from urllib.parse import urljoin, urlsplit
 import httpx
 
 from ..config import Settings
+
+log = logging.getLogger(__name__)
 
 SPACE = "space"
 TERRESTRIAL = "terrestrial"
@@ -65,21 +68,39 @@ def parse_terrestrial_listing(html: str, page_url: str) -> list[IssueRef]:
 
 
 def discover_space(client: httpx.Client, settings: Settings, today: date | None = None) -> list[IssueRef]:
-    """Space issues sit on one page per year. Walk back until the oldest wanted issue is covered."""
+    """Space issues sit on one page per year. Walk back to the requested minimum issue.
+
+    A historical page can have a different layout or be unavailable.  Such a page is
+    skipped so one old publication cannot prevent newer pages (or the other domain)
+    from syncing.
+    """
     year = (today or date.today()).year
     refs: list[IssueRef] = []
-    for y in range(year, year - 3, -1):
+    oldest_supported_year = 1998
+    for y in range(year, oldest_supported_year - 1, -1):
         url = urljoin(settings.space_index_base, f"demowic{y % 100:02d}.html")
         response = client.get(url)
-        if response.status_code == 404:  # early January, before the new year's page exists
+        if response.status_code == 404:  # early January or an unavailable historical page
+            log.warning("space listing page unavailable: %s (404)", url)
             continue
-        response.raise_for_status()
-        page = parse_space_listing(response.text, url)
+        try:
+            response.raise_for_status()
+            page = parse_space_listing(response.text, url)
+        except (httpx.HTTPError, ListingChanged):
+            if y == year:
+                raise
+            log.warning("skipping unreadable historical space listing page: %s", url, exc_info=True)
+            continue
         refs.extend(page)
         if min(r.issue_no for r in page) <= settings.min_issue:
             break
     if not refs:
-        raise ListingChanged("No space listing page was found for the last three years")
+        raise ListingChanged("No space listing page could be read from the requested history")
+    if min(r.issue_no for r in refs) > settings.min_issue:
+        raise ListingChanged(
+            f"Space listing history ends at issue {min(r.issue_no for r in refs)}, "
+            f"but IFIC_MIN_ISSUE requests {settings.min_issue}"
+        )
     return [r for r in refs if r.issue_no >= settings.min_issue]
 
 
