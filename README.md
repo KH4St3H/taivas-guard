@@ -15,11 +15,24 @@ It raises **possible concerns for expert review**. It doesn't decide that a fili
 |---|---|---|
 | `fin-named-by-br` | Space | The ITU's own data names Finland on a filing |
 | `m4-no-space-to-earth` | Space | A satellite that can reach Finland transmits in a band where Regulation M4 gives no space-to-Earth allocation |
-| `station-rx-overlap` | Space | A transmission overlaps the RX or TX band of a Traficom special-interest station |
+| `station-rx-overlap` | Space | A transmission overlaps the RX or TX band of a Traficom special-interest station. Each station gets the pfd result at its coordinates, and severity follows the strongest one |
 | `pfd-gso-art21`, `pfd-gso-app5` | Space | Calculated GSO power flux-density against Article 21 limits and Appendix 5 coordination triggers |
 | `pfd-ngso-art21`, `pfd-ngso-app5` | Space | The same for non-GSO, as an upper bound and a one-day flight of the notified orbit |
 | `terrestrial-p1546` | Terrestrial | ITU-R P.1546-6 field strength on the Finnish boundary, for land-mobile notices from Russia, Sweden, Estonia, Norway and Denmark |
 | `terrestrial-not-calculated` | Terrestrial | A nearby notice can't be calculated, for example with no antenna height |
+
+### Severity of station cases
+
+This is the project's choice, not Traficom's. A `station-rx-overlap` case takes the strongest evidence at any of its stations:
+
+| Evidence at a station | Severity |
+|---|---|
+| pfd calculated at the station's coordinates is above the limit (GSO), or a sample from the one-day flight is (non-GSO) | High |
+| The same, but an input or the station's location is flagged | Medium |
+| A calculated value within 3 dB below the limit, a non-GSO upper bound within 3 dB of the limit or above it, or no calculation for part of the band | Medium |
+| Calculated more than 3 dB below the limit at every station, an upper bound more than 3 dB below, or the satellite below every station's horizon | Low |
+
+A non-GSO upper bound has no location, so it applies to the filing and is never given as a value at a station. For a TX match, the station's coordinates are not where the band is received, and the case says so. pfd cases list the same stations, and `special_interest` adds the configured boost to their score.
 
 ## How to run it
 
@@ -108,7 +121,7 @@ The rehearsals found faults that the unit tests had not, all now fixed:
 - draft letters crashed on most pfd cases
 - letters described an upper bound as an exceedance
 
-The hand check recomputed 13 pfd results from raw rows with no difference above 0.0001 dB. All 21 P.1546 values match the upstream reference code in Octave to within 0.006 dB. It also found no in-scope misses in its sweeps. See [`outputs/hand-check.md`](outputs/hand-check.md).
+The hand check recomputed 13 pfd results from raw rows with no difference above 0.0001 dB. It recomputed four station margins, two GSO and two non-GSO, from raw rows and the sheet's coordinates, with no difference above 0.000001 dB, and found no station exceedance that the calculation over Finland didn't also show. All 21 P.1546 values match the upstream reference code in Octave to within 0.006 dB. It also found no in-scope misses in its sweeps. See [`outputs/hand-check.md`](outputs/hand-check.md).
 
 **Accuracy against expert judgement has not been measured.** No result has been compared with Traficom's own assessment.
 
@@ -117,7 +130,8 @@ The hand check recomputed 13 pfd results from raw rows with no difference above 
 ### False positives
 
 - **Worst-case gain.** Every pfd result applies the maximum notified gain towards Finland, as Traficom said to assume (beams "are not relevant", Discord, 2026-11-07). So "exceeds" always means under worst-case assumptions. `s_beam` holds no boresight position for any of the 2,304 rows in 3074, so we can't say how many of the high pfd cases a real beam would reach.
-- **Frequency-only rules.** `m4-no-space-to-earth` and `station-rx-overlap` ignore power, antenna direction and station location. A slight edge overlap counts. They over-flag by design. Protecting TX as well as RX, as Traficom asked, adds no cases but 75% more station links on 3074.
+- **Frequency-only M4 rule.** `m4-no-space-to-earth` ignores power, antenna direction and location. A slight edge overlap counts, so it over-flags by design.
+- **Station cases where nothing is calculated.** `station-rx-overlap` uses the pfd result at each station, but a band with no limit mask, or one needing X or Y, has no calculation and stays at medium. On 3074 that is the strongest evidence in 17 of 51 station cases, and covers 2,063 of 4,975 station links. Antenna direction isn't used: the satellite's isn't notified, and the sheet has few receive gains (ticket 02 question 14). A slight edge overlap counts.
 - **Filings around the Moon.** In 3074, six networks (LUNAR-R1 to R5, USASAT-MK1) have an orbit referred to the Moon. They still get M4 and station cases as if they were Earth satellites. The pfd rule sets them aside as not evaluated.
 - **Synthetic stations.** Traficom's station list is synthetic, so station cases show that the rule works, not real interference.
 
@@ -146,7 +160,7 @@ The hand check recomputed 13 pfd results from raw rows with no difference above 
 
 - **Article 11 totals don't reconcile with notice rows**: 106 unreconciled in 3075 and 29 in 3076.
 - **Invalid dates read as null.** Space 3077 has 22 such cells in `grp`; each logs a warning.
-- **Severity scoring.** The configured boosts for stations and passive bands don't fire on the evaluated issues, so they don't affect ranking there.
+- **Severity scoring.** The special-interest boost now fires on 111 of 182 cases in 3074: 60 of 76 pfd cases name a listed station. The passive-band boost fires only on station cases.
 - **The MDB parser `access-parser` is a young library**, and row counts haven't been compared with `mdbtools`.
 - **A first sync sends one digest per issue**, so a low `IFIC_MIN_ISSUE` sends a burst of them.
 - **Not tested:** real SMTP (mocked only), the language-model path with a real model, and ITU's own PFD software as a cross-check.
