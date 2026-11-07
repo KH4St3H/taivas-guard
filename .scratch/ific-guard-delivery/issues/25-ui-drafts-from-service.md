@@ -35,9 +35,8 @@ Ticket 18 says a branch doing this, `agent/12-drafts-ui` at `1422f80`, exists on
 - **UI:** the Draft letter panel loads `GET /cases/{id}/draft` and shows its explanation, letter, "Sources the draft relies on" (every citation) and "For the reviewer, not part of the letter" (the review notes). "Rewrite with AI" appears only when `/drafting` names a model; the note under the panel says the call can cost money. An accepted rewrite is labelled "Written by AI (model), checked by the guardrail", with "Show the template version" / "Show the AI version". A rejected one keeps the template and lists the guardrail's verdict (kind, value, why). An unedited AI version can be saved ("Save this version") so it survives a reload without a second paid call.
 - **Kept:** browser-saved edits load first and can be restored with "Back to your saved edit". Sample mode (`capabilities.drafts: false`), or a failed service call, falls back to `letter.ts`. "no AI yet" is gone.
 - **Tests:** `frontend/src/api/drafts.test.ts` covers the mapping (citations, notes, letter), `use_llm` only when asked, the guardrail verdict, a 401 explained as AI being off, and no model meaning no button. `tests/test_llm.py` covers `/drafting`. `uv run pytest` and `npx vitest run` pass.
-- **Screenshots** (`25-screenshots/`, case 5, CHINASAT-G-33.5E, `pfd-gso-app5`, 3074 export loaded into a local SQLite):
+- **Screenshots** (`25-screenshots/`, CHINASAT-G-33.5E, `pfd-gso-app5`, from the regenerated 3074 export loaded into a local SQLite):
   - `25-no-model.png`: no credential, no AI button, the service's draft with citations and notes.
-  - `25-model-unreachable.png`: a model configured but unreachable; template kept, reason shown.
   - `25-guardrail-rejected.png`: a rewrite adding "exceeds the limit by 42 dB and violates RR No. 22.5" rejected on five counts.
   - `25-ai-rewrite.png`: a clean rewrite shown as AI-written.
   The last two used a local stand-in for the Messages API, not a real model; a real run is ticket 26.
