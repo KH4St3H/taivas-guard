@@ -3,13 +3,14 @@
   "code_sha256": {
     "__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "cli.py": "e96b23d23ab365dc8c9988c860623a025b37bfe8822e512ad9bdd425d62b58a0",
-    "config.py": "4d9ddd9056de797a1540c2800195678333fc6bbd46eb55e130ffd298c7c63c35",
+    "config.py": "ccd179349bed67ee47db51338f80d8a54d48a2a54267b1a37acfbf2846f70732",
     "db.py": "afd0276cb67bc21490a049e54df3d17dfe4c5c2a539f40d1f1c4828eca5a2222",
     "engines/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "engines/p1546.py": "bf4c2db85f77d7a8d88baa70404dfa09eebca765b11341303ce9649cd10bef26",
     "engines/pfd.py": "2e9cd78a5388a4fabc7bcc225bdcc87e252f73ca27d470fe90b1814db6b3a933",
+    "engines/pfd_ngso.py": "a4b8f9315b8d71362f52f4b8ea324cb2b73b92b559738d4a53a1aab9a227cab0",
     "events.py": "97a681667f85a7a63985209e3190046492c5ece8ce9e832d2106616b718755d0",
-    "export.py": "e271bd85f7b9617fd4a67ef2e7b3c9a0afffedd9159af8428b2f8521c5372c8f",
+    "export.py": "94a0343f79d33d6548b344bab58779250df3385a2aad7e2f22cf5478ea0b5686",
     "llm/__init__.py": "e0079df209be1ab624cd842454ac309efb7d2bf0dbe05622b2ce91eb7eb2bed3",
     "llm/build_refdocs.py": "100578e0c674ba61e31215bfa06de83f8003e9bee8ee8b7e8b59313b40150f39",
     "llm/drafts.py": "6e25b09b81e71e42e29c83519810da9db9f8a9c3186182617e224e11f1ef413d",
@@ -27,10 +28,12 @@
     "screening/app.py": "08c319361ba49206d9f61a07664d9d173f54067ca485d4c78b6aa1ba70da55f1",
     "screening/engine.py": "42b4232328483fa0f0b08a71aa8e6d3201221ae1ae5593250f64f2d9682f9296",
     "screening/m4.py": "df4e376d1c936882d1638f3a4bebedf77c2e416ed7608bf28201699398a4ded8",
-    "screening/rule_stations.py": "8b6eb4ccf8b62f845597e6f14aaf6c8a9923d467a8047ecd3618b4bb62e96b98",
-    "screening/rules.py": "bd9cbcfcced50c6e454f552bc46a1805281c681bee9df7335d335aa2906789c4",
-    "screening/space.py": "a4fea9b8d45cdedad6819cd4fe2572fe61b7ff1b33a1d6bee08a34438c912a09",
-    "screening/stations.py": "c89f668f53b5fda671a70e5bb103293ec030dcb9d65896687067a214ecc31a25",
+    "screening/rule_pfd.py": "37ad0446527f0fe3c7732e17f1e2e478859c645c89bf52d124c318134b0f1313",
+    "screening/rule_stations.py": "ff889ea13d91b1ddf3ec890487bcc5a435c55859a6c41005e68d1f0f314ebfff",
+    "screening/rules.py": "55bfdb7afba01c25b3073830a9c79ba01fa540f9ba36bf0cebb8815cc255adc4",
+    "screening/scoring.py": "c62334592a2cf3f152453a5fad19db5218404884292a877685601fc610d66cb8",
+    "screening/space.py": "5393bf6a0e6a5eb486482a475071913d1b0942a4e3bedcd58d5aa3949f3db15a",
+    "screening/stations.py": "7ff80c8a5873eb20b42f10df53c365dcbb99d3b8095a5373e0f384892264e51b",
     "service.py": "d1cafab92b752e47280e237650787c3e3b41ef91836704bd89179ae669715fba",
     "sync/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "sync/app.py": "d9a868857f309792567623722e011f5fdc9c7c118d730d48a205b0cffac4c872",
@@ -40,11 +43,11 @@
     "terrestrial/__init__.py": "b1192ebb2ceb740477dd225c0bf2abf4801148b53c5d9df707fb1a4a99607d39",
     "terrestrial/adapter.py": "953378a335e902e98683677011e4ffee3e4dde2ba9ad4482e41bd316042ab1e4",
     "terrestrial/diff.py": "4082c008511b7be30aad48509806f3313f8ea0ea778aa3bebf4f2d2271573eb5",
-    "terrestrial/rule_field_strength.py": "14135b36ccd27e5266a0863cb7326bcaac0de3d384fdf3c40b0a4451cd320c44",
+    "terrestrial/rule_field_strength.py": "e003f78deb80b1ed9f10eb60abdc6b78bbb8695435d789d5385fcd6c713506e5",
     "terrestrial/trends.py": "d857ba5d6ce1ab9cc9f9246e01ddc882499bab5ba91fccfea2eae63b882b8f86"
   },
   "code_version": {
-    "commit": "e66e8a634637c4fa73f75622cddfd4a8eca18009",
+    "commit": "8c7000624384a1af314bc59cc45ce32d37ed27b2",
     "dirty": false
   },
   "config": {
@@ -67,7 +70,7 @@
   },
   "domain": "terrestrial",
   "format_version": 1,
-  "generated_at": "2026-11-07T06:59:21.921470+00:00",
+  "generated_at": "2026-11-07T07:51:36.875097+00:00",
   "issue_no": 3076,
   "limitations": [
     "Possible concerns for expert review, not confirmed interference or regulatory breaches.",
@@ -82,21 +85,21 @@
   ],
   "mdb_sha256": "7358853076caab70e2a18c1d86cc1d22be40a28d0a17202aa6ad35729fce234d",
   "output_sha256": {
-    "cases.csv": "50a695b0653c1ab9130c33ce0cb876828dc9896b5f0bae6518cc27d776fa8bb1",
-    "cases.json": "96158cb8bbc4744da52b3b5e3203dcf024b15826d289e0e270955bf6a84548e4",
-    "funnel.json": "d09e028245f35c7e9b346a01800cbb5a19382a9acf6b09a8d2b0c1e2cd5df1b2"
+    "cases.csv": "a54c5ffc22888768754a60aaeea556f806d77b475d43176208eaaea0082077dc",
+    "cases.json": "604191df3256e423d95a8bf41aa4f82670961e6b780565fafe1dcc2c2661d352",
+    "funnel.json": "d90fcab2e1986f586dd12b180bcf20c64f51a4b6e7954d4ef0c4f850c8207373"
   },
   "provisional_format": true,
   "rule_ids": [
     "terrestrial-p1546",
     "terrestrial-not-calculated"
   ],
-  "run_time_s": 8.287329,
+  "run_time_s": 21.774671,
   "scope": {
     "funnel_file": "funnel.json",
     "service": "land mobile, station classes FB and ML"
   },
   "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
   "source_size_bytes": 2406450,
-  "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip"
+  "source_url": "import:brific3076.zip"
 }

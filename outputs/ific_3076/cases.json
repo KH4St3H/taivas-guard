@@ -12,6 +12,7 @@
         "Receiver: 10 m above ground, 50% of locations, rural surroundings. Time: 10%. Height, locations and time follow T/R 25-08 A1.2.3; rural is our choice. The transmitter is treated as open, with no clutter correction, which biases high where it stands in clutter.",
         "Evaluated at Natural Earth points on the Finnish boundary, including the coast. This is not the legal border, and T/R 25-08 does not define the evaluation point for a sea border.",
         "pwr_dbw with pwr_eiv E is read as e.r.p., and with I as e.i.r.p. This is inferred from the data, because the ITU ReadMe could not be read.",
+        "Special-interest stations are matched on RX and TX bands, because Traficom said \"every TX is received in Finland\" (Discord, 2026-11-07). A field listed for a station with no separate RX match is at its site, using its antenna height, and is not the field at a receiver, which is elsewhere.",
         "50% of locations",
         "No terrain profile: terrain clearance and tropospheric scatter not applied",
         "tx_clutter_height_m not given: transmitter treated as open, s.10 correction not applied",
@@ -175,10 +176,11 @@
         "time_1_percent_dbuv_m": 25.09
       },
       "severity_reasons": [
-        "margin 9.02 dB x 10",
-        "M4 primary allocation x 10"
+        "margin 9.02 dB × 10",
+        "special-interest station × 20",
+        "M4 primary allocation × 10"
       ],
-      "severity_score": 80.0,
+      "severity_score": 100.0,
       "source": {
         "domain": "terrestrial",
         "fxm_ant_hgt_rows": 0,
@@ -332,9 +334,79 @@
         },
         "sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2"
       },
-      "special_interest": false,
-      "station_ids": [],
-      "stations_overlapping": [],
+      "special_interest": true,
+      "station_ids": [
+        "614221@R288",
+        "615366@R295",
+        "617699@R311",
+        "630061@R389"
+      ],
+      "stations_overlapping": [
+        {
+          "data": "synthetic, from Traficom's special-interest list",
+          "distance_km": 56.94,
+          "field_location": "station site, not the receiver: this band is received elsewhere",
+          "matched_bands": [
+            {
+              "high_mhz": 152.91005,
+              "low_mhz": 152.90245,
+              "side": "tx"
+            }
+          ],
+          "quality_flags": [],
+          "rx_height_m": 28.0,
+          "station_id": "614221@R288",
+          "value_db": 24.0
+        },
+        {
+          "data": "synthetic, from Traficom's special-interest list",
+          "distance_km": 79.22,
+          "field_location": "station site, not the receiver: this band is received elsewhere",
+          "matched_bands": [
+            {
+              "high_mhz": 152.89755000000002,
+              "low_mhz": 152.88995,
+              "side": "tx"
+            }
+          ],
+          "quality_flags": [],
+          "rx_height_m": 40.0,
+          "station_id": "615366@R295",
+          "value_db": 22.22
+        },
+        {
+          "data": "synthetic, from Traficom's special-interest list",
+          "distance_km": 273.12,
+          "field_location": "station site, not the receiver: this band is received elsewhere",
+          "matched_bands": [
+            {
+              "high_mhz": 152.91005,
+              "low_mhz": 152.90245,
+              "side": "tx"
+            }
+          ],
+          "quality_flags": [],
+          "rx_height_m": 34.0,
+          "station_id": "630061@R389",
+          "value_db": -3.53
+        },
+        {
+          "data": "synthetic, from Traficom's special-interest list",
+          "distance_km": 299.8,
+          "field_location": "station site, not the receiver: this band is received elsewhere",
+          "matched_bands": [
+            {
+              "high_mhz": 152.89755000000002,
+              "low_mhz": 152.88995,
+              "side": "tx"
+            }
+          ],
+          "quality_flags": [],
+          "rx_height_m": 40.0,
+          "station_id": "617699@R311",
+          "value_db": -5.28
+        }
+      ],
       "steps": {
         "path_field_strength_dbuv_m": 33.6242,
         "rx_height_correction_db": 0.0,
@@ -362,7 +434,7 @@
     "rule_id": "terrestrial-p1546",
     "severity": "high",
     "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
-    "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip",
+    "source_url": "import:brific3076.zip",
     "title": "Possible concern: KRL LYASKELYA (RUS) 152.9 MHz: 21.0 dB(uV/m) at 42 km on the Finnish boundary, 9.0 dB above the T/R 25-08 indicative threshold of 12, under stated assumptions"
   },
   {
@@ -378,6 +450,7 @@
         "Receiver: 10 m above ground, 50% of locations, rural surroundings. Time: 10%. Height, locations and time follow T/R 25-08 A1.2.3; rural is our choice. The transmitter is treated as open, with no clutter correction, which biases high where it stands in clutter.",
         "Evaluated at Natural Earth points on the Finnish boundary, including the coast. This is not the legal border, and T/R 25-08 does not define the evaluation point for a sea border.",
         "pwr_dbw with pwr_eiv E is read as e.r.p., and with I as e.i.r.p. This is inferred from the data, because the ITU ReadMe could not be read.",
+        "Special-interest stations are matched on RX and TX bands, because Traficom said \"every TX is received in Finland\" (Discord, 2026-11-07). A field listed for a station with no separate RX match is at its site, using its antenna height, and is not the field at a receiver, which is elsewhere.",
         "50% of locations",
         "No terrain profile: terrain clearance and tropospheric scatter not applied",
         "tx_clutter_height_m not given: transmitter treated as open, s.10 correction not applied",
@@ -551,11 +624,12 @@
         "time_1_percent_dbuv_m": 28.39
       },
       "severity_reasons": [
-        "margin 13.00 dB x 10",
-        "M4 primary allocation x 10",
+        "margin 13.00 dB × 10",
+        "special-interest station × 20",
+        "M4 primary allocation × 10",
         "medium, not high: fxm_coord says coordination with FIN is completed, declared by NOTIFIER; verify"
       ],
-      "severity_score": 80.0,
+      "severity_score": 100.0,
       "source": {
         "domain": "terrestrial",
         "fxm_ant_hgt_rows": 0,
@@ -695,9 +769,28 @@
         },
         "sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2"
       },
-      "special_interest": false,
-      "station_ids": [],
-      "stations_overlapping": [],
+      "special_interest": true,
+      "station_ids": [
+        "623965@R347"
+      ],
+      "stations_overlapping": [
+        {
+          "data": "synthetic, from Traficom's special-interest list",
+          "distance_km": 90.75,
+          "field_location": "station site, not the receiver: this band is received elsewhere",
+          "matched_bands": [
+            {
+              "high_mhz": 152.02425000000002,
+              "low_mhz": 152.01325,
+              "side": "tx"
+            }
+          ],
+          "quality_flags": [],
+          "rx_height_m": 34.0,
+          "station_id": "623965@R347",
+          "value_db": 18.06
+        }
+      ],
       "steps": {
         "path_field_strength_dbuv_m": 39.1022,
         "rx_height_correction_db": 0.0,
@@ -725,7 +818,7 @@
     "rule_id": "terrestrial-p1546",
     "severity": "medium",
     "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
-    "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip",
+    "source_url": "import:brific3076.zip",
     "title": "Possible concern: KRL KOSTOMUKSHA (RUS) 152.025 MHz: 25.0 dB(uV/m) at 32 km on the Finnish boundary, 13.0 dB above the T/R 25-08 indicative threshold of 12, under stated assumptions; NOTIFIER declares FIN coordination completed, please verify"
   },
   {
@@ -741,6 +834,7 @@
         "Receiver: 10 m above ground, 50% of locations, rural surroundings. Time: 10%. Height, locations and time follow T/R 25-08 A1.2.3; rural is our choice. The transmitter is treated as open, with no clutter correction, which biases high where it stands in clutter.",
         "Evaluated at Natural Earth points on the Finnish boundary, including the coast. This is not the legal border, and T/R 25-08 does not define the evaluation point for a sea border.",
         "pwr_dbw with pwr_eiv E is read as e.r.p., and with I as e.i.r.p. This is inferred from the data, because the ITU ReadMe could not be read.",
+        "Special-interest stations are matched on RX and TX bands, because Traficom said \"every TX is received in Finland\" (Discord, 2026-11-07). A field listed for a station with no separate RX match is at its site, using its antenna height, and is not the field at a receiver, which is elsewhere.",
         "50% of locations",
         "No terrain profile: terrain clearance and tropospheric scatter not applied",
         "tx_clutter_height_m not given: transmitter treated as open, s.10 correction not applied",
@@ -914,11 +1008,12 @@
         "time_1_percent_dbuv_m": 28.16
       },
       "severity_reasons": [
-        "margin 12.74 dB x 10",
-        "M4 primary allocation x 10",
+        "margin 12.74 dB × 10",
+        "special-interest station × 20",
+        "M4 primary allocation × 10",
         "medium, not high: fxm_coord says coordination with FIN is completed, declared by NOTIFIER; verify"
       ],
-      "severity_score": 80.0,
+      "severity_score": 100.0,
       "source": {
         "domain": "terrestrial",
         "fxm_ant_hgt_rows": 0,
@@ -1058,9 +1153,79 @@
         },
         "sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2"
       },
-      "special_interest": false,
-      "station_ids": [],
-      "stations_overlapping": [],
+      "special_interest": true,
+      "station_ids": [
+        "614221@R288",
+        "615366@R295",
+        "617699@R311",
+        "630061@R389"
+      ],
+      "stations_overlapping": [
+        {
+          "data": "synthetic, from Traficom's special-interest list",
+          "distance_km": 59.96,
+          "field_location": "station site, not the receiver: this band is received elsewhere",
+          "matched_bands": [
+            {
+              "high_mhz": 152.89755000000002,
+              "low_mhz": 152.88995,
+              "side": "tx"
+            }
+          ],
+          "quality_flags": [],
+          "rx_height_m": 40.0,
+          "station_id": "617699@R311",
+          "value_db": 24.75
+        },
+        {
+          "data": "synthetic, from Traficom's special-interest list",
+          "distance_km": 81.31,
+          "field_location": "station site, not the receiver: this band is received elsewhere",
+          "matched_bands": [
+            {
+              "high_mhz": 152.91005,
+              "low_mhz": 152.90245,
+              "side": "tx"
+            }
+          ],
+          "quality_flags": [],
+          "rx_height_m": 34.0,
+          "station_id": "630061@R389",
+          "value_db": 19.48
+        },
+        {
+          "data": "synthetic, from Traficom's special-interest list",
+          "distance_km": 270.89,
+          "field_location": "station site, not the receiver: this band is received elsewhere",
+          "matched_bands": [
+            {
+              "high_mhz": 152.91005,
+              "low_mhz": 152.90245,
+              "side": "tx"
+            }
+          ],
+          "quality_flags": [],
+          "rx_height_m": 28.0,
+          "station_id": "614221@R288",
+          "value_db": -6.11
+        },
+        {
+          "data": "synthetic, from Traficom's special-interest list",
+          "distance_km": 347.95,
+          "field_location": "station site, not the receiver: this band is received elsewhere",
+          "matched_bands": [
+            {
+              "high_mhz": 152.89755000000002,
+              "low_mhz": 152.88995,
+              "side": "tx"
+            }
+          ],
+          "quality_flags": [],
+          "rx_height_m": 40.0,
+          "station_id": "615366@R295",
+          "value_db": -11.68
+        }
+      ],
       "steps": {
         "path_field_strength_dbuv_m": 38.8359,
         "rx_height_correction_db": 0.0,
@@ -1088,7 +1253,7 @@
     "rule_id": "terrestrial-p1546",
     "severity": "medium",
     "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
-    "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip",
+    "source_url": "import:brific3076.zip",
     "title": "Possible concern: KRL KOSTOMUKSHA (RUS) 152.9 MHz: 24.7 dB(uV/m) at 32 km on the Finnish boundary, 12.7 dB above the T/R 25-08 indicative threshold of 12, under stated assumptions; NOTIFIER declares FIN coordination completed, please verify"
   },
   {
@@ -1104,6 +1269,7 @@
         "Receiver: 10 m above ground, 50% of locations, rural surroundings. Time: 10%. Height, locations and time follow T/R 25-08 A1.2.3; rural is our choice. The transmitter is treated as open, with no clutter correction, which biases high where it stands in clutter.",
         "Evaluated at Natural Earth points on the Finnish boundary, including the coast. This is not the legal border, and T/R 25-08 does not define the evaluation point for a sea border.",
         "pwr_dbw with pwr_eiv E is read as e.r.p., and with I as e.i.r.p. This is inferred from the data, because the ITU ReadMe could not be read.",
+        "Special-interest stations are matched on RX and TX bands, because Traficom said \"every TX is received in Finland\" (Discord, 2026-11-07). A field listed for a station with no separate RX match is at its site, using its antenna height, and is not the field at a receiver, which is elsewhere.",
         "50% of locations",
         "No terrain profile: terrain clearance and tropospheric scatter not applied",
         "tx_clutter_height_m not given: transmitter treated as open, s.10 correction not applied",
@@ -1277,11 +1443,12 @@
         "time_1_percent_dbuv_m": 23.74
       },
       "severity_reasons": [
-        "margin 8.17 dB x 10",
-        "M4 primary allocation x 10",
+        "margin 8.17 dB × 10",
+        "special-interest station × 20",
+        "M4 primary allocation × 10",
         "medium, not high: fxm_coord says coordination with FIN is completed, declared by NOTIFIER; verify"
       ],
-      "severity_score": 80.0,
+      "severity_score": 100.0,
       "source": {
         "domain": "terrestrial",
         "fxm_ant_hgt_rows": 0,
@@ -1421,9 +1588,28 @@
         },
         "sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2"
       },
-      "special_interest": false,
-      "station_ids": [],
-      "stations_overlapping": [],
+      "special_interest": true,
+      "station_ids": [
+        "601062@R220"
+      ],
+      "stations_overlapping": [
+        {
+          "data": "synthetic, from Traficom's special-interest list",
+          "distance_km": 49.16,
+          "field_location": "station site, not the receiver: this band is received elsewhere",
+          "matched_bands": [
+            {
+              "high_mhz": 153.08505000000002,
+              "low_mhz": 153.07745,
+              "side": "tx"
+            }
+          ],
+          "quality_flags": [],
+          "rx_height_m": 34.0,
+          "station_id": "601062@R220",
+          "value_db": 21.36
+        }
+      ],
       "steps": {
         "path_field_strength_dbuv_m": 37.3652,
         "rx_height_correction_db": 0.0,
@@ -1451,7 +1637,7 @@
     "rule_id": "terrestrial-p1546",
     "severity": "medium",
     "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
-    "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip",
+    "source_url": "import:brific3076.zip",
     "title": "Possible concern: LEN VYBORG GRUZOVOI (RUS) 153.075 MHz: 20.2 dB(uV/m) at 30 km on the Finnish boundary, 8.2 dB above the T/R 25-08 indicative threshold of 12, under stated assumptions; NOTIFIER declares FIN coordination completed, please verify"
   },
   {
@@ -1467,6 +1653,7 @@
         "Receiver: 10 m above ground, 50% of locations, rural surroundings. Time: 10%. Height, locations and time follow T/R 25-08 A1.2.3; rural is our choice. The transmitter is treated as open, with no clutter correction, which biases high where it stands in clutter.",
         "Evaluated at Natural Earth points on the Finnish boundary, including the coast. This is not the legal border, and T/R 25-08 does not define the evaluation point for a sea border.",
         "pwr_dbw with pwr_eiv E is read as e.r.p., and with I as e.i.r.p. This is inferred from the data, because the ITU ReadMe could not be read.",
+        "Special-interest stations are matched on RX and TX bands, because Traficom said \"every TX is received in Finland\" (Discord, 2026-11-07). A field listed for a station with no separate RX match is at its site, using its antenna height, and is not the field at a receiver, which is elsewhere.",
         "50% of locations",
         "No terrain profile: terrain clearance and tropospheric scatter not applied",
         "tx_clutter_height_m not given: transmitter treated as open, s.10 correction not applied",
@@ -1640,11 +1827,12 @@
         "time_1_percent_dbuv_m": 23.74
       },
       "severity_reasons": [
-        "margin 8.17 dB x 10",
-        "M4 primary allocation x 10",
+        "margin 8.17 dB × 10",
+        "special-interest station × 20",
+        "M4 primary allocation × 10",
         "medium, not high: fxm_coord says coordination with FIN is completed, declared by NOTIFIER; verify"
       ],
-      "severity_score": 80.0,
+      "severity_score": 100.0,
       "source": {
         "domain": "terrestrial",
         "fxm_ant_hgt_rows": 0,
@@ -1784,9 +1972,30 @@
         },
         "sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2"
       },
-      "special_interest": false,
-      "station_ids": [],
-      "stations_overlapping": [],
+      "special_interest": true,
+      "station_ids": [
+        "626855@R364"
+      ],
+      "stations_overlapping": [
+        {
+          "data": "synthetic, from Traficom's special-interest list",
+          "distance_km": 54.59,
+          "field_location": "station site, not the receiver: this band is received elsewhere",
+          "matched_bands": [
+            {
+              "high_mhz": 153.02255000000002,
+              "low_mhz": 153.01495,
+              "side": "tx"
+            }
+          ],
+          "quality_flags": [
+            "station_number_not_unique"
+          ],
+          "rx_height_m": 34.0,
+          "station_id": "626855@R364",
+          "value_db": 19.94
+        }
+      ],
       "steps": {
         "path_field_strength_dbuv_m": 37.366,
         "rx_height_correction_db": 0.0,
@@ -1814,7 +2023,7 @@
     "rule_id": "terrestrial-p1546",
     "severity": "medium",
     "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
-    "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip",
+    "source_url": "import:brific3076.zip",
     "title": "Possible concern: LEN VYBORG GRUZOVOI (RUS) 153.025 MHz: 20.2 dB(uV/m) at 30 km on the Finnish boundary, 8.2 dB above the T/R 25-08 indicative threshold of 12, under stated assumptions; NOTIFIER declares FIN coordination completed, please verify"
   },
   {
@@ -1830,6 +2039,7 @@
         "Receiver: 10 m above ground, 50% of locations, rural surroundings. Time: 10%. Height, locations and time follow T/R 25-08 A1.2.3; rural is our choice. The transmitter is treated as open, with no clutter correction, which biases high where it stands in clutter.",
         "Evaluated at Natural Earth points on the Finnish boundary, including the coast. This is not the legal border, and T/R 25-08 does not define the evaluation point for a sea border.",
         "pwr_dbw with pwr_eiv E is read as e.r.p., and with I as e.i.r.p. This is inferred from the data, because the ITU ReadMe could not be read.",
+        "Special-interest stations are matched on RX and TX bands, because Traficom said \"every TX is received in Finland\" (Discord, 2026-11-07). A field listed for a station with no separate RX match is at its site, using its antenna height, and is not the field at a receiver, which is elsewhere.",
         "50% of locations",
         "No terrain profile: terrain clearance and tropospheric scatter not applied",
         "tx_clutter_height_m not given: transmitter treated as open, s.10 correction not applied",
@@ -2003,8 +2213,8 @@
         "time_1_percent_dbuv_m": 23.73
       },
       "severity_reasons": [
-        "margin 8.16 dB x 10",
-        "M4 primary allocation x 10",
+        "margin 8.16 dB × 10",
+        "M4 primary allocation × 10",
         "medium, not high: fxm_coord says coordination with FIN is completed, declared by NOTIFIER; verify"
       ],
       "severity_score": 80.0,
@@ -2177,7 +2387,7 @@
     "rule_id": "terrestrial-p1546",
     "severity": "medium",
     "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
-    "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip",
+    "source_url": "import:brific3076.zip",
     "title": "Possible concern: LEN VYBORG GRUZOVOI (RUS) 153.3 MHz: 20.2 dB(uV/m) at 30 km on the Finnish boundary, 8.2 dB above the T/R 25-08 indicative threshold of 12, under stated assumptions; NOTIFIER declares FIN coordination completed, please verify"
   },
   {
@@ -2193,6 +2403,7 @@
         "Receiver: 10 m above ground, 50% of locations, rural surroundings. Time: 10%. Height, locations and time follow T/R 25-08 A1.2.3; rural is our choice. The transmitter is treated as open, with no clutter correction, which biases high where it stands in clutter.",
         "Evaluated at Natural Earth points on the Finnish boundary, including the coast. This is not the legal border, and T/R 25-08 does not define the evaluation point for a sea border.",
         "pwr_dbw with pwr_eiv E is read as e.r.p., and with I as e.i.r.p. This is inferred from the data, because the ITU ReadMe could not be read.",
+        "Special-interest stations are matched on RX and TX bands, because Traficom said \"every TX is received in Finland\" (Discord, 2026-11-07). A field listed for a station with no separate RX match is at its site, using its antenna height, and is not the field at a receiver, which is elsewhere.",
         "50% of locations",
         "No terrain profile: terrain clearance and tropospheric scatter not applied",
         "tx_clutter_height_m not given: transmitter treated as open, s.10 correction not applied",
@@ -2342,8 +2553,8 @@
         "time_1_percent_dbuv_m": 37.06
       },
       "severity_reasons": [
-        "special-interest station x 20",
-        "M4 primary allocation x 10"
+        "special-interest station × 20",
+        "M4 primary allocation × 10"
       ],
       "severity_score": 30.0,
       "source": {
@@ -2552,12 +2763,15 @@
         {
           "data": "synthetic, from Traficom's special-interest list",
           "distance_km": 296.13,
+          "matched_bands": [
+            {
+              "high_mhz": 798.9,
+              "low_mhz": 793.9,
+              "side": "rx"
+            }
+          ],
           "quality_flags": [
             "mvv_gain_not_real"
-          ],
-          "rx_band_mhz": [
-            793.9,
-            798.9
           ],
           "rx_height_m": 13.0,
           "station_id": "988251@R844",
@@ -2591,7 +2805,7 @@
     "rule_id": "terrestrial-p1546",
     "severity": "medium",
     "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
-    "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip",
+    "source_url": "import:brific3076.zip",
     "title": "Possible concern, needs expert criterion: KRL RUSKEALA (RUS) 793.5 MHz: 35.1 dB(uV/m) at 14 km on the Finnish boundary; no criterion in the repository, so no comparison"
   },
   {
@@ -2607,6 +2821,7 @@
         "Receiver: 10 m above ground, 50% of locations, rural surroundings. Time: 10%. Height, locations and time follow T/R 25-08 A1.2.3; rural is our choice. The transmitter is treated as open, with no clutter correction, which biases high where it stands in clutter.",
         "Evaluated at Natural Earth points on the Finnish boundary, including the coast. This is not the legal border, and T/R 25-08 does not define the evaluation point for a sea border.",
         "pwr_dbw with pwr_eiv E is read as e.r.p., and with I as e.i.r.p. This is inferred from the data, because the ITU ReadMe could not be read.",
+        "Special-interest stations are matched on RX and TX bands, because Traficom said \"every TX is received in Finland\" (Discord, 2026-11-07). A field listed for a station with no separate RX match is at its site, using its antenna height, and is not the field at a receiver, which is elsewhere.",
         "50% of locations",
         "No terrain profile: terrain clearance and tropospheric scatter not applied",
         "tx_clutter_height_m not given: transmitter treated as open, s.10 correction not applied",
@@ -2772,8 +2987,8 @@
         "time_1_percent_dbuv_m": 24.53
       },
       "severity_reasons": [
-        "special-interest station x 20",
-        "M4 primary allocation x 10"
+        "special-interest station × 20",
+        "M4 primary allocation × 10"
       ],
       "severity_score": 30.0,
       "source": {
@@ -2989,12 +3204,15 @@
         {
           "data": "synthetic, from Traficom's special-interest list",
           "distance_km": 293.58,
+          "matched_bands": [
+            {
+              "high_mhz": 798.9,
+              "low_mhz": 793.9,
+              "side": "rx"
+            }
+          ],
           "quality_flags": [
             "mvv_gain_not_real"
-          ],
-          "rx_band_mhz": [
-            793.9,
-            798.9
           ],
           "rx_height_m": 13.0,
           "station_id": "988251@R844",
@@ -3028,7 +3246,7 @@
     "rule_id": "terrestrial-p1546",
     "severity": "medium",
     "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
-    "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip",
+    "source_url": "import:brific3076.zip",
     "title": "Possible concern, needs expert criterion: KRL RUSKEALA (RUS) 793.5 MHz: 21.6 dB(uV/m) at 14 km on the Finnish boundary; no criterion in the repository, so no comparison"
   },
   {
@@ -3044,6 +3262,7 @@
         "Receiver: 10 m above ground, 50% of locations, rural surroundings. Time: 10%. Height, locations and time follow T/R 25-08 A1.2.3; rural is our choice. The transmitter is treated as open, with no clutter correction, which biases high where it stands in clutter.",
         "Evaluated at Natural Earth points on the Finnish boundary, including the coast. This is not the legal border, and T/R 25-08 does not define the evaluation point for a sea border.",
         "pwr_dbw with pwr_eiv E is read as e.r.p., and with I as e.i.r.p. This is inferred from the data, because the ITU ReadMe could not be read.",
+        "Special-interest stations are matched on RX and TX bands, because Traficom said \"every TX is received in Finland\" (Discord, 2026-11-07). A field listed for a station with no separate RX match is at its site, using its antenna height, and is not the field at a receiver, which is elsewhere.",
         "50% of locations",
         "No terrain profile: terrain clearance and tropospheric scatter not applied",
         "tx_clutter_height_m not given: transmitter treated as open, s.10 correction not applied",
@@ -3209,8 +3428,8 @@
         "time_1_percent_dbuv_m": 24.53
       },
       "severity_reasons": [
-        "special-interest station x 20",
-        "M4 primary allocation x 10"
+        "special-interest station × 20",
+        "M4 primary allocation × 10"
       ],
       "severity_score": 30.0,
       "source": {
@@ -3427,12 +3646,15 @@
         {
           "data": "synthetic, from Traficom's special-interest list",
           "distance_km": 293.58,
+          "matched_bands": [
+            {
+              "high_mhz": 798.9,
+              "low_mhz": 793.9,
+              "side": "rx"
+            }
+          ],
           "quality_flags": [
             "mvv_gain_not_real"
-          ],
-          "rx_band_mhz": [
-            793.9,
-            798.9
           ],
           "rx_height_m": 13.0,
           "station_id": "988251@R844",
@@ -3441,12 +3663,15 @@
         {
           "data": "synthetic, from Traficom's special-interest list",
           "distance_km": 653.69,
+          "matched_bands": [
+            {
+              "high_mhz": 801.1,
+              "low_mhz": 796.1,
+              "side": "rx"
+            }
+          ],
           "quality_flags": [
             "mvv_gain_not_real"
-          ],
-          "rx_band_mhz": [
-            796.1,
-            801.1
           ],
           "rx_height_m": 8.0,
           "station_id": "983905@R853",
@@ -3480,7 +3705,7 @@
     "rule_id": "terrestrial-p1546",
     "severity": "medium",
     "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
-    "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip",
+    "source_url": "import:brific3076.zip",
     "title": "Possible concern, needs expert criterion: KRL RUSKEALA (RUS) 794.74 MHz: 21.6 dB(uV/m) at 14 km on the Finnish boundary; no criterion in the repository, so no comparison"
   },
   {
@@ -3496,6 +3721,7 @@
         "Receiver: 10 m above ground, 50% of locations, rural surroundings. Time: 10%. Height, locations and time follow T/R 25-08 A1.2.3; rural is our choice. The transmitter is treated as open, with no clutter correction, which biases high where it stands in clutter.",
         "Evaluated at Natural Earth points on the Finnish boundary, including the coast. This is not the legal border, and T/R 25-08 does not define the evaluation point for a sea border.",
         "pwr_dbw with pwr_eiv E is read as e.r.p., and with I as e.i.r.p. This is inferred from the data, because the ITU ReadMe could not be read.",
+        "Special-interest stations are matched on RX and TX bands, because Traficom said \"every TX is received in Finland\" (Discord, 2026-11-07). A field listed for a station with no separate RX match is at its site, using its antenna height, and is not the field at a receiver, which is elsewhere.",
         "50% of locations",
         "No terrain profile: terrain clearance and tropospheric scatter not applied",
         "tx_clutter_height_m not given: transmitter treated as open, s.10 correction not applied",
@@ -3671,8 +3897,8 @@
         "time_1_percent_dbuv_m": -0.56
       },
       "severity_reasons": [
-        "special-interest station x 20",
-        "M4 primary allocation x 10"
+        "special-interest station × 20",
+        "M4 primary allocation × 10"
       ],
       "severity_score": 30.0,
       "source": {
@@ -3898,12 +4124,15 @@
         {
           "data": "synthetic, from Traficom's special-interest list",
           "distance_km": 578.83,
+          "matched_bands": [
+            {
+              "high_mhz": 798.9,
+              "low_mhz": 793.9,
+              "side": "rx"
+            }
+          ],
           "quality_flags": [
             "mvv_gain_not_real"
-          ],
-          "rx_band_mhz": [
-            793.9,
-            798.9
           ],
           "rx_height_m": 13.0,
           "station_id": "988251@R844",
@@ -3912,12 +4141,15 @@
         {
           "data": "synthetic, from Traficom's special-interest list",
           "distance_km": 933.43,
+          "matched_bands": [
+            {
+              "high_mhz": 801.1,
+              "low_mhz": 796.1,
+              "side": "rx"
+            }
+          ],
           "quality_flags": [
             "mvv_gain_not_real"
-          ],
-          "rx_band_mhz": [
-            796.1,
-            801.1
           ],
           "rx_height_m": 8.0,
           "station_id": "983905@R853",
@@ -3951,7 +4183,7 @@
     "rule_id": "terrestrial-p1546",
     "severity": "medium",
     "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
-    "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip",
+    "source_url": "import:brific3076.zip",
     "title": "Possible concern, needs expert criterion: LEN PROMZONA (RUS) 794.74 MHz: -10.4 dB(uV/m) at 135 km on the Finnish boundary; no criterion in the repository, so no comparison"
   },
   {
@@ -3967,6 +4199,7 @@
         "Receiver: 10 m above ground, 50% of locations, rural surroundings. Time: 10%. Height, locations and time follow T/R 25-08 A1.2.3; rural is our choice. The transmitter is treated as open, with no clutter correction, which biases high where it stands in clutter.",
         "Evaluated at Natural Earth points on the Finnish boundary, including the coast. This is not the legal border, and T/R 25-08 does not define the evaluation point for a sea border.",
         "pwr_dbw with pwr_eiv E is read as e.r.p., and with I as e.i.r.p. This is inferred from the data, because the ITU ReadMe could not be read.",
+        "Special-interest stations are matched on RX and TX bands, because Traficom said \"every TX is received in Finland\" (Discord, 2026-11-07). A field listed for a station with no separate RX match is at its site, using its antenna height, and is not the field at a receiver, which is elsewhere.",
         "50% of locations",
         "No terrain profile: terrain clearance and tropospheric scatter not applied",
         "tx_clutter_height_m not given: transmitter treated as open, s.10 correction not applied",
@@ -4117,8 +4350,8 @@
         "time_1_percent_dbuv_m": -14.32
       },
       "severity_reasons": [
-        "special-interest station x 20",
-        "M4 primary allocation x 10"
+        "special-interest station × 20",
+        "M4 primary allocation × 10"
       ],
       "severity_score": 30.0,
       "source": {
@@ -4322,12 +4555,15 @@
         {
           "data": "synthetic, from Traficom's special-interest list",
           "distance_km": 555.34,
+          "matched_bands": [
+            {
+              "high_mhz": 798.9,
+              "low_mhz": 793.9,
+              "side": "rx"
+            }
+          ],
           "quality_flags": [
             "mvv_gain_not_real"
-          ],
-          "rx_band_mhz": [
-            793.9,
-            798.9
           ],
           "rx_height_m": 13.0,
           "station_id": "988251@R844",
@@ -4361,7 +4597,7 @@
     "rule_id": "terrestrial-p1546",
     "severity": "medium",
     "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
-    "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip",
+    "source_url": "import:brific3076.zip",
     "title": "Possible concern, needs expert criterion: MUR TITOVKA (RUS) 793.5 MHz: -18.5 dB(uV/m) at 101 km on the Finnish boundary; no criterion in the repository, so no comparison"
   },
   {
@@ -4377,6 +4613,7 @@
         "Receiver: 10 m above ground, 50% of locations, rural surroundings. Time: 10%. Height, locations and time follow T/R 25-08 A1.2.3; rural is our choice. The transmitter is treated as open, with no clutter correction, which biases high where it stands in clutter.",
         "Evaluated at Natural Earth points on the Finnish boundary, including the coast. This is not the legal border, and T/R 25-08 does not define the evaluation point for a sea border.",
         "pwr_dbw with pwr_eiv E is read as e.r.p., and with I as e.i.r.p. This is inferred from the data, because the ITU ReadMe could not be read.",
+        "Special-interest stations are matched on RX and TX bands, because Traficom said \"every TX is received in Finland\" (Discord, 2026-11-07). A field listed for a station with no separate RX match is at its site, using its antenna height, and is not the field at a receiver, which is elsewhere.",
         "50% of locations",
         "No terrain profile: terrain clearance and tropospheric scatter not applied",
         "tx_clutter_height_m not given: transmitter treated as open, s.10 correction not applied",
@@ -4527,8 +4764,8 @@
         "time_1_percent_dbuv_m": -14.33
       },
       "severity_reasons": [
-        "special-interest station x 20",
-        "M4 primary allocation x 10"
+        "special-interest station × 20",
+        "M4 primary allocation × 10"
       ],
       "severity_score": 30.0,
       "source": {
@@ -4733,12 +4970,15 @@
         {
           "data": "synthetic, from Traficom's special-interest list",
           "distance_km": 228.71,
+          "matched_bands": [
+            {
+              "high_mhz": 801.1,
+              "low_mhz": 796.1,
+              "side": "rx"
+            }
+          ],
           "quality_flags": [
             "mvv_gain_not_real"
-          ],
-          "rx_band_mhz": [
-            796.1,
-            801.1
           ],
           "rx_height_m": 8.0,
           "station_id": "983905@R853",
@@ -4747,12 +4987,15 @@
         {
           "data": "synthetic, from Traficom's special-interest list",
           "distance_km": 555.34,
+          "matched_bands": [
+            {
+              "high_mhz": 798.9,
+              "low_mhz": 793.9,
+              "side": "rx"
+            }
+          ],
           "quality_flags": [
             "mvv_gain_not_real"
-          ],
-          "rx_band_mhz": [
-            793.9,
-            798.9
           ],
           "rx_height_m": 13.0,
           "station_id": "988251@R844",
@@ -4786,7 +5029,7 @@
     "rule_id": "terrestrial-p1546",
     "severity": "medium",
     "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
-    "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip",
+    "source_url": "import:brific3076.zip",
     "title": "Possible concern, needs expert criterion: MUR TITOVKA (RUS) 794.74 MHz: -18.5 dB(uV/m) at 101 km on the Finnish boundary; no criterion in the repository, so no comparison"
   },
   {
@@ -5012,7 +5255,7 @@
     "rule_id": "terrestrial-not-calculated",
     "severity": "medium",
     "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
-    "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip",
+    "source_url": "import:brific3076.zip",
     "title": "Not calculated, expert review needed: LEN KINGISEPP (RUS) ML 415.825 MHz: fxm_ant has no height above ground or effective height; none was assumed."
   },
   {
@@ -5238,7 +5481,7 @@
     "rule_id": "terrestrial-not-calculated",
     "severity": "medium",
     "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
-    "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip",
+    "source_url": "import:brific3076.zip",
     "title": "Not calculated, expert review needed: LEN OBL (RUS) ML 424.575 MHz: fxm_ant has no height above ground or effective height; none was assumed."
   },
   {
@@ -5464,7 +5707,7 @@
     "rule_id": "terrestrial-not-calculated",
     "severity": "medium",
     "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
-    "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip",
+    "source_url": "import:brific3076.zip",
     "title": "Not calculated, expert review needed: LEN KINGISEPP (RUS) ML 414.075 MHz: fxm_ant has no height above ground or effective height; none was assumed."
   },
   {
@@ -5690,7 +5933,7 @@
     "rule_id": "terrestrial-not-calculated",
     "severity": "medium",
     "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
-    "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip",
+    "source_url": "import:brific3076.zip",
     "title": "Not calculated, expert review needed: LEN KINGISEPP (RUS) ML 414.475 MHz: fxm_ant has no height above ground or effective height; none was assumed."
   },
   {
@@ -5926,7 +6169,7 @@
     "rule_id": "terrestrial-not-calculated",
     "severity": "medium",
     "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
-    "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip",
+    "source_url": "import:brific3076.zip",
     "title": "Not calculated, expert review needed: PSK PSKOV (RUS) ML 154.6 MHz: fxm_ant has no height above ground or effective height; none was assumed."
   },
   {
@@ -6144,7 +6387,7 @@
     "rule_id": "terrestrial-not-calculated",
     "severity": "medium",
     "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
-    "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip",
+    "source_url": "import:brific3076.zip",
     "title": "Not calculated, expert review needed: KRL LYASKELYA (RUS) ML 152.9 MHz: fxm_ant has no height above ground or effective height; none was assumed."
   },
   {
@@ -6382,7 +6625,7 @@
     "rule_id": "terrestrial-not-calculated",
     "severity": "medium",
     "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
-    "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip",
+    "source_url": "import:brific3076.zip",
     "title": "Not calculated, expert review needed: KRL KOSTOMUKSHA (RUS) ML 152.9 MHz: fxm_ant has no height above ground or effective height; none was assumed."
   },
   {
@@ -6600,7 +6843,7 @@
     "rule_id": "terrestrial-not-calculated",
     "severity": "medium",
     "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
-    "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip",
+    "source_url": "import:brific3076.zip",
     "title": "Not calculated, expert review needed: KRL KOSTOMUKSHA (RUS) ML 155.6 MHz: fxm_ant has no height above ground or effective height; none was assumed."
   },
   {
@@ -6616,6 +6859,7 @@
         "Receiver: 10 m above ground, 50% of locations, rural surroundings. Time: 10%. Height, locations and time follow T/R 25-08 A1.2.3; rural is our choice. The transmitter is treated as open, with no clutter correction, which biases high where it stands in clutter.",
         "Evaluated at Natural Earth points on the Finnish boundary, including the coast. This is not the legal border, and T/R 25-08 does not define the evaluation point for a sea border.",
         "pwr_dbw with pwr_eiv E is read as e.r.p., and with I as e.i.r.p. This is inferred from the data, because the ITU ReadMe could not be read.",
+        "Special-interest stations are matched on RX and TX bands, because Traficom said \"every TX is received in Finland\" (Discord, 2026-11-07). A field listed for a station with no separate RX match is at its site, using its antenna height, and is not the field at a receiver, which is elsewhere.",
         "50% of locations",
         "No terrain profile: terrain clearance and tropospheric scatter not applied",
         "tx_clutter_height_m not given: transmitter treated as open, s.10 correction not applied",
@@ -6787,8 +7031,9 @@
         "time_1_percent_dbuv_m": 22.75
       },
       "severity_reasons": [
-        "margin -8.89 dB x 10",
-        "M4 primary allocation x 10"
+        "margin -8.89 dB × 10",
+        "special-interest station × 20",
+        "M4 primary allocation × 10"
       ],
       "severity_score": 0.0,
       "source": {
@@ -6926,9 +7171,28 @@
         },
         "sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2"
       },
-      "special_interest": false,
-      "station_ids": [],
-      "stations_overlapping": [],
+      "special_interest": true,
+      "station_ids": [
+        "640513@R462"
+      ],
+      "stations_overlapping": [
+        {
+          "data": "synthetic, from Traficom's special-interest list",
+          "distance_km": 147.45,
+          "field_location": "station site, not the receiver: this band is received elsewhere",
+          "matched_bands": [
+            {
+              "high_mhz": 425.84999999999997,
+              "low_mhz": 425.825,
+              "side": "tx"
+            }
+          ],
+          "quality_flags": [],
+          "rx_height_m": 34.0,
+          "station_id": "640513@R462",
+          "value_db": 16.75
+        }
+      ],
       "steps": {
         "path_field_strength_dbuv_m": 22.9074,
         "rx_height_correction_db": 0.0,
@@ -6956,7 +7220,7 @@
     "rule_id": "terrestrial-p1546",
     "severity": "medium",
     "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
-    "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip",
+    "source_url": "import:brific3076.zip",
     "title": "LEN KINGISEPP (RUS) 425.825 MHz: 11.1 dB(uV/m) at 128 km on the Finnish boundary, 8.9 dB below the T/R 25-08 indicative threshold of 20, under stated assumptions"
   },
   {
@@ -6972,6 +7236,7 @@
         "Receiver: 10 m above ground, 50% of locations, rural surroundings. Time: 10%. Height, locations and time follow T/R 25-08 A1.2.3; rural is our choice. The transmitter is treated as open, with no clutter correction, which biases high where it stands in clutter.",
         "Evaluated at Natural Earth points on the Finnish boundary, including the coast. This is not the legal border, and T/R 25-08 does not define the evaluation point for a sea border.",
         "pwr_dbw with pwr_eiv E is read as e.r.p., and with I as e.i.r.p. This is inferred from the data, because the ITU ReadMe could not be read.",
+        "Special-interest stations are matched on RX and TX bands, because Traficom said \"every TX is received in Finland\" (Discord, 2026-11-07). A field listed for a station with no separate RX match is at its site, using its antenna height, and is not the field at a receiver, which is elsewhere.",
         "50% of locations",
         "No terrain profile: terrain clearance and tropospheric scatter not applied",
         "tx_clutter_height_m not given: transmitter treated as open, s.10 correction not applied",
@@ -7141,8 +7406,9 @@
         "time_1_percent_dbuv_m": 16.94
       },
       "severity_reasons": [
-        "margin -13.13 dB x 10",
-        "M4 primary allocation x 10"
+        "margin -13.13 dB × 10",
+        "special-interest station × 20",
+        "M4 primary allocation × 10"
       ],
       "severity_score": 0.0,
       "source": {
@@ -7280,9 +7546,28 @@
         },
         "sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2"
       },
-      "special_interest": false,
-      "station_ids": [],
-      "stations_overlapping": [],
+      "special_interest": true,
+      "station_ids": [
+        "610539@R265"
+      ],
+      "stations_overlapping": [
+        {
+          "data": "synthetic, from Traficom's special-interest list",
+          "distance_km": 362.75,
+          "field_location": "station site, not the receiver: this band is received elsewhere",
+          "matched_bands": [
+            {
+              "high_mhz": 424.075,
+              "low_mhz": 424.05,
+              "side": "tx"
+            }
+          ],
+          "quality_flags": [],
+          "rx_height_m": 28.0,
+          "station_id": "610539@R265",
+          "value_db": -16.06
+        }
+      ],
       "steps": {
         "path_field_strength_dbuv_m": 20.4674,
         "rx_height_correction_db": 0.0,
@@ -7308,9 +7593,9 @@
     ],
     "rank": 22,
     "rule_id": "terrestrial-p1546",
-    "severity": "low",
+    "severity": "medium",
     "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
-    "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip",
+    "source_url": "import:brific3076.zip",
     "title": "LEN KINGISEPP (RUS) 424.075 MHz: 6.9 dB(uV/m) at 143 km on the Finnish boundary, 13.1 dB below the T/R 25-08 indicative threshold of 20, under stated assumptions"
   },
   {
@@ -7326,6 +7611,7 @@
         "Receiver: 10 m above ground, 50% of locations, rural surroundings. Time: 10%. Height, locations and time follow T/R 25-08 A1.2.3; rural is our choice. The transmitter is treated as open, with no clutter correction, which biases high where it stands in clutter.",
         "Evaluated at Natural Earth points on the Finnish boundary, including the coast. This is not the legal border, and T/R 25-08 does not define the evaluation point for a sea border.",
         "pwr_dbw with pwr_eiv E is read as e.r.p., and with I as e.i.r.p. This is inferred from the data, because the ITU ReadMe could not be read.",
+        "Special-interest stations are matched on RX and TX bands, because Traficom said \"every TX is received in Finland\" (Discord, 2026-11-07). A field listed for a station with no separate RX match is at its site, using its antenna height, and is not the field at a receiver, which is elsewhere.",
         "50% of locations",
         "No terrain profile: terrain clearance and tropospheric scatter not applied",
         "tx_clutter_height_m not given: transmitter treated as open, s.10 correction not applied",
@@ -7495,8 +7781,9 @@
         "time_1_percent_dbuv_m": 16.94
       },
       "severity_reasons": [
-        "margin -13.13 dB x 10",
-        "M4 primary allocation x 10"
+        "margin -13.13 dB × 10",
+        "special-interest station × 20",
+        "M4 primary allocation × 10"
       ],
       "severity_score": 0.0,
       "source": {
@@ -7634,9 +7921,28 @@
         },
         "sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2"
       },
-      "special_interest": false,
-      "station_ids": [],
-      "stations_overlapping": [],
+      "special_interest": true,
+      "station_ids": [
+        "606465@R246"
+      ],
+      "stations_overlapping": [
+        {
+          "data": "synthetic, from Traficom's special-interest list",
+          "distance_km": 171.5,
+          "field_location": "station site, not the receiver: this band is received elsewhere",
+          "matched_bands": [
+            {
+              "high_mhz": 424.5,
+              "low_mhz": 424.475,
+              "side": "tx"
+            }
+          ],
+          "quality_flags": [],
+          "rx_height_m": 26.0,
+          "station_id": "606465@R246",
+          "value_db": 9.98
+        }
+      ],
       "steps": {
         "path_field_strength_dbuv_m": 20.4653,
         "rx_height_correction_db": 0.0,
@@ -7662,9 +7968,9 @@
     ],
     "rank": 23,
     "rule_id": "terrestrial-p1546",
-    "severity": "low",
+    "severity": "medium",
     "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
-    "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip",
+    "source_url": "import:brific3076.zip",
     "title": "LEN KINGISEPP (RUS) 424.475 MHz: 6.9 dB(uV/m) at 143 km on the Finnish boundary, 13.1 dB below the T/R 25-08 indicative threshold of 20, under stated assumptions"
   },
   {
@@ -7680,6 +7986,7 @@
         "Receiver: 10 m above ground, 50% of locations, rural surroundings. Time: 10%. Height, locations and time follow T/R 25-08 A1.2.3; rural is our choice. The transmitter is treated as open, with no clutter correction, which biases high where it stands in clutter.",
         "Evaluated at Natural Earth points on the Finnish boundary, including the coast. This is not the legal border, and T/R 25-08 does not define the evaluation point for a sea border.",
         "pwr_dbw with pwr_eiv E is read as e.r.p., and with I as e.i.r.p. This is inferred from the data, because the ITU ReadMe could not be read.",
+        "Special-interest stations are matched on RX and TX bands, because Traficom said \"every TX is received in Finland\" (Discord, 2026-11-07). A field listed for a station with no separate RX match is at its site, using its antenna height, and is not the field at a receiver, which is elsewhere.",
         "50% of locations",
         "No terrain profile: terrain clearance and tropospheric scatter not applied",
         "tx_clutter_height_m not given: transmitter treated as open, s.10 correction not applied",
@@ -7847,8 +8154,8 @@
         "time_1_percent_dbuv_m": -11.04
       },
       "severity_reasons": [
-        "margin -34.33 dB x 10",
-        "M4 primary allocation x 10"
+        "margin -34.33 dB × 10",
+        "M4 primary allocation × 10"
       ],
       "severity_score": 0.0,
       "source": {
@@ -8010,7 +8317,7 @@
     "rule_id": "terrestrial-p1546",
     "severity": "low",
     "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
-    "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip",
+    "source_url": "import:brific3076.zip",
     "title": "PSK PSKOV (RUS) 159.6 MHz: -22.3 dB(uV/m) at 301 km on the Finnish boundary, 34.3 dB below the T/R 25-08 indicative threshold of 12, under stated assumptions"
   },
   {
@@ -8026,6 +8333,7 @@
         "Receiver: 10 m above ground, 50% of locations, rural surroundings. Time: 10%. Height, locations and time follow T/R 25-08 A1.2.3; rural is our choice. The transmitter is treated as open, with no clutter correction, which biases high where it stands in clutter.",
         "Evaluated at Natural Earth points on the Finnish boundary, including the coast. This is not the legal border, and T/R 25-08 does not define the evaluation point for a sea border.",
         "pwr_dbw with pwr_eiv E is read as e.r.p., and with I as e.i.r.p. This is inferred from the data, because the ITU ReadMe could not be read.",
+        "Special-interest stations are matched on RX and TX bands, because Traficom said \"every TX is received in Finland\" (Discord, 2026-11-07). A field listed for a station with no separate RX match is at its site, using its antenna height, and is not the field at a receiver, which is elsewhere.",
         "50% of locations",
         "No terrain profile: terrain clearance and tropospheric scatter not applied",
         "tx_clutter_height_m not given: transmitter treated as open, s.10 correction not applied",
@@ -8193,8 +8501,8 @@
         "time_1_percent_dbuv_m": -13.83
       },
       "severity_reasons": [
-        "margin -37.18 dB x 10",
-        "M4 primary allocation x 10"
+        "margin -37.18 dB × 10",
+        "M4 primary allocation × 10"
       ],
       "severity_score": 0.0,
       "source": {
@@ -8356,7 +8664,7 @@
     "rule_id": "terrestrial-p1546",
     "severity": "low",
     "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
-    "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip",
+    "source_url": "import:brific3076.zip",
     "title": "PSK PSKOV (RUS) 154.6 MHz: -25.2 dB(uV/m) at 301 km on the Finnish boundary, 37.2 dB below the T/R 25-08 indicative threshold of 12, under stated assumptions"
   },
   {
@@ -8372,6 +8680,7 @@
         "Receiver: 10 m above ground, 50% of locations, rural surroundings. Time: 10%. Height, locations and time follow T/R 25-08 A1.2.3; rural is our choice. The transmitter is treated as open, with no clutter correction, which biases high where it stands in clutter.",
         "Evaluated at Natural Earth points on the Finnish boundary, including the coast. This is not the legal border, and T/R 25-08 does not define the evaluation point for a sea border.",
         "pwr_dbw with pwr_eiv E is read as e.r.p., and with I as e.i.r.p. This is inferred from the data, because the ITU ReadMe could not be read.",
+        "Special-interest stations are matched on RX and TX bands, because Traficom said \"every TX is received in Finland\" (Discord, 2026-11-07). A field listed for a station with no separate RX match is at its site, using its antenna height, and is not the field at a receiver, which is elsewhere.",
         "50% of locations",
         "No terrain profile: terrain clearance and tropospheric scatter not applied",
         "tx_clutter_height_m not given: transmitter treated as open, s.10 correction not applied",
@@ -8539,8 +8848,8 @@
         "time_1_percent_dbuv_m": -14.09
       },
       "severity_reasons": [
-        "margin -37.45 dB x 10",
-        "M4 primary allocation x 10"
+        "margin -37.45 dB × 10",
+        "M4 primary allocation × 10"
       ],
       "severity_score": 0.0,
       "source": {
@@ -8702,7 +9011,7 @@
     "rule_id": "terrestrial-p1546",
     "severity": "low",
     "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
-    "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip",
+    "source_url": "import:brific3076.zip",
     "title": "PSK PSKOV (RUS) 154.6 MHz: -25.4 dB(uV/m) at 301 km on the Finnish boundary, 37.5 dB below the T/R 25-08 indicative threshold of 12, under stated assumptions"
   },
   {
@@ -8718,6 +9027,7 @@
         "Receiver: 10 m above ground, 50% of locations, rural surroundings. Time: 10%. Height, locations and time follow T/R 25-08 A1.2.3; rural is our choice. The transmitter is treated as open, with no clutter correction, which biases high where it stands in clutter.",
         "Evaluated at Natural Earth points on the Finnish boundary, including the coast. This is not the legal border, and T/R 25-08 does not define the evaluation point for a sea border.",
         "pwr_dbw with pwr_eiv E is read as e.r.p., and with I as e.i.r.p. This is inferred from the data, because the ITU ReadMe could not be read.",
+        "Special-interest stations are matched on RX and TX bands, because Traficom said \"every TX is received in Finland\" (Discord, 2026-11-07). A field listed for a station with no separate RX match is at its site, using its antenna height, and is not the field at a receiver, which is elsewhere.",
         "50% of locations",
         "No terrain profile: terrain clearance and tropospheric scatter not applied",
         "tx_clutter_height_m not given: transmitter treated as open, s.10 correction not applied",
@@ -8885,8 +9195,8 @@
         "time_1_percent_dbuv_m": -15.06
       },
       "severity_reasons": [
-        "margin -38.43 dB x 10",
-        "M4 primary allocation x 10"
+        "margin -38.43 dB × 10",
+        "M4 primary allocation × 10"
       ],
       "severity_score": 0.0,
       "source": {
@@ -9048,7 +9358,7 @@
     "rule_id": "terrestrial-p1546",
     "severity": "low",
     "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
-    "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip",
+    "source_url": "import:brific3076.zip",
     "title": "PSK PSKOV (RUS) 154.6 MHz: -26.4 dB(uV/m) at 301 km on the Finnish boundary, 38.4 dB below the T/R 25-08 indicative threshold of 12, under stated assumptions"
   },
   {
@@ -9064,6 +9374,7 @@
         "Receiver: 10 m above ground, 50% of locations, rural surroundings. Time: 10%. Height, locations and time follow T/R 25-08 A1.2.3; rural is our choice. The transmitter is treated as open, with no clutter correction, which biases high where it stands in clutter.",
         "Evaluated at Natural Earth points on the Finnish boundary, including the coast. This is not the legal border, and T/R 25-08 does not define the evaluation point for a sea border.",
         "pwr_dbw with pwr_eiv E is read as e.r.p., and with I as e.i.r.p. This is inferred from the data, because the ITU ReadMe could not be read.",
+        "Special-interest stations are matched on RX and TX bands, because Traficom said \"every TX is received in Finland\" (Discord, 2026-11-07). A field listed for a station with no separate RX match is at its site, using its antenna height, and is not the field at a receiver, which is elsewhere.",
         "50% of locations",
         "No terrain profile: terrain clearance and tropospheric scatter not applied",
         "tx_clutter_height_m not given: transmitter treated as open, s.10 correction not applied",
@@ -9231,8 +9542,8 @@
         "time_1_percent_dbuv_m": -15.92
       },
       "severity_reasons": [
-        "margin -39.27 dB x 10",
-        "M4 primary allocation x 10"
+        "margin -39.27 dB × 10",
+        "M4 primary allocation × 10"
       ],
       "severity_score": 0.0,
       "source": {
@@ -9394,7 +9705,7 @@
     "rule_id": "terrestrial-p1546",
     "severity": "low",
     "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
-    "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip",
+    "source_url": "import:brific3076.zip",
     "title": "PSK PSKOV (RUS) 154.6 MHz: -27.3 dB(uV/m) at 301 km on the Finnish boundary, 39.3 dB below the T/R 25-08 indicative threshold of 12, under stated assumptions"
   },
   {
@@ -9410,6 +9721,7 @@
         "Receiver: 10 m above ground, 50% of locations, rural surroundings. Time: 10%. Height, locations and time follow T/R 25-08 A1.2.3; rural is our choice. The transmitter is treated as open, with no clutter correction, which biases high where it stands in clutter.",
         "Evaluated at Natural Earth points on the Finnish boundary, including the coast. This is not the legal border, and T/R 25-08 does not define the evaluation point for a sea border.",
         "pwr_dbw with pwr_eiv E is read as e.r.p., and with I as e.i.r.p. This is inferred from the data, because the ITU ReadMe could not be read.",
+        "Special-interest stations are matched on RX and TX bands, because Traficom said \"every TX is received in Finland\" (Discord, 2026-11-07). A field listed for a station with no separate RX match is at its site, using its antenna height, and is not the field at a receiver, which is elsewhere.",
         "50% of locations",
         "No terrain profile: terrain clearance and tropospheric scatter not applied",
         "tx_clutter_height_m not given: transmitter treated as open, s.10 correction not applied",
@@ -9577,8 +9889,8 @@
         "time_1_percent_dbuv_m": -17.03
       },
       "severity_reasons": [
-        "margin -40.39 dB x 10",
-        "M4 primary allocation x 10"
+        "margin -40.39 dB × 10",
+        "M4 primary allocation × 10"
       ],
       "severity_score": 0.0,
       "source": {
@@ -9740,7 +10052,7 @@
     "rule_id": "terrestrial-p1546",
     "severity": "low",
     "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
-    "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip",
+    "source_url": "import:brific3076.zip",
     "title": "PSK PSKOV (RUS) 154.6 MHz: -28.4 dB(uV/m) at 301 km on the Finnish boundary, 40.4 dB below the T/R 25-08 indicative threshold of 12, under stated assumptions"
   }
 ]

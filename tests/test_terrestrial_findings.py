@@ -273,6 +273,22 @@ def test_special_interest_station_gets_its_own_calculated_field(one_point):
     assert d["station_ids"] == ["77@R5"] and d["special_interest"] is True
     assert d["stations_overlapping"][0]["value_db"] == pytest.approx(direct(rx_height_m=20.0), abs=0.005)
     assert d["stations_overlapping"][0]["rx_height_m"] == 20.0
+    assert d["stations_overlapping"][0]["matched_bands"][0]["side"] == "rx"
+    assert "field_location" not in d["stations_overlapping"][0]
+
+
+def test_tx_match_says_its_field_is_not_at_the_receiver(one_point):
+    station = stations_module.Station(
+        row=5, station_no=77, licence_class=None, lon_deg=POINT_LON, lat_deg=POINT_LAT, ground_height_m=None, mast_height_m=None,
+        ant_height_agl_m=20.0, ant_height_asl_m=None, ant_gain_db=None, tx_mhz=152.9, rx_mhz=None, channel_bw_mhz=0.025,
+        transmission_bw_mhz=None, transmission_class=None, radiation_direction_deg=None, polarisation=None, power=None,
+        power_unit=None, power_itu=None, line_loss_db=None, directivity=None,
+    )
+    rule = FieldStrengthRule(get_settings(), previous(), "s" * 64, stations=[station])
+    d = rule.run(TerrestrialIssue(tables((1, "RUS", "FB", "ADD"))))[0].details
+    entry = d["stations_overlapping"][0]
+    assert d["special_interest"] is True and entry["matched_bands"][0]["side"] == "tx"
+    assert entry["field_location"].startswith("station site, not the receiver")
 
 
 def test_land_mask_knows_the_gulf_of_finland():

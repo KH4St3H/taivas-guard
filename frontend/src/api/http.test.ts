@@ -110,7 +110,7 @@ describe('station overlap cases', () => {
   });
   it('drafts a letter about receivers, not about allocations or exceeded limits', () => {
     const letter = draftLetter(f);
-    expect(letter).toContain('overlap the receive frequencies');
+    expect(letter).toContain('overlap frequencies used by Finnish stations');
     expect(letter).toContain('possible concern only');
     expect(letter).toContain('18875–19067.5 MHz');
     expect(letter).not.toContain('no space-to-Earth allocation');

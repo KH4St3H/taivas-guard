@@ -27,7 +27,7 @@ Status values come from `docs/agents/triage-labels.md`. Size is a rough relative
 | 13 | Explanations and draft letters | Done, `agent/13-llm-drafts` | M | none | Required |
 | 14 | Final run, evaluation files and demo | Coordinator | M | all others except 17 and 18 | Required |
 | 15 | Older IFIC issues | Done for version 10 only, merged in `integration/wave-3` | M | 03 | Required |
-| 16 | Protect TX as well as RX frequencies | Agent, do now | M | none | Required |
+| 16 | Protect TX as well as RX frequencies | Done, merged in `integration/wave-3` | M | none | Required |
 | 17 | AP30, AP30A and AP30B plan screening | Later, `needs-info` | L | none | Required by the brief, gap declared for now |
 | 18 | Pending work before submission (checklist) | Coordinator | L | none | Mixed, see ticket |
 
@@ -128,6 +128,7 @@ Screening rules without a calculation use `method: "screening"` and leave the nu
 - **Wave 2 merged (2026-11-07):** `integration/wave-3` has 07, 08, 10, 11 and 15, with ticket 10's scoring placeholder replaced by `scoring.py`. 534 tests pass with `IFIC_SHARED_DATA` set. Not pushed. Tracked `outputs/` predate some of this and ticket 14 regenerates them. 07 and 10 were each recomputed once by the coordinator from source rows.
 - **Space database versions:** only version 10 screens. Versions 8, 7 and 5 exist (samples 2925, 2809, 2559) and are rejected with a clear error, so "all existing IFICs" is not yet met. Coordinator's recommendation, awaiting the user's decision.
 - **Open questions added for ticket 02:** whether T/R 25-08 applies on the Russian border and any Finland-Russia agreement; the criterion at 793-795 MHz; 10% or 1% time; whether notifier-declared FIN coordination keeps 5 notices at medium; a height for mobile stations with none; the `pwr_ds_max` unit and `orbit_lnk`, `long_asc`, `phase_ang` meanings from the primary Space Preface; which columns supply the X and Y mask parameters (5,429 records unevaluated).
+- **TX frequencies protected:** [ticket 16](issues/16-protect-tx-frequencies.md) adds no cases on 3074 or 3076, but 3074's station links rise from 2,839 to 4,975, and two 3076 cases rise from low to medium. The user decided a TX-only match may raise severity, so they stay at medium (2026-11-07).
 
 ## Fog
 

@@ -1,6 +1,51 @@
 # Space IFIC 3074 verification — 2026-11-07
 
-## Result and reproduction
+## Current export (ticket 16, code commit 8c70006)
+
+182 possible concerns: 30 high, 124 medium, 28 low. This is the first committed export with pfd results.
+
+| Rule | Cases |
+|---|---:|
+| `station-rx-overlap` | 51 |
+| `m4-no-space-to-earth` | 47 |
+| `fin-named-by-br` | 8 |
+| `pfd-gso-art21` | 16 |
+| `pfd-gso-app5` | 2 |
+| `pfd-ngso-art21` | 52 |
+| `pfd-ngso-app5` | 6 |
+
+| File | SHA-256 |
+|---|---|
+| cases.csv | 9853462ea06a340c30772a51166767249f669e1da80a9ea7ca618037ff3058cd |
+| cases.json | 0a09f6f9b028221f397a6c01ee92733b90f2d2fffee6509943651f4ccbc5f0ac |
+
+Two runs produced byte-identical files. The sections below describe the earlier export, before pfd and TX protection, unless they say otherwise.
+
+### Effect of protecting TX frequencies
+
+Traficom said "every TX is received in Finland" (Discord, 2026-11-07), so the station rule now matches RX and TX bands. Before and after were run on the same source, with no other code change:
+
+| Measure | RX only | RX and TX |
+|---|---:|---:|
+| Cases, all rules | 182 | 182 |
+| `station-rx-overlap` cases | 51 | 51 |
+| Cases found only through TX | | 0 |
+| Severity changes | | 0 |
+| Station links across those cases | 2,839 | 4,975 |
+| Distinct stations reached | 572 | 604 |
+| Cases that gained a station | | 30 of 51 |
+
+No case was added or lost. Of 63 visible families with downlinks, the other 12 have no case. Code separate from the rule, reading the sheet directly, found no RX or TX centre frequency inside their downlink ranges. That check uses centre frequencies, so it would not see a band that only overlaps at its edge; the rule itself does.
+
+No case is TX-only, so these spot-checks use stations that matched only through TX inside an existing case. Each TX frequency is inside a space transmission (`emi_rcp` E) of the notice, and the station's RX frequency is not:
+
+| Network | Notice | Station (sheet row) | TX, MHz | RX, MHz | Width | Group, range in MHz |
+|---|---|---|---:|---:|---|---|
+| NSL-1 | 117520318 | 628728 (381) | 18930 | 17920 | 110 MHz | 117805664, 18800-19040 |
+| AST-NG-C-4 | 117520372 | 985264 (830) | 2509.7 | 2629.7 | 5 MHz | 124818514, 2500-2520 |
+| USASAT-NGSO-3X | 123520029 | 614038 (287) | 17755 | 18765 | 55 MHz | 123644931, 17700-17950 |
+
+## Earlier result and reproduction
 
 106 possible concerns across 59 filings: 8 high from `fin-named-by-br`, 2 high
 and 45 medium from `m4-no-space-to-earth`, and 51 medium from
@@ -74,8 +119,9 @@ number, receive frequency and bandwidth match its sheet row.
 | CSN-SSO | 124545403 | 348 | 125749495, 450-470 MHz | 289729, 289742, 289748 (rows 33-35) |
 
 The rule compares frequency only. Location, power and antenna direction are not used,
-and a slight edge overlap counts: AST-NG-C-4's single station overlaps by 0.7 MHz. 61
-stations with no receive frequency are skipped. Traficom's station data is synthetic.
+and a slight edge overlap counts: AST-NG-C-4's single station overlapped by 0.7 MHz in this
+earlier RX-only export, when 61 stations with no receive frequency were skipped. Now only 3 are
+skipped, those with neither frequency. Traficom's station data is synthetic.
 
 ## AP30 coverage
 
@@ -93,8 +139,8 @@ other ITU files. The exporter states that only API/A and CR/C are screened.
 
 The export format is provisional pending Traficom's answer to ticket 02.
 No independent MDB parser or expert case-accuracy check was available.
-The pfd engine exists but is not connected to a rule yet, so no case has a
-calculated value. The manifest states the remaining limits.
+At that earlier export, the pfd engine was not connected to a rule. It now is; see
+Current export. The manifest states the remaining limits.
 
 The regression suite at commit 0ab81a8: **446 passed** on macOS, with one
 dependency deprecation warning. The frontend's 31 tests also pass. No real mail was sent.
