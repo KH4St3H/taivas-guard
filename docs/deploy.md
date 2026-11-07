@@ -1,6 +1,6 @@
 # Deploying to a server
 
-`.github/workflows/deploy.yml` runs on every push to `main`, or by hand from the Actions tab. It runs the backend and frontend tests, copies the code to the server over SSH, and runs `docker compose -p ific-guard up -d --build`. The deploy fails if any of the three services doesn't answer within 2 minutes, and prints their logs.
+`.github/workflows/deploy.yml` runs on every push to `main`, or by hand from the Actions tab. It runs the backend and frontend tests, unless they're turned off (below), copies the code to the server over SSH, and runs `docker compose -p ific-guard up -d --build`. The deploy fails if any of the three services doesn't answer within 2 minutes, and prints their logs.
 
 What it deploys is the Compose stack: sync, screening, notifier, Postgres and the migration. The review UI isn't part of it; see "The review UI" below.
 
@@ -44,6 +44,8 @@ In the repository settings, **Secrets and variables → Actions**. Set them at r
 | `DEPLOY_KNOWN_HOSTS` | secret | The output of `ssh-keyscan <host>`, checked against the server's own fingerprint (`ssh-keygen -lf /etc/ssh/ssh_host_ed25519_key.pub` on the server) |
 | `DEPLOY_PORT` | secret, optional | The SSH port, if not 22 |
 | `DEPLOY_PATH` | variable, optional | The folder on the server, if not `/opt/ific-guard` |
+
+To deploy without the tests: run the workflow by hand and untick **Run the tests before deploying**, or set the repository variable `SKIP_TESTS` to `true` to skip them on pushes too. Failed tests still stop a deploy.
 
 The deploy job uses the `production` environment. To approve each deploy by hand, add required reviewers to it under **Environments**.
 

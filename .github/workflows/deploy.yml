@@ -1,4 +1,4 @@
-# Tests, then deploys the Docker Compose stack to a server over SSH.
+# Tests (optional), then deploys the Docker Compose stack to a server over SSH.
 # Server setup and the secrets this needs: docs/deploy.md.
 name: Deploy
 
@@ -6,6 +6,11 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      run_tests:
+        description: Run the tests before deploying
+        type: boolean
+        default: true
 
 permissions:
   contents: read
@@ -17,6 +22,9 @@ concurrency:
 
 jobs:
   test:
+    # On by default. Off when run by hand with "Run the tests" unticked, or when the repository variable
+    # SKIP_TESTS is "true" (pushes too).
+    if: (github.event_name != 'workflow_dispatch' || inputs.run_tests) && vars.SKIP_TESTS != 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -43,7 +51,8 @@ jobs:
   deploy:
     needs: test
     # Skipped until a server is configured (docs/deploy.md), so pushes to main stay green meanwhile.
-    if: vars.DEPLOY_HOST != ''
+    # Runs after passing tests, or when they were skipped; never after failed or cancelled ones.
+    if: always() && vars.DEPLOY_HOST != '' && (needs.test.result == 'success' || needs.test.result == 'skipped')
     runs-on: ubuntu-latest
     # Add required reviewers to this environment in the repo settings to approve each deploy by hand.
     environment: production
