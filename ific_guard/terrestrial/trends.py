@@ -188,6 +188,9 @@ def analyse_neighbour_trends(
             "The Finnish border polyline used by the adapter is an engineering approximation, not a legal border or coastline.",
             f"Only the configured administrations were included: {', '.join(administrations)}.",
             "With only the compared issues, observations are weak evidence and make no predictions.",
+            "Published Article 11 totals do not fully reconcile to notice rows, so counts may not match them "
+            "(see TerrestrialIssue.article11_reconciliation).",
+            "The meanings of fxm_coord, action and target are inferred from the data, not confirmed against the ITU ReadMe.",
         ),
     )
 

@@ -47,4 +47,6 @@ def test_trends_use_adapter_filter_and_are_rendered_with_reproduction_commands()
     assert "/tmp/brific3075.mdb /tmp/brific3076.mdb" in rendered
     assert "default engineering limit 100 km" in rendered
     assert "not a regulatory value" in rendered
+    assert "do not fully reconcile" in rendered
+    assert "not confirmed against the ITU ReadMe" in rendered
     assert all(not observation.linked_finding_ids for observation in report.observations)
