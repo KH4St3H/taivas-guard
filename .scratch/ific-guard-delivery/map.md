@@ -43,7 +43,7 @@ Status values come from `docs/agents/triage-labels.md`. Size is a rough relative
 | 29 | Re-export 3074 and 3076, commit in the manifest | Done, 2026-11-07; see ticket evidence | M | 22, 23 | Submission (07), reproducibility (06 A) |
 | 30 | Trends in the app, terrestrial and space | Done on `develop` | M | none | Side quest trends; guiding question |
 | 31 | Shrink stored station lists without resetting reviews | Done on `develop` | S | none | Keeps review decisions |
-| 32 | Update and rehearse the demo | Claimed by Person C | S | 24, 25, 28, 29 | Submission (07) |
+| 32 | Update and rehearse the demo | Done, rehearsed 2026-11-07 at `5098f88`; press Accept by hand before presenting | S | 24, 25, 28, 29 | Submission (07) |
 | 33 | Cross-check pfd with ITU's software | Open, `ready-for-human` | M | none | Credibility (06 A) |
 | 34 | Decide on Regulation M15 | Done, 2026-11-07; see ticket evidence | S | none | Brief 02 names it |
 | 35 | Questions for Traficom before submission | Open, `ready-for-human` | S | none | Accuracy reference, terrestrial framework |
