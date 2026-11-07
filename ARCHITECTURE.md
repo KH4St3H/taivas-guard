@@ -123,7 +123,7 @@ Tiered, cheapest first. Each rule that fires is recorded in `finding.trigger_rul
 
 Key national cases from M4:
 - **3.4–3.8 GHz** is MOBILE AND FIXED (5G) with no space-to-Earth allocation in Finland; FSS downlink starts at 3.8 GHz.
-- **17.7–19.7 GHz[118;1:3u** has dense fixed radio links shared with FSS downlink.
+- **17.7–19.7 GHz** has dense fixed radio links shared with FSS downlink.
 - **8.025–8.4 GHz** has fixed radio links and a newly primary EESS downlink.
 - **10.7–12.75 GHz** has no terrestrial use in Finland; 10.70–10.95 and 11.20–11.45 GHz are "not in use in Finland, but reserved".
 

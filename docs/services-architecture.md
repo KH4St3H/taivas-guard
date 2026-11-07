@@ -189,7 +189,6 @@ With the default `IFIC_MIN_ISSUE=3074`, the first sync downloads about 20 zips. 
 | DuckDB store not connected | Rules read the `.mdb` directly | Load `schema.sql` tables inside `screening` |
 | Tables made with `create_all` | Schema changes need manual work | Alembic |
 | `access-parser` is a young library | Parsing errors could go unnoticed | Compare row counts against `mdbtools` on 3074 and 3076 |
-| `schema.sql` line 121 and `ARCHITECTURE.md` line 124 contain a stray `[118;1:3u` | `schema.sql` will not run until it is removed | Delete the characters |
 
 ## 10. Next steps, in order
 
