@@ -37,7 +37,7 @@ Status values come from `docs/agents/triage-labels.md`. Size is a rough relative
 | 23 | Set aside orbits not referred to the Earth | Done, 2026-11-07; see ticket evidence | S | none | Accuracy (06 D): six known 3074 false positives |
 | 24 | Map station layer on the satellite's own frequencies | Done on `develop` | S | none | Output quality (06 C, D) |
 | 25 | Finding page drafts from the drafting service | Done, `agent/25-26-drafting` | M | none | The visible AI part (02 step 9, title) |
-| 26 | Run the drafting path with a real model | Ready for a key holder, `agent/25-26-drafting` (`tools/llm_check.py`) | S | 25 | Untested AI component |
+| 26 | Run the drafting path with a real model | On hold (team decision, 2026-11-07); ready for a key holder, `agent/25-26-drafting` (`tools/llm_check.py`) | S | 25 | Untested AI component |
 | 27 | Letters name the kind of criterion | Open, `ready-for-agent` | S | none | Auditability (06 E) |
 | 28 | README, Reference page and docs match the code | Done, 2026-11-07; see ticket evidence | S | 29 | Submission (07) |
 | 29 | Re-export 3074 and 3076, commit in the manifest | Done, 2026-11-07; see ticket evidence | M | 22, 23 | Submission (07), reproducibility (06 A) |

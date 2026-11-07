@@ -1,6 +1,6 @@
 # 26 Run the drafting path with a real model
 
-Status: ready-for-human
+Status: ready-for-human, on hold (team decision, 2026-11-07)
 Type: task
 Size: S
 Blocked by: 25
@@ -42,3 +42,5 @@ README, "Data and operations": "Not tested: … the language-model path with a r
 4. Remove "the language-model path with a real model" from the README's "Not tested" line (`README.md`, Data and operations).
 
 To see it in the UI as well: put `ANTHROPIC_API_KEY` in `.env` (and `IFIC_API_KEY`, which the AI rewrite also needs), run `docker compose up`, then open a finding. "Rewrite with AI" appears under the draft letter.
+
+2026-11-07, on hold by team decision: no real-model run for now. The README keeps declaring the real-model path as untested.
