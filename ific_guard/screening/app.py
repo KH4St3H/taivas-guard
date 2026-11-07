@@ -123,6 +123,13 @@ def case_coverage(case_id: int) -> dict:
         raise HTTPException(exc.status, str(exc)) from None
 
 
+@router.get("/drafting")
+def drafting() -> dict:
+    """Which model `use_llm=true` would call, or none. Says nothing about the credential itself."""
+    model = configured_model()
+    return {"model": model.name if model else None}
+
+
 @router.get("/cases/{case_id}/draft", response_model=Draft)
 def get_case_draft(case_id: int, use_llm: bool = False, x_api_key: Annotated[str | None, Header()] = None):
     """An explanation and draft letter for expert review. Stores and sends nothing.

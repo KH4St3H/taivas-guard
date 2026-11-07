@@ -2,7 +2,7 @@ import type { Finding } from '../api/types';
 import { admName } from './adm';
 import { dateOr, refBandwidth, signed } from './format';
 
-/** Fixed template filled only from the finding. No AI is involved yet. */
+/** Fixed template filled only from the finding: the fallback when the drafting service cannot be reached, and sample mode. */
 export function draftLetter(f: Finding): string {
   const notices = [f.sourceId, ...f.relatedSourceIds].filter(Boolean).join(', ');
   const header = `DRAFT FOR EXPERT REVIEW. NOT SENT.

@@ -156,7 +156,7 @@ function advance(run: Run): Run {
 
 export const mockApi: Api = {
   mode: 'sample',
-  capabilities: { upload: true, checkItuNow: false, rescreen: false, reviewStatuses: ['accepted', 'needs_info', 'rejected'], letterStorage: 'browser', customRules: false, stationLists: false, coverage: false, trends: false },
+  capabilities: { upload: true, checkItuNow: false, rescreen: false, reviewStatuses: ['accepted', 'needs_info', 'rejected'], letterStorage: 'browser', customRules: false, stationLists: false, coverage: false, trends: false, drafts: false },
   severityNote: 'Starter rules for the demo. Traficom’s experts should set the real ones.',
   // Sample mode has no screening service, so rules can't be run or stored.
   listRules: async () => [],
@@ -169,6 +169,8 @@ export const mockApi: Api = {
   caseStationsCsvUrl: () => null,
   getTrends: async () => { throw new Error('Trends need the live services.'); },
   getCoverage: async () => { throw new Error('Maps need the live services.'); },
+  getDraft: async () => { throw new Error('Drafts from the service need the live services.'); },
+  draftingModel: async () => null,
   listSeverityRules: async () => SEVERITY_RULES,
   listSyncRuns: async () => [],
   checkItuNow: async () => { throw new Error('Not available in sample mode.'); },

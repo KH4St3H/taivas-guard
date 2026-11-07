@@ -1,10 +1,10 @@
 # Demo script
 
-Steps 1-5 were rehearsed once from an empty database on 2026-11-07, with Space and Terrestrial 3083, at commit d9fee4e. Steps 2b, 2c, 6 and 7 were added later the same day for the reach map, the CEPT check, Trends and screening rules, and **have not been rehearsed yet** (ticket 32). Their numbers come from the development database and can differ on a fresh run.
+The whole script was rehearsed from an empty database on 2026-11-07 at commit 5098f88, with Space and Terrestrial 3082 and 3083 (ticket 32). The numbers below are from that run. Case IDs can change between runs.
 
-It takes about 8 minutes, plus about 4 minutes for the first screening.
+It takes about 10 minutes to present. Start the stack well before: in the rehearsal the first sync and screening took 28 minutes, mostly downloading from the ITU at about 1 MB a minute.
 
-It needs Docker, Node and internet access to the ITU. Email goes to a file, so nothing is sent.
+It needs Docker, Node and internet access to the ITU. It needs no language-model API key. Email goes to a file, so nothing is sent.
 
 ## Before you start
 
@@ -37,7 +37,7 @@ docker compose -p ificdemo up --build -d
 docker compose -p ificdemo logs -f sync | grep fetched
 ```
 
-**Show:** the sync service finds and downloads Space and Terrestrial 3082 and 3083 by itself. Stop following the log, then wait for screening:
+**Show:** the sync service finds and downloads Space and Terrestrial 3082 and 3083 by itself. In the rehearsal the ITU dropped connections partway through; sync retried, and the operations email "IFIC Guard: sync partial" recorded it. Stop following the log, then wait for screening:
 
 ```sh
 curl -s 'localhost:8001/issues' | python3 -c "import json,sys; [print(i['domain'],i['issue_no'],i['screen_status']) for i in json.load(sys.stdin)]"
@@ -51,7 +51,7 @@ All four show `done` after a few minutes.
 
 ## 2. A case with evidence
 
-Open **Findings**, then a high pfd case. In the rehearsal this was J-BLUEBIRD-NGSO (Japan), `pfd-ngso-app5`, at `/findings/142`. IDs can change between runs.
+Open **Findings**, then a high pfd case. In the rehearsal this was J-BLUEBIRD-NGSO (Japan), `pfd-ngso-app5`, at `/findings/374`.
 
 **Show:**
 
@@ -67,7 +67,7 @@ For contrast, show a case titled "upper bound above the limit". It isn't present
 
 ## 2b. Where the satellite can reach
 
-Open a "No space-to-Earth allocation in Finland" finding for a GSO satellite. In development this was ARABSAT-12G-1E (Saudi Arabia), at 1° E.
+Open a "No space-to-Earth allocation in Finland" finding for a GSO satellite. In the rehearsal this was ARABSAT-12G-1E (Saudi Arabia), at 1° E, `/findings/253`.
 
 **Show:**
 
@@ -81,7 +81,7 @@ For a non-GSO contrast, TOUTATIS (France) adds **Minutes in view per day** and *
 
 ## 2c. A CEPT condition
 
-Search Findings for **SPACERAN** (Canada, non-GSO) and open its "pfd against a CEPT condition" case.
+Search Findings for **SPACERAN** (Canada, non-GSO) and open its "CEPT pfd condition" case for IFIC 3083 (`/findings/353` in the rehearsal).
 
 **Show:** ECC Decision (25)02 says satellite transmissions in 862-870 MHz must not exceed -142 dB(W/(m²·4 kHz)) on the Earth's surface. SPACERAN's one-day flight reaches about -110.5 dB at 68° N, about 31.5 dB over, and the case says it isn't on the Decision's Annex 2 list of compliant systems.
 
@@ -95,17 +95,13 @@ In "Your review", enter a note and press **Accept**. The badge changes to Accept
 
 ## 4. Draft letter
 
-Until ticket 25 is merged, the finding page shows a browser template. The API draft is the one with the citations and guardrails. Use the case ID from step 2:
+On the same finding page, scroll to **Draft letter**. The label above it says "From the drafting service's template, no AI".
 
-```sh
-curl -s localhost:8002/cases/142/draft | python3 -c "import json,sys; d=json.load(sys.stdin); print(d['status'], 'sent:', d['sent']); print(d['letter'])"
-```
+**Show:** the banner "DRAFT FOR EXPERT REVIEW. NOT SENT.", the source data block, the placeholders the expert completes, and **Sources the draft relies on** under the letter. Edit a line and press **Save edits**: a saved edit wins over the template next time.
 
-**Show:** the banner "DRAFT FOR EXPERT REVIEW. NOT SENT.", the source data block, and the placeholders the expert completes.
+**Say:** this template needs no language model, so the demo needs no API key. With `ANTHROPIC_API_KEY` set, a **Rewrite with AI** button appears. A guardrail checks each number, date and citation in the rewrite against the case, rejects claims the evidence doesn't support, and keeps the template one click away.
 
-**Say:** this template needs no language model. With `ANTHROPIC_API_KEY` set, `?use_llm=true` asks a model to rewrite it. A guardrail checks each number, date and citation against the case and rejects claims the evidence doesn't support, then falls back to this template.
-
-The language-model path was tested with a fake model only. The rehearsal didn't call a real one.
+The language-model path was tested with a fake model only (ticket 26 is on hold). Don't promise a live rewrite.
 
 ## 5. Digest email
 
@@ -116,7 +112,9 @@ docker compose -p ificdemo exec notifier sh -c 'ls /app/data/outbox; grep -h ^Su
 **Show:** in the rehearsal, the subjects were:
 
 ```
-BR IFIC 3083 (space): 121 possible concerns for review, 36 high
+BR IFIC 3082 (space): 138 possible concerns for review, 60 high
+BR IFIC 3083 (space): 120 possible concerns for review, 55 high
+BR IFIC 3082 (terrestrial): 28 possible concerns for review, 0 high
 BR IFIC 3083 (terrestrial): 80 possible concerns for review, 0 high
 ```
 
@@ -126,7 +124,7 @@ BR IFIC 3083 (terrestrial): 80 possible concerns for review, 0 high
 
 Open **Trends**.
 
-**Show:** in development, with Space 3074, 3082 and 3083 stored, IFIC 3083 flagged Japan (12 notices, from an average of 2) and Saudi Arabia (12, from 0), and V and W band downlinks. The largest new non-GSO system was INDSAT-NGSO-LEO-1 (India), with 1,600 planned satellites. Switch to **Terrestrial** for the neighbours' land-mobile counts.
+**Show:** comparing 3082 and 3083, IFIC 3083 flags Japan (12 notices, against 1 before) and Saudi Arabia (12, against 0), GSO filings (48, against 23), and X, Ku and W band downlinks. The largest new non-GSO system is INDSAT-NGSO-LEO-1 (India), with 1,600 planned satellites. Switch to **Terrestrial**: Estonia's land-mobile notices within the distance screen rose to 70, against 19, with a new 800-900 MHz block of 32.
 
 **Say:** these are descriptive counts with one plain flag rule, stated on the page. They point an expert at what changed; they don't predict anything.
 
@@ -134,7 +132,7 @@ Open **Trends**.
 
 Open **Screening rules**, then **New rule**. Name it "Uplinks in Finnish terrestrial bands". Under "Which frequencies", choose **Receives (Earth-to-space)**. Under "What M4 says there", set **Earth-to-space allocation** to "Not allocated" and **Primary terrestrial use** to "Yes". Press **Preview** on IFIC 3083.
 
-**Show:** in development this would raise 32 cases, led by China (7) and Saudi Arabia (6), without saving anything.
+**Show:** in the rehearsal it would raise 31 cases, led by China (7) and Saudi Arabia (6), without saving anything.
 
 **Say:** experts change the screening without code. A rule is validated data, every save is a version, and each case names the version that raised it. Saving doesn't change cases until issues are screened again.
 
@@ -154,6 +152,6 @@ docker compose -p ificdemo down -v
 
 ## What the rehearsal did not cover
 
-Steps 2b, 2c, 6 and 7 haven't been rehearsed (ticket 32 is open for that), and step 4 changes when ticket 25 lands. Timings and counts above for those steps come from the development database, not a fresh run.
+The browser was driven with headless screenshots, and the review in step 3 was saved through the UI's proxy API rather than by a mouse click on Accept. Press Accept once yourself before presenting. Screening both space issues again afterwards added no cases, kept the accepted review and sent no email.
 
-In the first rehearsal, the browser was driven with headless screenshots, and the review was saved through the UI's proxy API rather than by a mouse click on Accept. The draft letter step, the digest and the screening-again check were run on the same stack. Press Accept once yourself before presenting.
+The "Rewrite with AI" button in step 4 wasn't shown: it needs a model key, and the run with a real model is on hold (ticket 26).

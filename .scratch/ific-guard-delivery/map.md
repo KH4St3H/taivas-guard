@@ -36,14 +36,14 @@ Status values come from `docs/agents/triage-labels.md`. Size is a rough relative
 | 22 | Screen notification-stage filings that name Finland | Done, 2026-11-07; see ticket evidence | S | none | Accuracy (06 D): three known 3074 misses |
 | 23 | Set aside orbits not referred to the Earth | Done, 2026-11-07; see ticket evidence | S | none | Accuracy (06 D): six known 3074 false positives |
 | 24 | Map station layer on the satellite's own frequencies | Done on `develop` | S | none | Output quality (06 C, D) |
-| 25 | Finding page drafts from the drafting service | Open, `ready-for-agent` | M | none | The visible AI part (02 step 9, title) |
-| 26 | Run the drafting path with a real model | Open, `ready-for-human` | S | 25 | Untested AI component |
+| 25 | Finding page drafts from the drafting service | Done, `agent/25-26-drafting` | M | none | The visible AI part (02 step 9, title) |
+| 26 | Run the drafting path with a real model | On hold (team decision, 2026-11-07); ready for a key holder, `agent/25-26-drafting` (`tools/llm_check.py`) | S | 25 | Untested AI component |
 | 27 | Letters name the kind of criterion | Open, `ready-for-agent` | S | none | Auditability (06 E) |
 | 28 | README, Reference page and docs match the code | Done, 2026-11-07; see ticket evidence | S | 29 | Submission (07) |
 | 29 | Re-export 3074 and 3076, commit in the manifest | Done, 2026-11-07; see ticket evidence | M | 22, 23 | Submission (07), reproducibility (06 A) |
 | 30 | Trends in the app, terrestrial and space | Done on `develop` | M | none | Side quest trends; guiding question |
 | 31 | Shrink stored station lists without resetting reviews | Done on `develop` | S | none | Keeps review decisions |
-| 32 | Update and rehearse the demo | Claimed by Person C | S | 24, 25, 28, 29 | Submission (07) |
+| 32 | Update and rehearse the demo | Done, rehearsed 2026-11-07 at `5098f88`; press Accept by hand before presenting | S | 24, 25, 28, 29 | Submission (07) |
 | 33 | Cross-check pfd with ITU's software | Open, `ready-for-human` | M | none | Credibility (06 A) |
 | 34 | Decide on Regulation M15 | Done, 2026-11-07; see ticket evidence | S | none | Brief 02 names it |
 | 35 | Questions for Traficom before submission | Open, `ready-for-human` | S | none | Accuracy reference, terrestrial framework |

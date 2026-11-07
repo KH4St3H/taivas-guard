@@ -298,6 +298,24 @@ export interface Capabilities {
   stationLists: boolean; // a case's full station list can be recomputed on request
   coverage: boolean; // a finding's reach over Finland can be mapped
   trends: boolean; // counts across stored issues
+  drafts: boolean; // the drafting service writes letters; otherwise the browser template does
+}
+
+/** A draft letter from the drafting service (GET /cases/{id}/draft). It stores and sends nothing. */
+export interface CaseDraft {
+  source: 'template' | 'llm';
+  model: string | null;
+  /** Set when an AI rewrite was asked for but the template came back instead. */
+  fallbackReason: string | null;
+  /** What the guardrail rejected in the rewrite. */
+  violations: { kind: string; value: string; why: string }[];
+  method: string;
+  possibleConcernOnly: boolean;
+  explanation: string;
+  subject: string;
+  letter: string;
+  citations: { doc: string; clause: string; page: string | null }[];
+  reviewNotes: string[];
 }
 
 export interface TrendFlag { name: string; issue: number; count: number; earlierAverage: number }
@@ -439,6 +457,10 @@ export interface Api {
   caseStationsCsvUrl(id: string, query: StationQuery): string | null;
   getCoverage(id: string): Promise<Coverage>;
   getTrends(domain: Domain): Promise<Trends>;
+  /** The service's draft, or a rewrite by the configured model when `useLlm` is set. */
+  getDraft(id: string, useLlm?: boolean): Promise<CaseDraft>;
+  /** The model an AI rewrite would use, or null when none is configured. */
+  draftingModel(): Promise<string | null>;
   severityNote: string;
 }
 

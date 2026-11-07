@@ -159,6 +159,10 @@ class Evidence:
     numbers: set[str] = field(default_factory=set)
     dates: set[str] = field(default_factory=set)
     citations: set[str] = field(default_factory=set)
+    # Source text a draft may quote word for word, such as an M4 restriction. Its wording is the source's, not a claim.
+    quotes: set[str] = field(default_factory=set)
+    # Other values a label may carry: each listed station has its own value, limit and margin.
+    station_levels: dict[str, set[str]] = field(default_factory=dict)
 
     def add(self, *values: Any) -> "Evidence":
         for text in _strings(values):
@@ -177,6 +181,14 @@ class Evidence:
             self.citations.add("doc:RR")
         return self
 
+    def add_quotes(self, quotes: Iterable[str]) -> "Evidence":
+        self.quotes |= {q for q in quotes if len(q) >= 20}  # a short phrase could hide a claim the draft makes itself
+        return self
+
+    def add_station_levels(self, label: str, values: Iterable[float]) -> "Evidence":
+        self.station_levels.setdefault(label, set()).update(_normal_number(str(v)) for v in values)
+        return self
+
 
 def check_sources(text: str, evidence: Evidence) -> list[Violation]:
     violations = []
@@ -191,8 +203,11 @@ def check_sources(text: str, evidence: Evidence) -> list[Violation]:
     return violations
 
 
-def check_claims(text: str, calculated: bool, margin_db: float | None) -> list[Violation]:
-    """A screening case is a possible concern. Only a calculation over the limit can say a limit is passed."""
+def check_claims(text: str, calculated: bool, margin_db: float | None, station_values: bool = False) -> list[Violation]:
+    """A screening case is a possible concern. Only a calculation over the limit can say a limit is passed.
+
+    A case with no calculation of its own may still quote the levels calculated at its listed stations.
+    """
     violations = [
         Violation(kind="claim", value=m.group(), why="A draft does not decide that a regulation was broken; the expert does.")
         for m in _ALWAYS_FORBIDDEN.finditer(text)
@@ -201,18 +216,19 @@ def check_claims(text: str, calculated: bool, margin_db: float | None) -> list[V
     if not limit_shown:
         why = "No calculation shows a limit passed, so this can only be a possible concern."
         violations += [Violation(kind="claim", value=m.group(), why=why) for m in _LIMIT_CLAIM.finditer(text)]
-    if not calculated:
+    if not calculated and not station_values:
         why = "A screening case has no calculated level to quote."
         violations += [Violation(kind="claim", value=m.group(), why=why) for m in _LEVEL_UNIT.finditer(text)]
     return violations
 
 
-def check_labels(text: str, levels: dict[str, float]) -> list[Violation]:
-    """A number written as the margin, limit or value must be that one, with its sign."""
+def check_labels(text: str, levels: dict[str, float], station_levels: dict[str, set[str]] | None = None) -> list[Violation]:
+    """A number written as the margin, limit or value must be that one, or a listed station's own, with its sign."""
     violations = []
     for match in _LABELLED_LEVEL.finditer(text):
         label, written = match.group(1).lower(), match.group(2)
-        if label in levels and _normal_number(written) != _normal_number(str(levels[label])):
+        allowed = {_normal_number(str(levels[label]))} | (station_levels or {}).get(label, set()) if label in levels else set()
+        if label in levels and _normal_number(written) not in allowed:
             why = f"The case gives {levels[label]} dB for the {label}."
             violations.append(Violation(kind="label", value=f"{label} {written} dB", why=why))
     return violations
@@ -223,8 +239,12 @@ def check_text(
 ) -> list[Violation]:
     if not text.strip():
         return [Violation(kind="empty", value="", why="The model returned no text.")]
-    violations = check_sources(text, evidence) + check_claims(text, calculated, margin_db)
-    violations += check_labels(text, levels or {})
+    claimed = text
+    for quote in sorted(evidence.quotes, key=len, reverse=True):
+        claimed = claimed.replace(quote, " ")
+    violations = check_sources(text, evidence)
+    violations += check_claims(claimed, calculated, margin_db, bool(evidence.station_levels.get("value")))
+    violations += check_labels(claimed, levels or {}, evidence.station_levels)
     violations += [
         Violation(kind="address", value=m.group(), why="Drafts carry no addresses or links; the expert adds any recipient.")
         for m in _ADDRESS.finditer(text)

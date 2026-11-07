@@ -120,7 +120,7 @@ M15 is excluded from this demonstrator (ticket 34). The brief names it as an opt
 | [`outputs/neighbour-trends.md`](outputs/neighbour-trends.md) | Counts of neighbouring notices across Terrestrial 3074-3083 |
 | Review cases | Stored in the database, served by the Screening API and the UI |
 | Digest email | One per issue |
-| Draft letter | `GET /cases/{id}/draft`; marked as a draft and never sent |
+| Draft letter | `GET /cases/{id}/draft`, shown on the finding page with its sources and review notes; `?use_llm=true` asks the model in `GET /drafting` for a guardrail-checked rewrite. Marked as a draft and never sent |
 
 Each export folder holds `cases.csv`, compact `cases.json` (with the full evidence and assumptions), `manifest.json` (source hash, Git commit and dirty state, code hashes, configuration) and `verification.md`. Terrestrial also has `funnel.json`, which shows how many notices each filter removed. See [`outputs/README.md`](outputs/README.md).
 
