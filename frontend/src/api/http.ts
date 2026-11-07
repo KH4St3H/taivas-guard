@@ -144,8 +144,11 @@ export const caseInIssue = (c: CaseSummary, domain: string, issue: number) => c.
 
 const GAPS: Record<Domain, string[]> = {
   space: ['No pfd check yet, so a case can’t say a limit is exceeded', 'No beam coverage check, so the M4 rule over-flags by design', 'M4 band file merges 3400–4200 MHz, which can miss cases in 3.4–3.8 GHz', 'AP30, AP30A and AP30B aren’t screened', 'Station overlap compares frequency only, not location, power or antenna direction'],
-  terrestrial: ['Terrestrial files are stored but no rules run yet', 'This does not mean there are no concerns'],
+  terrestrial: ['Land-mobile notices from the configured neighbours only, within an approximate 300 km screen', 'P.1546 without terrain; T/R 25-08 thresholds stop at 470 MHz and are unconfirmed on the Russian border', 'Notices that could not be calculated are listed for expert review; they are not clear results'],
 };
+
+// An artifact screened before terrestrial rules existed keeps this status until it is screened again.
+const NO_RULES_GAPS = ['No rules ran on this stored file', 'This does not mean there are no concerns'];
 
 export function summariseIssue(a: ArtifactOut, cases: CaseSummary[]): IssueSummary {
   const domain = a.domain as Domain;
@@ -163,7 +166,7 @@ export function summariseIssue(a: ArtifactOut, cases: CaseSummary[]): IssueSumma
     id, artifactId: a.id, domain, issue: a.issue_no, releasedOn: a.published_on, screenStatus: a.screen_status as ScreenStatus, screenedAt: a.screened_at,
     commentDeadline: deadlines[deadlines.length - 1] ?? null, file: fileOf(fileName(a.source_url), a.sha256), sourceUrl: a.source_url, evaluationIssue: EVALUATED.has(id),
     counts: [{ label: 'Cases', value: mine.length }, ...ruleCounts.map((r) => ({ label: r.label, value: r.n }))], funnel: [], ruleCounts, severityCounts,
-    brListedNetworks: rules.get('fin-named-by-br') ?? 0, limitations: GAPS[domain] ?? [],
+    brListedNetworks: rules.get('fin-named-by-br') ?? 0, limitations: a.screen_status === 'no_rules' ? NO_RULES_GAPS : GAPS[domain] ?? [],
   };
 }
 
