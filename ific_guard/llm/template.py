@@ -61,6 +61,11 @@ def is_upper_bound(details: dict[str, Any]) -> bool:
     return is_calculated(details) and details.get("margin_basis") == "envelope"
 
 
+def _db(value: float) -> float:
+    """The precision a letter quotes. The case keeps the full value as evidence."""
+    return round(float(value), 2)
+
+
 def margin_of(details: dict[str, Any]) -> float | None:
     """The margin a text may treat as a result. An upper bound's is not one, so it can't support saying a limit is passed."""
     return float(details["margin_db"]) if is_calculated(details) and not is_upper_bound(details) else None
@@ -69,7 +74,7 @@ def margin_of(details: dict[str, Any]) -> float | None:
 def levels_of(details: dict[str, Any]) -> dict[str, float]:
     if not is_calculated(details):
         return {}
-    return {"value": details["value_db"], "limit": details["limit_db"], "margin": details["margin_db"]}
+    return {"value": _db(details["value_db"]), "limit": _db(details["limit_db"]), "margin": _db(details["margin_db"])}
 
 
 def _mhz(value: float) -> str:
@@ -172,12 +177,12 @@ def _position_paragraphs(case: CaseView) -> list[str]:
     mask = f" (mask {d['mask_id']})" if d.get("mask_id") else ""
     if is_upper_bound(d):
         bound = (
-            f"Under the assumptions stated below, {method} gives an upper bound of {d['value_db']} dB against a limit of "
-            f"{d['limit_db']} dB{mask}, a margin of {d['margin_db']} dB. An upper bound may describe a state the satellite "
+            f"Under the assumptions stated below, {method} gives an upper bound of {_db(d['value_db'])} dB against a limit of "
+            f"{_db(d['limit_db'])} dB{mask}, a margin of {_db(d['margin_db'])} dB. An upper bound may describe a state the satellite "
             "never occupies, so it establishes neither an exceedance nor compliance. It is raised here for expert review."
         )
         return [bound, "Finland asks for the information needed to confirm or correct these assumptions."]
-    numbers = f"a calculated value of {d['value_db']} dB against a limit of {d['limit_db']} dB{mask}, a margin of {d['margin_db']} dB"
+    numbers = f"a calculated value of {_db(d['value_db'])} dB against a limit of {_db(d['limit_db'])} dB{mask}, a margin of {_db(d['margin_db'])} dB"
     if d["margin_db"] > 0:
         outcome = "the calculated value exceeds the limit. This result is subject to expert review."
     else:
@@ -210,10 +215,10 @@ def explain_case(case: CaseView) -> str:
     network = case.network or "This filing"
     if is_calculated(d):
         outcome = (
-            f"The upper bound gives a margin of {d['margin_db']} dB against the limit, under the listed assumptions. "
+            f"The upper bound gives a margin of {_db(d['margin_db'])} dB against the limit, under the listed assumptions. "
             "It does not show that a limit is exceeded."
             if is_upper_bound(d)
-            else f"The calculation gives a margin of {d['margin_db']} dB against the limit, under the listed assumptions."
+            else f"The calculation gives a margin of {_db(d['margin_db'])} dB against the limit, under the listed assumptions."
         )
     else:
         outcome = "No calculation has been made, so this is a possible concern and not a finding about any limit."
@@ -279,7 +284,7 @@ def reference_block(case: CaseView, cited: list[dict[str, Any]]) -> str:
         lines.append(f"Estimated comment deadline: {case.comment_deadline.isoformat()}")
     if is_calculated(d):
         lines.append(f"Method: {d['method']}")
-        lines.append(f"Calculated value: {d['value_db']} dB; limit: {d['limit_db']} dB; margin: {d['margin_db']} dB")
+        lines.append(f"Calculated value: {_db(d['value_db'])} dB; limit: {_db(d['limit_db'])} dB; margin: {_db(d['margin_db'])} dB")
         if d.get("mask_id"):
             lines.append(f"Mask: {d['mask_id']}")
         if point := d.get("worst_point"):
@@ -298,6 +303,7 @@ def evidence_values(case: CaseView, passages: list[Passage]) -> list[Any]:
     return [
         facts(case),
         case.details,
+        list(levels_of(case.details).values()),
         case.title,
         ["Regulation M4, Frequency Allocation Table"] if case.details.get("bands") else [],
         [f"Article {provision_number(p).split('.')[0]}" for p in wanted_provisions(case.details)],

@@ -597,3 +597,12 @@ def test_propagated_exceedance_is_still_drafted_as_one():
     result = draft(CaseView.of(pfd_case("exceeds", "propagated_sample")))
     assert result.possible_concern_only is False
     assert "the calculated value exceeds the limit" in result.letter
+
+
+def test_letters_quote_rounded_levels_and_a_model_may_repeat_them():
+    case = calculated_case(margin_db=36.664971472751915, value_db=-86.33502852724808, limit_db=-123.0)
+    assert "a margin of 36.66 dB" in draft(CaseView.of(case)).letter
+    assert "36.664971" not in draft(CaseView.of(case)).letter
+    text = "The calculated value of -86.34 dB exceeds the limit of -123.0 dB by a margin of 36.66 dB."
+    assert generate(case, FakeModel(letter_body=text, explanation="Margin 36.66 dB.")).source == "llm"
+

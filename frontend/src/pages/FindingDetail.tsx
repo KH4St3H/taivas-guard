@@ -188,7 +188,7 @@ function ResultPanel({ f }: { f: Finding }) {
       <h2>Calculation</h2>
       <dl className="plain">
         <div><dt>Method</dt><dd>{r.method}</dd></div>
-        {Object.entries(r.inputs).map(([k, v]) => <div key={k}><dt>{k}</dt><dd className="wrap">{String(v)}</dd></div>)}
+        {Object.entries(r.inputs).filter(([k]) => k !== 'group').map(([k, v]) => <div key={k}><dt>{k}</dt><dd className="wrap">{typeof v === 'object' ? JSON.stringify(v) : String(v)}</dd></div>)}
         {r.valueDb !== null && <div><dt>Calculated value</dt><dd>{signed(r.valueDb)} dB</dd></div>}
         {r.limitDb !== null && <div><dt>Limit</dt><dd>{signed(r.limitDb)} dB{r.maskId ? ` (${r.maskId})` : ''}</dd></div>}
         {r.marginDb !== null && <div><dt>Margin</dt><dd><strong>{db(r.marginDb)} dB</strong></dd></div>}
