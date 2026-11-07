@@ -16,6 +16,10 @@ def main() -> None:
     add.add_argument("file", type=Path)
     add.add_argument("--domain", choices=["space", "terrestrial"], help="Default: from the file name")
     add.add_argument("--issue", type=int, help="Default: from the file name")
+    compact = commands.add_parser(
+        "compact-stations", help="Shrink station lists stored before the cap, without sending reviewed cases back to pending",
+    )
+    compact.add_argument("--dry-run", action="store_true", help="Count what would change and write nothing")
     export = commands.add_parser("export", help="Evaluate an imported issue and write ranked CSV/JSON with provenance")
     export.add_argument("--domain", choices=["space", "terrestrial"], required=True)
     export.add_argument("--issue", type=int, required=True)
@@ -25,7 +29,11 @@ def main() -> None:
 
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
     init_db()
-    if args.command == "export":
+    if args.command == "compact-stations":
+        from .screening.compact import compact_stations
+
+        print(json.dumps(compact_stations(dry_run=args.dry_run)))
+    elif args.command == "export":
         from .export import export_issue
 
         try:
