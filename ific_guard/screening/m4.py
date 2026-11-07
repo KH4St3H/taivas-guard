@@ -278,6 +278,34 @@ class M4Band:
     source: str = ""
 
 
+@dataclass(frozen=True)
+class M4Row:
+    """One row of the national band table, whatever it allocates."""
+    low_mhz: float
+    high_mhz: float
+    primary_services: str
+    finnish_use: str
+    space_down_allocated: bool
+    space_down_unresolved: str
+    passive: bool
+    terrestrial_primary: bool
+    pages: str
+
+
+def load_m4_rows(path: Path) -> list[M4Row]:
+    with path.open(newline="", encoding="utf-8") as f:
+        rows = list(csv.DictReader(f))
+    flag = lambda value: value.strip().lower() == "true"  # noqa: E731
+    return [
+        M4Row(
+            float(r["band_low_mhz"]), float(r["band_high_mhz"]), r["primary_services"], r["finnish_terrestrial_use"],
+            flag(r["space_down_allocated"]), r.get("space_down_unresolved", ""), flag(r["passive_or_radio_astronomy"]),
+            flag(r["terrestrial_primary"]), r["m4_table_pages"],
+        )
+        for r in rows
+    ]
+
+
 def load_m4_conflict_bands(path: Path) -> list[M4Band]:
     """Bands with Finnish terrestrial or passive use and no space-to-Earth allocation in Finland.
 

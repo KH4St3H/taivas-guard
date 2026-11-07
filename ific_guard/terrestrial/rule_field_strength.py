@@ -27,7 +27,7 @@ from ..engines.pfd import MASK_DIR
 from ..screening.rules import Hit
 from ..screening.scoring import score_finding
 from ..screening.space import MdbReader
-from ..screening.stations import SIDE_RX, ProtectedBand, Station, load_stations
+from ..screening.stations import SIDE_RX, SITE_NOT_RECEIVER, ProtectedBand, Station, load_stations
 from ..sync.sources import TERRESTRIAL
 from .adapter import (
     LAND_MOBILE_CLASSES,
@@ -745,7 +745,7 @@ class FieldStrengthRule:
             "data": "synthetic, from Traficom's special-interest list",
         }
         if not any(b.side == SIDE_RX for b in bands):
-            entry["field_location"] = "station site, not the receiver: this band is received elsewhere"
+            entry["field_location"] = SITE_NOT_RECEIVER
         height = station.ant_height_agl_m
         distance = _haversine_km(notice.latitude_deg, notice.longitude_deg, station.lat_deg, station.lon_deg)
         entry.update(distance_km=round(distance, 2), value_db=None)

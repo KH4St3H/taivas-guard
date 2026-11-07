@@ -5,6 +5,7 @@ The one row removed is an exact duplicate, and the row it duplicates records tha
 """
 import re
 from collections import Counter
+from collections.abc import Iterable
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -50,6 +51,7 @@ _BANDWIDTH = re.compile(r"(\d+(?:[.,]\d+)?)\s*([kMG])(?:Hz)?(\d*)")
 SIDE_RX = "rx"
 SIDE_TX = "tx"
 SIDE_BOTH = "both"  # RX and TX are the same band, as on broadcast rows
+SITE_NOT_RECEIVER = "station site, not the receiver: this band is received elsewhere"
 
 
 @dataclass(frozen=True)
@@ -116,6 +118,21 @@ class Station:
         if rx is not None and rx == tx:
             return (ProtectedBand(SIDE_BOTH, *rx),)
         return tuple(ProtectedBand(side, *band) for side, band in ((SIDE_RX, rx), (SIDE_TX, tx)) if band is not None)
+
+
+class StationIndex:
+    """The stations with a protected band, and which of them overlap a frequency range."""
+
+    def __init__(self, stations: Iterable[Station]):
+        self.stations = [s for s in stations if s.protected_bands]
+        self._overlaps: dict[tuple[float, float], tuple[tuple[Station, tuple[ProtectedBand, ...]], ...]] = {}
+
+    def overlapping(self, low_mhz: float, high_mhz: float) -> tuple[tuple[Station, tuple[ProtectedBand, ...]], ...]:
+        key = (low_mhz, high_mhz)
+        if key not in self._overlaps:
+            found = ((s, tuple(b for b in s.protected_bands if b.overlaps(low_mhz, high_mhz))) for s in self.stations)
+            self._overlaps[key] = tuple((s, bands) for s, bands in found if bands)
+        return self._overlaps[key]
 
 
 def _text(value: Any) -> str | None:

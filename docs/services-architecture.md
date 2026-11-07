@@ -131,6 +131,7 @@ New checks plug in here, including the pfd engine and special-interest station o
 | Rule | Fires when | Severity |
 |---|---|---|
 | `fin-named-by-br` | Tier 1: `FIN` appears in `provn` or `tr_provn` for an in-scope notice | High |
+| `station-rx-overlap` | A visible satellite transmits on the RX or TX band of a station in Traficom's list. Each station gets the pfd result at its coordinates, read from the pfd rule's `StationEvidence` | From the strongest evidence: high for a calculated exceedance at a station; medium within 3 dB, for a bound near the limit or no calculation; low when below everywhere or not visible. The project's choice |
 | `m4-no-space-to-earth` | A visible satellite transmits in a band with Finnish terrestrial or passive use and no space-to-Earth allocation in `data/national/m4_bands.csv` (built by `tools/build_m4_bands.py`) | Medium; high for a passive band |
 | `terrestrial-p1546` | A land-mobile notice from a configured neighbour passes the distance screen and has calculable inputs | High above a T/R 25-08 threshold; medium with no criterion, or where the notifier declares FIN coordination completed, or with data-quality items; low below it |
 | `terrestrial-not-calculated` | The same notice lacks an input the calculation needs | Medium: never a clear result |

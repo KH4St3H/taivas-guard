@@ -144,7 +144,7 @@ margin = pfd − limit(δ)                        positive = exceeds
 - Two separate tests, labelled in the output:
   - **Article 21 limits** — compliance; exceeding means a non-compliant filing.
   - **Appendix 5 thresholds** — coordination trigger under RR No. 9.14.
-- Evaluated on a ~0.5° grid over Finland plus the special-interest stations; the worst point is reported.
+- Evaluated on a ~0.5° grid over Finland; the worst point is reported. Each calculation is also evaluated at the special-interest stations whose band overlaps the part of the assignment the mask covers (ticket 19).
 - Northern Finland sees GSO satellites at low elevation and therefore the strictest part of the mask; the grid captures this.
 
 **NGSO**, implemented in `engines/pfd_ngso.py`. Each calculation gives two results of different kinds, kept apart in the output:
