@@ -132,6 +132,8 @@ New checks plug in here, including the pfd engine and special-interest station o
 |---|---|---|
 | `fin-named-by-br` | Tier 1: `FIN` appears in `provn` or `tr_provn` for an in-scope notice | High |
 | `m4-no-space-to-earth` | A visible satellite transmits in a band with Finnish terrestrial or passive use and no space-to-Earth allocation in `data/national/m4_bands.csv` (built by `tools/build_m4_bands.py`) | Medium; high for a passive band |
+| `terrestrial-p1546` | A land-mobile notice from a configured neighbour passes the distance screen and has calculable inputs | High above a T/R 25-08 threshold; medium with no criterion, or where the notifier declares FIN coordination completed, or with data-quality items; low below it |
+| `terrestrial-not-calculated` | The same notice lacks an input the calculation needs | Medium: never a clear result |
 
 - **Scope:** API/A and CR/C notices, with suppressions skipped.
 - **Visibility:** GSO from 47°W to 97°E. Non-GSO reaching at least 55° latitude. Missing orbit data keeps the notice in, following the conservative principle.
@@ -230,7 +232,7 @@ CSV/JSON stays identical. The suite now passes 68 tests.
 
 | Gap | Effect | Fix |
 |---|---|---|
-| Terrestrial has no rules | Files sync, but report `no_rules`, deliberately not "no concerns" | Land-mobile adapter and P.1546 engine |
+| Terrestrial criteria are partial | Land-mobile notices get a P.1546 field strength. T/R 25-08 Annex 1 thresholds apply only up to 470 MHz and are unconfirmed on the Russian border; above that the value has no comparison | Traficom's answer on the criteria (ticket 02) |
 | Cases span issues | A case seen in two issues counts once, so a digest or count for one issue can omit it. **Export per issue, not from "new" cases** | Ticket 03 |
 | Older issues untested | The brief says all existing issues must be evaluable. Space discovery looks back 3 years, and older databases may differ | Ticket 15. Upload works as a way in meanwhile |
 | No beam coverage or pfd check | `m4-no-space-to-earth` over-flags and cannot confirm an exceedance | pfd engine, then GIMS contours |

@@ -139,9 +139,15 @@ def test_an_older_issue_processed_later_moves_first_issue_back_without_reopening
         assert (case.first_issue, case.last_issue, case.changed_artifact_id) == (3074, 3083, newer)
 
 
-def test_terrestrial_reports_no_rules_rather_than_no_concerns():
-    artifact_id = _artifact(domain="terrestrial")
-    assert screen_artifact(artifact_id)["status"] == "no_rules"
+def test_terrestrial_issue_with_no_filtered_notices_reports_done_and_publishes_the_event(monkeypatch):
+    monkeypatch.setattr("ific_guard.terrestrial.rule_field_strength.load_stations", lambda: [])
+    artifact_id = _artifact(domain="terrestrial", issue=3076)
+    empty = FakeReader(
+        pub_current_circ=[dict(circ_no=3076, d_pub="2026-07-21")],
+        ref_stn_cls=[dict(stn_cls="FB", description="Base station"), dict(stn_cls="ML", description="Land mobile station")],
+        pub=[dict(pub_no=1, circ_no=3076, pub_prefix="P", addendum=0, corrigendum=0)],
+    )
+    assert screen_artifact(artifact_id, empty)["status"] == "done"
     with session_scope() as s:
-        assert s.get_one(Artifact, artifact_id).screen_status == "no_rules"
+        assert s.get_one(Artifact, artifact_id).screen_status == "done"
         assert s.scalars(select(Event)).one().topic == events.ISSUE_SCREENED
