@@ -177,7 +177,8 @@ def export_issue(domain: str, issue_no: int, out: Path, *, sha256: str | None = 
         "run_time_s": round(perf_counter() - started, 6),
     }
     out.mkdir(parents=True, exist_ok=True)
-    (out / "cases.json").write_text(json.dumps(records, indent=2, ensure_ascii=False, sort_keys=True) + "\n", encoding="utf-8", newline="\n")
+    # Keep every calculation and source row; compact whitespace avoids inflating large evaluations.
+    (out / "cases.json").write_text(json.dumps(records, separators=(",", ":"), ensure_ascii=False, sort_keys=True) + "\n", encoding="utf-8", newline="\n")
     outputs = ["cases.csv", "cases.json"]
     if terrestrial:
         (out / "funnel.json").write_text(json.dumps(funnel, indent=2, ensure_ascii=False, sort_keys=True) + "\n", encoding="utf-8", newline="\n")
