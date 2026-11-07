@@ -1,7 +1,7 @@
 // Talks to the IFIC Guard services through the /api proxy. Their shapes are defined in
 // ific_guard/schemas.py and the Case.details contract in .scratch/ific-guard-delivery/map.md.
 import { SEVERITY_ORDER } from '../lib/severity';
-import type { Api, BandMatch, CeptCompliance, Coverage, NewRun, Run, CalculatedResult, CustomRule, CustomRuleRef, Domain, DomainFreshness, Finding, FunnelStage, IssueSummary, MonitorStatus, ReferenceSource, ReviewState, RuleDefinition, RuleSave, RuleSpec, RuleVersion, ScreenStatus, StationQuery, Severity, StationResult, SyncRun } from './types';
+import type { Api, BandMatch, CeptCompliance, Coverage, Trends, NewRun, Run, CalculatedResult, CustomRule, CustomRuleRef, Domain, DomainFreshness, Finding, FunnelStage, IssueSummary, MonitorStatus, ReferenceSource, ReviewState, RuleDefinition, RuleSave, RuleSpec, RuleVersion, ScreenStatus, StationQuery, Severity, StationResult, SyncRun } from './types';
 
 export interface ArtifactOut { id: number; domain: string; issue_no: number; published_on: string | null; source_url: string; sha256: string; size_bytes: number; fetched_at: string; screen_status: string; screened_at: string | null }
 export interface SyncRunOut { id: number; trigger: string; started_at: string; finished_at: string | null; status: string; discovered: number; fetched: number; errors: string[] }
@@ -313,7 +313,7 @@ const SOURCES: ReferenceSource[] = [
 
 export const httpApi: Api = {
   mode: 'live',
-  capabilities: { upload: true, checkItuNow: true, rescreen: true, reviewStatuses: ['accepted', 'rejected', 'pending'], letterStorage: 'browser', customRules: true, stationLists: true, coverage: true },
+  capabilities: { upload: true, checkItuNow: true, rescreen: true, reviewStatuses: ['accepted', 'rejected', 'pending'], letterStorage: 'browser', customRules: true, stationLists: true, coverage: true, trends: true },
   severityNote: 'Deterministic rules set severity; the 3 dB watch band and ranking weights are project choices. Calculated exceedances use worst-case assumptions. Expert review is required; severity does not establish interference or a regulatory breach.',
   listSeverityRules: async () => [
     { severity: 'High', rule: 'BR names Finland; passive-band M4 concerns; unflagged calculated PFD exceedances, including at stations; or a terrestrial indicative-threshold exceedance with score at least 50, subject to the caps below.' },
@@ -401,18 +401,33 @@ export const httpApi: Api = {
     return { total: out.total, matching: out.matching, offset: out.offset, rows: mapStationRecords(out.rows), counts: out.counts, notVisible: out.not_visible, issueNo: out.issue_no, datasetChanged: out.dataset_changed };
   },
   caseStationsCsvUrl: (id, q) => `/api/screening/cases/${encodeURIComponent(id)}/stations.csv?${stationParams({ ...q, offset: undefined, limit: undefined })}`,
+  getTrends: async (domain) => {
+    type Out = { domain: Domain; issues: number[]; series: Trends['series']; rule: string; problems: string[]; assumptions: string[];
+      flags: Record<string, { name: string; issue: number; count: number; earlier_average: number }[]>;
+      totals?: Record<string, { filings: number; visible_from_finland: number }>;
+      largest_ngso?: Record<string, { ntc_id: number; network: string | null; adm: string | null; satellites: number; reason: string | null }[]> };
+    const o = await call<Out>('screening', `/trends?domain=${domain}`);
+    const byIssue = <A, B>(m: Record<string, A> | undefined, f: (a: A) => B) => (m ? Object.fromEntries(Object.entries(m).map(([k, v]) => [Number(k), f(v)])) : undefined);
+    return {
+      domain: o.domain, issues: o.issues, rule: o.rule, problems: o.problems, assumptions: o.assumptions,
+      series: Object.fromEntries(Object.entries(o.series).map(([dim, cats]) => [dim, Object.fromEntries(Object.entries(cats).map(([c, v]) => [c, byIssue(v, (n) => n)!]))])),
+      flags: Object.fromEntries(Object.entries(o.flags).map(([dim, fs]) => [dim, fs.map((f) => ({ name: f.name, issue: f.issue, count: f.count, earlierAverage: f.earlier_average }))])),
+      totals: byIssue(o.totals, (t) => ({ filings: t.filings, visibleFromFinland: t.visible_from_finland })),
+      largestNgso: byIssue(o.largest_ngso, (list) => list.map((x) => ({ ntcId: x.ntc_id, network: x.network, adm: x.adm, satellites: x.satellites, reason: x.reason }))),
+    };
+  },
   getCoverage: async (id) => {
     type Out = { issue_no: number; mapped: boolean; boundary: number[][][]; cell: { lat_step: number; lon_step: number }; orbit: Coverage['orbit']; gso_lon_deg: number | null; satellites: string[];
       cells: { lat: number; lon: number; angle_deg: number | null; minutes: number | null; pfd_db: number | null; margin_db: number | null }[];
       pfd: { available: boolean; reason?: string; ref_bw_hz?: number; group_id?: number; f_low_mhz?: number; f_high_mhz?: number; power_in_ref_bw_dbw?: number; gain_dbi?: number; mask_id?: string | null };
-      stations: { total: number; without_location: number; by_class: Record<string, number>; points?: { id: string; lat: number; lon: number; licence: string | null }[]; bins?: { lat: number; lon: number; count: number }[] };
+      stations: { total: number; segments?: { low_mhz: number; high_mhz: number }[]; without_location: number; by_class: Record<string, number>; points?: { id: string; lat: number; lon: number; licence: string | null }[]; bins?: { lat: number; lon: number; count: number }[] };
       notes: string[]; assumptions: string[] };
     const o = await call<Out>('screening', `/cases/${encodeURIComponent(id)}/coverage`);
     return {
       issueNo: o.issue_no, mapped: o.mapped, boundary: o.boundary, cell: { latStep: o.cell.lat_step, lonStep: o.cell.lon_step }, orbit: o.orbit, gsoLonDeg: o.gso_lon_deg, satellites: o.satellites,
       cells: o.cells.map((c) => ({ lat: c.lat, lon: c.lon, angleDeg: c.angle_deg, minutes: c.minutes, pfdDb: c.pfd_db, marginDb: c.margin_db })),
       pfd: { available: o.pfd.available, reason: o.pfd.reason, refBwHz: o.pfd.ref_bw_hz, groupId: o.pfd.group_id, fLowMhz: o.pfd.f_low_mhz, fHighMhz: o.pfd.f_high_mhz, powerInRefBwDbw: o.pfd.power_in_ref_bw_dbw, gainDbi: o.pfd.gain_dbi, maskId: o.pfd.mask_id },
-      stations: { total: o.stations.total, withoutLocation: o.stations.without_location, byClass: o.stations.by_class, points: o.stations.points, bins: o.stations.bins },
+      stations: { total: o.stations.total, segments: o.stations.segments?.map((g) => ({ lowMhz: g.low_mhz, highMhz: g.high_mhz })), withoutLocation: o.stations.without_location, byClass: o.stations.by_class, points: o.stations.points, bins: o.stations.bins },
       notes: o.notes, assumptions: o.assumptions,
     };
   },

@@ -84,11 +84,23 @@ def test_ngso_flight_gives_minutes_and_highest_angle(tmp_path, monkeypatch):
     assert overhead["angle_deg"] > 80  # at minute 0 it is straight above 65 N, 25 E
 
 
-def test_listed_stations_in_the_bands_are_drawn(tmp_path, monkeypatch):
-    stations = [station(row=1, rx=3500.0, bw=1.0), station(row=2, rx=3500.0, bw=1.0, cls="MVV"), station(row=3, rx=100.0)]
+def test_stations_on_the_satellites_own_frequencies_are_drawn(tmp_path, monkeypatch):
+    # The case's M4 band is 3400-3800 MHz, but the satellite transmits only in 3480-3520 MHz.
+    stations = [
+        station(row=1, rx=3500.0, bw=1.0),
+        station(row=2, rx=3500.0, bw=1.0, cls="MVV"),
+        station(row=3, rx=3700.0, bw=1.0),  # inside the M4 band, outside what the satellite transmits
+        station(row=4, rx=100.0),
+    ]
     out = map_for(tmp_path, monkeypatch, gso_reader(low=3480, high=3520), stations)
     assert out["stations"]["total"] == 2 and out["stations"]["by_class"] == {"FX": 1, "MVV": 1}
     assert {p["id"] for p in out["stations"]["points"]} == {"10@R1", "20@R2"}
+    assert out["stations"]["segments"] == [{"low_mhz": 3480.0, "high_mhz": 3520.0}]
+
+
+def test_no_station_on_its_frequencies_gives_an_empty_layer(tmp_path, monkeypatch):
+    out = map_for(tmp_path, monkeypatch, gso_reader(low=3480, high=3520), [station(row=3, rx=3700.0, bw=1.0)])
+    assert out["stations"]["total"] == 0 and out["stations"]["points"] == []
 
 
 def test_without_power_or_gain_the_pfd_layer_says_why(tmp_path, monkeypatch):

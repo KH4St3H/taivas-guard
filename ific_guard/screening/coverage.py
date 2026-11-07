@@ -188,15 +188,37 @@ def _ngso(issue: SpaceIssue, notice: SpaceNotice, grid: dict[GroundPoint, Cell],
     return True
 
 
-def _stations(bands: list[dict[str, Any]]) -> dict[str, Any]:
+def _transmit_segments(notices: list[SpaceNotice], bands: list[dict[str, Any]]) -> list[tuple[float, float]]:
+    """The satellite's space-to-Earth frequencies inside the case's bands: what a station has to share to be affected.
+
+    A band from M4 can be far wider than what the satellite uses, so stations are matched on these, not on the band.
+    """
+    segments = set()
+    for notice in notices:
+        for a in notice.assignments:
+            if a.get("emi_rcp") != "E" or a.get("freq_min") is None or a.get("freq_max") is None:
+                continue
+            low, high = float(a["freq_min"]), float(a["freq_max"])
+            for b in bands:
+                b_low, b_high = float(b["low_mhz"]), float(b["high_mhz"])
+                if low < b_high and high > b_low:  # the overlap test the station rule uses
+                    segments.add((max(low, b_low), min(high, b_high)))
+    return sorted(segments)
+
+
+def _stations(segments: list[tuple[float, float]]) -> dict[str, Any]:
     index = StationIndex(load_stations_cached(STATIONS_PATH) + load_earth_stations())
     found = {}
-    for b in bands:
-        for station, _ in index.overlapping(float(b["low_mhz"]), float(b["high_mhz"])):
+    for low, high in segments:
+        for station, _ in index.overlapping(low, high):
             found[station.key] = station
     located = [s for s in found.values() if s.lat_deg is not None and s.lon_deg is not None]
     by_class = Counter(s.licence_class or "no class" for s in found.values())
-    out: dict[str, Any] = {"total": len(found), "without_location": len(found) - len(located), "by_class": dict(by_class.most_common())}
+    out: dict[str, Any] = {
+        "basis": "the satellite's space-to-Earth frequencies inside the case's bands",
+        "segments": [{"low_mhz": lo, "high_mhz": hi} for lo, hi in segments],
+        "total": len(found), "without_location": len(found) - len(located), "by_class": dict(by_class.most_common()),
+    }
     if len(located) <= STATION_POINTS_MAX:
         out["points"] = [{"id": s.key, "lat": s.lat_deg, "lon": s.lon_deg, "licence": s.licence_class} for s in located]
     else:
@@ -254,7 +276,7 @@ def _compute(source: CaseSource) -> dict[str, Any]:
             for p, c in grid.items()
         ],
         "pfd": pfd,
-        "stations": _stations(bands),
+        "stations": _stations(_transmit_segments(visible, bands)),
         "notes": notes,
         "assumptions": [
             "No beam footprint is notified, so this shows where the satellite can reach, not where its beam points.",

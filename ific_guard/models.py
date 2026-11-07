@@ -157,3 +157,16 @@ class CustomRuleVersion(Base):
     saved_by: Mapped[str] = mapped_column(Text, default="")
     note: Mapped[str] = mapped_column(Text, default="")
     saved_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
+
+
+class IssueSummary(Base):
+    """Descriptive counts for one stored issue, for the Trends page. Recomputed when `version` changes."""
+
+    __tablename__ = "issue_summary"
+
+    artifact_id: Mapped[int] = mapped_column(ForeignKey("artifact.id"), primary_key=True)
+    domain: Mapped[str] = mapped_column(String(16))
+    issue_no: Mapped[int] = mapped_column(Integer, index=True)
+    version: Mapped[int] = mapped_column(Integer)
+    summary: Mapped[dict[str, Any]] = mapped_column(JSON)
+    computed_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)

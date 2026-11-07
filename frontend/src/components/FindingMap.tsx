@@ -108,7 +108,9 @@ function MapBody({ c }: { c: Coverage }) {
       {c.mapped && (
         <div className="map-controls" role="group" aria-label="Map layer">
           {available.map((l) => <button key={l} type="button" className="btn btn-secondary" aria-pressed={layer === l} onClick={() => setLayer(l)}>{LAYERS[l].label}</button>)}
-          {c.stations.total > 0 && <label className="check"><input type="checkbox" checked={showStations} onChange={(e) => setShowStations(e.target.checked)} /> Listed stations ({c.stations.total.toLocaleString('en-GB')})</label>}
+          {c.stations.total > 0
+            ? <label className="check"><input type="checkbox" checked={showStations} onChange={(e) => setShowStations(e.target.checked)} /> Stations on this satellite’s frequencies ({c.stations.total.toLocaleString('en-GB')})</label>
+            : <span className="muted">No listed station shares this satellite’s frequencies.</span>}
         </div>
       )}
 
@@ -160,7 +162,7 @@ function MapBody({ c }: { c: Coverage }) {
               <div className="map-ramp-ticks"><span>{layer === 'margin' ? signedFmt(lo) : fmt(lo, spec.unit)}</span>{layer === 'margin' && lo < 0 && hi > 0 && <span>0 dB</span>}<span>{layer === 'margin' ? signedFmt(hi) : fmt(hi, spec.unit)}</span></div>
               {layer === 'margin' && <p className="fine">Above 0 dB, the worst-case pfd is over the {c.pfd.maskId} limit at that angle.</p>}
               {noReach && <p className="map-key"><span className="map-swatch map-swatch-hatch" /> Never above the horizon</p>}
-              {showStations && c.stations.total > 0 && <p className="map-key"><span className="map-swatch map-swatch-station" /> {bins.length ? 'Listed stations, sized by count per cell' : 'Listed station in these bands'}</p>}
+              {showStations && c.stations.total > 0 && <p className="map-key"><span className="map-swatch map-swatch-station" /> {bins.length ? 'Stations on its frequencies, sized by count per cell' : 'Listed station on its frequencies'}</p>}
             </div>
           )}
           <Summary c={c} />
@@ -174,6 +176,9 @@ function MapBody({ c }: { c: Coverage }) {
         {c.pfd.available ? (
           <p>pfd uses group {c.pfd.groupId} ({c.pfd.fLowMhz}–{c.pfd.fHighMhz} MHz): {c.pfd.powerInRefBwDbw} dBW in {refBw(c.pfd.refBwHz)} and {c.pfd.gainDbi} dBi, the strongest transmission in this case’s bands.{c.pfd.maskId ? ` Margin is against ${c.pfd.maskId}.` : ' No single RR limit covers it, so no margin is shown.'}</p>
         ) : <p>No pfd layer: {c.pfd.reason}</p>}
+        {c.stations.segments && c.stations.segments.length > 0 && (
+          <p>Stations are those in Traficom’s list whose RX or TX band overlaps what this satellite transmits inside the case’s bands: {c.stations.segments.slice(0, 6).map((g) => (g.lowMhz === g.highMhz ? `${g.lowMhz}` : `${g.lowMhz}–${g.highMhz}`)).join(', ')}{c.stations.segments.length > 6 ? ` and ${c.stations.segments.length - 6} more ranges` : ''} MHz.</p>
+        )}
       </details>
     </>
   );
@@ -211,7 +216,7 @@ function Summary({ c }: { c: Coverage }) {
 function StationClasses({ c }: { c: Coverage }) {
   return (
     <p className="fine">
-      {c.stations.total.toLocaleString('en-GB')} listed station{c.stations.total === 1 ? '' : 's'} in these bands: {Object.entries(c.stations.byClass).map(([k, n]) => `${k} ${n.toLocaleString('en-GB')}`).join(', ')}
+      {c.stations.total.toLocaleString('en-GB')} listed station{c.stations.total === 1 ? '' : 's'} on this satellite’s frequencies: {Object.entries(c.stations.byClass).map(([k, n]) => `${k} ${n.toLocaleString('en-GB')}`).join(', ')}
       {c.stations.withoutLocation > 0 ? `; ${c.stations.withoutLocation} without coordinates, not drawn` : ''}.
     </p>
   );

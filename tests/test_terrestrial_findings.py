@@ -464,6 +464,7 @@ def test_export_contains_every_required_field_and_repeats_identically(tmp_path, 
     r.tables["fxm_ant"] = [antenna(1), antenna(2, hgt_agl=None)]
     _readers(monkeypatch, {3076: r})
     monkeypatch.setattr(rule_module, "load_stations", lambda: [])
+    monkeypatch.setattr("ific_guard.export._code_version", lambda: {"commit": "c" * 40, "dirty": False})
     first, second = tmp_path / "one", tmp_path / "two"
     manifest = export_issue("terrestrial", 3076, first)
     export_issue("terrestrial", 3076, second)

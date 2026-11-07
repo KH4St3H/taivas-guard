@@ -99,6 +99,18 @@ def case_stations_csv(
     return StreamingResponse(lines(), media_type="text/csv", headers={"Content-Disposition": f'attachment; filename="{name}"'})
 
 
+@router.get("/trends")
+def get_trends(domain: Annotated[str, Query(pattern="^(space|terrestrial)$")] = "space",
+               last: Annotated[int, Query(ge=2, le=40)] = 10) -> dict:
+    """Descriptive counts per stored issue, with plain flags where the latest issue's count jumps.
+
+    An issue screened before this existed is summarised on the first request, which reads its file once.
+    """
+    from .trends import trends
+
+    return trends(domain, last)
+
+
 @router.get("/cases/{case_id}/coverage")
 def case_coverage(case_id: int) -> dict:
     """Where over Finland the case's satellite can reach, its worst-case pfd, and the listed stations in its bands.

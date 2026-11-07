@@ -297,6 +297,23 @@ export interface Capabilities {
   customRules: boolean; // experts can write screening rules
   stationLists: boolean; // a case's full station list can be recomputed on request
   coverage: boolean; // a finding's reach over Finland can be mapped
+  trends: boolean; // counts across stored issues
+}
+
+export interface TrendFlag { name: string; issue: number; count: number; earlierAverage: number }
+export interface LargeSystem { ntcId: number; network: string | null; adm: string | null; satellites: number; reason: string | null }
+
+/** Descriptive counts per stored issue. Series are dimension -> category -> issue -> count. */
+export interface Trends {
+  domain: Domain;
+  issues: number[];
+  series: Record<string, Record<string, Record<number, number>>>;
+  flags: Record<string, TrendFlag[]>;
+  rule: string;
+  problems: string[];
+  totals?: Record<number, { filings: number; visibleFromFinland: number }>;
+  largestNgso?: Record<number, LargeSystem[]>;
+  assumptions: string[];
 }
 
 /** Where over Finland a case's satellite can reach. Computed on request; there is no beam footprint. */
@@ -310,7 +327,7 @@ export interface Coverage {
   satellites: string[];
   cells: { lat: number; lon: number; angleDeg: number | null; minutes: number | null; pfdDb: number | null; marginDb: number | null }[];
   pfd: { available: boolean; reason?: string; refBwHz?: number; groupId?: number; fLowMhz?: number; fHighMhz?: number; powerInRefBwDbw?: number; gainDbi?: number; maskId?: string | null };
-  stations: { total: number; withoutLocation: number; byClass: Record<string, number>; points?: { id: string; lat: number; lon: number; licence: string | null }[]; bins?: { lat: number; lon: number; count: number }[] };
+  stations: { total: number; segments?: { lowMhz: number; highMhz: number }[]; withoutLocation: number; byClass: Record<string, number>; points?: { id: string; lat: number; lon: number; licence: string | null }[]; bins?: { lat: number; lon: number; count: number }[] };
   notes: string[];
   assumptions: string[];
 }
@@ -421,6 +438,7 @@ export interface Api {
   listCaseStations(id: string, query: StationQuery): Promise<StationPage>;
   caseStationsCsvUrl(id: string, query: StationQuery): string | null;
   getCoverage(id: string): Promise<Coverage>;
+  getTrends(domain: Domain): Promise<Trends>;
   severityNote: string;
 }
 

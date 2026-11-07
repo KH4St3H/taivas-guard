@@ -96,6 +96,7 @@ def test_export_rejects_unsupported_version_instead_of_zero_findings(tmp_path, m
             domain="space", issue_no=3000, source_url="test", sha256="a" * 64,
             size_bytes=11, mdb_path=str(path),
         ))
+    monkeypatch.setattr("ific_guard.export._code_version", lambda: {"commit": "c" * 40, "dirty": False})
     monkeypatch.setattr("ific_guard.export.MdbReader", lambda _: Reader([{"version_no": 9}]))
     with pytest.raises(DatabaseVersionError, match="Unsupported space database version"):
         export_issue("space", 3000, tmp_path / "out")

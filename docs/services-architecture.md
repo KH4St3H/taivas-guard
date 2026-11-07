@@ -184,7 +184,7 @@ The current code screens API/A and CR/C technically, plus notification-stage fil
 
 Space rules include RR Article 21, Appendix 5 and CEPT ECC/DEC/(25)02 checks, station-specific PFD evidence, M4 Finnish restrictions and Finland-named footnotes, and versioned `custom-<id>` rules. The receiving bands of the named Sodankyla earth station are protected by frequency; coordinates remain unavailable. M15 is deliberately excluded; README records the scope decision.
 
-The UI includes the reach map, paged station results and custom rule editing. `/cases/{id}/coverage` returns approximate reach geometry, `/cases/{id}/stations` recomputes the complete list, and `/rules` manages versioned custom definitions. The UI still drafts locally; the guarded `/cases/{id}/draft` API is separate (ticket 25).
+The UI includes the reach map with stations filtered to the satellite frequencies, paged station results, custom rule editing, and descriptive space/terrestrial trends from `/trends`. The `compact-stations` CLI reduces legacy stored lists while preserving review decisions (tickets 24/30/31). `/cases/{id}/coverage` returns approximate reach geometry, `/cases/{id}/stations` recomputes the complete list, and `/rules` manages versioned custom definitions. The UI still drafts locally; the guarded `/cases/{id}/draft` API is separate (ticket 25).
 
 Evaluation exports require a clean Git checkout and record its commit and dirty state. `--allow-dirty` is an explicit exploratory override. Compact JSON retains all calculations and evidence. The current 3074 export has 175 cases (43 high, 94 medium, 38 low); the paired 3076 export and reproduction details are in `outputs/ific_3076/verification.md`. These replace the earlier artifact counts below.
 

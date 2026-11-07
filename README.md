@@ -86,6 +86,7 @@ python -m ific_guard.cli export --domain terrestrial --issue 3076 --out data/eva
 - `GET /rules`, `POST /rules`, `PUT /rules/{id}` and `POST /rules/preview`: inspect, author, version and preview custom rules.
 - `GET /cases/{id}/stations` and `/cases/{id}/stations.csv`: recompute the complete matching station list with filtering/pagination or CSV; stored cases retain counts and a capped sample.
 - `GET /cases/{id}/coverage`: satellite reach geometry and available PFD estimates. This is an approximate reach map, not a beam footprint or a confirmed interference area.
+- `GET /trends?domain=space` or `domain=terrestrial`: descriptive counts and activity-change flags across stored issues.
 - `GET /cases/{id}/draft`: guarded draft service; optional model rewrite with deterministic fallback. UI drafts currently remain browser-local.
 
 ## Inputs
@@ -165,7 +166,7 @@ The earlier hand check recomputed 13 pfd results from raw rows with no differenc
 - **The Sodankylä earth station has no coordinates.** Neither Traficom's table nor the IFICs give them, so it is matched by frequency only. It appears in 19 station cases on 3074, as no calculation unless a non-GSO bound below the limit applies everywhere (one case, SUNCET). The two transmitting sites are listed but not protected.
 - **The RR footnote file is extracted from the PDF text.** Spacing artefacts are kept, and each entry should be checked against its page before a letter relies on it.
 - **Finnish satellites aren't protected.** The brief also asks about systems that could interfere with Finnish satellites, and no rule does this yet.
-- **No space-side trends.** `outputs/neighbour-trends.md` covers terrestrial only.
+- **Trends are descriptive.** The app now shows space and terrestrial trends across stored issues (ticket 30), including counts by band/administration and notified NGSO system sizes. `outputs/neighbour-trends.md` is the earlier terrestrial report. These observations are not predictions or a satellite-interference assessment.
 
 ### Assumptions an expert should check
 
