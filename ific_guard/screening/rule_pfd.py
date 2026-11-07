@@ -421,8 +421,8 @@ def _headline(worst: dict[str, Any]) -> str:
         how = " in a one-day propagation" if worst["method"] == "pfd_ngso" else ""
         return f" exceeds{how} under worst-case assumptions{flagged}"
     if result == "envelope_exceeds":
-        shown = "not shown by propagation" if worst["propagation"]["kind"] != "not_run" else "no time-sampled result"
-        return f": upper bound above the limit; exceedance {shown}{flagged}"
+        shown = "exceedance not shown by propagation" if worst["propagation"]["kind"] != "not_run" else "no time-sampled result"
+        return f": upper bound above the limit; {shown}{flagged}"
     if result == "within_3db":
         return f" within 3 dB below the limit under worst-case assumptions; watch list{flagged}"
     if result == "envelope_within_3db":

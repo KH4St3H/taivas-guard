@@ -219,7 +219,7 @@ def test_envelope_above_limit_without_propagation_is_not_called_exceeds():
     assert "minutes" not in calc["propagation"]
     assert "located" in calc["worst_point"] and "lat" not in calc["worst_point"]
     assert hits[0].severity == "medium"
-    assert "exceeds" not in hits[0].title and "upper bound above the limit" in hits[0].title
+    assert "exceeds" not in hits[0].title and "upper bound above the limit; no time-sampled result" in hits[0].title
 
 
 def test_envelope_margin_scores_less_than_a_sampled_one():
