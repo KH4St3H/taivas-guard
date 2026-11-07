@@ -42,7 +42,7 @@ Jaakko (Traficom), recorded in ticket 02 Q10:
 - **Cases:** each one above 470 MHz names the 400-470 MHz threshold, says Traficom said to apply it, cites the scope note, and asks whether Annexes 3 and 4 apply. A new assumption says the bandwidth conversion is applied to wide channels.
 - **3076 before:** 6 above, 9 below, 6 with no criterion, 8 not calculated. Severity 1 high, 22 medium, 6 low.
 - **3076 after:** 6 above, 15 below, 8 not calculated. Severity unchanged.
-- **The six newly compared notices:** 793-795 MHz, with 5 and 10 MHz channels. The conversion makes their thresholds 43.0 and 44.6 dB(uV/m), and they are 7.9 to 63.1 dB below.
+- **The six newly compared notices:** 793-795 MHz, with 5 and 10 MHz channels. The conversion makes their thresholds 43.0 and 44.6 dB(uV/m), and they are 7.9 to 63.1 dB below. The three at Ruskeala, 14 km from the boundary, would cross it if the land path were all sea, which keeps them at medium.
 - **Checks:**
   - Ruskeala's hand check (`test_real_ruskeala_hand_check`) now asserts the threshold.
   - Edge tests cover 469, 470, 471, 4000 and 4001 MHz.

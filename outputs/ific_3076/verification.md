@@ -9,7 +9,7 @@ These are possible concerns for expert review. None is confirmed interference or
 | Assessment at the Finnish boundary | Notices |
 |---|---:|
 | Above the T/R 25-08 Annex 1 indicative threshold | 6 |
-| Below it | 15 (one crosses it at 1% time) |
+| Below it | 15. Four would cross it under an alternative: Kingisepp at 1% time, and three Ruskeala notices at 793-795 MHz if the 14 km land path were all sea |
 | Not calculated: mobile station with no notified antenna height | 8 |
 
 Severity: 1 high, 22 medium, 6 low. Five of the six above the threshold have `fxm_coord` rows saying coordination with FIN is completed, declared by the notifier, so they rank medium until checked against Traficom's records. The one high, 93075637 (KRL LYASKELYA, 152.9 MHz, 9.0 dB above), has no such row.
