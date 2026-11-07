@@ -1,10 +1,10 @@
 # 12 Review UI
 
-Status: ready-for-agent
+Status: resolved
 Type: task
 Size: M
 Blocked by: none
-Owns: `app.py`, a `ui` dependency group in `pyproject.toml`, `tests/test_ui_client.py`
+Owns: `frontend/`
 
 ## Goal
 
@@ -29,3 +29,7 @@ A Streamlit page where an expert can work through cases, as in ARCHITECTURE.md s
 ## Not in scope
 
 Log-in, the trends panel unless ticket 11 has merged, and editing draft letters until ticket 13 merges.
+
+## Answer
+
+Built as a React app in `frontend/`, not Streamlit: frontend decisions sit with this side of the team, by team agreement on 2026-11-07. Do not build `app.py`. It covers the goals above, including upload and the status strip, and was run against live services with real files. See `frontend/README.md`. New rules with no calculation appear without UI work; give a new rule a readable name in `RULE_LABELS` in `frontend/src/api/http.ts`.

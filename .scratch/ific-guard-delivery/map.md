@@ -23,7 +23,7 @@ Status values come from `docs/agents/triage-labels.md`. Size is a rough relative
 | 09 | P.1546 engine and T/R 25-08 triggers | Agent | L | none | Required |
 | 10 | Terrestrial findings and 3076 export | Agent | M | 03, 08, 09 | Required |
 | 11 | Neighbour trends and anomalies | Agent | S | 08 | Required |
-| 12 | Review UI | Agent | M | none | Wanted |
+| 12 | Review UI | Done | M | none | Wanted |
 | 13 | Explanations and draft letters | Agent | M | none | Required |
 | 14 | Final run, evaluation files and demo | Coordinator | M | all others | Required |
 | 15 | Older IFIC issues | Agent | M | 03 | Required |
@@ -105,7 +105,7 @@ Screening rules without a calculation use `method: "screening"` and leave the nu
 | `ific_guard/terrestrial/` (new) | 08, 10, 11 in separate modules |
 | `ific_guard/engines/p1546.py` (new) | 09 |
 | `ific_guard/export.py`, `outputs/` (new) | 03 |
-| `app.py` (new) | 12 |
+| `frontend/` | 12 |
 | `ific_guard/llm/`, `data/refdocs/` (new) | 13 |
 
 ## Decisions so far
