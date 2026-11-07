@@ -173,9 +173,11 @@ class M4NoDownlinkRule:
 
 def space_rules(settings: Settings) -> list[Rule]:
     from .rule_stations import station_overlap_rule  # imported here because rule_stations uses Hit from this module
+    from .rule_pfd import pfd_rule
 
     return [
         FinlandNamedRule(settings),
         M4NoDownlinkRule(settings, load_m4_conflict_bands(settings.m4_filter_path)),
         station_overlap_rule(settings),
+        pfd_rule(settings),
     ]

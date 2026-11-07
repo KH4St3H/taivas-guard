@@ -117,6 +117,35 @@ class SpaceIssue:
     def group_notice(self) -> dict[int, int]:
         return {int(r["grp_id"]): int(r["ntc_id"]) for r in self._reader.table("grp")}
 
+    @cached_property
+    def groups(self) -> dict[int, Row]:
+        """Group rows keyed once, avoiding repeated full-table joins in rules."""
+        return {int(row["grp_id"]): row for row in self._reader.table("grp")}
+
+    @cached_property
+    def emissions(self) -> dict[int, list[Row]]:
+        """Notified emission rows keyed by group, including rows with no power value."""
+        out: dict[int, list[Row]] = defaultdict(list)
+        for row in self._reader.table("emiss"):
+            out[int(row["grp_id"])].append(row)
+        return dict(out)
+
+    @cached_property
+    def orbits(self) -> dict[int, list[Row]]:
+        out: dict[int, list[Row]] = defaultdict(list)
+        for row in self._reader.table("orbit"):
+            out[int(row["ntc_id"])].append(row)
+        return dict(out)
+
+    @cached_property
+    def beams(self) -> dict[tuple[int, str | None, str | None], list[Row]]:
+        """Beam rows keyed by the join specified by the Space Preface."""
+        out: dict[tuple[int, str | None, str | None], list[Row]] = defaultdict(list)
+        for row in self._reader.table("s_beam"):
+            key = (int(row["ntc_id"]), _text(row.get("emi_rcp")), _text(row.get("beam_name")))
+            out[key].append(row)
+        return dict(out)
+
     def provisions_for_adm(self, adm: str) -> dict[int, dict[str, set]]:
         """Where the BR names an administration, per notice: provisions and affected groups."""
         found: dict[int, dict[str, set]] = defaultdict(lambda: {"provisions": set(), "groups": set()})
