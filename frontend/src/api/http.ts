@@ -226,7 +226,7 @@ export const httpApi: Api = {
   severityNote: 'Set by the screening service. These are placeholders until the planned ranking replaces them.',
   listSeverityRules: async () => [
     { severity: 'High', rule: 'ITU names Finland in the filing’s coordination data, or a visible satellite transmits in a passive band with no space-to-Earth allocation' },
-    { severity: 'Medium', rule: 'A visible satellite transmits in a band with Finnish terrestrial use and no space-to-Earth allocation, or on the receive band of a station in Traficom’s list' },
+    { severity: 'Medium', rule: 'A visible satellite transmits in a band with Finnish terrestrial use and no space-to-Earth allocation, or on an RX or TX band of a station in Traficom’s list' },
   ],
   listIssues: async () => {
     const [rows, cases] = await Promise.all([artifacts(), allCases()]);
