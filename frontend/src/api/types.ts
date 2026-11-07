@@ -103,6 +103,11 @@ export interface BandMatch {
   classes: Record<string, number>;
   /** What M4 allocates for space-to-Earth across the band, on station cases. */
   m4SpaceToEarth: string | null;
+  /** Finland's restrictions in the band, verbatim from Traficom's table, and RR footnotes naming Finland. */
+  restrictions: string[];
+  nationalUse: string[];
+  rrFootnotesCited: string[];
+  rrFootnotesNamingFinland: { footnote: string; kind: string; pdfPage: number }[];
 }
 
 /** What was found at one station in Traficom's list: a value at its coordinates, a bound, or nothing. */

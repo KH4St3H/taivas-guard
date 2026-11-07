@@ -10,7 +10,7 @@ from datetime import date
 from typing import Any, Protocol
 
 from ..config import Settings
-from .m4 import M4Band, load_m4_conflict_bands
+from .m4 import M4Band, finnish_notes, load_m4_conflict_bands, load_rr_footnotes_finland
 from .space import SATELLITE_NOTICE_TYPES, SpaceIssue, SpaceNotice, add_months
 
 FINLAND = "FIN"
@@ -160,6 +160,7 @@ class M4NoDownlinkRule:
                             **({"m4_api_row_ids": b.api_row_ids, "m4_snapshot": b.source} if b.api_row_ids else {}),
                             **({"space_down_unresolved": b.space_down_unresolved} if b.space_down_unresolved else {}),
                             **({"no_row_gaps_mhz": b.no_row_gaps_mhz} if b.no_row_gaps_mhz else {}),
+                            **finnish_notes(b.low_mhz, b.high_mhz, [b], load_rr_footnotes_finland()),
                         }
                         for b, groups in sorted(matched.items(), key=lambda kv: kv[0].low_mhz)
                     ],
@@ -174,9 +175,9 @@ class M4NoDownlinkRule:
 def space_rules(settings: Settings) -> list[Rule]:
     from .rule_stations import station_overlap_rule  # imported here because rule_stations uses Hit from this module
     from .rule_pfd import pfd_rule
-    from .stations import load_stations
+    from .stations import protected_stations
 
-    stations = load_stations()
+    stations = protected_stations()
     pfd = pfd_rule(settings, stations)  # the station rule reads the pfd rule's per-station results
     return [
         FinlandNamedRule(settings),

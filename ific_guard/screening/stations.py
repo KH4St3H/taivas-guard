@@ -39,6 +39,8 @@ MVV_GAIN = "mvv_gain_not_real"
 POWER_IMPLAUSIBLE = "power_implausible"
 NEGATIVE_HEIGHT = "negative_antenna_height"
 OUTSIDE_FINLAND = "coordinates_outside_finland_bounding_box"
+NO_COORDINATES = "coordinates_not_known"
+EARTH_STATIONS_PATH = Path(__file__).resolve().parents[2] / "data/national/fin_earth_stations.csv"
 
 # Separates the 67 no-class rows in ticket 02 question 8 (133 MW and up) from every other row.
 IMPLAUSIBLE_POWER_W = 100e6
@@ -95,9 +97,12 @@ class Station:
     directivity: str | None
     quality_flags: tuple[str, ...] = ()
     sheet: int = 1  # an Excel sheet holds about a million rows, so a large register spans several
+    site: str | None = None  # a real earth station named in Traficom's frequency table, not a sheet row
 
     @property
     def key(self) -> str:
+        if self.site:
+            return f"ES:{self.site}"
         # The first sheet keeps the original form, so keys on existing cases stay the same.
         return f"{self.station_no}@R{self.row}" if self.sheet == 1 else f"{self.station_no}@S{self.sheet}R{self.row}"
 
@@ -328,6 +333,30 @@ def load_stations(path: Path = STATIONS_PATH) -> list[Station]:
     return stations
 
 
+def load_earth_stations(path: Path = EARTH_STATIONS_PATH) -> list[Station]:
+    """Receiving earth stations from data/national/fin_earth_stations.csv, as stations to protect (ticket 21).
+
+    Transmitting sites are listed in the file but not loaded: a satellite downlink in their band
+    reaches no receiver there. A site without coordinates is flagged, so it is linked by frequency only.
+    """
+    if not path.exists():
+        return []
+    with path.open(newline="", encoding="utf-8") as f:
+        rows = [r for r in csv.DictReader(f) if r["protected"].strip().lower() == "true" and r["direction"] == "rx"]
+    out = []
+    for number, r in enumerate(rows, 1):
+        low, high = float(r["low_mhz"]), float(r["high_mhz"])
+        lat, lon = _number(r["lat_deg"]), _number(r["lon_deg"])
+        out.append(Station(
+            row=0, station_no=number, licence_class="Earth station (RX)", lon_deg=lon, lat_deg=lat, ground_height_m=None,
+            mast_height_m=None, ant_height_agl_m=None, ant_height_asl_m=None, ant_gain_db=None, tx_mhz=None,
+            rx_mhz=(low + high) / 2, channel_bw_mhz=high - low, transmission_bw_mhz=None, transmission_class=None,
+            radiation_direction_deg=None, polarisation=None, power=None, power_unit=None, power_itu=None, line_loss_db=None,
+            directivity=None, quality_flags=() if lat is not None and lon is not None else (NO_COORDINATES,), site=r["site"],
+        ))
+    return out
+
+
 @lru_cache(maxsize=2)
 def _cached(path: Path, mtime_ns: int, size: int) -> tuple[Station, ...]:
     return tuple(load_stations(path))
@@ -337,3 +366,8 @@ def load_stations_cached(path: Path = STATIONS_PATH) -> list[Station]:
     """For on-request recomputation: reloads only when the file changes."""
     info = path.stat()
     return list(_cached(path, info.st_mtime_ns, info.st_size))
+
+
+def protected_stations(path: Path = STATIONS_PATH, cached: bool = False) -> list[Station]:
+    """Everything the space rules protect: Traficom's special-interest list plus the real receiving earth stations."""
+    return (load_stations_cached(path) if cached else load_stations(path)) + load_earth_stations()

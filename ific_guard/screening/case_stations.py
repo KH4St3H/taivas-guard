@@ -19,7 +19,7 @@ from .issue_cache import CaseSource, Unavailable, case_source, load_issue
 from .m4 import load_m4_rows
 from .rule_pfd import PfdRule
 from .rule_stations import StationOverlapRule
-from .stations import STATIONS_PATH, load_stations_cached
+from .stations import STATIONS_PATH, load_earth_stations, load_stations_cached
 
 STATION_RULE = "station-rx-overlap"
 CACHED_CASES = 4
@@ -53,7 +53,7 @@ def _compute(source: CaseSource, register_sha: str) -> StationList:
     issue = load_issue(source)
     family_id, rule_id, issue_no = source.family_id, source.rule_id, source.issue_no
     screened_sha = (source.details.get("station_dataset") or {}).get("sha256")
-    stations = load_stations_cached(STATIONS_PATH)
+    stations = load_stations_cached(STATIONS_PATH) + load_earth_stations()
     pfd = PfdRule(settings, stations, station_limit=None, families={family_id})
     if rule_id == STATION_RULE:
         dataset = {"file": STATIONS_PATH.name, "sha256": register_sha, "records": len(stations)}

@@ -26,7 +26,7 @@ from .issue_cache import CaseSource, case_source, load_issue
 from .rule_pfd import _best_join, _emission_for_mask, _orbit_shapes, _power_in_ref_bw, _select
 from .rules import visible_from_finland
 from .space import SATELLITE_NOTICE_TYPES, SpaceIssue, SpaceNotice
-from .stations import STATIONS_PATH, StationIndex, load_stations_cached
+from .stations import STATIONS_PATH, StationIndex, load_earth_stations, load_stations_cached
 
 LAT_STEP = 0.2  # about 22 km
 LON_STEP = 0.45  # about 21 km at 64 N, so cells are roughly square on the ground
@@ -189,7 +189,7 @@ def _ngso(issue: SpaceIssue, notice: SpaceNotice, grid: dict[GroundPoint, Cell],
 
 
 def _stations(bands: list[dict[str, Any]]) -> dict[str, Any]:
-    index = StationIndex(load_stations_cached(STATIONS_PATH))
+    index = StationIndex(load_stations_cached(STATIONS_PATH) + load_earth_stations())
     found = {}
     for b in bands:
         for station, _ in index.overlapping(float(b["low_mhz"]), float(b["high_mhz"])):

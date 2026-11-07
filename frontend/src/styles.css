@@ -381,3 +381,5 @@ label.check { display: flex; align-items: center; gap: 7px; font-size: 13.5px; c
 .map-table { width: 100%; margin: 10px 0; font-size: 13px; }
 .map-details { margin-top: 12px; font-size: 13px; color: var(--ink-2); }
 .map-details summary { cursor: pointer; color: var(--link); }
+
+.band-notes { margin: 4px 0 0; padding-left: 16px; }

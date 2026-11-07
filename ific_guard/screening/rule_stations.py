@@ -11,12 +11,12 @@ from typing import TYPE_CHECKING, Any
 
 from ..config import Settings
 from ..engines.pfd import gso_geometry
-from .m4 import M4Row, load_m4_rows
+from .m4 import M4Row, finnish_notes, load_m4_rows, load_rr_footnotes_finland
 from .rules import Hit, _deadline, _families, visible_from_finland
 from .scoring import ScoringWeights, score_finding
 from .space import SATELLITE_NOTICE_TYPES, SpaceIssue, SpaceNotice
 from .station_links import BAND_ID_SAMPLE, CALCULATED, SEVERITY_NOTE, STATION_SAMPLE, capped, ordered, record_for, severity_of, station_summary, worst
-from .stations import BW_MISMATCH, NO_CHANNEL_BW, SIDE_TX, STATIONS_PATH, ProtectedBand, Station, StationIndex, load_stations
+from .stations import BW_MISMATCH, EARTH_STATIONS_PATH, NO_CHANNEL_BW, SIDE_TX, STATIONS_PATH, ProtectedBand, Station, StationIndex, load_stations
 
 if TYPE_CHECKING:
     from .rule_pfd import PfdRule
@@ -42,7 +42,7 @@ def _m4(low: float, high: float, rows: list[M4Row]) -> dict[str, Any]:
     """What M4 allocates across a band: its primary services, and whether space-to-Earth is allocated in Finland."""
     found = [r for r in rows if r.low_mhz < high and r.high_mhz > low]
     if not found:
-        return {"m4_space_to_earth": "no M4 row"}
+        return {"m4_space_to_earth": "no M4 row", **finnish_notes(low, high, [], load_rr_footnotes_finland())}
     down = {r.space_down_allocated for r in found}
     joined = lambda values: "; ".join(sorted({v for value in values for v in value.split("; ") if v}))  # noqa: E731
     pages = sorted({p for r in found for p in r.pages.split("-") if p.strip().isdigit()}, key=int)
@@ -54,6 +54,7 @@ def _m4(low: float, high: float, rows: list[M4Row]) -> dict[str, Any]:
         "m4_terrestrial_primary": any(r.terrestrial_primary for r in found),
         "passive": any(r.passive for r in found),
         "m4_table_pages": f"{pages[0]}-{pages[-1]}" if len(pages) > 1 else "".join(pages),
+        **finnish_notes(low, high, found, load_rr_footnotes_finland()),
     }
 
 
@@ -257,9 +258,14 @@ class StationOverlapRule:
 def station_overlap_rule(
     settings: Settings, path: Path = STATIONS_PATH, pfd: "PfdRule | None" = None, stations: list[Station] | None = None,
 ) -> StationOverlapRule:
-    stations = load_stations(path) if stations is None else stations
+    if stations is None:
+        from .stations import protected_stations
+
+        stations = protected_stations(path)
     with path.open("rb") as stream:
         sha256 = hashlib.file_digest(stream, "sha256").hexdigest()
-    return StationOverlapRule(
-        settings, stations, {"file": path.name, "sha256": sha256, "records": len(stations)}, pfd, load_m4_rows(settings.m4_filter_path),
-    )
+    earth = sum(1 for s in stations if s.site)
+    dataset = {"file": path.name, "sha256": sha256, "records": len(stations) - earth}
+    if earth:
+        dataset["earth_stations"] = {"file": EARTH_STATIONS_PATH.name, "records": earth}
+    return StationOverlapRule(settings, stations, dataset, pfd, load_m4_rows(settings.m4_filter_path))

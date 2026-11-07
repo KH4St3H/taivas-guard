@@ -86,6 +86,9 @@ python -m ific_guard.cli export --domain terrestrial --issue 3076 --out outputs/
 | Terrestrial IFIC `.mdb` | ITU, or upload | Downloaded at run time, not in the repository |
 | Frequency allocation table (Regulation M4) | Traficom open-data API | `data/national/` |
 | Special-interest stations (synthetic) | Traficom | `docs/challenge/` |
+| Finnish restrictions in each band: prohibitions, reserved use, military or government use, RR footnotes cited | Traficom open-data API, `Comment` and `Sub_band_usage` | `data/national/m4_bands.csv` (`restrictions`, `national_use`, `rr_footnotes`) |
+| RR Article 5 footnotes naming Finland (16) | ITU Radio Regulations 2024, Volume 1, extracted by `tools/build_rr_footnotes.py` | `data/national/rr_footnotes_finland.json`, with a PDF page per footnote |
+| Real Finnish earth stations named in the frequency table | Traficom open-data API | `data/national/fin_earth_stations.csv`; the receiving site at Sodankylä Tähtelä is protected |
 | Article 21 and Appendix 5 limit masks | ITU Radio Regulations | `data/masks/limit_masks.json`, with a citation on each row |
 | T/R 25-08 indicative thresholds | CEPT | `data/masks/field_strength.json` |
 | Finnish boundary and land mask | Natural Earth | `data/masks/` |
@@ -142,6 +145,9 @@ The hand check recomputed 13 pfd results from raw rows with no difference above 
 - **Only Space database version 10 screens.** Issues in versions 8, 7 and 5 are rejected with a clear error, so "all existing issues" isn't met for older issues. Space discovery walks back to 1998, and 3074-3083 are all version 10.
 - **Terrestrial covers land mobile only.** Other services and terrain (`pathinfo = 1`) aren't calculated.
 - **Article 22 epfd isn't calculated.** Neither is the sum of several satellites at one point.
+- **Finnish restrictions are shown, not weighed.** Bands on M4 and station cases list Finland's restrictions, military or government use and the RR footnotes naming Finland, verbatim. Severity doesn't change, because Traficom hasn't said how they should count. On 3074, 25 cases carry a restriction, 61 national use and 14 a footnote naming Finland.
+- **The Sodankylä earth station has no coordinates.** Neither Traficom's table nor the IFICs give them, so it is matched by frequency only. It appears in 19 station cases on 3074, as no calculation unless a non-GSO bound below the limit applies everywhere (one case, SUNCET). The two transmitting sites are listed but not protected.
+- **The RR footnote file is extracted from the PDF text.** Spacing artefacts are kept, and each entry should be checked against its page before a letter relies on it.
 - **Finnish satellites aren't protected.** The brief also asks about systems that could interfere with Finnish satellites, and no rule does this yet.
 - **No space-side trends.** `outputs/neighbour-trends.md` covers terrestrial only.
 

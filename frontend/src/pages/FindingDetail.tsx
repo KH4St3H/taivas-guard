@@ -193,7 +193,7 @@ function BandsPanel({ f }: { f: Finding }) {
                 {bands.map((b) => (
                   <tr key={`${b.lowMhz}-${b.highMhz}`}>
                     <td className="nowrap tnum">{b.lowMhz}–{b.highMhz}{b.passive && <span className="badge sev-high passive">Passive</span>}</td><td className="num">{b.stationCount}</td><td>{classSummary(b.classes) || '–'}</td>
-                    <td>{b.primaryServices || '–'}</td><td>{b.m4SpaceToEarth ?? '–'}</td><td className="num">{b.groupCount}</td>
+                    <td>{b.primaryServices || '–'}<FinnishNotes b={b} /></td><td>{b.m4SpaceToEarth ?? '–'}</td><td className="num">{b.groupCount}</td>
                   </tr>
                 ))}
               </tbody>
@@ -205,7 +205,7 @@ function BandsPanel({ f }: { f: Finding }) {
                 {bands.map((b) => (
                   <tr key={`${b.lowMhz}-${b.highMhz}`}>
                     <td className="nowrap tnum">{b.lowMhz}–{b.highMhz}{b.passive && <span className="badge sev-high passive">Passive</span>}</td>
-                    <td>{b.finnishUse || '–'}</td><td>{b.primaryServices || '–'}</td><td>{b.pages || '–'}</td><td className="num">{b.groupCount}</td>
+                    <td>{b.finnishUse || '–'}</td><td>{b.primaryServices || '–'}<FinnishNotes b={b} /></td><td>{b.pages || '–'}</td><td className="num">{b.groupCount}</td>
                   </tr>
                 ))}
               </tbody>
@@ -216,6 +216,18 @@ function BandsPanel({ f }: { f: Finding }) {
       {matching.length > SHOW_BANDS && <button type="button" className="linkbtn show-all" onClick={() => setShowAll(!showAll)}>{showAll ? 'Show fewer' : `Show all ${matching.length} bands`}</button>}
     </section>
   );
+}
+
+/** Finland's own restrictions in a band and the RR footnotes naming Finland. Shown for the expert; they don't change severity. */
+function FinnishNotes({ b }: { b: Finding['bands'][number] }) {
+  const lines = [
+    ...b.restrictions.map((r) => `Restriction: ${r}`),
+    ...b.nationalUse.map((u) => `National use: ${u}`),
+    ...(b.rrFootnotesCited.length ? [`RR footnotes cited in M4: ${b.rrFootnotesCited.join(', ')}`] : []),
+    ...b.rrFootnotesNamingFinland.map((f) => `RR ${f.footnote} names Finland${f.kind && f.kind !== 'other' ? ` (${f.kind})` : ''}, RR Vol. 1 PDF p. ${f.pdfPage}`),
+  ];
+  if (!lines.length) return null;
+  return <ul className="muted fine band-notes">{lines.map((l) => <li key={l}>{l}</li>)}</ul>;
 }
 
 function StationIdsPanel({ f }: { f: Finding }) {
