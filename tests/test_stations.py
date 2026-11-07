@@ -207,6 +207,7 @@ def test_downlink_on_a_receive_band_uses_the_details_contract():
         dict(notice=[notice(1)], geo=gso(1), freq=[freq(1, 2242.5, 2250)]),  # touches the band edge only
         dict(notice=[notice(1)], geo=gso(1, lon=140.0), freq=[freq(1, 2230, 2250)]),  # beyond the visible arc
         dict(notice=[notice(1, ntc_type="N")], orbit=[dict(ntc_id=1, inclin_ang=30.0)], freq=[freq(1, 2230, 2250)]),  # never reaches Finland
+        dict(notice=[notice(1, ntc_type="N")], non_geo=[dict(ntc_id=1, ref_body="L")], freq=[freq(1, 2230, 2250)]),  # Moon-referred orbit
         dict(notice=[notice(1, ntc_type="S")], freq=[freq(1, 2230, 2250)]),  # earth station
         dict(notice=[notice(1, reason="N")], geo=gso(1), freq=[freq(1, 2230, 2250)]),  # out of scope
         dict(notice=[notice(1, act="S")], geo=gso(1), freq=[freq(1, 2230, 2250)]),  # suppression

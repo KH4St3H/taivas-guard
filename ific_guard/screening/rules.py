@@ -11,7 +11,7 @@ from typing import Any, Protocol
 
 from ..config import Settings
 from .m4 import M4Band, finnish_notes, load_m4_conflict_bands, load_rr_footnotes_finland
-from .space import SATELLITE_NOTICE_TYPES, SpaceIssue, SpaceNotice, add_months
+from .space import EARTH_BODY, SATELLITE_NOTICE_TYPES, SpaceIssue, SpaceNotice, add_months
 
 FINLAND = "FIN"
 
@@ -48,6 +48,9 @@ def _families(notices: Iterable[SpaceNotice]) -> dict[int, list[SpaceNotice]]:
 
 
 def visible_from_finland(notice: SpaceNotice, s: Settings) -> tuple[bool, str]:
+    if notice.ntc_type == "N" and notice.ref_body not in (None, EARTH_BODY):
+        body = "Moon" if notice.ref_body == "L" else f"reference body {notice.ref_body}"
+        return False, f"Non-GSO orbit referred to {body} ({notice.ref_body}), not the Earth; Earth visibility model is not applicable"
     if notice.ntc_type == "G":
         if notice.gso_lon_deg is None:
             return True, "GSO longitude missing; kept as a precaution"

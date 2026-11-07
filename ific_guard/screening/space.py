@@ -16,6 +16,7 @@ Row = dict[str, Any]
 # Sections the brief puts in scope. AP30/30A/30B filings are added here once an issue with them is tested.
 IN_SCOPE_REASONS = {"A", "C"}  # A = advance publication (9.1/IA), C = coordination request (9.6)
 SATELLITE_NOTICE_TYPES = {"G", "N"}  # G = GSO, N = non-GSO, S = earth station
+EARTH_BODY = "T"  # SNS non_geo.ref_body code for the Earth
 SUPPORTED_DATABASE_VERSIONS = frozenset({"10"})
 
 

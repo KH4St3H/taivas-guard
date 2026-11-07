@@ -16,7 +16,7 @@ from pydantic import BaseModel, Field, field_validator, model_validator
 from ..config import Settings
 from .m4 import M4Row, load_m4_rows
 from .rules import Hit, _deadline, _families, visible_from_finland
-from .space import SATELLITE_NOTICE_TYPES, SpaceIssue
+from .space import EARTH_BODY, SATELLITE_NOTICE_TYPES, SpaceIssue
 
 RULE_PREFIX = "custom-"
 TITLE_FIELDS = {"network": "network name", "adm": "notifying administration", "bands": "number of M4 bands matched", "rule": "rule name"}
@@ -184,6 +184,9 @@ class DeclarativeRule:
         return [r for r in self.m4_rows if low < r.high_mhz and high > r.low_mhz]
 
     def _filing_matches(self, notice) -> tuple[bool, str | None]:
+        # Disabling the Finland visibility filter cannot make Earth geometry valid for another body.
+        if notice.ntc_type == "N" and notice.ref_body not in (None, EARTH_BODY):
+            return False, None
         d = self.spec.definition
         if d.orbit == "gso" and notice.ntc_type != "G" or d.orbit == "ngso" and notice.ntc_type != "N":
             return False, None

@@ -34,13 +34,12 @@ from ..engines.pfd_ngso import (
 )
 from .rules import Hit, Rule, _deadline, _families
 from .scoring import ScoringWeights, score_finding
-from .space import SATELLITE_NOTICE_TYPES, SpaceIssue, SpaceNotice
+from .space import EARTH_BODY, SATELLITE_NOTICE_TYPES, SpaceIssue, SpaceNotice
 from .station_links import CALCULATED, STATION_SAMPLE, StationEvidence, record_for, station_summary
 from .stations import Station, StationIndex
 
 WATCH_DB = 3.0  # ARCHITECTURE.md 4.7: the watch list is within about 3 dB below the limit
 MIN_ROWS_FOR_STATISTICS = 1000
-EARTH_BODY = "T"
 
 POWER_DENSITY_CITATION = {
     "doc": "IFIC Space Preface (secondary schema note; primary copy unavailable)",

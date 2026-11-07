@@ -85,6 +85,15 @@ def test_definitions_are_checked_before_they_are_saved():
         RuleSpec(name="x", severity="critical")
 
 
+@pytest.mark.parametrize("filter_visibility", [True, False])
+def test_non_earth_filing_is_not_screened_even_without_the_visibility_filter(filter_visibility):
+    lunar = SpaceIssue(FakeReader(
+        notice=[notice(1, ntc_type="N")], non_geo=[dict(ntc_id=1, ref_body="L")],
+        freq=[freq(1, 3480, 3520)],
+    ))
+    assert run(RuleDefinition(visible_from_finland=filter_visibility), lunar) == []
+
+
 def test_conditions_read_as_sentences():
     words = describe(RuleDefinition(direction="receive", adm_in=["RUS"], m4={"terrestrial_primary": "yes", "space_to_earth": "no"}))
     assert words == [

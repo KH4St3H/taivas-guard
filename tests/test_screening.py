@@ -70,6 +70,21 @@ def test_passive_band_raises_severity():
     assert hits[0].severity == "high"
 
 
+def test_non_earth_orbits_are_set_aside_but_missing_reference_body_is_kept():
+    from ific_guard.screening.rules import visible_from_finland
+
+    issue = SpaceIssue(FakeReader(
+        notice=[notice(i, ntc_type="N") for i in (1, 2, 3)],
+        non_geo=[dict(ntc_id=1, ref_body="L"), dict(ntc_id=3, ref_body="M")],
+        freq=[freq(i, 3500, 3540) for i in (1, 2, 3)],
+    ))
+    visible, reason = visible_from_finland(issue.notices[1], get_settings())
+    assert not visible and "Moon" in reason and "L" in reason
+    assert not visible_from_finland(issue.notices[3], get_settings())[0]
+    hits = list(M4NoDownlinkRule(get_settings(), [BAND]).run(issue))
+    assert [h.notice_ids for h in hits] == [[2]]
+
+
 def test_a_modification_and_its_target_form_one_case():
     hits = m4_hits(
         notice=[notice(1), notice(9, act="M", target=1)],
