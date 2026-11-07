@@ -1,6 +1,7 @@
 # 24 Map station layer: only stations on the satellite's own frequencies
 
-Status: ready-for-agent
+Status: claimed
+Owner: Person C (Claude, with mehr)
 Type: task
 Size: S
 Blocked by: none

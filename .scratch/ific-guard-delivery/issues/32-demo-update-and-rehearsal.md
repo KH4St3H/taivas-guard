@@ -1,6 +1,7 @@
 # 32 Update and rehearse the demo
 
-Status: ready-for-human
+Status: claimed
+Owner: Person C (Claude, with mehr)
 Type: task
 Size: S
 Blocked by: 24, 25, 28, 29

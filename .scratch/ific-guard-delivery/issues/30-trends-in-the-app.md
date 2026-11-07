@@ -1,6 +1,7 @@
 # 30 Trends in the app, terrestrial and space
 
-Status: ready-for-agent
+Status: claimed
+Owner: Person C (Claude, with mehr)
 Type: task
 Size: M
 Blocked by: none

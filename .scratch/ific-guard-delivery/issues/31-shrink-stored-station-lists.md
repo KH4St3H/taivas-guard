@@ -1,6 +1,7 @@
 # 31 Shrink stored station lists without resetting reviews
 
-Status: ready-for-agent
+Status: claimed
+Owner: Person C (Claude, with mehr)
 Type: task
 Size: S
 Blocked by: none
