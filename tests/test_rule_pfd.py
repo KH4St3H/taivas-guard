@@ -314,6 +314,23 @@ def test_statistical_outlier_is_evaluated_but_flagged_and_not_scored():
     assert "input flagged as a data-quality item" in hits[0].title
 
 
+def test_flagged_input_does_not_outrank_an_ordinary_result_in_the_same_filing():
+    # Same filler as above, fence -30. Group 1 at -20 has the larger margin but is flagged, group 2 at -40 is not.
+    other = [
+        {"grp_id": i, "seq_no": 1, "pwr_ds_max": -70.0 if i % 2 else -60.0, "pep_max": 20.0} for i in range(10, 1210)
+    ]
+    reader = gso_reader(power=-20.0)
+    reader.tables["freq"].append(freq(1, 8100, 8110, grp=2))
+    reader.tables["notice"].append(notice(2, ntc_type="G"))
+    reader.tables["grp"] += [{"grp_id": 2, "ntc_id": 1, "beam_name": "1", "emi_rcp": "E"}]
+    reader.tables["grp"] += [{"grp_id": i, "ntc_id": 2, "beam_name": "9", "emi_rcp": "E"} for i in range(10, 1210)]
+    reader.tables["emiss"] += [{"grp_id": 2, "seq_no": 1, "pwr_ds_max": -40.0, "pep_max": 20.0}, *other]
+    hit = next(h for h in run(reader) if 1 in h.notice_ids)
+    assert hit.details["calc_inputs"]["group_id"] == 2
+    assert hit.severity == "high" and hit.details["severity_score"] > 0
+    assert "1 data-quality item" in hit.title
+
+
 # --- Not visible and missing longitude
 
 
