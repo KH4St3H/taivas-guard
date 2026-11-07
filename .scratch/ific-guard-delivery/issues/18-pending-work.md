@@ -34,7 +34,7 @@ Answers came on Discord, 2026-11-07 8:39-8:55, from Pekka, Otto and the Traficom
 - [ ] **Compare `01d4341` with `wave-3`'s terrestrial filter.** It is also local only, on `agent/08-terrestrial`, `agent/10-terrestrial-findings` and `agent/11-trends`. `wave-3` uses the version in `adapter.py`, and lacks this commit's `filter.py`, `geography.py` and `summary.py`. Keep anything better, then drop it.
 - [ ] **Check local worktrees for lost work.** `wt-07`, `wt-11` and `wt-15` have uncommitted files on commits older than their remote branches. Compare them before deleting.
 - [x] **Write the root `README.md`.** There is none, and the brief asks for input and output information.
-- [ ] **Merge to `main`.** It is 59 commits behind `wave-3`. Open a PR from `wave-3` once it is ready, and close PR #1, whose content is already included.
+- [x] **Merge to `main`.** It is 59 commits behind `wave-3`. Open a PR from `wave-3` once it is ready, and close PR #1, whose content is already included.
 - [x] **Delete `origin/agent/12-review-ui`.** Its two commits are already in `wave-3` under other hashes.
 - [ ] **Fix Git access in the Codespace.** `GITHUB_TOKEN` cannot see the repository, so plain `git fetch` returns 403. Use the stored `ar6aaz` login.
 - [ ] **Tidy the tracker.** Tickets 04-11, 13 and 15 still say `ready-for-agent` although the map marks them done, and the map still says wave 3 is not pushed.
