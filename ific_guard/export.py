@@ -58,7 +58,7 @@ def export_issue(domain: str, issue_no: int, out: Path, *, sha256: str | None = 
 
     started = perf_counter()
     reader = MdbReader(artifact.mdb_path)
-    issue = SpaceIssue(reader, validate_version=getattr(reader, "is_mdb_reader", False))
+    issue = SpaceIssue(reader)
     rules = space_rules(settings)
     hits = [hit for rule in rules for hit in rule.run(issue)]
     hits.sort(key=lambda h: (

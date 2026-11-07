@@ -29,8 +29,6 @@ class TableReader(Protocol):
 class MdbReader:
     """Reads Access tables with a pure-Python parser, so no system packages are needed."""
 
-    is_mdb_reader = True
-
     def __init__(self, path: str | Path):
         from access_parser import AccessParser
 
@@ -103,9 +101,9 @@ class SpaceNotice:
 class SpaceIssue:
     """Notices in screening scope, with what the rules need attached. Suppressions carry no data."""
 
-    def __init__(self, reader: TableReader, *, validate_version: bool = False):
+    def __init__(self, reader: TableReader):
         self._reader = reader
-        self.database_version = read_database_version(reader) if validate_version else None
+        self.database_version = read_database_version(reader)
 
     @cached_property
     def notices(self) -> dict[int, SpaceNotice]:

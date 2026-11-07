@@ -24,6 +24,7 @@ def load_tool():
 
 class FakeReader:
     def __init__(self, **tables):
+        tables.setdefault("srs_ooak", [{"version_no": 10}])
         self.tables = tables
 
     def table(self, name):

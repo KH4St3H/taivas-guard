@@ -4,6 +4,7 @@ A listing that yields nothing raises ListingChanged: a silent empty result would
 "no new issue" and the system would stop updating without anyone noticing.
 """
 import re
+import logging
 from dataclasses import dataclass
 from datetime import date, datetime
 from urllib.parse import urljoin, urlsplit
@@ -11,6 +12,8 @@ from urllib.parse import urljoin, urlsplit
 import httpx
 
 from ..config import Settings
+
+log = logging.getLogger(__name__)
 
 SPACE = "space"
 TERRESTRIAL = "terrestrial"
@@ -78,11 +81,15 @@ def discover_space(client: httpx.Client, settings: Settings, today: date | None 
         url = urljoin(settings.space_index_base, f"demowic{y % 100:02d}.html")
         response = client.get(url)
         if response.status_code == 404:  # early January or an unavailable historical page
+            log.warning("space listing page unavailable: %s (404)", url)
             continue
         try:
             response.raise_for_status()
             page = parse_space_listing(response.text, url)
         except (httpx.HTTPError, ListingChanged):
+            if y == year:
+                raise
+            log.warning("skipping unreadable historical space listing page: %s", url, exc_info=True)
             continue
         refs.extend(page)
         if min(r.issue_no for r in page) <= settings.min_issue:
