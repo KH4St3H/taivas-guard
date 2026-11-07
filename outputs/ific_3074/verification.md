@@ -2,9 +2,14 @@
 
 ## Result and reproduction
 
-102 possible concerns: 8 high from `fin-named-by-br`, 2 high and 41 medium
-from `m4-no-space-to-earth`, and 51 medium from `station-rx-overlap`. These are screening results, not a measured
-interference assessment or an expert accuracy evaluation.
+106 possible concerns across 59 filings: 8 high from `fin-named-by-br`, 2 high
+and 45 medium from `m4-no-space-to-earth`, and 51 medium from
+`station-rx-overlap`. A filing can appear under more than one rule. These are
+screening results, not a measured interference assessment or an expert accuracy
+evaluation.
+
+The previous export had 102 cases. All 102 remain. Using the M4 table built from
+Traficom's API adds 4: F-SAT-NG-15_B, GD-B, USASAT-NGSO-3X and USASAT-NGSO-8F.
 
 ```sh
 python -m ific_guard.cli export --domain space --issue 3074 --out outputs/ific_3074
@@ -15,8 +20,8 @@ Both real-data runs produced byte-identical CSV and JSON files:
 
 | File | SHA-256 |
 |---|---|
-| cases.csv | aa5e72ad7e225a765704e3ccad1199c250cadd5d8df6d893a570fd635d3bbb02 |
-| cases.json | d2fed838893f6a0b684d478915452794cc1bcd3f057af1e2f9941d1bbf45f88f |
+| cases.csv | 4c0efb29e024431a5d2116910e2d6ea740e9be4590018c75be1305a6e69212e4 |
+| cases.json | 96cfafa1d63a18c4bb959d1c476d9f87d104b925ffeca4071c4a75493a3695cf |
 
 These hashes use LF line endings on every platform. Earlier values in this file
 covered Windows line endings, so they did not verify after a git checkout; the
@@ -88,8 +93,8 @@ other ITU files. The exporter states that only API/A and CR/C are screened.
 
 The export format is provisional pending Traficom's answer to ticket 02.
 No independent MDB parser or expert case-accuracy check was available.
-The known 3.4–3.8 GHz M4 gap and missing pfd calculations remain tracked
-separately; all are also stated in the manifest.
+The pfd engine exists but is not connected to a rule yet, so no case has a
+calculated value. The manifest states the remaining limits.
 
-The regression suite at commit 4fe2874: **185 passed** on Linux, with two
-dependency deprecation warnings. No notifications were delivered.
+The regression suite at commit 0ab81a8: **446 passed** on macOS, with one
+dependency deprecation warning. The frontend's 31 tests also pass. No real mail was sent.

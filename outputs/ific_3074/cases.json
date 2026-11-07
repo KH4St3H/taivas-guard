@@ -115,7 +115,7 @@
     "rule_id": "fin-named-by-br",
     "severity": "high",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "BR names Finland in QATARGOV-G1-25.5E (QAT) under 9.21/C"
   },
   {
@@ -226,7 +226,7 @@
     "rule_id": "fin-named-by-br",
     "severity": "high",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "BR names Finland in HISPASAT-5-52.5W (E) under 9.11"
   },
   {
@@ -297,7 +297,7 @@
     "rule_id": "fin-named-by-br",
     "severity": "high",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "BR names Finland in CHINASAT-G-33.5E (CHN) under 9.14"
   },
   {
@@ -358,7 +358,7 @@
     "rule_id": "fin-named-by-br",
     "severity": "high",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "BR names Finland in SECOMSAT-5-78E (E) under 9.21/C"
   },
   {
@@ -399,7 +399,7 @@
     "rule_id": "fin-named-by-br",
     "severity": "high",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "BR names Finland in UVSQ-SAT-NG (F) under 9.21/C"
   },
   {
@@ -440,7 +440,7 @@
     "rule_id": "fin-named-by-br",
     "severity": "high",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "BR names Finland in HOL-NGSO2-I-S (HOL) under 9.21/C"
   },
   {
@@ -481,7 +481,7 @@
     "rule_id": "fin-named-by-br",
     "severity": "high",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "BR names Finland in INSAT-COM(71E) (IND) under A30A#7.1"
   },
   {
@@ -520,7 +520,7 @@
     "rule_id": "fin-named-by-br",
     "severity": "high",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "BR names Finland in STARERA-3 (CHN) under 9.14"
   },
   {
@@ -529,7 +529,9 @@
     "details": {
       "assumptions": [
         "Beam coverage over Finland is not checked.",
-        "No power or pfd calculation was done."
+        "No power or pfd calculation was done.",
+        "M4 gives no direction for Amateur-Satellite; EARTH EXPLORATION-SATELLITE; MOBILE-SATELLITE; RADIONAVIGATION-SATELLITE; not counted as a space-to-Earth allocation.",
+        "Parts of a matched band have no M4 sub-band row (no_row_gaps_mhz); its primary terrestrial service is assumed to apply there."
       ],
       "bands": [
         {
@@ -539,8 +541,11 @@
           ],
           "high_mhz": 470.0,
           "low_mhz": 450.0,
+          "m4_api_row_ids": "2966-3086",
           "m4_primary_services": "MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "110-114",
+          "no_row_gaps_mhz": "450.3-450.325 456.925-456.9625 457.4625-457.5 458.1-458.125 459-459.025 460-460.025 462.175-462.2 466.925-466.9625 467.4625-467.5 468.1-468.125 468.7-468.725 469.7-469.725 469.975-470",
           "passive": false
         },
         {
@@ -550,7 +555,9 @@
           ],
           "high_mhz": 694.0,
           "low_mhz": 470.0,
+          "m4_api_row_ids": "3087-3103",
           "m4_primary_services": "BROADCASTING; MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "115-115",
           "passive": false
         },
@@ -564,8 +571,11 @@
           ],
           "high_mhz": 791.0,
           "low_mhz": 694.0,
+          "m4_api_row_ids": "3104-3122",
           "m4_primary_services": "MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "115-116",
+          "no_row_gaps_mhz": "694-698 736-738",
           "passive": false
         },
         {
@@ -578,8 +588,11 @@
           ],
           "high_mhz": 862.0,
           "low_mhz": 791.0,
+          "m4_api_row_ids": "3123-3144",
           "m4_primary_services": "MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "116-117",
+          "no_row_gaps_mhz": "821-821.5",
           "passive": false
         },
         {
@@ -590,8 +603,11 @@
           ],
           "high_mhz": 960.0,
           "low_mhz": 862.0,
+          "m4_api_row_ids": "3145-3398",
           "m4_primary_services": "MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "117-127",
+          "no_row_gaps_mhz": "879.9-880.1 914.9875-915 924.9-925.1 959.9875-960",
           "passive": false
         },
         {
@@ -601,7 +617,9 @@
           ],
           "high_mhz": 1452.0,
           "low_mhz": 1427.0,
+          "m4_api_row_ids": "3482-3489",
           "m4_primary_services": "FIXED AND MOBILE; MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "131-131",
           "passive": false
         },
@@ -612,7 +630,9 @@
           ],
           "high_mhz": 1492.0,
           "low_mhz": 1452.0,
+          "m4_api_row_ids": "3490-3497",
           "m4_primary_services": "FIXED AND MOBILE; MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "131-131",
           "passive": false
         },
@@ -623,7 +643,9 @@
           ],
           "high_mhz": 1518.0,
           "low_mhz": 1492.0,
+          "m4_api_row_ids": "3498-3505",
           "m4_primary_services": "FIXED AND MOBILE; MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "131-131",
           "passive": false
         },
@@ -636,8 +658,11 @@
           ],
           "high_mhz": 1980.0,
           "low_mhz": 1710.0,
+          "m4_api_row_ids": "3756-3825",
           "m4_primary_services": "MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "137-139",
+          "no_row_gaps_mhz": "1710-1710.1 1784.9-1785 1804.8-1805.1 1879.9-1881.792 1897.344-1900",
           "passive": false
         },
         {
@@ -647,7 +672,9 @@
           ],
           "high_mhz": 2025.0,
           "low_mhz": 2010.0,
+          "m4_api_row_ids": "3842-3844",
           "m4_primary_services": "FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "140-140",
           "passive": false
         },
@@ -659,7 +686,9 @@
           ],
           "high_mhz": 2170.0,
           "low_mhz": 2110.0,
+          "m4_api_row_ids": "3858-3870",
           "m4_primary_services": "MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "140-140",
           "passive": false
         },
@@ -670,18 +699,22 @@
           ],
           "high_mhz": 2245.0,
           "low_mhz": 2200.0,
+          "m4_api_row_ids": "3883",
           "m4_primary_services": "FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "141-141",
           "passive": false
         },
         {
-          "finnish_use": "(SRD) Equipment for automatic vehicle identification for railways (AVI); (SRD) Equipment for detecting movement and for alert; (SRD) Non-specific Short Range Devices; (SRD) Radio frequency identification devices (RFID); (SRD) Wideband data transmission systems (WAS/RLAN); Wireless cameras",
+          "finnish_use": "Amateur; Local radio networks based on mobile technology; Wireless cameras",
           "group_ids": [
             125749511
           ],
-          "high_mhz": 2483.5,
+          "high_mhz": 2400.0,
           "low_mhz": 2300.0,
-          "m4_primary_services": "FIXED; MOBILE",
+          "m4_api_row_ids": "3896-3918",
+          "m4_primary_services": "FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "142-144",
           "passive": false
         },
@@ -692,7 +725,9 @@
           ],
           "high_mhz": 2690.0,
           "low_mhz": 2500.0,
+          "m4_api_row_ids": "4006-4039",
           "m4_primary_services": "MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "145-146",
           "passive": false
         },
@@ -703,8 +738,65 @@
           ],
           "high_mhz": 3400.0,
           "low_mhz": 3300.0,
+          "m4_api_row_ids": "4051-4052",
           "m4_primary_services": "RADIOLOCATION",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "147-147",
+          "passive": false
+        },
+        {
+          "finnish_use": "Amateur; Terrestrial systems capable of providing electronic communications services",
+          "group_ids": [
+            124747356,
+            124747357,
+            124747358,
+            124747359,
+            124747360,
+            124747361,
+            124747362,
+            124747363,
+            124747364,
+            124747365,
+            124747366,
+            124747367,
+            124747368,
+            124747369,
+            124747370,
+            124747371,
+            124747372,
+            124747373,
+            124747374,
+            124747375,
+            124747376,
+            124747377,
+            124747450,
+            124747451,
+            125749516,
+            125749517,
+            125749518,
+            125749523,
+            125749524,
+            125749525
+          ],
+          "high_mhz": 3800.0,
+          "low_mhz": 3400.0,
+          "m4_api_row_ids": "4053-4091",
+          "m4_primary_services": "MOBILE AND FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
+          "m4_table_pages": "147-148",
+          "passive": false
+        },
+        {
+          "finnish_use": "Military use",
+          "group_ids": [
+            125749526
+          ],
+          "high_mhz": 4500.0,
+          "low_mhz": 4400.0,
+          "m4_api_row_ids": "4099-4100",
+          "m4_primary_services": "FIXED; MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
+          "m4_table_pages": "148-148",
           "passive": false
         },
         {
@@ -714,9 +806,69 @@
           ],
           "high_mhz": 4990.0,
           "low_mhz": 4800.0,
+          "m4_api_row_ids": "4105-4106",
           "m4_primary_services": "FIXED; MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "149-149",
           "passive": false
+        },
+        {
+          "finnish_use": "Fixed radiolinks",
+          "group_ids": [
+            125749530
+          ],
+          "high_mhz": 6700.0,
+          "low_mhz": 6460.0,
+          "m4_api_row_ids": "4236-4241 4277-4286",
+          "m4_primary_services": "FIXED; FIXED SATELLITE (EARTH-TO-SPACE)",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
+          "m4_table_pages": "156-159",
+          "passive": false
+        },
+        {
+          "finnish_use": "Fixed radiolinks",
+          "group_ids": [
+            125749530
+          ],
+          "high_mhz": 7080.0,
+          "low_mhz": 7075.0,
+          "m4_api_row_ids": "4291-4295",
+          "m4_primary_services": "FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
+          "m4_table_pages": "156-159",
+          "passive": false
+        },
+        {
+          "finnish_use": "Fixed radiolinks",
+          "group_ids": [
+            124747458,
+            124747459,
+            124747460,
+            124747461,
+            125749530
+          ],
+          "high_mhz": 8025.0,
+          "low_mhz": 7080.0,
+          "m4_api_row_ids": "4303-4353",
+          "m4_primary_services": "FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
+          "m4_table_pages": "160-163",
+          "no_row_gaps_mhz": "7080-7121 7233-7289 7401-7428 7869-7933",
+          "passive": false
+        },
+        {
+          "finnish_use": "Amateur; Fixed radiolinks; Mobile radio",
+          "group_ids": [
+            125749535
+          ],
+          "high_mhz": 10400.0,
+          "low_mhz": 10000.0,
+          "m4_api_row_ids": "4372-4395",
+          "m4_primary_services": "EARTH EXPLORATION-SATELLITE; FIXED; MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
+          "m4_table_pages": "164-165",
+          "passive": false,
+          "space_down_unresolved": "EARTH EXPLORATION-SATELLITE"
         },
         {
           "finnish_use": "Fixed radiolinks; Mobile radio",
@@ -724,20 +876,38 @@
             125749535
           ],
           "high_mhz": 10450.0,
-          "low_mhz": 10000.0,
-          "m4_primary_services": "EARTH EXPLORATION-SATELLITE; FIXED; MOBILE",
+          "low_mhz": 10400.0,
+          "m4_api_row_ids": "4384 4396-4401",
+          "m4_primary_services": "FIXED; MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "164-165",
           "passive": false
         },
         {
-          "finnish_use": "(SRD) Equipment for detecting movement and for alert",
+          "finnish_use": "(SRD) Equipment for detecting movement and for alert; Amateur",
           "group_ids": [
             125749535
           ],
           "high_mhz": 10500.0,
           "low_mhz": 10450.0,
+          "m4_api_row_ids": "4402-4420",
           "m4_primary_services": "RADIOLOCATION",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "165-166",
+          "passive": false,
+          "space_down_unresolved": "Amateur-Satellite"
+        },
+        {
+          "finnish_use": "Fixed radiolinks",
+          "group_ids": [
+            125749537
+          ],
+          "high_mhz": 12971.5,
+          "low_mhz": 12754.5,
+          "m4_api_row_ids": "4522-4547",
+          "m4_primary_services": "FIXED; FIXED SATELLITE (EARTH-TO-SPACE)",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
+          "m4_table_pages": "168-170",
           "passive": false
         },
         {
@@ -745,9 +915,24 @@
           "group_ids": [
             125749537
           ],
-          "high_mhz": 13250.0,
-          "low_mhz": 12750.0,
+          "high_mhz": 13003.0,
+          "low_mhz": 12989.0,
+          "m4_api_row_ids": "4522-4531 4548",
           "m4_primary_services": "FIXED; FIXED SATELLITE (EARTH-TO-SPACE)",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
+          "m4_table_pages": "168-170",
+          "passive": false
+        },
+        {
+          "finnish_use": "Fixed radiolinks",
+          "group_ids": [
+            125749537
+          ],
+          "high_mhz": 13237.5,
+          "low_mhz": 13020.5,
+          "m4_api_row_ids": "4522-4531 4549-4564",
+          "m4_primary_services": "FIXED; FIXED SATELLITE (EARTH-TO-SPACE)",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "168-170",
           "passive": false
         },
@@ -758,8 +943,56 @@
           ],
           "high_mhz": 15350.0,
           "low_mhz": 14500.0,
+          "m4_api_row_ids": "4650-4667",
           "m4_primary_services": "FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "172-172",
+          "no_row_gaps_mhz": "14500-14515 14613-14627 14921-14935 15229-15243 15341-15350",
+          "passive": false
+        },
+        {
+          "finnish_use": "Fixed radiolinks",
+          "group_ids": [
+            125749541,
+            125749542,
+            125749543
+          ],
+          "high_mhz": 17800.0,
+          "low_mhz": 17755.0,
+          "m4_api_row_ids": "4687-4693",
+          "m4_primary_services": "FIXED; FIXED SATELLITE (EARTH-TO-SPACE)",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
+          "m4_table_pages": "173-175",
+          "passive": false
+        },
+        {
+          "finnish_use": "(SRD) Automotive Short Range Radar (SRR); Fixed radiolinks",
+          "group_ids": [
+            124747309,
+            124747318
+          ],
+          "high_mhz": 23600.0,
+          "low_mhz": 22500.0,
+          "m4_api_row_ids": "4834-4849 4860-4897",
+          "m4_primary_services": "FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
+          "m4_table_pages": "177-180",
+          "passive": false
+        },
+        {
+          "finnish_use": "(SRD) Automotive Short Range Radar (SRR); Local terrestrial systems capable of providing electronic communications services; Terrestrial systems capable of providing electronic communications services",
+          "group_ids": [
+            124747310,
+            124747311,
+            124747319,
+            124747320
+          ],
+          "high_mhz": 25500.0,
+          "low_mhz": 24250.0,
+          "m4_api_row_ids": "4987-5055",
+          "m4_primary_services": "FIXED; MOBILE AND FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
+          "m4_table_pages": "185-186",
           "passive": false
         },
         {
@@ -770,7 +1003,9 @@
           ],
           "high_mhz": 27500.0,
           "low_mhz": 27000.0,
+          "m4_api_row_ids": "5058-5085",
           "m4_primary_services": "MOBILE AND FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "186-186",
           "passive": false
         },
@@ -782,7 +1017,9 @@
           ],
           "high_mhz": 33400.0,
           "low_mhz": 31800.0,
+          "m4_api_row_ids": "5195-5211",
           "m4_primary_services": "FIXED; RADIONAVIGATION",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "189-190",
           "passive": false
         },
@@ -794,7 +1031,9 @@
           ],
           "high_mhz": 64000.0,
           "low_mhz": 59300.0,
+          "m4_api_row_ids": "5360-5394",
           "m4_primary_services": "FIXED; MOBILE; RADIOLOCATION",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "198-199",
           "passive": false
         },
@@ -806,7 +1045,9 @@
           ],
           "high_mhz": 65000.0,
           "low_mhz": 64000.0,
+          "m4_api_row_ids": "5395-5402",
           "m4_primary_services": "FIXED; MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "199-200",
           "passive": false
         },
@@ -818,7 +1059,9 @@
           ],
           "high_mhz": 66000.0,
           "low_mhz": 65000.0,
+          "m4_api_row_ids": "5403-5410",
           "m4_primary_services": "FIXED; MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "200-200",
           "passive": false
         },
@@ -833,8 +1076,32 @@
           ],
           "high_mhz": 71000.0,
           "low_mhz": 66000.0,
+          "m4_api_row_ids": "5411-5416",
           "m4_primary_services": "MOBILE; MOBILE-SATELLITE; RADIONAVIGATION; RADIONAVIGATION-SATELLITE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "200-200",
+          "passive": false,
+          "space_down_unresolved": "MOBILE-SATELLITE; RADIONAVIGATION-SATELLITE"
+        },
+        {
+          "finnish_use": "Fixed radiolinks",
+          "group_ids": [
+            124747422,
+            124747423,
+            124747424,
+            124747425,
+            124747426,
+            124747427,
+            124747428,
+            124747429
+          ],
+          "high_mhz": 76000.0,
+          "low_mhz": 75500.0,
+          "m4_api_row_ids": "5421-5425 5446-5450",
+          "m4_primary_services": "FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
+          "m4_table_pages": "202-203",
+          "no_row_gaps_mhz": "75750-76000",
           "passive": false
         },
         {
@@ -845,8 +1112,24 @@
           ],
           "high_mhz": 119980.0,
           "low_mhz": 116000.0,
+          "m4_api_row_ids": "5714-5716",
           "m4_primary_services": "EARTH EXPLORATION-SATELLITE (PASSIVE); INTER-SATELLITE; SPACE RESEARCH (PASSIVE)",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "216-216",
+          "passive": true
+        },
+        {
+          "finnish_use": "",
+          "group_ids": [
+            124747316,
+            124747325
+          ],
+          "high_mhz": 122000.0,
+          "low_mhz": 119980.0,
+          "m4_api_row_ids": "5717-5719",
+          "m4_primary_services": "EARTH EXPLORATION-SATELLITE (PASSIVE); INTER-SATELLITE; SPACE RESEARCH (PASSIVE)",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
+          "m4_table_pages": "217-217",
           "passive": true
         },
         {
@@ -856,20 +1139,24 @@
             124747325
           ],
           "high_mhz": 122250.0,
-          "low_mhz": 119980.0,
+          "low_mhz": 122000.0,
+          "m4_api_row_ids": "5717-5726",
           "m4_primary_services": "EARTH EXPLORATION-SATELLITE (PASSIVE); INTER-SATELLITE; MOBILE; SPACE RESEARCH (PASSIVE)",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "217-217",
           "passive": true
         },
         {
-          "finnish_use": "(SRD) Non-specific Short Range Devices; Fixed",
+          "finnish_use": "(SRD) Non-specific Short Range Devices; Amateur; Fixed",
           "group_ids": [
             124747317,
             124747326
           ],
           "high_mhz": 123000.0,
           "low_mhz": 122250.0,
+          "m4_api_row_ids": "5727-5742",
           "m4_primary_services": "FIXED; INTER-SATELLITE; MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "217-218",
           "passive": false
         },
@@ -881,7 +1168,9 @@
           ],
           "high_mhz": 134000.0,
           "low_mhz": 130000.0,
+          "m4_api_row_ids": "5748-5752",
           "m4_primary_services": "EARTH EXPLORATION-SATELLITE (ACTIVE); FIXED; INTER-SATELLITE; MOBILE; RADIO ASTRONOMY",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "218-219",
           "passive": true
         },
@@ -893,9 +1182,12 @@
           ],
           "high_mhz": 200000.0,
           "low_mhz": 191800.0,
+          "m4_api_row_ids": "5824-5829",
           "m4_primary_services": "FIXED; INTER-SATELLITE; MOBILE; MOBILE-SATELLITE; RADIONAVIGATION; RADIONAVIGATION-SATELLITE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "223-224",
-          "passive": false
+          "passive": false,
+          "space_down_unresolved": "MOBILE-SATELLITE; RADIONAVIGATION-SATELLITE"
         }
       ],
       "method": "screening",
@@ -925,8 +1217,8 @@
     "rule_id": "m4-no-space-to-earth",
     "severity": "high",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
-    "title": "CSN-SSO (CHN) transmits in 31 band(s) with no space-to-Earth allocation in Finland, including a passive band"
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "CSN-SSO (CHN) transmits in 44 band(s) with no space-to-Earth allocation in Finland, including a passive band"
   },
   {
     "adm": "USA",
@@ -949,9 +1241,24 @@
           ],
           "high_mhz": 1660.5,
           "low_mhz": 1660.0,
+          "m4_api_row_ids": "3712-3726",
           "m4_primary_services": "MOBILE-SATELLITE (EARTH-TO-SPACE); RADIO ASTRONOMY",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "136-136",
           "passive": true
+        },
+        {
+          "finnish_use": "(SRD) Wideband data transmission systems (WAS/RLAN); Fixed radiolinks",
+          "group_ids": [
+            125743447
+          ],
+          "high_mhz": 6404.79,
+          "low_mhz": 6197.24,
+          "m4_api_row_ids": "4236-4256 4267-4276",
+          "m4_primary_services": "FIXED; FIXED SATELLITE (EARTH-TO-SPACE)",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
+          "m4_table_pages": "156-159",
+          "passive": false
         }
       ],
       "method": "screening",
@@ -981,8 +1288,8 @@
     "rule_id": "m4-no-space-to-earth",
     "severity": "high",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
-    "title": "USASAT-30-3 (USA) transmits in 1 band(s) with no space-to-Earth allocation in Finland, including a passive band"
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "USASAT-30-3 (USA) transmits in 2 band(s) with no space-to-Earth allocation in Finland, including a passive band"
   },
   {
     "adm": "F",
@@ -1005,8 +1312,108 @@
           ],
           "high_mhz": 2690.0,
           "low_mhz": 2500.0,
+          "m4_api_row_ids": "4006-4039",
           "m4_primary_services": "MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "145-146",
+          "passive": false
+        },
+        {
+          "finnish_use": "Aeronautical radionavigation; Systems for unmanned airborne aircraft (RPAS/UAS/UA)",
+          "group_ids": [
+            117788411,
+            117788412,
+            117788414,
+            117788415,
+            117788417,
+            117788418,
+            117788469,
+            117788470,
+            117788471,
+            117788472,
+            117788473,
+            117788474,
+            117788537,
+            117788538,
+            117788540,
+            117788541,
+            117788543,
+            117788544,
+            117788610,
+            117788611,
+            117788612,
+            117788613,
+            117788614,
+            117788615,
+            117844215,
+            117844216,
+            117844218,
+            117844219,
+            117844221,
+            117844222,
+            117844229,
+            117844230,
+            117844231,
+            117844232,
+            117844233,
+            117844234,
+            117844241,
+            117844242,
+            117844243,
+            117844244,
+            117844245,
+            117844246,
+            117844251,
+            117844252,
+            117844254,
+            117844255,
+            117844257,
+            117844258,
+            123769560,
+            123769561
+          ],
+          "high_mhz": 5091.0,
+          "low_mhz": 5030.0,
+          "m4_api_row_ids": "4116-4118",
+          "m4_primary_services": "AERONAUTICAL MOBILE (R); AERONAUTICAL RADIONAVIGATION",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
+          "m4_table_pages": "149-149",
+          "passive": false
+        },
+        {
+          "finnish_use": "Aeronautical radionavigation",
+          "group_ids": [
+            117788412,
+            117788415,
+            117788418,
+            117788472,
+            117788473,
+            117788474,
+            117788538,
+            117788541,
+            117788544,
+            117788613,
+            117788614,
+            117788615,
+            117844216,
+            117844219,
+            117844222,
+            117844232,
+            117844233,
+            117844234,
+            117844244,
+            117844245,
+            117844246,
+            117844252,
+            117844255,
+            117844258
+          ],
+          "high_mhz": 5150.0,
+          "low_mhz": 5091.0,
+          "m4_api_row_ids": "4117-4120",
+          "m4_primary_services": "AERONAUTICAL RADIONAVIGATION; FIXED SATELLITE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
+          "m4_table_pages": "149-149",
           "passive": false
         }
       ],
@@ -1039,8 +1446,8 @@
     "rule_id": "m4-no-space-to-earth",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
-    "title": "AST-NG-C-4 (F) transmits in 1 band(s) with no space-to-Earth allocation in Finland"
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "AST-NG-C-4 (F) transmits in 3 band(s) with no space-to-Earth allocation in Finland"
   },
   {
     "adm": "CHN",
@@ -1048,7 +1455,8 @@
     "details": {
       "assumptions": [
         "Beam coverage over Finland is not checked.",
-        "No power or pfd calculation was done."
+        "No power or pfd calculation was done.",
+        "M4 gives no direction for EARTH EXPLORATION-SATELLITE; Earth Exploration-Satellite; Earth Exploration-Satellite; not counted as a space-to-Earth allocation."
       ],
       "bands": [
         {
@@ -1058,18 +1466,37 @@
           ],
           "high_mhz": 5350.0,
           "low_mhz": 5250.0,
+          "m4_api_row_ids": "4132-4141",
           "m4_primary_services": "MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "151-151",
-          "passive": false
+          "passive": false,
+          "space_down_unresolved": "Earth Exploration-Satellite"
+        },
+        {
+          "finnish_use": "Military use; Radars",
+          "group_ids": [
+            119826169
+          ],
+          "high_mhz": 5460.0,
+          "low_mhz": 5350.0,
+          "m4_api_row_ids": "4142-4144",
+          "m4_primary_services": "RADIOLOCATION",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
+          "m4_table_pages": "151-153",
+          "passive": false,
+          "space_down_unresolved": "Earth Exploration-Satellite"
         },
         {
           "finnish_use": "(SRD) Wideband data transmission systems (WAS/RLAN); Meteorological radars; Military use; Radars",
           "group_ids": [
             119826169
           ],
-          "high_mhz": 5725.0,
-          "low_mhz": 5350.0,
+          "high_mhz": 5650.0,
+          "low_mhz": 5460.0,
+          "m4_api_row_ids": "4144-4156",
           "m4_primary_services": "MOBILE; RADIOLOCATION",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "151-153",
           "passive": false
         },
@@ -1079,10 +1506,13 @@
             119826171
           ],
           "high_mhz": 10000.0,
-          "low_mhz": 8500.0,
+          "low_mhz": 9200.0,
+          "m4_api_row_ids": "4361-4371",
           "m4_primary_services": "EARTH EXPLORATION-SATELLITE; RADIOLOCATION",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "163-163",
-          "passive": false
+          "passive": false,
+          "space_down_unresolved": "EARTH EXPLORATION-SATELLITE; Earth Exploration-Satellite"
         }
       ],
       "method": "screening",
@@ -1112,8 +1542,638 @@
     "rule_id": "m4-no-space-to-earth",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
-    "title": "TYSAR-01 (CHN) transmits in 3 band(s) with no space-to-Earth allocation in Finland"
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "TYSAR-01 (CHN) transmits in 4 band(s) with no space-to-Earth allocation in Finland"
+  },
+  {
+    "adm": "USA",
+    "comment_deadline": "2026-10-23",
+    "details": {
+      "assumptions": [
+        "Beam coverage over Finland is not checked.",
+        "No power or pfd calculation was done."
+      ],
+      "bands": [
+        {
+          "finnish_use": "Fixed radiolinks",
+          "group_ids": [
+            123644931,
+            123644937,
+            123644943,
+            123644949,
+            123644955,
+            123644961,
+            123645462,
+            123645468,
+            123645474,
+            123645480,
+            123645486,
+            123645492,
+            123645498,
+            123645504,
+            123645510,
+            123645516,
+            123645522,
+            123645528,
+            123645534,
+            123645540,
+            123645546,
+            123645552,
+            123645558,
+            123645564,
+            123645570,
+            123645576,
+            123645582,
+            123645588,
+            123645594,
+            123645600,
+            123645606,
+            123645612,
+            123645618,
+            123645624,
+            123645630,
+            123645636,
+            123645642,
+            123645648,
+            123645654,
+            123645660,
+            123645666,
+            123645672,
+            123646145,
+            123646151,
+            123646157,
+            123646163,
+            123646169,
+            123646175,
+            123646181,
+            123646222,
+            123646228,
+            123646234,
+            123646240,
+            123646246,
+            123646252,
+            123646258,
+            123646299,
+            123646305,
+            123646311,
+            123646317,
+            123646323,
+            123646329,
+            123646335,
+            123646376,
+            123646382,
+            123646388,
+            123646394,
+            123646400,
+            123646406,
+            123646412,
+            123646453,
+            123646459,
+            123646465,
+            123646471,
+            123646477,
+            123646483,
+            123646489,
+            123646530,
+            123646536,
+            123646542,
+            123646548,
+            123646554,
+            123646560,
+            123646566,
+            123646607,
+            123646613,
+            123646619,
+            123646625,
+            123646631,
+            123646637,
+            123646643,
+            123646684,
+            123646690,
+            123646696,
+            123646702,
+            123646708,
+            123646714,
+            123646720,
+            123646761,
+            123646767,
+            123646773,
+            123646779,
+            123646785,
+            123646791,
+            123646797,
+            123646838,
+            123646844,
+            123646850,
+            123646856,
+            123646862,
+            123646868,
+            123646874,
+            123646915,
+            123646921,
+            123646927,
+            123646933,
+            123646939,
+            123646945,
+            123646951,
+            123646992,
+            123646998,
+            123647004,
+            123647010,
+            123647016,
+            123647022,
+            123647028,
+            124746437,
+            124746441,
+            124746445,
+            124746449,
+            124746453,
+            124746457,
+            124746461,
+            124746465,
+            124746469,
+            124746473,
+            124746477,
+            124746481,
+            124746485,
+            124746489,
+            124746493,
+            124746497,
+            124746501,
+            124746505,
+            124746509,
+            124746513,
+            124746517,
+            124746521,
+            124746525,
+            124746529,
+            124746533,
+            124746537,
+            124746541,
+            124746545,
+            124746549,
+            124746553,
+            124746557,
+            124746561,
+            124746565,
+            124746569,
+            124746573,
+            124746577,
+            124746581,
+            124746585,
+            124746589,
+            124746593,
+            124746597,
+            124746601,
+            124746689,
+            124746693,
+            124746697,
+            124746701,
+            124746705,
+            124746709,
+            124746713,
+            124746731,
+            124746735,
+            124746739,
+            124746743,
+            124746747,
+            124746751,
+            124746755,
+            124746773,
+            124746777,
+            124746781,
+            124746785,
+            124746789,
+            124746793,
+            124746797,
+            124746815,
+            124746819,
+            124746823,
+            124746827,
+            124746831,
+            124746835,
+            124746839,
+            124746857,
+            124746861,
+            124746865,
+            124746869,
+            124746873,
+            124746877,
+            124746881,
+            124746899,
+            124746903,
+            124746907,
+            124746911,
+            124746915,
+            124746919,
+            124746923,
+            124746941,
+            124746945,
+            124746949,
+            124746953,
+            124746957,
+            124746961,
+            124746965,
+            124746983,
+            124746987,
+            124746991,
+            124746995,
+            124746999,
+            124747003,
+            124747007,
+            124747025,
+            124747029,
+            124747033,
+            124747037,
+            124747041,
+            124747045,
+            124747049,
+            124747067,
+            124747071,
+            124747075,
+            124747079,
+            124747083,
+            124747087,
+            124747091,
+            124747109,
+            124747113,
+            124747117,
+            124747121,
+            124747125,
+            124747129,
+            124747133,
+            124747151,
+            124747155,
+            124747159,
+            124747163,
+            124747167,
+            124747171,
+            124747175,
+            324746437,
+            324746441,
+            324746445,
+            324746449,
+            324746453,
+            324746457,
+            324746461,
+            324746465,
+            324746469,
+            324746473,
+            324746477,
+            324746481,
+            324746485,
+            324746489,
+            324746493,
+            324746497,
+            324746501,
+            324746505,
+            324746509,
+            324746513,
+            324746517,
+            324746521,
+            324746525,
+            324746529,
+            324746533,
+            324746537,
+            324746541,
+            324746545,
+            324746549,
+            324746553,
+            324746557,
+            324746561,
+            324746565,
+            324746569,
+            324746573,
+            324746577,
+            324746581,
+            324746585,
+            324746589,
+            324746593,
+            324746597,
+            324746601,
+            324746689,
+            324746693,
+            324746697,
+            324746701,
+            324746705,
+            324746709,
+            324746713,
+            324746731,
+            324746735,
+            324746739,
+            324746743,
+            324746747,
+            324746751,
+            324746755,
+            324746773,
+            324746777,
+            324746781,
+            324746785,
+            324746789,
+            324746793,
+            324746797,
+            324746815,
+            324746819,
+            324746823,
+            324746827,
+            324746831,
+            324746835,
+            324746839,
+            324746857,
+            324746861,
+            324746865,
+            324746869,
+            324746873,
+            324746877,
+            324746881,
+            324746899,
+            324746903,
+            324746907,
+            324746911,
+            324746915,
+            324746919,
+            324746923,
+            324746941,
+            324746945,
+            324746949,
+            324746953,
+            324746957,
+            324746961,
+            324746965,
+            324746983,
+            324746987,
+            324746991,
+            324746995,
+            324746999,
+            324747003,
+            324747007,
+            324747025,
+            324747029,
+            324747033,
+            324747037,
+            324747041,
+            324747045,
+            324747049,
+            324747067,
+            324747071,
+            324747075,
+            324747079,
+            324747083,
+            324747087,
+            324747091,
+            324747109,
+            324747113,
+            324747117,
+            324747121,
+            324747125,
+            324747129,
+            324747133,
+            324747151,
+            324747155,
+            324747159,
+            324747163,
+            324747167,
+            324747171,
+            324747175
+          ],
+          "high_mhz": 17800.0,
+          "low_mhz": 17755.0,
+          "m4_api_row_ids": "4687-4693",
+          "m4_primary_services": "FIXED; FIXED SATELLITE (EARTH-TO-SPACE)",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
+          "m4_table_pages": "173-175",
+          "passive": false
+        }
+      ],
+      "method": "screening",
+      "sections": [
+        "9.6"
+      ],
+      "source": {
+        "domain": "space",
+        "issue_no": 3074,
+        "notice_ids": [
+          "123520029",
+          "323520029"
+        ],
+        "sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721"
+      },
+      "visibility": [
+        "Non-GSO reaching 83.1 deg latitude"
+      ]
+    },
+    "domain": "space",
+    "family_id": 123520029,
+    "issue_no": 3074,
+    "network": "USASAT-NGSO-3X",
+    "notice_ids": [
+      "123520029",
+      "323520029"
+    ],
+    "rank": 13,
+    "rule_id": "m4-no-space-to-earth",
+    "severity": "medium",
+    "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "USASAT-NGSO-3X (USA) transmits in 1 band(s) with no space-to-Earth allocation in Finland"
+  },
+  {
+    "adm": "F",
+    "comment_deadline": "2026-10-23",
+    "details": {
+      "assumptions": [
+        "Beam coverage over Finland is not checked.",
+        "No power or pfd calculation was done."
+      ],
+      "bands": [
+        {
+          "finnish_use": "Fixed radiolinks",
+          "group_ids": [
+            124743231,
+            124743232,
+            124743233,
+            124743234,
+            124743235,
+            124743236,
+            124743237,
+            124743238,
+            124743239,
+            124743240,
+            124743241,
+            124743242,
+            124743243,
+            124743244,
+            124743245,
+            124743246,
+            124743247,
+            124743248,
+            124743249,
+            124743250,
+            124743251,
+            124743252,
+            124743253,
+            124743254,
+            124743303,
+            124743304,
+            124743305,
+            124743306,
+            124743307,
+            124743308,
+            124743309,
+            124743310,
+            124743311,
+            124743312,
+            124743313,
+            124743314,
+            124743315,
+            124743316,
+            124743317,
+            124743318,
+            124743319,
+            124743320,
+            124743321,
+            124743322,
+            124743323,
+            124743324,
+            124743325,
+            124743326,
+            124743375,
+            124743376,
+            124743377,
+            124743378,
+            124743379,
+            124743380,
+            124743381,
+            124743382,
+            124743383,
+            124743384,
+            124743385,
+            124743386,
+            124743387,
+            124743388,
+            124743389,
+            124743390,
+            124743391,
+            124743392,
+            124743393,
+            124743394,
+            124743395,
+            124743396,
+            124743397,
+            124743398,
+            324743231,
+            324743232,
+            324743233,
+            324743234,
+            324743235,
+            324743236,
+            324743237,
+            324743238,
+            324743239,
+            324743240,
+            324743241,
+            324743242,
+            324743243,
+            324743244,
+            324743245,
+            324743246,
+            324743247,
+            324743248,
+            324743249,
+            324743250,
+            324743251,
+            324743252,
+            324743253,
+            324743254,
+            324743303,
+            324743304,
+            324743305,
+            324743306,
+            324743307,
+            324743308,
+            324743309,
+            324743310,
+            324743311,
+            324743312,
+            324743313,
+            324743314,
+            324743315,
+            324743316,
+            324743317,
+            324743318,
+            324743319,
+            324743320,
+            324743321,
+            324743322,
+            324743323,
+            324743324,
+            324743325,
+            324743326,
+            324743375,
+            324743376,
+            324743377,
+            324743378,
+            324743379,
+            324743380,
+            324743381,
+            324743382,
+            324743383,
+            324743384,
+            324743385,
+            324743386,
+            324743387,
+            324743388,
+            324743389,
+            324743390,
+            324743391,
+            324743392,
+            324743393,
+            324743394,
+            324743395,
+            324743396,
+            324743397,
+            324743398
+          ],
+          "high_mhz": 17800.0,
+          "low_mhz": 17755.0,
+          "m4_api_row_ids": "4687-4693",
+          "m4_primary_services": "FIXED; FIXED SATELLITE (EARTH-TO-SPACE)",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
+          "m4_table_pages": "173-175",
+          "passive": false
+        }
+      ],
+      "method": "screening",
+      "sections": [
+        "9.6"
+      ],
+      "source": {
+        "domain": "space",
+        "issue_no": 3074,
+        "notice_ids": [
+          "124520131",
+          "324520131"
+        ],
+        "sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721"
+      },
+      "visibility": [
+        "Non-GSO reaching 89.4 deg latitude"
+      ]
+    },
+    "domain": "space",
+    "family_id": 124520131,
+    "issue_no": 3074,
+    "network": "F-SAT-NG-15_B",
+    "notice_ids": [
+      "124520131",
+      "324520131"
+    ],
+    "rank": 14,
+    "rule_id": "m4-no-space-to-earth",
+    "severity": "medium",
+    "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "F-SAT-NG-15_B (F) transmits in 1 band(s) with no space-to-Earth allocation in Finland"
   },
   {
     "adm": "QAT",
@@ -1121,7 +2181,9 @@
     "details": {
       "assumptions": [
         "Beam coverage over Finland is not checked.",
-        "No power or pfd calculation was done."
+        "No power or pfd calculation was done.",
+        "M4 gives no direction for MOBILE-SATELLITE; RADIONAVIGATION-SATELLITE; not counted as a space-to-Earth allocation.",
+        "Parts of a matched band have no M4 sub-band row (no_row_gaps_mhz); its primary terrestrial service is assumed to apply there."
       ],
       "bands": [
         {
@@ -1138,7 +2200,9 @@
           ],
           "high_mhz": 267.0,
           "low_mhz": 235.0,
+          "m4_api_row_ids": "2567-2570",
           "m4_primary_services": "FIXED; MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "93-93",
           "passive": false
         },
@@ -1156,7 +2220,9 @@
           ],
           "high_mhz": 272.0,
           "low_mhz": 267.0,
+          "m4_api_row_ids": "2571-2572",
           "m4_primary_services": "FIXED; MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "93-93",
           "passive": false
         },
@@ -1174,7 +2240,9 @@
           ],
           "high_mhz": 273.0,
           "low_mhz": 272.0,
+          "m4_api_row_ids": "2573-2574",
           "m4_primary_services": "FIXED; MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "94-94",
           "passive": false
         },
@@ -1200,7 +2268,9 @@
           ],
           "high_mhz": 322.0,
           "low_mhz": 273.0,
+          "m4_api_row_ids": "2575-2580",
           "m4_primary_services": "FIXED; MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "94-94",
           "passive": false
         },
@@ -1218,7 +2288,9 @@
           ],
           "high_mhz": 339.0,
           "low_mhz": 335.4,
+          "m4_api_row_ids": "2585-2588",
           "m4_primary_services": "FIXED; MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "95-95",
           "passive": false
         },
@@ -1236,7 +2308,9 @@
           ],
           "high_mhz": 380.0,
           "low_mhz": 339.0,
+          "m4_api_row_ids": "2589-2594",
           "m4_primary_services": "FIXED; MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "95-95",
           "passive": false
         },
@@ -1270,8 +2344,11 @@
           ],
           "high_mhz": 399.9,
           "low_mhz": 380.0,
+          "m4_api_row_ids": "2595-2642",
           "m4_primary_services": "MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "96-97",
+          "no_row_gaps_mhz": "380-380.0125 384.9875-385.0125 389.9875-390.0125 394.9875-395.0125 399.8875-399.9",
           "passive": false
         },
         {
@@ -1284,9 +2361,12 @@
           ],
           "high_mhz": 47000.0,
           "low_mhz": 43500.0,
+          "m4_api_row_ids": "5275-5278",
           "m4_primary_services": "MOBILE; MOBILE-SATELLITE; RADIONAVIGATION; RADIONAVIGATION-SATELLITE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "193-193",
-          "passive": false
+          "passive": false,
+          "space_down_unresolved": "MOBILE-SATELLITE; RADIONAVIGATION-SATELLITE"
         }
       ],
       "method": "screening",
@@ -1314,11 +2394,11 @@
       "124520173",
       "324520173"
     ],
-    "rank": 13,
+    "rank": 15,
     "rule_id": "m4-no-space-to-earth",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "QATARGOV-G1-25.5E (QAT) transmits in 8 band(s) with no space-to-Earth allocation in Finland"
   },
   {
@@ -1327,7 +2407,8 @@
     "details": {
       "assumptions": [
         "Beam coverage over Finland is not checked.",
-        "No power or pfd calculation was done."
+        "No power or pfd calculation was done.",
+        "M4 gives no direction for EARTH EXPLORATION-SATELLITE; EARTH EXPLORATION-SATELLITE; Earth Exploration-Satellite; not counted as a space-to-Earth allocation."
       ],
       "bands": [
         {
@@ -1344,7 +2425,9 @@
           ],
           "high_mhz": 5250.0,
           "low_mhz": 5150.0,
-          "m4_primary_services": "AERONAUTICAL; FIXED SATELLITE (EARTH-TO-SPACE); MOBILE; RADIONAVIGATION",
+          "m4_api_row_ids": "4121-4131",
+          "m4_primary_services": "AERONAUTICAL RADIONAVIGATION; FIXED SATELLITE (EARTH-TO-SPACE); MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "150-150",
           "passive": false
         },
@@ -1357,22 +2440,28 @@
             324741921
           ],
           "high_mhz": 10000.0,
-          "low_mhz": 8500.0,
+          "low_mhz": 9200.0,
+          "m4_api_row_ids": "4361-4371",
           "m4_primary_services": "EARTH EXPLORATION-SATELLITE; RADIOLOCATION",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "163-163",
-          "passive": false
+          "passive": false,
+          "space_down_unresolved": "EARTH EXPLORATION-SATELLITE; Earth Exploration-Satellite"
         },
         {
-          "finnish_use": "Fixed radiolinks; Mobile radio",
+          "finnish_use": "Amateur; Fixed radiolinks; Mobile radio",
           "group_ids": [
             124741921,
             324741921
           ],
-          "high_mhz": 10450.0,
+          "high_mhz": 10400.0,
           "low_mhz": 10000.0,
+          "m4_api_row_ids": "4372-4395",
           "m4_primary_services": "EARTH EXPLORATION-SATELLITE; FIXED; MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "164-165",
-          "passive": false
+          "passive": false,
+          "space_down_unresolved": "EARTH EXPLORATION-SATELLITE"
         }
       ],
       "method": "screening",
@@ -1400,11 +2489,11 @@
       "124520174",
       "324520174"
     ],
-    "rank": 14,
+    "rank": 16,
     "rule_id": "m4-no-space-to-earth",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "PAZ_2-A (E) transmits in 3 band(s) with no space-to-Earth allocation in Finland"
   },
   {
@@ -1413,7 +2502,9 @@
     "details": {
       "assumptions": [
         "Beam coverage over Finland is not checked.",
-        "No power or pfd calculation was done."
+        "No power or pfd calculation was done.",
+        "M4 gives no direction for EARTH EXPLORATION-SATELLITE; MOBILE-SATELLITE; RADIONAVIGATION-SATELLITE; not counted as a space-to-Earth allocation.",
+        "Parts of a matched band have no M4 sub-band row (no_row_gaps_mhz); its primary terrestrial service is assumed to apply there."
       ],
       "bands": [
         {
@@ -1438,7 +2529,9 @@
           ],
           "high_mhz": 1492.0,
           "low_mhz": 1452.0,
+          "m4_api_row_ids": "3490-3497",
           "m4_primary_services": "FIXED AND MOBILE; MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "131-131",
           "passive": false
         },
@@ -1449,8 +2542,55 @@
           ],
           "high_mhz": 2245.0,
           "low_mhz": 2200.0,
+          "m4_api_row_ids": "3883",
           "m4_primary_services": "FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "141-141",
+          "passive": false
+        },
+        {
+          "finnish_use": "Amateur; Terrestrial systems capable of providing electronic communications services",
+          "group_ids": [
+            124793967,
+            124793968,
+            124793969,
+            124793970,
+            124793971,
+            124793972,
+            124794077,
+            124794078
+          ],
+          "high_mhz": 3800.0,
+          "low_mhz": 3400.0,
+          "m4_api_row_ids": "4053-4091",
+          "m4_primary_services": "MOBILE AND FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
+          "m4_table_pages": "147-148",
+          "passive": false
+        },
+        {
+          "finnish_use": "Fixed radiolinks",
+          "group_ids": [
+            124794109,
+            124794110,
+            124794111,
+            124794112,
+            124794113,
+            124794114,
+            124794115,
+            324794111,
+            324794112,
+            324794113,
+            324794114,
+            324794115
+          ],
+          "high_mhz": 8025.0,
+          "low_mhz": 7080.0,
+          "m4_api_row_ids": "4303-4353",
+          "m4_primary_services": "FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
+          "m4_table_pages": "160-163",
+          "no_row_gaps_mhz": "7080-7121 7233-7289 7401-7428 7869-7933",
           "passive": false
         },
         {
@@ -1469,8 +2609,52 @@
           ],
           "high_mhz": 13750.0,
           "low_mhz": 13400.0,
+          "m4_api_row_ids": "4567-4572",
           "m4_primary_services": "EARTH EXPLORATION-SATELLITE; RADIOLOCATION",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "170-170",
+          "passive": false,
+          "space_down_unresolved": "EARTH EXPLORATION-SATELLITE"
+        },
+        {
+          "finnish_use": "Fixed radiolinks",
+          "group_ids": [
+            124794005,
+            124794012
+          ],
+          "high_mhz": 17800.0,
+          "low_mhz": 17755.0,
+          "m4_api_row_ids": "4687-4693",
+          "m4_primary_services": "FIXED; FIXED SATELLITE (EARTH-TO-SPACE)",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
+          "m4_table_pages": "173-175",
+          "passive": false
+        },
+        {
+          "finnish_use": "(SRD) Automotive Short Range Radar (SRR); Fixed radiolinks",
+          "group_ids": [
+            124793962
+          ],
+          "high_mhz": 23600.0,
+          "low_mhz": 22500.0,
+          "m4_api_row_ids": "4834-4849 4860-4897",
+          "m4_primary_services": "FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
+          "m4_table_pages": "177-180",
+          "passive": false
+        },
+        {
+          "finnish_use": "(SRD) Automotive Short Range Radar (SRR); Local terrestrial systems capable of providing electronic communications services; Terrestrial systems capable of providing electronic communications services",
+          "group_ids": [
+            124793963,
+            124793964
+          ],
+          "high_mhz": 25500.0,
+          "low_mhz": 24250.0,
+          "m4_api_row_ids": "4987-5055",
+          "m4_primary_services": "FIXED; MOBILE AND FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
+          "m4_table_pages": "185-186",
           "passive": false
         },
         {
@@ -1480,7 +2664,9 @@
           ],
           "high_mhz": 27500.0,
           "low_mhz": 27000.0,
+          "m4_api_row_ids": "5058-5085",
           "m4_primary_services": "MOBILE AND FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "186-186",
           "passive": false
         },
@@ -1492,7 +2678,9 @@
           ],
           "high_mhz": 33400.0,
           "low_mhz": 31800.0,
+          "m4_api_row_ids": "5195-5211",
           "m4_primary_services": "FIXED; RADIONAVIGATION",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "189-190",
           "passive": false
         },
@@ -1506,9 +2694,12 @@
           ],
           "high_mhz": 47000.0,
           "low_mhz": 43500.0,
+          "m4_api_row_ids": "5275-5278",
           "m4_primary_services": "MOBILE; MOBILE-SATELLITE; RADIONAVIGATION; RADIONAVIGATION-SATELLITE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "193-193",
-          "passive": false
+          "passive": false,
+          "space_down_unresolved": "MOBILE-SATELLITE; RADIONAVIGATION-SATELLITE"
         },
         {
           "finnish_use": "Fixed radiolinks",
@@ -1517,7 +2708,9 @@
           ],
           "high_mhz": 57000.0,
           "low_mhz": 55780.0,
+          "m4_api_row_ids": "5314-5316",
           "m4_primary_services": "FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "195-195",
           "passive": false
         },
@@ -1528,7 +2721,9 @@
           ],
           "high_mhz": 58200.0,
           "low_mhz": 57000.0,
+          "m4_api_row_ids": "5317-5331",
           "m4_primary_services": "FIXED; MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "195-196",
           "passive": false
         },
@@ -1539,7 +2734,9 @@
           ],
           "high_mhz": 59300.0,
           "low_mhz": 59000.0,
+          "m4_api_row_ids": "5344-5359",
           "m4_primary_services": "FIXED; MOBILE; RADIOLOCATION",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "197-197",
           "passive": false
         },
@@ -1550,7 +2747,9 @@
           ],
           "high_mhz": 64000.0,
           "low_mhz": 59300.0,
+          "m4_api_row_ids": "5360-5394",
           "m4_primary_services": "FIXED; MOBILE; RADIOLOCATION",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "198-199",
           "passive": false
         },
@@ -1561,7 +2760,9 @@
           ],
           "high_mhz": 65000.0,
           "low_mhz": 64000.0,
+          "m4_api_row_ids": "5395-5402",
           "m4_primary_services": "FIXED; MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "199-200",
           "passive": false
         },
@@ -1572,7 +2773,9 @@
           ],
           "high_mhz": 66000.0,
           "low_mhz": 65000.0,
+          "m4_api_row_ids": "5403-5410",
           "m4_primary_services": "FIXED; MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "200-200",
           "passive": false
         },
@@ -1591,8 +2794,42 @@
           ],
           "high_mhz": 71000.0,
           "low_mhz": 66000.0,
+          "m4_api_row_ids": "5411-5416",
           "m4_primary_services": "MOBILE; MOBILE-SATELLITE; RADIONAVIGATION; RADIONAVIGATION-SATELLITE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "200-200",
+          "passive": false,
+          "space_down_unresolved": "MOBILE-SATELLITE; RADIONAVIGATION-SATELLITE"
+        },
+        {
+          "finnish_use": "Fixed radiolinks",
+          "group_ids": [
+            124794084,
+            124794085,
+            124794086,
+            124794087,
+            124794088,
+            124794089,
+            124794098,
+            124794099,
+            124794100,
+            124794101,
+            124794102,
+            124794103,
+            324794087,
+            324794088,
+            324794089,
+            324794101,
+            324794102,
+            324794103
+          ],
+          "high_mhz": 76000.0,
+          "low_mhz": 75500.0,
+          "m4_api_row_ids": "5421-5425 5446-5450",
+          "m4_primary_services": "FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
+          "m4_table_pages": "202-203",
+          "no_row_gaps_mhz": "75750-76000",
           "passive": false
         }
       ],
@@ -1621,12 +2858,12 @@
       "124520183",
       "324520183"
     ],
-    "rank": 15,
+    "rank": 17,
     "rule_id": "m4-no-space-to-earth",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
-    "title": "CHINASAT-H-60.5E (CHN) transmits in 13 band(s) with no space-to-Earth allocation in Finland"
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "CHINASAT-H-60.5E (CHN) transmits in 19 band(s) with no space-to-Earth allocation in Finland"
   },
   {
     "adm": "CHN",
@@ -1634,7 +2871,9 @@
     "details": {
       "assumptions": [
         "Beam coverage over Finland is not checked.",
-        "No power or pfd calculation was done."
+        "No power or pfd calculation was done.",
+        "M4 gives no direction for EARTH EXPLORATION-SATELLITE; MOBILE-SATELLITE; RADIONAVIGATION-SATELLITE; not counted as a space-to-Earth allocation.",
+        "Parts of a matched band have no M4 sub-band row (no_row_gaps_mhz); its primary terrestrial service is assumed to apply there."
       ],
       "bands": [
         {
@@ -1659,7 +2898,9 @@
           ],
           "high_mhz": 1492.0,
           "low_mhz": 1452.0,
+          "m4_api_row_ids": "3490-3497",
           "m4_primary_services": "FIXED AND MOBILE; MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "131-131",
           "passive": false
         },
@@ -1670,8 +2911,55 @@
           ],
           "high_mhz": 2245.0,
           "low_mhz": 2200.0,
+          "m4_api_row_ids": "3883",
           "m4_primary_services": "FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "141-141",
+          "passive": false
+        },
+        {
+          "finnish_use": "Amateur; Terrestrial systems capable of providing electronic communications services",
+          "group_ids": [
+            124793580,
+            124793581,
+            124793582,
+            124793583,
+            124793584,
+            124793585,
+            124793695,
+            124793696
+          ],
+          "high_mhz": 3800.0,
+          "low_mhz": 3400.0,
+          "m4_api_row_ids": "4053-4091",
+          "m4_primary_services": "MOBILE AND FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
+          "m4_table_pages": "147-148",
+          "passive": false
+        },
+        {
+          "finnish_use": "Fixed radiolinks",
+          "group_ids": [
+            124793727,
+            124793728,
+            124793894,
+            124793895,
+            124793896,
+            124793897,
+            124793898,
+            324793894,
+            324793895,
+            324793896,
+            324793897,
+            324793898
+          ],
+          "high_mhz": 8025.0,
+          "low_mhz": 7080.0,
+          "m4_api_row_ids": "4303-4353",
+          "m4_primary_services": "FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
+          "m4_table_pages": "160-163",
+          "no_row_gaps_mhz": "7080-7121 7233-7289 7401-7428 7869-7933",
           "passive": false
         },
         {
@@ -1702,8 +2990,52 @@
           ],
           "high_mhz": 13750.0,
           "low_mhz": 13400.0,
+          "m4_api_row_ids": "4567-4572",
           "m4_primary_services": "EARTH EXPLORATION-SATELLITE; RADIOLOCATION",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "170-170",
+          "passive": false,
+          "space_down_unresolved": "EARTH EXPLORATION-SATELLITE"
+        },
+        {
+          "finnish_use": "Fixed radiolinks",
+          "group_ids": [
+            124793614,
+            124793620
+          ],
+          "high_mhz": 17800.0,
+          "low_mhz": 17755.0,
+          "m4_api_row_ids": "4687-4693",
+          "m4_primary_services": "FIXED; FIXED SATELLITE (EARTH-TO-SPACE)",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
+          "m4_table_pages": "173-175",
+          "passive": false
+        },
+        {
+          "finnish_use": "(SRD) Automotive Short Range Radar (SRR); Fixed radiolinks",
+          "group_ids": [
+            124793575
+          ],
+          "high_mhz": 23600.0,
+          "low_mhz": 22500.0,
+          "m4_api_row_ids": "4834-4849 4860-4897",
+          "m4_primary_services": "FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
+          "m4_table_pages": "177-180",
+          "passive": false
+        },
+        {
+          "finnish_use": "(SRD) Automotive Short Range Radar (SRR); Local terrestrial systems capable of providing electronic communications services; Terrestrial systems capable of providing electronic communications services",
+          "group_ids": [
+            124793576,
+            124793577
+          ],
+          "high_mhz": 25500.0,
+          "low_mhz": 24250.0,
+          "m4_api_row_ids": "4987-5055",
+          "m4_primary_services": "FIXED; MOBILE AND FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
+          "m4_table_pages": "185-186",
           "passive": false
         },
         {
@@ -1713,7 +3045,9 @@
           ],
           "high_mhz": 27500.0,
           "low_mhz": 27000.0,
+          "m4_api_row_ids": "5058-5085",
           "m4_primary_services": "MOBILE AND FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "186-186",
           "passive": false
         },
@@ -1725,7 +3059,9 @@
           ],
           "high_mhz": 33400.0,
           "low_mhz": 31800.0,
+          "m4_api_row_ids": "5195-5211",
           "m4_primary_services": "FIXED; RADIONAVIGATION",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "189-190",
           "passive": false
         },
@@ -1739,9 +3075,12 @@
           ],
           "high_mhz": 47000.0,
           "low_mhz": 43500.0,
+          "m4_api_row_ids": "5275-5278",
           "m4_primary_services": "MOBILE; MOBILE-SATELLITE; RADIONAVIGATION; RADIONAVIGATION-SATELLITE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "193-193",
-          "passive": false
+          "passive": false,
+          "space_down_unresolved": "MOBILE-SATELLITE; RADIONAVIGATION-SATELLITE"
         },
         {
           "finnish_use": "Fixed radiolinks",
@@ -1750,7 +3089,9 @@
           ],
           "high_mhz": 57000.0,
           "low_mhz": 55780.0,
+          "m4_api_row_ids": "5314-5316",
           "m4_primary_services": "FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "195-195",
           "passive": false
         },
@@ -1761,7 +3102,9 @@
           ],
           "high_mhz": 58200.0,
           "low_mhz": 57000.0,
+          "m4_api_row_ids": "5317-5331",
           "m4_primary_services": "FIXED; MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "195-196",
           "passive": false
         },
@@ -1772,7 +3115,9 @@
           ],
           "high_mhz": 59300.0,
           "low_mhz": 59000.0,
+          "m4_api_row_ids": "5344-5359",
           "m4_primary_services": "FIXED; MOBILE; RADIOLOCATION",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "197-197",
           "passive": false
         },
@@ -1783,7 +3128,9 @@
           ],
           "high_mhz": 64000.0,
           "low_mhz": 59300.0,
+          "m4_api_row_ids": "5360-5394",
           "m4_primary_services": "FIXED; MOBILE; RADIOLOCATION",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "198-199",
           "passive": false
         },
@@ -1794,7 +3141,9 @@
           ],
           "high_mhz": 65000.0,
           "low_mhz": 64000.0,
+          "m4_api_row_ids": "5395-5402",
           "m4_primary_services": "FIXED; MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "199-200",
           "passive": false
         },
@@ -1805,7 +3154,9 @@
           ],
           "high_mhz": 66000.0,
           "low_mhz": 65000.0,
+          "m4_api_row_ids": "5403-5410",
           "m4_primary_services": "FIXED; MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "200-200",
           "passive": false
         },
@@ -1824,8 +3175,42 @@
           ],
           "high_mhz": 71000.0,
           "low_mhz": 66000.0,
+          "m4_api_row_ids": "5411-5416",
           "m4_primary_services": "MOBILE; MOBILE-SATELLITE; RADIONAVIGATION; RADIONAVIGATION-SATELLITE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "200-200",
+          "passive": false,
+          "space_down_unresolved": "MOBILE-SATELLITE; RADIONAVIGATION-SATELLITE"
+        },
+        {
+          "finnish_use": "Fixed radiolinks",
+          "group_ids": [
+            124793702,
+            124793703,
+            124793704,
+            124793705,
+            124793706,
+            124793707,
+            124793716,
+            124793717,
+            124793718,
+            124793719,
+            124793720,
+            124793721,
+            324793705,
+            324793706,
+            324793707,
+            324793719,
+            324793720,
+            324793721
+          ],
+          "high_mhz": 76000.0,
+          "low_mhz": 75500.0,
+          "m4_api_row_ids": "5421-5425 5446-5450",
+          "m4_primary_services": "FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
+          "m4_table_pages": "202-203",
+          "no_row_gaps_mhz": "75750-76000",
           "passive": false
         }
       ],
@@ -1854,12 +3239,12 @@
       "124520184",
       "324520184"
     ],
-    "rank": 16,
+    "rank": 18,
     "rule_id": "m4-no-space-to-earth",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
-    "title": "CHINASAT-G-33.5E (CHN) transmits in 13 band(s) with no space-to-Earth allocation in Finland"
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "CHINASAT-G-33.5E (CHN) transmits in 19 band(s) with no space-to-Earth allocation in Finland"
   },
   {
     "adm": "D",
@@ -1877,7 +3262,9 @@
           ],
           "high_mhz": 2245.0,
           "low_mhz": 2200.0,
+          "m4_api_row_ids": "3883",
           "m4_primary_services": "FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "141-141",
           "passive": false
         }
@@ -1907,11 +3294,11 @@
       "124520192",
       "324520192"
     ],
-    "rank": 17,
+    "rank": 19,
     "rule_id": "m4-no-space-to-earth",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "MTG-EUM_3.5E (D) transmits in 1 band(s) with no space-to-Earth allocation in Finland"
   },
   {
@@ -1930,7 +3317,9 @@
           ],
           "high_mhz": 2245.0,
           "low_mhz": 2200.0,
+          "m4_api_row_ids": "3883",
           "m4_primary_services": "FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "141-141",
           "passive": false
         }
@@ -1960,11 +3349,11 @@
       "124520193",
       "324520193"
     ],
-    "rank": 18,
+    "rank": 20,
     "rule_id": "m4-no-space-to-earth",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "MTG-EUM_9.5E (D) transmits in 1 band(s) with no space-to-Earth allocation in Finland"
   },
   {
@@ -1973,7 +3362,8 @@
     "details": {
       "assumptions": [
         "Beam coverage over Finland is not checked.",
-        "No power or pfd calculation was done."
+        "No power or pfd calculation was done.",
+        "Parts of a matched band have no M4 sub-band row (no_row_gaps_mhz); its primary terrestrial service is assumed to apply there."
       ],
       "bands": [
         {
@@ -1986,7 +3376,9 @@
           ],
           "high_mhz": 267.0,
           "low_mhz": 235.0,
+          "m4_api_row_ids": "2567-2570",
           "m4_primary_services": "FIXED; MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "93-93",
           "passive": false
         },
@@ -2000,7 +3392,9 @@
           ],
           "high_mhz": 272.0,
           "low_mhz": 267.0,
+          "m4_api_row_ids": "2571-2572",
           "m4_primary_services": "FIXED; MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "93-93",
           "passive": false
         },
@@ -2012,7 +3406,9 @@
           ],
           "high_mhz": 273.0,
           "low_mhz": 272.0,
+          "m4_api_row_ids": "2573-2574",
           "m4_primary_services": "FIXED; MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "94-94",
           "passive": false
         },
@@ -2026,7 +3422,9 @@
           ],
           "high_mhz": 322.0,
           "low_mhz": 273.0,
+          "m4_api_row_ids": "2575-2580",
           "m4_primary_services": "FIXED; MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "94-94",
           "passive": false
         },
@@ -2038,7 +3436,9 @@
           ],
           "high_mhz": 339.0,
           "low_mhz": 335.4,
+          "m4_api_row_ids": "2585-2588",
           "m4_primary_services": "FIXED; MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "95-95",
           "passive": false
         },
@@ -2050,7 +3450,9 @@
           ],
           "high_mhz": 380.0,
           "low_mhz": 339.0,
+          "m4_api_row_ids": "2589-2594",
           "m4_primary_services": "FIXED; MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "95-95",
           "passive": false
         },
@@ -2064,8 +3466,11 @@
           ],
           "high_mhz": 399.9,
           "low_mhz": 380.0,
+          "m4_api_row_ids": "2595-2642",
           "m4_primary_services": "MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "96-97",
+          "no_row_gaps_mhz": "380-380.0125 384.9875-385.0125 389.9875-390.0125 394.9875-395.0125 399.8875-399.9",
           "passive": false
         },
         {
@@ -2082,8 +3487,511 @@
           ],
           "high_mhz": 2245.0,
           "low_mhz": 2200.0,
+          "m4_api_row_ids": "3883",
           "m4_primary_services": "FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "141-141",
+          "passive": false
+        },
+        {
+          "finnish_use": "Fixed radiolinks",
+          "group_ids": [
+            124725287,
+            124725288,
+            124725289,
+            124725290,
+            124725291,
+            124725292,
+            124725293,
+            124725294,
+            124725295,
+            124725296,
+            124725297,
+            124725298,
+            124725299,
+            124725300,
+            124725301,
+            124725302,
+            124725303,
+            124725304,
+            124725305,
+            124725306,
+            124725307,
+            124725308,
+            124725309,
+            124725310,
+            124725311,
+            124725312,
+            124725313,
+            124725314,
+            124725315,
+            124725316,
+            124725317,
+            124725318,
+            124725319,
+            124725320,
+            124725321,
+            124725322,
+            124725323,
+            124725324,
+            124725325,
+            124725326,
+            124725327,
+            124725328,
+            124725329,
+            124725330,
+            124725331,
+            124725332,
+            124725333,
+            124725334,
+            124725335,
+            124725336,
+            124725337,
+            124725338,
+            124725339,
+            124725340,
+            124725341,
+            124725342,
+            124725343,
+            124725344,
+            124725345,
+            124725346,
+            124725347,
+            124725348,
+            124725349,
+            124725350,
+            124725351,
+            124725352,
+            124725353,
+            124725354,
+            124725355,
+            124725356,
+            124725357,
+            124725358,
+            124725359,
+            124725360,
+            124725361,
+            124725362,
+            124725363,
+            124725364,
+            124725365,
+            124725366,
+            124725367,
+            124725368,
+            124725369,
+            124725370,
+            124725371,
+            124725372,
+            124725373,
+            124725374,
+            124725375,
+            124725376,
+            124725377,
+            124725378,
+            124725379,
+            124725380,
+            124725381,
+            124725382,
+            124725383,
+            124725384,
+            124725385,
+            124725386,
+            124725387,
+            124725388,
+            124725389,
+            124725390,
+            124725391,
+            124725392,
+            124725393,
+            124725394,
+            124725395,
+            124725396,
+            124725397,
+            124725398,
+            124725399,
+            124725400,
+            124725401,
+            124725402,
+            124725403,
+            124725404,
+            124725405,
+            124725446,
+            124725447,
+            124725448,
+            124725449,
+            124725463,
+            124725464,
+            124725465,
+            124725466,
+            124725467,
+            124725468,
+            124725469,
+            124725470,
+            124725471,
+            124725472,
+            124725473,
+            124725474,
+            124725475,
+            124725476,
+            124725477,
+            124725478,
+            124725479,
+            124725480,
+            124725481,
+            124725482,
+            124725483,
+            124725484,
+            124725485,
+            124725486,
+            124725487,
+            124725488,
+            124725489,
+            124725490,
+            124725491,
+            124725492,
+            124725493,
+            124725494,
+            124725495,
+            124725496,
+            124725497,
+            124725498,
+            124725499,
+            124725500,
+            124725501,
+            124725662,
+            124725663,
+            124725664,
+            124725665,
+            124725666,
+            124725667,
+            124725668,
+            124725669,
+            124725670,
+            124725671,
+            124725672,
+            124725673,
+            124725674,
+            124725675,
+            124725676,
+            124725677,
+            124725678,
+            124725679,
+            124725680,
+            124725681,
+            124725682,
+            124725683,
+            124725684,
+            124725685,
+            124725686,
+            124725687,
+            124725688,
+            124725689,
+            124725690,
+            124725691,
+            124725692,
+            124725693,
+            124725694,
+            124725695,
+            124725696,
+            124725697,
+            124725698,
+            124725699,
+            124725700,
+            124725701,
+            124725702,
+            124725703,
+            124725704,
+            124725766,
+            124725767,
+            124725768,
+            124725769,
+            124725770,
+            124725771,
+            124725772,
+            124725773,
+            124725774,
+            124725775,
+            124725776,
+            124725777,
+            124725778,
+            124725779,
+            124725780,
+            124725781,
+            124725782,
+            124725783,
+            124725784,
+            124725785,
+            124725786,
+            124725787,
+            124725788,
+            124725789,
+            124725790,
+            124725791,
+            124725792,
+            124725793,
+            124725794,
+            124725795,
+            124725796,
+            124725797,
+            124725798,
+            124725799,
+            124725800,
+            124725801,
+            124725802,
+            124725803,
+            124725804,
+            324725287,
+            324725288,
+            324725289,
+            324725290,
+            324725291,
+            324725292,
+            324725293,
+            324725294,
+            324725295,
+            324725296,
+            324725297,
+            324725298,
+            324725299,
+            324725300,
+            324725301,
+            324725302,
+            324725303,
+            324725304,
+            324725305,
+            324725306,
+            324725307,
+            324725308,
+            324725309,
+            324725310,
+            324725311,
+            324725312,
+            324725313,
+            324725314,
+            324725315,
+            324725316,
+            324725317,
+            324725318,
+            324725319,
+            324725320,
+            324725321,
+            324725322,
+            324725323,
+            324725324,
+            324725325,
+            324725326,
+            324725327,
+            324725328,
+            324725329,
+            324725330,
+            324725331,
+            324725332,
+            324725333,
+            324725334,
+            324725335,
+            324725336,
+            324725337,
+            324725338,
+            324725339,
+            324725340,
+            324725341,
+            324725342,
+            324725343,
+            324725344,
+            324725345,
+            324725346,
+            324725347,
+            324725348,
+            324725349,
+            324725350,
+            324725351,
+            324725352,
+            324725353,
+            324725354,
+            324725355,
+            324725356,
+            324725357,
+            324725358,
+            324725359,
+            324725360,
+            324725361,
+            324725362,
+            324725363,
+            324725364,
+            324725365,
+            324725366,
+            324725367,
+            324725368,
+            324725369,
+            324725370,
+            324725371,
+            324725372,
+            324725373,
+            324725374,
+            324725375,
+            324725376,
+            324725377,
+            324725378,
+            324725379,
+            324725380,
+            324725381,
+            324725382,
+            324725383,
+            324725384,
+            324725385,
+            324725386,
+            324725387,
+            324725388,
+            324725389,
+            324725390,
+            324725391,
+            324725392,
+            324725393,
+            324725394,
+            324725395,
+            324725396,
+            324725397,
+            324725398,
+            324725399,
+            324725400,
+            324725401,
+            324725402,
+            324725403,
+            324725404,
+            324725405,
+            324725446,
+            324725447,
+            324725448,
+            324725449,
+            324725463,
+            324725464,
+            324725465,
+            324725466,
+            324725467,
+            324725468,
+            324725469,
+            324725470,
+            324725471,
+            324725472,
+            324725473,
+            324725474,
+            324725475,
+            324725476,
+            324725477,
+            324725478,
+            324725479,
+            324725480,
+            324725481,
+            324725482,
+            324725483,
+            324725484,
+            324725485,
+            324725486,
+            324725487,
+            324725488,
+            324725489,
+            324725490,
+            324725491,
+            324725492,
+            324725493,
+            324725494,
+            324725495,
+            324725496,
+            324725497,
+            324725498,
+            324725499,
+            324725500,
+            324725501,
+            324725662,
+            324725663,
+            324725664,
+            324725665,
+            324725666,
+            324725667,
+            324725668,
+            324725669,
+            324725670,
+            324725671,
+            324725672,
+            324725673,
+            324725674,
+            324725675,
+            324725676,
+            324725677,
+            324725678,
+            324725679,
+            324725680,
+            324725681,
+            324725682,
+            324725683,
+            324725684,
+            324725685,
+            324725686,
+            324725687,
+            324725688,
+            324725689,
+            324725690,
+            324725691,
+            324725692,
+            324725693,
+            324725694,
+            324725695,
+            324725696,
+            324725697,
+            324725698,
+            324725699,
+            324725700,
+            324725701,
+            324725702,
+            324725703,
+            324725704,
+            324725766,
+            324725767,
+            324725768,
+            324725769,
+            324725770,
+            324725771,
+            324725772,
+            324725773,
+            324725774,
+            324725775,
+            324725776,
+            324725777,
+            324725778,
+            324725779,
+            324725780,
+            324725781,
+            324725782,
+            324725783,
+            324725784,
+            324725785,
+            324725786,
+            324725787,
+            324725788,
+            324725789,
+            324725790,
+            324725791,
+            324725792,
+            324725793,
+            324725794,
+            324725795,
+            324725796,
+            324725797,
+            324725798,
+            324725799,
+            324725800,
+            324725801,
+            324725802,
+            324725803,
+            324725804
+          ],
+          "high_mhz": 8025.0,
+          "low_mhz": 7080.0,
+          "m4_api_row_ids": "4303-4353",
+          "m4_primary_services": "FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
+          "m4_table_pages": "160-163",
+          "no_row_gaps_mhz": "7080-7121 7233-7289 7401-7428 7869-7933",
           "passive": false
         }
       ],
@@ -2112,12 +4020,12 @@
       "124520194",
       "324520194"
     ],
-    "rank": 19,
+    "rank": 21,
     "rule_id": "m4-no-space-to-earth",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
-    "title": "SECOMSAT-5-78E (E) transmits in 8 band(s) with no space-to-Earth allocation in Finland"
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "SECOMSAT-5-78E (E) transmits in 9 band(s) with no space-to-Earth allocation in Finland"
   },
   {
     "adm": "KOR",
@@ -2125,7 +4033,8 @@
     "details": {
       "assumptions": [
         "Beam coverage over Finland is not checked.",
-        "No power or pfd calculation was done."
+        "No power or pfd calculation was done.",
+        "M4 gives no direction for EARTH EXPLORATION-SATELLITE; EARTH EXPLORATION-SATELLITE; Earth Exploration-Satellite; not counted as a space-to-Earth allocation."
       ],
       "bands": [
         {
@@ -2137,22 +4046,28 @@
             324750546
           ],
           "high_mhz": 10000.0,
-          "low_mhz": 8500.0,
+          "low_mhz": 9200.0,
+          "m4_api_row_ids": "4361-4371",
           "m4_primary_services": "EARTH EXPLORATION-SATELLITE; RADIOLOCATION",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "163-163",
-          "passive": false
+          "passive": false,
+          "space_down_unresolved": "EARTH EXPLORATION-SATELLITE; Earth Exploration-Satellite"
         },
         {
-          "finnish_use": "Fixed radiolinks; Mobile radio",
+          "finnish_use": "Amateur; Fixed radiolinks; Mobile radio",
           "group_ids": [
             124750546,
             324750546
           ],
-          "high_mhz": 10450.0,
+          "high_mhz": 10400.0,
           "low_mhz": 10000.0,
+          "m4_api_row_ids": "4372-4395",
           "m4_primary_services": "EARTH EXPLORATION-SATELLITE; FIXED; MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "164-165",
-          "passive": false
+          "passive": false,
+          "space_down_unresolved": "EARTH EXPLORATION-SATELLITE"
         }
       ],
       "method": "screening",
@@ -2180,11 +4095,11 @@
       "124520203",
       "324520203"
     ],
-    "rank": 20,
+    "rank": 22,
     "rule_id": "m4-no-space-to-earth",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "LUMIRX-1 (KOR) transmits in 2 band(s) with no space-to-Earth allocation in Finland"
   },
   {
@@ -2193,9 +4108,49 @@
     "details": {
       "assumptions": [
         "Beam coverage over Finland is not checked.",
-        "No power or pfd calculation was done."
+        "No power or pfd calculation was done.",
+        "M4 gives no direction for MOBILE-SATELLITE; RADIONAVIGATION-SATELLITE; not counted as a space-to-Earth allocation."
       ],
       "bands": [
+        {
+          "finnish_use": "Amateur; Terrestrial systems capable of providing electronic communications services",
+          "group_ids": [
+            124725822,
+            124725823,
+            124725824
+          ],
+          "high_mhz": 3800.0,
+          "low_mhz": 3400.0,
+          "m4_api_row_ids": "4053-4091",
+          "m4_primary_services": "MOBILE AND FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
+          "m4_table_pages": "147-148",
+          "passive": false
+        },
+        {
+          "finnish_use": "Fixed radiolinks",
+          "group_ids": [
+            124725928,
+            124725931,
+            124725932,
+            124725934,
+            124725936,
+            124725938,
+            124725982,
+            124725983,
+            124725984,
+            124725988,
+            124725989,
+            124725990
+          ],
+          "high_mhz": 17800.0,
+          "low_mhz": 17755.0,
+          "m4_api_row_ids": "4687-4693",
+          "m4_primary_services": "FIXED; FIXED SATELLITE (EARTH-TO-SPACE)",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
+          "m4_table_pages": "173-175",
+          "passive": false
+        },
         {
           "finnish_use": "Mobile radio; Radionavigation",
           "group_ids": [
@@ -2208,9 +4163,12 @@
           ],
           "high_mhz": 47000.0,
           "low_mhz": 43500.0,
+          "m4_api_row_ids": "5275-5278",
           "m4_primary_services": "MOBILE; MOBILE-SATELLITE; RADIONAVIGATION; RADIONAVIGATION-SATELLITE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "193-193",
-          "passive": false
+          "passive": false,
+          "space_down_unresolved": "MOBILE-SATELLITE; RADIONAVIGATION-SATELLITE"
         }
       ],
       "method": "screening",
@@ -2238,12 +4196,12 @@
       "124520204",
       "324520204"
     ],
-    "rank": 21,
+    "rank": 23,
     "rule_id": "m4-no-space-to-earth",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
-    "title": "KAZSAT-KA-67.2E-2 (KAZ) transmits in 1 band(s) with no space-to-Earth allocation in Finland"
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "KAZSAT-KA-67.2E-2 (KAZ) transmits in 3 band(s) with no space-to-Earth allocation in Finland"
   },
   {
     "adm": "IND",
@@ -2255,17 +4213,137 @@
       ],
       "bands": [
         {
+          "finnish_use": "Amateur; Terrestrial systems capable of providing electronic communications services",
+          "group_ids": [
+            124727416,
+            124727417,
+            124727418,
+            124727419,
+            124727420,
+            124727421,
+            124727422,
+            124727423,
+            124727424,
+            124727425,
+            124727426,
+            124728128,
+            124728129,
+            124728130
+          ],
+          "high_mhz": 3800.0,
+          "low_mhz": 3400.0,
+          "m4_api_row_ids": "4053-4091",
+          "m4_primary_services": "MOBILE AND FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
+          "m4_table_pages": "147-148",
+          "passive": false
+        },
+        {
           "finnish_use": "Fixed radiolinks",
           "group_ids": [
-            124728093,
-            124728096,
-            124728101,
-            124728104
+            124727492,
+            124727493,
+            124727494,
+            124727495,
+            124727496,
+            124727497,
+            124727498,
+            124727499,
+            124727518,
+            124727519,
+            124727520,
+            124727521,
+            124727522,
+            124727523,
+            124727552,
+            124727553,
+            124727566,
+            124727567,
+            124727606,
+            124727607,
+            124727608,
+            124727609,
+            124727610,
+            124727611,
+            124727612,
+            124727613,
+            124727614,
+            124727615,
+            124727616,
+            124727617,
+            124727725,
+            124727726,
+            124727727,
+            124727728,
+            124727729,
+            124727730,
+            124727731,
+            124727732,
+            124727733,
+            124727734,
+            124727735,
+            124727736,
+            124727737,
+            124727738,
+            124727739,
+            124727740,
+            124727777,
+            124727778,
+            124727779,
+            124727780,
+            124727781,
+            124727782,
+            124727783,
+            124727784,
+            124727835,
+            124727836,
+            124727837,
+            124727838,
+            124727839,
+            124727840,
+            124727841,
+            124727842,
+            124727843,
+            124727844,
+            124727845,
+            124727846,
+            124727847,
+            124727848,
+            124727849,
+            124727850,
+            124727891,
+            124727892,
+            124727893,
+            124727894,
+            124727895,
+            124727896,
+            124727897,
+            124727898,
+            124727919,
+            124727920,
+            124727921,
+            124727922,
+            124727923,
+            124727924,
+            124727925,
+            124727926,
+            124727927,
+            124727928,
+            124727929,
+            124727930,
+            124728090,
+            124728094,
+            124728102,
+            324728090,
+            324728094,
+            324728102
           ],
-          "high_mhz": 29500.0,
-          "low_mhz": 27500.0,
+          "high_mhz": 17800.0,
+          "low_mhz": 17755.0,
+          "m4_api_row_ids": "4687-4693",
           "m4_primary_services": "FIXED; FIXED SATELLITE (EARTH-TO-SPACE)",
-          "m4_table_pages": "186-188",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
+          "m4_table_pages": "173-175",
           "passive": false
         }
       ],
@@ -2294,12 +4372,12 @@
       "124520214",
       "324520214"
     ],
-    "rank": 22,
+    "rank": 24,
     "rule_id": "m4-no-space-to-earth",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
-    "title": "INSAT-COM(71E) (IND) transmits in 1 band(s) with no space-to-Earth allocation in Finland"
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "INSAT-COM(71E) (IND) transmits in 2 band(s) with no space-to-Earth allocation in Finland"
   },
   {
     "adm": "D",
@@ -2307,22 +4385,24 @@
     "details": {
       "assumptions": [
         "Beam coverage over Finland is not checked.",
-        "No power or pfd calculation was done."
+        "No power or pfd calculation was done.",
+        "M4 gives no direction for AMATEUR-SATELLITE; not counted as a space-to-Earth allocation."
       ],
       "bands": [
         {
-          "finnish_use": "(medelfrekvenser om delbandets gränskanaler) Amateur; Amateur",
+          "finnish_use": "(SRD) Tracking, tracing and data acquisition systems; Amateur",
           "group_ids": [
-            124704723,
             124704724,
-            124704725,
             124704726
           ],
           "high_mhz": 438.0,
-          "low_mhz": 432.0,
+          "low_mhz": 436.0,
+          "m4_api_row_ids": "2830-2834 2876-2890",
           "m4_primary_services": "AMATEUR; AMATEUR-SATELLITE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "103-106",
-          "passive": false
+          "passive": false,
+          "space_down_unresolved": "AMATEUR-SATELLITE"
         }
       ],
       "method": "screening",
@@ -2348,12 +4428,224 @@
     "notice_ids": [
       "124545327"
     ],
-    "rank": 23,
+    "rank": 25,
     "rule_id": "m4-no-space-to-earth",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "CLOUDCT (D) transmits in 1 band(s) with no space-to-Earth allocation in Finland"
+  },
+  {
+    "adm": "USA",
+    "comment_deadline": "2026-10-23",
+    "details": {
+      "assumptions": [
+        "Beam coverage over Finland is not checked.",
+        "No power or pfd calculation was done."
+      ],
+      "bands": [
+        {
+          "finnish_use": "Fixed radiolinks",
+          "group_ids": [
+            125805051,
+            125805052,
+            125805053,
+            125805054,
+            125805055,
+            125805056,
+            125805057,
+            125805058,
+            125805059,
+            125805060,
+            125805061,
+            125805062,
+            125805063,
+            125805064,
+            125805065,
+            125805066,
+            125805067,
+            125805068,
+            125805069,
+            125805070,
+            125805071,
+            125805072,
+            125805073,
+            125805074,
+            125805075,
+            125805076,
+            125805077,
+            125805078,
+            125805079,
+            125805080,
+            125805081,
+            125805082,
+            125805083,
+            125805084,
+            125805085,
+            125805086,
+            125805087,
+            125805088,
+            125805089,
+            125805090,
+            125805091,
+            125805092,
+            125805093,
+            125805094,
+            125805095,
+            125805096,
+            125805097,
+            125805098,
+            125805099,
+            125805100,
+            125805101,
+            125805102,
+            125805103,
+            125805104,
+            125805105,
+            125805106,
+            125805107,
+            125805108,
+            125805109,
+            125805110,
+            125805111,
+            125805112,
+            125805113,
+            125805114,
+            125805115,
+            125805116,
+            125805117,
+            125805118,
+            125805119,
+            125805120,
+            125805121,
+            125805122,
+            125805123,
+            125805124,
+            125805125,
+            125805126,
+            125805127,
+            125805128,
+            125805129,
+            125805130,
+            125805131,
+            125805132,
+            125805133,
+            125805134,
+            125805135,
+            125805136,
+            125805137,
+            125805138,
+            125805139,
+            125805140,
+            125805141,
+            125805142,
+            125805143,
+            125805144,
+            125805145,
+            125805146,
+            125805147,
+            125805148,
+            125805149,
+            125805150,
+            125805151,
+            125805152,
+            125805153,
+            125805154,
+            125805155,
+            125805156,
+            125805157,
+            125805158,
+            125805159,
+            125805160,
+            125805161,
+            125805162,
+            125805163,
+            125805164,
+            125805165,
+            125805166,
+            125805167,
+            125805168,
+            125805169,
+            125805170,
+            125805171,
+            125805172,
+            125805173,
+            125805174,
+            125805175,
+            125805176,
+            125805177,
+            125805178,
+            125806427,
+            125806428,
+            125806429,
+            125806430,
+            125806431,
+            125806432,
+            125806433,
+            125806434,
+            125806435,
+            125806436,
+            125806437,
+            125806438,
+            125806439,
+            125806440,
+            125806441,
+            125806442,
+            125806443,
+            125806444,
+            125806445,
+            125806446,
+            125806447,
+            125806448,
+            125806449,
+            125806450,
+            125806451,
+            125806452,
+            125806453,
+            125806454,
+            125806455,
+            125806456,
+            125806457,
+            125806458
+          ],
+          "high_mhz": 17800.0,
+          "low_mhz": 17755.0,
+          "m4_api_row_ids": "4687-4693",
+          "m4_primary_services": "FIXED; FIXED SATELLITE (EARTH-TO-SPACE)",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
+          "m4_table_pages": "173-175",
+          "passive": false
+        }
+      ],
+      "method": "screening",
+      "sections": [
+        "9.6"
+      ],
+      "source": {
+        "domain": "space",
+        "issue_no": 3074,
+        "notice_ids": [
+          "125520053"
+        ],
+        "sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721"
+      },
+      "visibility": [
+        "Non-GSO reaching 82 deg latitude"
+      ]
+    },
+    "domain": "space",
+    "family_id": 125520053,
+    "issue_no": 3074,
+    "network": "USASAT-NGSO-8F",
+    "notice_ids": [
+      "125520053"
+    ],
+    "rank": 26,
+    "rule_id": "m4-no-space-to-earth",
+    "severity": "medium",
+    "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "USASAT-NGSO-8F (USA) transmits in 1 band(s) with no space-to-Earth allocation in Finland"
   },
   {
     "adm": "CHN",
@@ -2361,7 +4653,8 @@
     "details": {
       "assumptions": [
         "Beam coverage over Finland is not checked.",
-        "No power or pfd calculation was done."
+        "No power or pfd calculation was done.",
+        "Parts of a matched band have no M4 sub-band row (no_row_gaps_mhz); its primary terrestrial service is assumed to apply there."
       ],
       "bands": [
         {
@@ -2372,8 +4665,11 @@
           ],
           "high_mhz": 174.0,
           "low_mhz": 154.0,
+          "m4_api_row_ids": "2165-2545",
           "m4_primary_services": "LAND MOBILE; MARITIME MOBILE; MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "81-92",
+          "no_row_gaps_mhz": "154-154.00625 154.49375-154.50625 154.64375-154.65625 154.89375-154.90625 155.46875-155.48125 155.825-155.85 155.875-155.9 156-156.025 156.35-156.375 156.875-156.9 157.425-157.45 158.8-158.825 160.425-160.45 160.475-160.5 160.6-160.625 160.95-160.975 161.15-161.175 161.375-161.4125 161.4625-161.5 162.025-162.05 163.4-163.425 165.025-165.05 165.275-165.3 165.75-165.775 165.975-166 167.675-167.7 168.55-168.575 169.8125-169.825 169.875-169.9 170.35-170.375 170.575-170.6 172.275-172.3 173.15-173.175",
           "passive": false
         },
         {
@@ -2383,7 +4679,9 @@
           ],
           "high_mhz": 2690.0,
           "low_mhz": 2500.0,
+          "m4_api_row_ids": "4006-4039",
           "m4_primary_services": "MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "145-146",
           "passive": false
         }
@@ -2411,11 +4709,11 @@
     "notice_ids": [
       "125520111"
     ],
-    "rank": 24,
+    "rank": 27,
     "rule_id": "m4-no-space-to-earth",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "STARERA-3 (CHN) transmits in 2 band(s) with no space-to-Earth allocation in Finland"
   },
   {
@@ -2432,9 +4730,11 @@
           "group_ids": [
             125743708
           ],
-          "high_mhz": 406.0,
+          "high_mhz": 403.0,
           "low_mhz": 401.0,
+          "m4_api_row_ids": "2659-2684",
           "m4_primary_services": "EARTH EXPLORATION-SATELLITE (EARTH-TO-SPACE); METEOROLOGICAL AIDS; METEOROLOGICAL-SATELLITE (EARTH-TO-SPACE); MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "97-98",
           "passive": false
         }
@@ -2462,11 +4762,11 @@
     "notice_ids": [
       "125545338"
     ],
-    "rank": 25,
+    "rank": 28,
     "rule_id": "m4-no-space-to-earth",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "SUNCET (USA) transmits in 1 band(s) with no space-to-Earth allocation in Finland"
   },
   {
@@ -2492,7 +4792,9 @@
           ],
           "high_mhz": 2245.0,
           "low_mhz": 2200.0,
+          "m4_api_row_ids": "3883",
           "m4_primary_services": "FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "141-141",
           "passive": false
         }
@@ -2520,11 +4822,11 @@
     "notice_ids": [
       "125545347"
     ],
-    "rank": 26,
+    "rank": 29,
     "rule_id": "m4-no-space-to-earth",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "RLNEUTRON-1 (USA) transmits in 1 band(s) with no space-to-Earth allocation in Finland"
   },
   {
@@ -2543,7 +4845,9 @@
           ],
           "high_mhz": 2245.0,
           "low_mhz": 2200.0,
+          "m4_api_row_ids": "3883",
           "m4_primary_services": "FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "141-141",
           "passive": false
         }
@@ -2571,11 +4875,11 @@
     "notice_ids": [
       "125545354"
     ],
-    "rank": 27,
+    "rank": 30,
     "rule_id": "m4-no-space-to-earth",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "GARAI-B (S) transmits in 1 band(s) with no space-to-Earth allocation in Finland"
   },
   {
@@ -2584,7 +4888,8 @@
     "details": {
       "assumptions": [
         "Beam coverage over Finland is not checked.",
-        "No power or pfd calculation was done."
+        "No power or pfd calculation was done.",
+        "Parts of a matched band have no M4 sub-band row (no_row_gaps_mhz); its primary terrestrial service is assumed to apply there."
       ],
       "bands": [
         {
@@ -2594,8 +4899,24 @@
           ],
           "high_mhz": 2245.0,
           "low_mhz": 2200.0,
+          "m4_api_row_ids": "3883",
           "m4_primary_services": "FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "141-141",
+          "passive": false
+        },
+        {
+          "finnish_use": "Fixed radiolinks",
+          "group_ids": [
+            125752921
+          ],
+          "high_mhz": 8500.0,
+          "low_mhz": 8400.0,
+          "m4_api_row_ids": "4356-4360",
+          "m4_primary_services": "FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
+          "m4_table_pages": "160-163",
+          "no_row_gaps_mhz": "8467-8500",
           "passive": false
         }
       ],
@@ -2622,12 +4943,12 @@
     "notice_ids": [
       "125545368"
     ],
-    "rank": 28,
+    "rank": 31,
     "rule_id": "m4-no-space-to-earth",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
-    "title": "GRAVITAS (USA) transmits in 1 band(s) with no space-to-Earth allocation in Finland"
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "GRAVITAS (USA) transmits in 2 band(s) with no space-to-Earth allocation in Finland"
   },
   {
     "adm": "USA",
@@ -2635,30 +4956,37 @@
     "details": {
       "assumptions": [
         "Beam coverage over Finland is not checked.",
-        "No power or pfd calculation was done."
+        "No power or pfd calculation was done.",
+        "M4 gives no direction for AMATEUR-SATELLITE; Amateur-Satellite; not counted as a space-to-Earth allocation."
       ],
       "bands": [
         {
-          "finnish_use": "(medelfrekvenser om delbandets gränskanaler) Amateur; Amateur",
+          "finnish_use": "(SRD) Tracking, tracing and data acquisition systems; Amateur",
           "group_ids": [
             125745951
           ],
           "high_mhz": 438.0,
-          "low_mhz": 432.0,
+          "low_mhz": 436.0,
+          "m4_api_row_ids": "2830-2834 2876-2890",
           "m4_primary_services": "AMATEUR; AMATEUR-SATELLITE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "103-106",
-          "passive": false
+          "passive": false,
+          "space_down_unresolved": "AMATEUR-SATELLITE"
         },
         {
-          "finnish_use": "(SRD) Equipment for automatic vehicle identification for railways (AVI); (SRD) Equipment for detecting movement and for alert; (SRD) Non-specific Short Range Devices; (SRD) Radio frequency identification devices (RFID); (SRD) Wideband data transmission systems (WAS/RLAN); Wireless cameras",
+          "finnish_use": "(SRD) Equipment for automatic vehicle identification for railways (AVI); (SRD) Equipment for detecting movement and for alert; (SRD) Non-specific Short Range Devices; (SRD) Radio frequency identification devices (RFID); (SRD) Wideband data transmission systems (WAS/RLAN); Amateur",
           "group_ids": [
             125745953
           ],
-          "high_mhz": 2483.5,
-          "low_mhz": 2300.0,
-          "m4_primary_services": "FIXED; MOBILE",
+          "high_mhz": 2450.0,
+          "low_mhz": 2400.0,
+          "m4_api_row_ids": "3919-3966",
+          "m4_primary_services": "MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "142-144",
-          "passive": false
+          "passive": false,
+          "space_down_unresolved": "Amateur-Satellite"
         }
       ],
       "method": "screening",
@@ -2684,11 +5012,11 @@
     "notice_ids": [
       "125545387"
     ],
-    "rank": 29,
+    "rank": 32,
     "rule_id": "m4-no-space-to-earth",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "SPRITE (USA) transmits in 2 band(s) with no space-to-Earth allocation in Finland"
   },
   {
@@ -2697,19 +5025,23 @@
     "details": {
       "assumptions": [
         "Beam coverage over Finland is not checked.",
-        "No power or pfd calculation was done."
+        "No power or pfd calculation was done.",
+        "M4 gives no direction for AMATEUR-SATELLITE; not counted as a space-to-Earth allocation."
       ],
       "bands": [
         {
-          "finnish_use": "(medelfrekvenser om delbandets gränskanaler) Amateur; Amateur",
+          "finnish_use": "(SRD) Tracking, tracing and data acquisition systems; Amateur",
           "group_ids": [
             125744350
           ],
           "high_mhz": 438.0,
-          "low_mhz": 432.0,
+          "low_mhz": 436.0,
+          "m4_api_row_ids": "2830-2834 2876-2890",
           "m4_primary_services": "AMATEUR; AMATEUR-SATELLITE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "103-106",
-          "passive": false
+          "passive": false,
+          "space_down_unresolved": "AMATEUR-SATELLITE"
         }
       ],
       "method": "screening",
@@ -2735,11 +5067,11 @@
     "notice_ids": [
       "125545388"
     ],
-    "rank": 30,
+    "rank": 33,
     "rule_id": "m4-no-space-to-earth",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "3UCUBED-A (USA) transmits in 1 band(s) with no space-to-Earth allocation in Finland"
   },
   {
@@ -2748,7 +5080,8 @@
     "details": {
       "assumptions": [
         "Beam coverage over Finland is not checked.",
-        "No power or pfd calculation was done."
+        "No power or pfd calculation was done.",
+        "Parts of a matched band have no M4 sub-band row (no_row_gaps_mhz); its primary terrestrial service is assumed to apply there."
       ],
       "bands": [
         {
@@ -2760,7 +5093,9 @@
           ],
           "high_mhz": 2245.0,
           "low_mhz": 2200.0,
+          "m4_api_row_ids": "3883",
           "m4_primary_services": "FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "141-141",
           "passive": false
         },
@@ -2772,8 +5107,24 @@
           ],
           "high_mhz": 2300.0,
           "low_mhz": 2290.0,
+          "m4_api_row_ids": "3891-3895",
           "m4_primary_services": "FIXED; MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "141-141",
+          "passive": false
+        },
+        {
+          "finnish_use": "Fixed radiolinks",
+          "group_ids": [
+            125744832
+          ],
+          "high_mhz": 8500.0,
+          "low_mhz": 8400.0,
+          "m4_api_row_ids": "4356-4360",
+          "m4_primary_services": "FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
+          "m4_table_pages": "160-163",
+          "no_row_gaps_mhz": "8467-8500",
           "passive": false
         }
       ],
@@ -2800,12 +5151,12 @@
     "notice_ids": [
       "125545391"
     ],
-    "rank": 31,
+    "rank": 34,
     "rule_id": "m4-no-space-to-earth",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
-    "title": "USASAT-MK1 (USA) transmits in 2 band(s) with no space-to-Earth allocation in Finland"
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "USASAT-MK1 (USA) transmits in 3 band(s) with no space-to-Earth allocation in Finland"
   },
   {
     "adm": "PHL",
@@ -2813,7 +5164,8 @@
     "details": {
       "assumptions": [
         "Beam coverage over Finland is not checked.",
-        "No power or pfd calculation was done."
+        "No power or pfd calculation was done.",
+        "Parts of a matched band have no M4 sub-band row (no_row_gaps_mhz); its primary terrestrial service is assumed to apply there."
       ],
       "bands": [
         {
@@ -2823,8 +5175,24 @@
           ],
           "high_mhz": 2245.0,
           "low_mhz": 2200.0,
+          "m4_api_row_ids": "3883",
           "m4_primary_services": "FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "141-141",
+          "passive": false
+        },
+        {
+          "finnish_use": "Fixed radiolinks",
+          "group_ids": [
+            125741810
+          ],
+          "high_mhz": 8025.0,
+          "low_mhz": 7080.0,
+          "m4_api_row_ids": "4303-4353",
+          "m4_primary_services": "FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
+          "m4_table_pages": "160-163",
+          "no_row_gaps_mhz": "7080-7121 7233-7289 7401-7428 7869-7933",
           "passive": false
         }
       ],
@@ -2851,12 +5219,12 @@
     "notice_ids": [
       "125545392"
     ],
-    "rank": 32,
+    "rank": 35,
     "rule_id": "m4-no-space-to-earth",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
-    "title": "MULA (PHL) transmits in 1 band(s) with no space-to-Earth allocation in Finland"
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "MULA (PHL) transmits in 2 band(s) with no space-to-Earth allocation in Finland"
   },
   {
     "adm": "CHN",
@@ -2864,7 +5232,8 @@
     "details": {
       "assumptions": [
         "Beam coverage over Finland is not checked.",
-        "No power or pfd calculation was done."
+        "No power or pfd calculation was done.",
+        "Parts of a matched band have no M4 sub-band row (no_row_gaps_mhz); its primary terrestrial service is assumed to apply there."
       ],
       "bands": [
         {
@@ -2874,7 +5243,9 @@
           ],
           "high_mhz": 1452.0,
           "low_mhz": 1427.0,
+          "m4_api_row_ids": "3482-3489",
           "m4_primary_services": "FIXED AND MOBILE; MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "131-131",
           "passive": false
         },
@@ -2885,7 +5256,9 @@
           ],
           "high_mhz": 1492.0,
           "low_mhz": 1452.0,
+          "m4_api_row_ids": "3490-3497",
           "m4_primary_services": "FIXED AND MOBILE; MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "131-131",
           "passive": false
         },
@@ -2896,7 +5269,9 @@
           ],
           "high_mhz": 1518.0,
           "low_mhz": 1492.0,
+          "m4_api_row_ids": "3498-3505",
           "m4_primary_services": "FIXED AND MOBILE; MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "131-131",
           "passive": false
         },
@@ -2907,8 +5282,11 @@
           ],
           "high_mhz": 1980.0,
           "low_mhz": 1710.0,
+          "m4_api_row_ids": "3756-3825",
           "m4_primary_services": "MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "137-139",
+          "no_row_gaps_mhz": "1710-1710.1 1784.9-1785 1804.8-1805.1 1879.9-1881.792 1897.344-1900",
           "passive": false
         },
         {
@@ -2918,7 +5296,9 @@
           ],
           "high_mhz": 64000.0,
           "low_mhz": 59300.0,
+          "m4_api_row_ids": "5360-5394",
           "m4_primary_services": "FIXED; MOBILE; RADIOLOCATION",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "198-199",
           "passive": false
         },
@@ -2929,7 +5309,9 @@
           ],
           "high_mhz": 65000.0,
           "low_mhz": 64000.0,
+          "m4_api_row_ids": "5395-5402",
           "m4_primary_services": "FIXED; MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "199-200",
           "passive": false
         },
@@ -2940,7 +5322,9 @@
           ],
           "high_mhz": 66000.0,
           "low_mhz": 65000.0,
+          "m4_api_row_ids": "5403-5410",
           "m4_primary_services": "FIXED; MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "200-200",
           "passive": false
         }
@@ -2968,11 +5352,11 @@
     "notice_ids": [
       "125545393"
     ],
-    "rank": 33,
+    "rank": 36,
     "rule_id": "m4-no-space-to-earth",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "EUHT (CHN) transmits in 7 band(s) with no space-to-Earth allocation in Finland"
   },
   {
@@ -2981,7 +5365,8 @@
     "details": {
       "assumptions": [
         "Beam coverage over Finland is not checked.",
-        "No power or pfd calculation was done."
+        "No power or pfd calculation was done.",
+        "M4 gives no direction for EARTH EXPLORATION-SATELLITE; Earth Exploration-Satellite; not counted as a space-to-Earth allocation."
       ],
       "bands": [
         {
@@ -2990,10 +5375,13 @@
             125748057
           ],
           "high_mhz": 10000.0,
-          "low_mhz": 8500.0,
+          "low_mhz": 9200.0,
+          "m4_api_row_ids": "4361-4371",
           "m4_primary_services": "EARTH EXPLORATION-SATELLITE; RADIOLOCATION",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "163-163",
-          "passive": false
+          "passive": false,
+          "space_down_unresolved": "EARTH EXPLORATION-SATELLITE; Earth Exploration-Satellite"
         }
       ],
       "method": "screening",
@@ -3019,11 +5407,11 @@
     "notice_ids": [
       "125545395"
     ],
-    "rank": 34,
+    "rank": 37,
     "rule_id": "m4-no-space-to-earth",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "INSIGHT-A (CHN) transmits in 1 band(s) with no space-to-Earth allocation in Finland"
   },
   {
@@ -3032,7 +5420,8 @@
     "details": {
       "assumptions": [
         "Beam coverage over Finland is not checked.",
-        "No power or pfd calculation was done."
+        "No power or pfd calculation was done.",
+        "M4 gives no direction for EARTH EXPLORATION-SATELLITE; EARTH EXPLORATION-SATELLITE; Earth Exploration-Satellite; not counted as a space-to-Earth allocation."
       ],
       "bands": [
         {
@@ -3041,10 +5430,13 @@
             125746530
           ],
           "high_mhz": 10000.0,
-          "low_mhz": 8500.0,
+          "low_mhz": 9200.0,
+          "m4_api_row_ids": "4361-4371",
           "m4_primary_services": "EARTH EXPLORATION-SATELLITE; RADIOLOCATION",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "163-163",
-          "passive": false
+          "passive": false,
+          "space_down_unresolved": "EARTH EXPLORATION-SATELLITE; Earth Exploration-Satellite"
         },
         {
           "finnish_use": "Radars",
@@ -3053,9 +5445,12 @@
           ],
           "high_mhz": 36000.0,
           "low_mhz": 35500.0,
+          "m4_api_row_ids": "5214-5216",
           "m4_primary_services": "EARTH EXPLORATION-SATELLITE; RADIOLOCATION",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "190-190",
-          "passive": false
+          "passive": false,
+          "space_down_unresolved": "EARTH EXPLORATION-SATELLITE"
         }
       ],
       "method": "screening",
@@ -3081,11 +5476,11 @@
     "notice_ids": [
       "125545396"
     ],
-    "rank": 35,
+    "rank": 38,
     "rule_id": "m4-no-space-to-earth",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "GY-2 (CHN) transmits in 2 band(s) with no space-to-Earth allocation in Finland"
   },
   {
@@ -3094,17 +5489,34 @@
     "details": {
       "assumptions": [
         "Beam coverage over Finland is not checked.",
-        "No power or pfd calculation was done."
+        "No power or pfd calculation was done.",
+        "M4 gives no direction for Amateur-Satellite; not counted as a space-to-Earth allocation."
       ],
       "bands": [
         {
-          "finnish_use": "(SRD) Equipment for automatic vehicle identification for railways (AVI); (SRD) Equipment for detecting movement and for alert; (SRD) Non-specific Short Range Devices; (SRD) Radio frequency identification devices (RFID); (SRD) Wideband data transmission systems (WAS/RLAN); Wireless cameras",
+          "finnish_use": "(SRD) Equipment for automatic vehicle identification for railways (AVI); (SRD) Equipment for detecting movement and for alert; (SRD) Non-specific Short Range Devices; (SRD) Radio frequency identification devices (RFID); (SRD) Wideband data transmission systems (WAS/RLAN); Amateur",
+          "group_ids": [
+            125748067
+          ],
+          "high_mhz": 2450.0,
+          "low_mhz": 2400.0,
+          "m4_api_row_ids": "3919-3966",
+          "m4_primary_services": "MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
+          "m4_table_pages": "142-144",
+          "passive": false,
+          "space_down_unresolved": "Amateur-Satellite"
+        },
+        {
+          "finnish_use": "(SRD) Equipment for automatic vehicle identification for railways (AVI); (SRD) Equipment for detecting movement and for alert; (SRD) Non-specific Short Range Devices; (SRD) Radio frequency identification devices (RFID); (SRD) Wideband data transmission systems (WAS/RLAN)",
           "group_ids": [
             125748067
           ],
           "high_mhz": 2483.5,
-          "low_mhz": 2300.0,
-          "m4_primary_services": "FIXED; MOBILE",
+          "low_mhz": 2450.0,
+          "m4_api_row_ids": "3933-3966",
+          "m4_primary_services": "MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "142-144",
           "passive": false
         }
@@ -3132,12 +5544,12 @@
     "notice_ids": [
       "125545398"
     ],
-    "rank": 36,
+    "rank": 39,
     "rule_id": "m4-no-space-to-earth",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
-    "title": "FUNADE (J) transmits in 1 band(s) with no space-to-Earth allocation in Finland"
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "FUNADE (J) transmits in 2 band(s) with no space-to-Earth allocation in Finland"
   },
   {
     "adm": "I",
@@ -3155,7 +5567,9 @@
           ],
           "high_mhz": 2245.0,
           "low_mhz": 2200.0,
+          "m4_api_row_ids": "3883",
           "m4_primary_services": "FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "141-141",
           "passive": false
         }
@@ -3183,11 +5597,11 @@
     "notice_ids": [
       "125545399"
     ],
-    "rank": 37,
+    "rank": 40,
     "rule_id": "m4-no-space-to-earth",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "ION SCV-024 (I) transmits in 1 band(s) with no space-to-Earth allocation in Finland"
   },
   {
@@ -3204,9 +5618,11 @@
           "group_ids": [
             125751060
           ],
-          "high_mhz": 406.0,
+          "high_mhz": 403.0,
           "low_mhz": 401.0,
+          "m4_api_row_ids": "2659-2684",
           "m4_primary_services": "EARTH EXPLORATION-SATELLITE (EARTH-TO-SPACE); METEOROLOGICAL AIDS; METEOROLOGICAL-SATELLITE (EARTH-TO-SPACE); MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "97-98",
           "passive": false
         },
@@ -3217,7 +5633,9 @@
           ],
           "high_mhz": 2245.0,
           "low_mhz": 2200.0,
+          "m4_api_row_ids": "3883",
           "m4_primary_services": "FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "141-141",
           "passive": false
         }
@@ -3245,11 +5663,11 @@
     "notice_ids": [
       "125545400"
     ],
-    "rank": 38,
+    "rank": 41,
     "rule_id": "m4-no-space-to-earth",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "TYVAK-0404 (I) transmits in 2 band(s) with no space-to-Earth allocation in Finland"
   },
   {
@@ -3268,7 +5686,9 @@
           ],
           "high_mhz": 2245.0,
           "low_mhz": 2200.0,
+          "m4_api_row_ids": "3883",
           "m4_primary_services": "FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "141-141",
           "passive": false
         }
@@ -3296,11 +5716,11 @@
     "notice_ids": [
       "126545057"
     ],
-    "rank": 39,
+    "rank": 42,
     "rule_id": "m4-no-space-to-earth",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "LVI (IND) transmits in 1 band(s) with no space-to-Earth allocation in Finland"
   },
   {
@@ -3309,7 +5729,8 @@
     "details": {
       "assumptions": [
         "Beam coverage over Finland is not checked.",
-        "No power or pfd calculation was done."
+        "No power or pfd calculation was done.",
+        "Parts of a matched band have no M4 sub-band row (no_row_gaps_mhz); its primary terrestrial service is assumed to apply there."
       ],
       "bands": [
         {
@@ -3319,8 +5740,11 @@
           ],
           "high_mhz": 960.0,
           "low_mhz": 862.0,
+          "m4_api_row_ids": "3145-3398",
           "m4_primary_services": "MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "117-127",
+          "no_row_gaps_mhz": "879.9-880.1 914.9875-915 924.9-925.1 959.9875-960",
           "passive": false
         }
       ],
@@ -3347,12 +5771,81 @@
     "notice_ids": [
       "126545060"
     ],
-    "rank": 40,
+    "rank": 43,
     "rule_id": "m4-no-space-to-earth",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "AE4LA (J) transmits in 1 band(s) with no space-to-Earth allocation in Finland"
+  },
+  {
+    "adm": "CHN",
+    "comment_deadline": "2026-10-23",
+    "details": {
+      "assumptions": [
+        "Beam coverage over Finland is not checked.",
+        "No power or pfd calculation was done.",
+        "Parts of a matched band have no M4 sub-band row (no_row_gaps_mhz); its primary terrestrial service is assumed to apply there."
+      ],
+      "bands": [
+        {
+          "finnish_use": "Fixed radiolinks",
+          "group_ids": [
+            126656491,
+            126656492
+          ],
+          "high_mhz": 8500.0,
+          "low_mhz": 8400.0,
+          "m4_api_row_ids": "4356-4360",
+          "m4_primary_services": "FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
+          "m4_table_pages": "160-163",
+          "no_row_gaps_mhz": "8467-8500",
+          "passive": false
+        },
+        {
+          "finnish_use": "(SRD) Automotive Short Range Radar (SRR); Local terrestrial systems capable of providing electronic communications services; Terrestrial systems capable of providing electronic communications services",
+          "group_ids": [
+            126656495
+          ],
+          "high_mhz": 25500.0,
+          "low_mhz": 24250.0,
+          "m4_api_row_ids": "4987-5055",
+          "m4_primary_services": "FIXED; MOBILE AND FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
+          "m4_table_pages": "185-186",
+          "passive": false
+        }
+      ],
+      "method": "screening",
+      "sections": [
+        "9.1/IA"
+      ],
+      "source": {
+        "domain": "space",
+        "issue_no": 3074,
+        "notice_ids": [
+          "126545069"
+        ],
+        "sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721"
+      },
+      "visibility": [
+        "Non-GSO reaching 82.5 deg latitude"
+      ]
+    },
+    "domain": "space",
+    "family_id": 126545069,
+    "issue_no": 3074,
+    "network": "GD-B",
+    "notice_ids": [
+      "126545069"
+    ],
+    "rank": 44,
+    "rule_id": "m4-no-space-to-earth",
+    "severity": "medium",
+    "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "GD-B (CHN) transmits in 2 band(s) with no space-to-Earth allocation in Finland"
   },
   {
     "adm": "CHN",
@@ -3374,7 +5867,9 @@
           ],
           "high_mhz": 2245.0,
           "low_mhz": 2200.0,
+          "m4_api_row_ids": "3883",
           "m4_primary_services": "FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "141-141",
           "passive": false
         }
@@ -3402,11 +5897,11 @@
     "notice_ids": [
       "126545072"
     ],
-    "rank": 41,
+    "rank": 45,
     "rule_id": "m4-no-space-to-earth",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "LUNAR-R1 (CHN) transmits in 1 band(s) with no space-to-Earth allocation in Finland"
   },
   {
@@ -3427,7 +5922,9 @@
           ],
           "high_mhz": 2245.0,
           "low_mhz": 2200.0,
+          "m4_api_row_ids": "3883",
           "m4_primary_services": "FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "141-141",
           "passive": false
         }
@@ -3455,11 +5952,11 @@
     "notice_ids": [
       "126545073"
     ],
-    "rank": 42,
+    "rank": 46,
     "rule_id": "m4-no-space-to-earth",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "LUNAR-R2 (CHN) transmits in 1 band(s) with no space-to-Earth allocation in Finland"
   },
   {
@@ -3478,7 +5975,9 @@
           ],
           "high_mhz": 2245.0,
           "low_mhz": 2200.0,
+          "m4_api_row_ids": "3883",
           "m4_primary_services": "FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "141-141",
           "passive": false
         }
@@ -3506,11 +6005,11 @@
     "notice_ids": [
       "126545074"
     ],
-    "rank": 43,
+    "rank": 47,
     "rule_id": "m4-no-space-to-earth",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "LUNAR-R3 (CHN) transmits in 1 band(s) with no space-to-Earth allocation in Finland"
   },
   {
@@ -3530,7 +6029,9 @@
           ],
           "high_mhz": 2245.0,
           "low_mhz": 2200.0,
+          "m4_api_row_ids": "3883",
           "m4_primary_services": "FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "141-141",
           "passive": false
         }
@@ -3558,11 +6059,11 @@
     "notice_ids": [
       "126545075"
     ],
-    "rank": 44,
+    "rank": 48,
     "rule_id": "m4-no-space-to-earth",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "LUNAR-R4 (CHN) transmits in 1 band(s) with no space-to-Earth allocation in Finland"
   },
   {
@@ -3571,7 +6072,8 @@
     "details": {
       "assumptions": [
         "Beam coverage over Finland is not checked.",
-        "No power or pfd calculation was done."
+        "No power or pfd calculation was done.",
+        "Parts of a matched band have no M4 sub-band row (no_row_gaps_mhz); its primary terrestrial service is assumed to apply there."
       ],
       "bands": [
         {
@@ -3581,7 +6083,9 @@
           ],
           "high_mhz": 2070.0,
           "low_mhz": 2025.0,
+          "m4_api_row_ids": "3845-3846",
           "m4_primary_services": "FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "140-140",
           "passive": false
         },
@@ -3592,8 +6096,53 @@
           ],
           "high_mhz": 2110.0,
           "low_mhz": 2070.0,
+          "m4_api_row_ids": "3847-3857",
           "m4_primary_services": "EARTH EXPLORATION-SATELLITE (EARTH-TO-SPACE, SPACE-TO-SPACE); FIXED; SPACE OPERATION (EARTH-TO-SPACE, SPACE-TO-SPACE)",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "140-140",
+          "passive": false
+        },
+        {
+          "finnish_use": "Fixed radiolinks",
+          "group_ids": [
+            126658704
+          ],
+          "high_mhz": 8025.0,
+          "low_mhz": 7080.0,
+          "m4_api_row_ids": "4303-4353",
+          "m4_primary_services": "FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
+          "m4_table_pages": "160-163",
+          "no_row_gaps_mhz": "7080-7121 7233-7289 7401-7428 7869-7933",
+          "passive": false
+        },
+        {
+          "finnish_use": "Fixed radiolinks",
+          "group_ids": [
+            126658700,
+            126658701
+          ],
+          "high_mhz": 8500.0,
+          "low_mhz": 8400.0,
+          "m4_api_row_ids": "4356-4360",
+          "m4_primary_services": "FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
+          "m4_table_pages": "160-163",
+          "no_row_gaps_mhz": "8467-8500",
+          "passive": false
+        },
+        {
+          "finnish_use": "(SRD) Automotive Short Range Radar (SRR); Fixed radiolinks",
+          "group_ids": [
+            126658697,
+            126658710
+          ],
+          "high_mhz": 23600.0,
+          "low_mhz": 22500.0,
+          "m4_api_row_ids": "4834-4849 4860-4897",
+          "m4_primary_services": "FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
+          "m4_table_pages": "177-180",
           "passive": false
         }
       ],
@@ -3620,12 +6169,12 @@
     "notice_ids": [
       "126545076"
     ],
-    "rank": 45,
+    "rank": 49,
     "rule_id": "m4-no-space-to-earth",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
-    "title": "LUNAR-R5 (CHN) transmits in 2 band(s) with no space-to-Earth allocation in Finland"
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "LUNAR-R5 (CHN) transmits in 5 band(s) with no space-to-Earth allocation in Finland"
   },
   {
     "adm": "USA",
@@ -3672,7 +6221,9 @@
           ],
           "high_mhz": 2245.0,
           "low_mhz": 2200.0,
+          "m4_api_row_ids": "3883",
           "m4_primary_services": "FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "141-141",
           "passive": false
         }
@@ -3700,11 +6251,11 @@
     "notice_ids": [
       "126545087"
     ],
-    "rank": 46,
+    "rank": 50,
     "rule_id": "m4-no-space-to-earth",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "AMZLFG (USA) transmits in 1 band(s) with no space-to-Earth allocation in Finland"
   },
   {
@@ -3723,7 +6274,9 @@
           ],
           "high_mhz": 2245.0,
           "low_mhz": 2200.0,
+          "m4_api_row_ids": "3883",
           "m4_primary_services": "FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "141-141",
           "passive": false
         }
@@ -3751,11 +6304,11 @@
     "notice_ids": [
       "126545098"
     ],
-    "rank": 47,
+    "rank": 51,
     "rule_id": "m4-no-space-to-earth",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "SNAPPY (USA) transmits in 1 band(s) with no space-to-Earth allocation in Finland"
   },
   {
@@ -3764,7 +6317,8 @@
     "details": {
       "assumptions": [
         "Beam coverage over Finland is not checked.",
-        "No power or pfd calculation was done."
+        "No power or pfd calculation was done.",
+        "M4 gives no direction for EARTH EXPLORATION-SATELLITE; Earth Exploration-Satellite; Earth Exploration-Satellite; not counted as a space-to-Earth allocation."
       ],
       "bands": [
         {
@@ -3775,9 +6329,27 @@
           ],
           "high_mhz": 5350.0,
           "low_mhz": 5250.0,
+          "m4_api_row_ids": "4132-4141",
           "m4_primary_services": "MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "151-151",
-          "passive": false
+          "passive": false,
+          "space_down_unresolved": "Earth Exploration-Satellite"
+        },
+        {
+          "finnish_use": "Military use; Radars",
+          "group_ids": [
+            126662635,
+            126662645
+          ],
+          "high_mhz": 5460.0,
+          "low_mhz": 5350.0,
+          "m4_api_row_ids": "4142-4144",
+          "m4_primary_services": "RADIOLOCATION",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
+          "m4_table_pages": "151-153",
+          "passive": false,
+          "space_down_unresolved": "Earth Exploration-Satellite"
         },
         {
           "finnish_use": "(SRD) Wideband data transmission systems (WAS/RLAN); Meteorological radars; Military use; Radars",
@@ -3785,9 +6357,11 @@
             126662635,
             126662645
           ],
-          "high_mhz": 5725.0,
-          "low_mhz": 5350.0,
+          "high_mhz": 5650.0,
+          "low_mhz": 5460.0,
+          "m4_api_row_ids": "4144-4156",
           "m4_primary_services": "MOBILE; RADIOLOCATION",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "151-153",
           "passive": false
         },
@@ -3800,9 +6374,25 @@
             126662647
           ],
           "high_mhz": 10000.0,
-          "low_mhz": 8500.0,
+          "low_mhz": 9200.0,
+          "m4_api_row_ids": "4361-4371",
           "m4_primary_services": "EARTH EXPLORATION-SATELLITE; RADIOLOCATION",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "163-163",
+          "passive": false,
+          "space_down_unresolved": "EARTH EXPLORATION-SATELLITE; Earth Exploration-Satellite"
+        },
+        {
+          "finnish_use": "(SRD) Automotive Short Range Radar (SRR); Local terrestrial systems capable of providing electronic communications services; Terrestrial systems capable of providing electronic communications services",
+          "group_ids": [
+            126662632
+          ],
+          "high_mhz": 25500.0,
+          "low_mhz": 24250.0,
+          "m4_api_row_ids": "4987-5055",
+          "m4_primary_services": "FIXED; MOBILE AND FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
+          "m4_table_pages": "185-186",
           "passive": false
         },
         {
@@ -3813,7 +6403,9 @@
           ],
           "high_mhz": 27500.0,
           "low_mhz": 27000.0,
+          "m4_api_row_ids": "5058-5085",
           "m4_primary_services": "MOBILE AND FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "186-186",
           "passive": false
         }
@@ -3841,12 +6433,12 @@
     "notice_ids": [
       "126545117"
     ],
-    "rank": 48,
+    "rank": 52,
     "rule_id": "m4-no-space-to-earth",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
-    "title": "YG-1 (CHN) transmits in 4 band(s) with no space-to-Earth allocation in Finland"
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "YG-1 (CHN) transmits in 6 band(s) with no space-to-Earth allocation in Finland"
   },
   {
     "adm": "D",
@@ -3862,9 +6454,11 @@
           "group_ids": [
             126664722
           ],
-          "high_mhz": 406.0,
+          "high_mhz": 403.0,
           "low_mhz": 401.0,
+          "m4_api_row_ids": "2659-2684",
           "m4_primary_services": "EARTH EXPLORATION-SATELLITE (EARTH-TO-SPACE); METEOROLOGICAL AIDS; METEOROLOGICAL-SATELLITE (EARTH-TO-SPACE); MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "97-98",
           "passive": false
         },
@@ -3876,7 +6470,9 @@
           ],
           "high_mhz": 2245.0,
           "low_mhz": 2200.0,
+          "m4_api_row_ids": "3883",
           "m4_primary_services": "FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "141-141",
           "passive": false
         }
@@ -3904,11 +6500,11 @@
     "notice_ids": [
       "126545119"
     ],
-    "rank": 49,
+    "rank": 53,
     "rule_id": "m4-no-space-to-earth",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "SOLAR SENTRY (D) transmits in 2 band(s) with no space-to-Earth allocation in Finland"
   },
   {
@@ -3927,7 +6523,9 @@
           ],
           "high_mhz": 2245.0,
           "low_mhz": 2200.0,
+          "m4_api_row_ids": "3883",
           "m4_primary_services": "FIXED",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "141-141",
           "passive": false
         }
@@ -3955,11 +6553,11 @@
     "notice_ids": [
       "126545131"
     ],
-    "rank": 50,
+    "rank": 54,
     "rule_id": "m4-no-space-to-earth",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "ION SCV-025 (I) transmits in 1 band(s) with no space-to-Earth allocation in Finland"
   },
   {
@@ -3968,30 +6566,37 @@
     "details": {
       "assumptions": [
         "Beam coverage over Finland is not checked.",
-        "No power or pfd calculation was done."
+        "No power or pfd calculation was done.",
+        "M4 gives no direction for AMATEUR-SATELLITE; Amateur-Satellite; not counted as a space-to-Earth allocation."
       ],
       "bands": [
         {
-          "finnish_use": "(medelfrekvenser om delbandets gränskanaler) Amateur; Amateur",
+          "finnish_use": "(SRD) Tracking, tracing and data acquisition systems; Amateur",
           "group_ids": [
             126662558
           ],
           "high_mhz": 438.0,
-          "low_mhz": 432.0,
+          "low_mhz": 436.0,
+          "m4_api_row_ids": "2830-2834 2876-2890",
           "m4_primary_services": "AMATEUR; AMATEUR-SATELLITE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "103-106",
-          "passive": false
+          "passive": false,
+          "space_down_unresolved": "AMATEUR-SATELLITE"
         },
         {
-          "finnish_use": "(SRD) Equipment for automatic vehicle identification for railways (AVI); (SRD) Equipment for detecting movement and for alert; (SRD) Non-specific Short Range Devices; (SRD) Radio frequency identification devices (RFID); (SRD) Wideband data transmission systems (WAS/RLAN); Wireless cameras",
+          "finnish_use": "(SRD) Equipment for automatic vehicle identification for railways (AVI); (SRD) Equipment for detecting movement and for alert; (SRD) Non-specific Short Range Devices; (SRD) Radio frequency identification devices (RFID); (SRD) Wideband data transmission systems (WAS/RLAN); Amateur",
           "group_ids": [
             126662557
           ],
-          "high_mhz": 2483.5,
-          "low_mhz": 2300.0,
-          "m4_primary_services": "FIXED; MOBILE",
+          "high_mhz": 2450.0,
+          "low_mhz": 2400.0,
+          "m4_api_row_ids": "3919-3966",
+          "m4_primary_services": "MOBILE",
+          "m4_snapshot": "taajuusjakotaulukko_2026-11-07.json",
           "m4_table_pages": "142-144",
-          "passive": false
+          "passive": false,
+          "space_down_unresolved": "Amateur-Satellite"
         }
       ],
       "method": "screening",
@@ -4017,11 +6622,11 @@
     "notice_ids": [
       "126545140"
     ],
-    "rank": 51,
+    "rank": 55,
     "rule_id": "m4-no-space-to-earth",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "UEL-Y-SYS (KOR) transmits in 2 band(s) with no space-to-Earth allocation in Finland"
   },
   {
@@ -4115,11 +6720,11 @@
       "117520318",
       "317520318"
     ],
-    "rank": 52,
+    "rank": 56,
     "rule_id": "station-rx-overlap",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "NSL-1 (ISR) transmits on the receive band of 7 protected station(s): no class 7"
   },
   {
@@ -4204,11 +6809,11 @@
       "117520372",
       "317520372"
     ],
-    "rank": 53,
+    "rank": 57,
     "rule_id": "station-rx-overlap",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "AST-NG-C-4 (F) transmits on the receive band of 1 protected station(s): MVV 1"
   },
   {
@@ -4308,11 +6913,11 @@
     "notice_ids": [
       "119545232"
     ],
-    "rank": 54,
+    "rank": 58,
     "rule_id": "station-rx-overlap",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "TYSAR-01 (CHN) transmits on the receive band of 13 protected station(s): MUUT 13"
   },
   {
@@ -8515,11 +11120,11 @@
       "123520029",
       "323520029"
     ],
-    "rank": 55,
+    "rank": 59,
     "rule_id": "station-rx-overlap",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "USASAT-NGSO-3X (USA) transmits on the receive band of 21 protected station(s): no class 21"
   },
   {
@@ -9842,11 +12447,11 @@
       "124520131",
       "324520131"
     ],
-    "rank": 56,
+    "rank": 60,
     "rule_id": "station-rx-overlap",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "F-SAT-NG-15_B (F) transmits on the receive band of 21 protected station(s): no class 21"
   },
   {
@@ -10674,11 +13279,11 @@
       "124520173",
       "324520173"
     ],
-    "rank": 57,
+    "rank": 61,
     "rule_id": "station-rx-overlap",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "QATARGOV-G1-25.5E (QAT) transmits on the receive band of 46 protected station(s): no class 46"
   },
   {
@@ -10745,11 +13350,11 @@
       "124520174",
       "324520174"
     ],
-    "rank": 58,
+    "rank": 62,
     "rule_id": "station-rx-overlap",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "PAZ_2-A (E) transmits on the receive band of 1 protected station(s): MUUT 1"
   },
   {
@@ -11566,11 +14171,11 @@
       "124520183",
       "324520183"
     ],
-    "rank": 59,
+    "rank": 63,
     "rule_id": "station-rx-overlap",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "CHINASAT-H-60.5E (CHN) transmits on the receive band of 215 protected station(s): FX 162, MUUT 8, MVV 11, no class 34"
   },
   {
@@ -12381,11 +14986,11 @@
       "124520184",
       "324520184"
     ],
-    "rank": 60,
+    "rank": 64,
     "rule_id": "station-rx-overlap",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "CHINASAT-G-33.5E (CHN) transmits on the receive band of 215 protected station(s): FX 162, MUUT 8, MVV 11, no class 34"
   },
   {
@@ -12532,11 +15137,11 @@
       "124520192",
       "324520192"
     ],
-    "rank": 61,
+    "rank": 65,
     "rule_id": "station-rx-overlap",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "MTG-EUM_3.5E (D) transmits on the receive band of 29 protected station(s): FX 27, MVV 2"
   },
   {
@@ -12683,11 +15288,11 @@
       "124520193",
       "324520193"
     ],
-    "rank": 62,
+    "rank": 66,
     "rule_id": "station-rx-overlap",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "MTG-EUM_9.5E (D) transmits on the receive band of 29 protected station(s): FX 27, MVV 2"
   },
   {
@@ -13779,11 +16384,11 @@
       "124520194",
       "324520194"
     ],
-    "rank": 63,
+    "rank": 67,
     "rule_id": "station-rx-overlap",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "SECOMSAT-5-78E (E) transmits on the receive band of 154 protected station(s): FX 98, no class 56"
   },
   {
@@ -13850,11 +16455,11 @@
       "124520203",
       "324520203"
     ],
-    "rank": 64,
+    "rank": 68,
     "rule_id": "station-rx-overlap",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "LUMIRX-1 (KOR) transmits on the receive band of 1 protected station(s): MUUT 1"
   },
   {
@@ -14177,11 +16782,11 @@
       "124520204",
       "324520204"
     ],
-    "rank": 65,
+    "rank": 69,
     "rule_id": "station-rx-overlap",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "KAZSAT-KA-67.2E-2 (KAZ) transmits on the receive band of 24 protected station(s): no class 24"
   },
   {
@@ -15745,11 +18350,11 @@
       "124520214",
       "324520214"
     ],
-    "rank": 66,
+    "rank": 70,
     "rule_id": "station-rx-overlap",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "INSAT-COM(71E) (IND) transmits on the receive band of 29 protected station(s): MVV 5, no class 24"
   },
   {
@@ -15823,11 +18428,11 @@
     "notice_ids": [
       "124545327"
     ],
-    "rank": 67,
+    "rank": 71,
     "rule_id": "station-rx-overlap",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "CLOUDCT (D) transmits on the receive band of 3 protected station(s): MUUT 3"
   },
   {
@@ -17364,11 +19969,11 @@
     "notice_ids": [
       "124545403"
     ],
-    "rank": 68,
+    "rank": 72,
     "rule_id": "station-rx-overlap",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "CSN-SSO (CHN) transmits on the receive band of 348 protected station(s): BT 56, FX 183, MUUT 8, MVV 55, no class 46"
   },
   {
@@ -18689,11 +21294,11 @@
     "notice_ids": [
       "125520053"
     ],
-    "rank": 69,
+    "rank": 73,
     "rule_id": "station-rx-overlap",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "USASAT-NGSO-8F (USA) transmits on the receive band of 21 protected station(s): no class 21"
   },
   {
@@ -18773,11 +21378,11 @@
     "notice_ids": [
       "125520111"
     ],
-    "rank": 70,
+    "rank": 74,
     "rule_id": "station-rx-overlap",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "STARERA-3 (CHN) transmits on the receive band of 3 protected station(s): no class 3"
   },
   {
@@ -18841,11 +21446,11 @@
     "notice_ids": [
       "125545298"
     ],
-    "rank": 71,
+    "rank": 75,
     "rule_id": "station-rx-overlap",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "XH-1 (CHN) transmits on the receive band of 1 protected station(s): MUUT 1"
   },
   {
@@ -19323,11 +21928,11 @@
     "notice_ids": [
       "125545347"
     ],
-    "rank": 72,
+    "rank": 76,
     "rule_id": "station-rx-overlap",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "RLNEUTRON-1 (USA) transmits on the receive band of 170 protected station(s): FX 162, MUUT 8"
   },
   {
@@ -19492,11 +22097,11 @@
     "notice_ids": [
       "125545354"
     ],
-    "rank": 73,
+    "rank": 77,
     "rule_id": "station-rx-overlap",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "GARAI-B (S) transmits on the receive band of 45 protected station(s): FX 44, MUUT 1"
   },
   {
@@ -19946,11 +22551,11 @@
     "notice_ids": [
       "125545368"
     ],
-    "rank": 74,
+    "rank": 78,
     "rule_id": "station-rx-overlap",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "GRAVITAS (USA) transmits on the receive band of 170 protected station(s): FX 162, MUUT 8"
   },
   {
@@ -20084,11 +22689,11 @@
     "notice_ids": [
       "125545390"
     ],
-    "rank": 75,
+    "rank": 79,
     "rule_id": "station-rx-overlap",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "USASAT-30-3 (USA) transmits on the receive band of 11 protected station(s): MUUT 1, MVV 4, no class 6"
   },
   {
@@ -20546,11 +23151,11 @@
     "notice_ids": [
       "125545391"
     ],
-    "rank": 76,
+    "rank": 80,
     "rule_id": "station-rx-overlap",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "USASAT-MK1 (USA) transmits on the receive band of 170 protected station(s): FX 162, MUUT 8"
   },
   {
@@ -20691,11 +23296,11 @@
     "notice_ids": [
       "125545392"
     ],
-    "rank": 77,
+    "rank": 81,
     "rule_id": "station-rx-overlap",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "MULA (PHL) transmits on the receive band of 33 protected station(s): FX 32, MUUT 1"
   },
   {
@@ -20797,11 +23402,11 @@
     "notice_ids": [
       "125545395"
     ],
-    "rank": 78,
+    "rank": 82,
     "rule_id": "station-rx-overlap",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "INSIGHT-A (CHN) transmits on the receive band of 14 protected station(s): MUUT 14"
   },
   {
@@ -20904,11 +23509,11 @@
     "notice_ids": [
       "125545396"
     ],
-    "rank": 79,
+    "rank": 83,
     "rule_id": "station-rx-overlap",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "GY-2 (CHN) transmits on the receive band of 14 protected station(s): MUUT 14"
   },
   {
@@ -20979,11 +23584,11 @@
     "notice_ids": [
       "125545398"
     ],
-    "rank": 80,
+    "rank": 84,
     "rule_id": "station-rx-overlap",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "FUNADE (J) transmits on the receive band of 2 protected station(s): MUUT 2"
   },
   {
@@ -21057,11 +23662,11 @@
     "notice_ids": [
       "125545399"
     ],
-    "rank": 81,
+    "rank": 85,
     "rule_id": "station-rx-overlap",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "ION SCV-024 (I) transmits on the receive band of 6 protected station(s): FX 6"
   },
   {
@@ -21167,11 +23772,11 @@
     "notice_ids": [
       "125545400"
     ],
-    "rank": 82,
+    "rank": 86,
     "rule_id": "station-rx-overlap",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "TYVAK-0404 (I) transmits on the receive band of 22 protected station(s): FX 22"
   },
   {
@@ -21236,11 +23841,11 @@
     "notice_ids": [
       "125545402"
     ],
-    "rank": 83,
+    "rank": 87,
     "rule_id": "station-rx-overlap",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "JDG-SY (CHN) transmits on the receive band of 1 protected station(s): MUUT 1"
   },
   {
@@ -21304,11 +23909,11 @@
     "notice_ids": [
       "125545404"
     ],
-    "rank": 84,
+    "rank": 88,
     "rule_id": "station-rx-overlap",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "JZ-3 (CHN) transmits on the receive band of 1 protected station(s): MUUT 1"
   },
   {
@@ -21758,11 +24363,11 @@
     "notice_ids": [
       "126545057"
     ],
-    "rank": 85,
+    "rank": 89,
     "rule_id": "station-rx-overlap",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "LVI (IND) transmits on the receive band of 170 protected station(s): FX 162, MUUT 8"
   },
   {
@@ -21834,11 +24439,11 @@
     "notice_ids": [
       "126545060"
     ],
-    "rank": 86,
+    "rank": 90,
     "rule_id": "station-rx-overlap",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "AE4LA (J) transmits on the receive band of 2 protected station(s): MUUT 2"
   },
   {
@@ -21950,11 +24555,11 @@
     "notice_ids": [
       "126545069"
     ],
-    "rank": 87,
+    "rank": 91,
     "rule_id": "station-rx-overlap",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "GD-B (CHN) transmits on the receive band of 5 protected station(s): MUUT 1, MVV 4"
   },
   {
@@ -22423,11 +25028,11 @@
     "notice_ids": [
       "126545072"
     ],
-    "rank": 88,
+    "rank": 92,
     "rule_id": "station-rx-overlap",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "LUNAR-R1 (CHN) transmits on the receive band of 171 protected station(s): FX 162, MUUT 8, MVV 1"
   },
   {
@@ -22894,11 +25499,11 @@
     "notice_ids": [
       "126545073"
     ],
-    "rank": 89,
+    "rank": 93,
     "rule_id": "station-rx-overlap",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "LUNAR-R2 (CHN) transmits on the receive band of 171 protected station(s): FX 162, MUUT 8, MVV 1"
   },
   {
@@ -23375,11 +25980,11 @@
     "notice_ids": [
       "126545074"
     ],
-    "rank": 90,
+    "rank": 94,
     "rule_id": "station-rx-overlap",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "LUNAR-R3 (CHN) transmits on the receive band of 171 protected station(s): FX 162, MUUT 8, MVV 1"
   },
   {
@@ -23492,11 +26097,11 @@
     "notice_ids": [
       "126545075"
     ],
-    "rank": 91,
+    "rank": 95,
     "rule_id": "station-rx-overlap",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "LUNAR-R4 (CHN) transmits on the receive band of 18 protected station(s): FX 17, MVV 1"
   },
   {
@@ -23918,11 +26523,11 @@
     "notice_ids": [
       "126545076"
     ],
-    "rank": 92,
+    "rank": 96,
     "rule_id": "station-rx-overlap",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "LUNAR-R5 (CHN) transmits on the receive band of 163 protected station(s): FX 158, MUUT 3, MVV 2"
   },
   {
@@ -24047,11 +26652,11 @@
     "notice_ids": [
       "126545087"
     ],
-    "rank": 93,
+    "rank": 97,
     "rule_id": "station-rx-overlap",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "AMZLFG (USA) transmits on the receive band of 17 protected station(s): FX 17"
   },
   {
@@ -24199,11 +26804,11 @@
     "notice_ids": [
       "126545098"
     ],
-    "rank": 94,
+    "rank": 98,
     "rule_id": "station-rx-overlap",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "SNAPPY (USA) transmits on the receive band of 43 protected station(s): FX 43"
   },
   {
@@ -24267,11 +26872,11 @@
     "notice_ids": [
       "126545112"
     ],
-    "rank": 95,
+    "rank": 99,
     "rule_id": "station-rx-overlap",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "USASAT-30T-1 (USA) transmits on the receive band of 1 protected station(s): MUUT 1"
   },
   {
@@ -24336,11 +26941,11 @@
     "notice_ids": [
       "126545114"
     ],
-    "rank": 96,
+    "rank": 100,
     "rule_id": "station-rx-overlap",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "PUXING-1 (CHN) transmits on the receive band of 1 protected station(s): MUUT 1"
   },
   {
@@ -24404,11 +27009,11 @@
     "notice_ids": [
       "126545116"
     ],
-    "rank": 97,
+    "rank": 101,
     "rule_id": "station-rx-overlap",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "ARGUS-CHN (CHN) transmits on the receive band of 1 protected station(s): MUUT 1"
   },
   {
@@ -24589,11 +27194,11 @@
     "notice_ids": [
       "126545117"
     ],
-    "rank": 98,
+    "rank": 102,
     "rule_id": "station-rx-overlap",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "YG-1 (CHN) transmits on the receive band of 20 protected station(s): MUUT 14, MVV 6"
   },
   {
@@ -24690,11 +27295,11 @@
     "notice_ids": [
       "126545119"
     ],
-    "rank": 99,
+    "rank": 103,
     "rule_id": "station-rx-overlap",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "SOLAR SENTRY (D) transmits on the receive band of 17 protected station(s): FX 17"
   },
   {
@@ -24758,11 +27363,11 @@
     "notice_ids": [
       "126545123"
     ],
-    "rank": 100,
+    "rank": 104,
     "rule_id": "station-rx-overlap",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "KITASATS (USA) transmits on the receive band of 1 protected station(s): MUUT 1"
   },
   {
@@ -24868,11 +27473,11 @@
     "notice_ids": [
       "126545131"
     ],
-    "rank": 101,
+    "rank": 105,
     "rule_id": "station-rx-overlap",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "ION SCV-025 (I) transmits on the receive band of 22 protected station(s): FX 22"
   },
   {
@@ -24961,11 +27566,11 @@
     "notice_ids": [
       "126545132"
     ],
-    "rank": 102,
+    "rank": 106,
     "rule_id": "station-rx-overlap",
     "severity": "medium",
     "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
-    "source_url": "import:ific3074.zip",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
     "title": "ION SCV-026 (I) transmits on the receive band of 4 protected station(s): MUUT 4"
   }
 ]
