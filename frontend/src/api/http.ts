@@ -1,7 +1,7 @@
 // Talks to the IFIC Guard services through the /api proxy. Their shapes are defined in
 // ific_guard/schemas.py and the Case.details contract in .scratch/ific-guard-delivery/map.md.
 import { SEVERITY_ORDER } from '../lib/severity';
-import type { Api, BandMatch, NewRun, Run, CalculatedResult, CustomRule, CustomRuleRef, Domain, DomainFreshness, Finding, FunnelStage, IssueSummary, MonitorStatus, ReferenceSource, ReviewState, RuleDefinition, RuleSave, RuleSpec, RuleVersion, ScreenStatus, StationQuery, Severity, StationResult, SyncRun } from './types';
+import type { Api, BandMatch, Coverage, NewRun, Run, CalculatedResult, CustomRule, CustomRuleRef, Domain, DomainFreshness, Finding, FunnelStage, IssueSummary, MonitorStatus, ReferenceSource, ReviewState, RuleDefinition, RuleSave, RuleSpec, RuleVersion, ScreenStatus, StationQuery, Severity, StationResult, SyncRun } from './types';
 
 export interface ArtifactOut { id: number; domain: string; issue_no: number; published_on: string | null; source_url: string; sha256: string; size_bytes: number; fetched_at: string; screen_status: string; screened_at: string | null }
 export interface SyncRunOut { id: number; trigger: string; started_at: string; finished_at: string | null; status: string; discovered: number; fetched: number; errors: string[] }
@@ -294,7 +294,7 @@ const SOURCES: ReferenceSource[] = [
 
 export const httpApi: Api = {
   mode: 'live',
-  capabilities: { upload: true, checkItuNow: true, rescreen: true, reviewStatuses: ['accepted', 'rejected', 'pending'], letterStorage: 'browser', customRules: true, stationLists: true },
+  capabilities: { upload: true, checkItuNow: true, rescreen: true, reviewStatuses: ['accepted', 'rejected', 'pending'], letterStorage: 'browser', customRules: true, stationLists: true, coverage: true },
   severityNote: 'Set by the screening service from fixed rules. How station cases are ranked is the project’s choice, not Traficom’s.',
   listSeverityRules: async () => [
     { severity: 'High', rule: 'ITU names Finland in the filing’s coordination data, a visible satellite transmits in a passive band with no space-to-Earth allocation, or a pfd calculation exceeds a limit, including at a station in Traficom’s list' },
@@ -382,6 +382,21 @@ export const httpApi: Api = {
     return { total: out.total, matching: out.matching, offset: out.offset, rows: mapStationRecords(out.rows), counts: out.counts, notVisible: out.not_visible, issueNo: out.issue_no, datasetChanged: out.dataset_changed };
   },
   caseStationsCsvUrl: (id, q) => `/api/screening/cases/${encodeURIComponent(id)}/stations.csv?${stationParams({ ...q, offset: undefined, limit: undefined })}`,
+  getCoverage: async (id) => {
+    type Out = { issue_no: number; mapped: boolean; boundary: number[][][]; cell: { lat_step: number; lon_step: number }; orbit: Coverage['orbit']; gso_lon_deg: number | null; satellites: string[];
+      cells: { lat: number; lon: number; angle_deg: number | null; minutes: number | null; pfd_db: number | null; margin_db: number | null }[];
+      pfd: { available: boolean; reason?: string; ref_bw_hz?: number; group_id?: number; f_low_mhz?: number; f_high_mhz?: number; power_in_ref_bw_dbw?: number; gain_dbi?: number; mask_id?: string | null };
+      stations: { total: number; without_location: number; by_class: Record<string, number>; points?: { id: string; lat: number; lon: number; licence: string | null }[]; bins?: { lat: number; lon: number; count: number }[] };
+      notes: string[]; assumptions: string[] };
+    const o = await call<Out>('screening', `/cases/${encodeURIComponent(id)}/coverage`);
+    return {
+      issueNo: o.issue_no, mapped: o.mapped, boundary: o.boundary, cell: { latStep: o.cell.lat_step, lonStep: o.cell.lon_step }, orbit: o.orbit, gsoLonDeg: o.gso_lon_deg, satellites: o.satellites,
+      cells: o.cells.map((c) => ({ lat: c.lat, lon: c.lon, angleDeg: c.angle_deg, minutes: c.minutes, pfdDb: c.pfd_db, marginDb: c.margin_db })),
+      pfd: { available: o.pfd.available, reason: o.pfd.reason, refBwHz: o.pfd.ref_bw_hz, groupId: o.pfd.group_id, fLowMhz: o.pfd.f_low_mhz, fHighMhz: o.pfd.f_high_mhz, powerInRefBwDbw: o.pfd.power_in_ref_bw_dbw, gainDbi: o.pfd.gain_dbi, maskId: o.pfd.mask_id },
+      stations: { total: o.stations.total, withoutLocation: o.stations.without_location, byClass: o.stations.by_class, points: o.stations.points, bins: o.stations.bins },
+      notes: o.notes, assumptions: o.assumptions,
+    };
+  },
   rescreenSpace: async () => (await call<{ issues: number[] }>('screening', '/rules/rescreen', { method: 'POST' })).issues,
   listReferenceSources: async () => SOURCES,
   listLimits: async () => [],

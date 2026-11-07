@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { api } from '../api';
 import type { Finding, ReviewStatus, StationPage, StationResult } from '../api/types';
+import { FindingMap } from '../components/FindingMap';
 import { CommentWindow, ConfidenceText, Hash, Loading, ReviewBadge, SeverityBadge, useLoad } from '../components/ui';
 import { admName } from '../lib/adm';
 import { exportText } from '../lib/export';
@@ -50,6 +51,7 @@ export function FindingDetail() {
             <p className="fine">{f.customRule ? <>Severity is set by the rule an expert wrote, under <Link to="/rules">Screening rules</Link>.</> : <>Severity follows fixed rules listed under <Link to="/reference">Rules and data</Link>.</>} No AI was involved in this assessment.</p>
           </section>
 
+          {(f.kind === 'm4-no-space-to-earth' || f.customRule) && f.domain === 'space' && <FindingMap findingId={f.id} />}
           {f.customRule && <CustomRulePanel f={f} />}
           {f.bands.length > 0 && <BandsPanel f={f} />}
           {(f.stationResults?.length ?? 0) > 0 ? <StationResultsPanel f={f} /> : f.stationIds.length > 0 && <StationIdsPanel f={f} />}

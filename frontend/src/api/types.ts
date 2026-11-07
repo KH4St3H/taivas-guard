@@ -281,6 +281,23 @@ export interface Capabilities {
   letterStorage: 'browser' | 'server';
   customRules: boolean; // experts can write screening rules
   stationLists: boolean; // a case's full station list can be recomputed on request
+  coverage: boolean; // a finding's reach over Finland can be mapped
+}
+
+/** Where over Finland a case's satellite can reach. Computed on request; there is no beam footprint. */
+export interface Coverage {
+  issueNo: number;
+  mapped: boolean; // false: reach couldn't be placed, so empty cells are unknown, not out of view
+  boundary: number[][][]; // rings of [lon, lat]
+  cell: { latStep: number; lonStep: number };
+  orbit: 'gso' | 'ngso' | 'mixed' | 'none';
+  gsoLonDeg: number | null;
+  satellites: string[];
+  cells: { lat: number; lon: number; angleDeg: number | null; minutes: number | null; pfdDb: number | null; marginDb: number | null }[];
+  pfd: { available: boolean; reason?: string; refBwHz?: number; groupId?: number; fLowMhz?: number; fHighMhz?: number; powerInRefBwDbw?: number; gainDbi?: number; maskId?: string | null };
+  stations: { total: number; withoutLocation: number; byClass: Record<string, number>; points?: { id: string; lat: number; lon: number; licence: string | null }[]; bins?: { lat: number; lon: number; count: number }[] };
+  notes: string[];
+  assumptions: string[];
 }
 
 export interface StationQuery {
@@ -388,6 +405,7 @@ export interface Api {
   rescreenSpace(): Promise<number[]>;
   listCaseStations(id: string, query: StationQuery): Promise<StationPage>;
   caseStationsCsvUrl(id: string, query: StationQuery): string | null;
+  getCoverage(id: string): Promise<Coverage>;
   severityNote: string;
 }
 

@@ -355,3 +355,29 @@ label.check { display: flex; align-items: center; gap: 7px; font-size: 13.5px; c
 .conditions { margin: 0 0 10px; }
 .field label > input, .field label > select, .field label > textarea { display: block; width: 100%; margin-top: 5px; font-weight: 400; }
 .all-stations { margin-top: 16px; border-top: 1px solid var(--line); padding-top: 14px; }
+
+/* Finding map */
+.map-controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 12px 0; }
+.map-layout { display: flex; gap: 20px; align-items: flex-start; flex-wrap: wrap; }
+.map-frame { position: relative; flex: 0 1 300px; min-width: 220px; }
+.map-frame svg { display: block; width: 100%; height: auto; }
+.map-side { flex: 1 1 220px; min-width: 0; font-size: 13.5px; }
+.map-land { fill: var(--page); }
+.map-border { fill: none; stroke: var(--ink-3); stroke-width: 1; stroke-linejoin: round; }
+.map-hatch { stroke: var(--ink-3); stroke-width: 1.2; opacity: 0.6; }
+.map-hover { fill: none; stroke: var(--ink); stroke-width: 1.5; pointer-events: none; }
+.map-station { fill: #d95926; stroke: var(--surface); stroke-width: 1.5; }
+:root[data-theme="light"] .map-station { fill: #eb6834; }
+.map-tip { position: absolute; transform: translate(-50%, calc(-100% - 10px)); background: var(--surface); border: 1px solid var(--line-strong); border-radius: var(--radius-sm); box-shadow: var(--shadow); padding: 7px 10px; font-size: 12.5px; display: grid; gap: 2px; white-space: nowrap; pointer-events: none; z-index: 2; color: var(--ink-2); }
+.map-tip strong { color: var(--ink); font-weight: 600; }
+.map-legend { margin-bottom: 14px; }
+.map-ramp { height: 10px; border-radius: 3px; margin-top: 6px; }
+.map-ramp-ticks { display: flex; justify-content: space-between; font-size: 12px; color: var(--ink-3); margin-top: 4px; font-variant-numeric: tabular-nums; }
+.map-key { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--ink-2); margin: 8px 0 0; }
+.map-swatch { width: 14px; height: 14px; border-radius: 3px; flex: none; }
+.map-swatch-hatch { border: 1px solid var(--line-strong); background: repeating-linear-gradient(45deg, var(--ink-3) 0 1px, transparent 1px 5px); opacity: 0.8; }
+.map-swatch-station { border-radius: 50%; background: #d95926; box-shadow: 0 0 0 1.5px var(--surface); }
+:root[data-theme="light"] .map-swatch-station { background: #eb6834; }
+.map-table { width: 100%; margin: 10px 0; font-size: 13px; }
+.map-details { margin-top: 12px; font-size: 13px; color: var(--ink-2); }
+.map-details summary { cursor: pointer; color: var(--link); }

@@ -32,7 +32,7 @@ def screened(tmp_path, monkeypatch):
     rule = StationOverlapRule(get_settings(), stations, {"file": "register.xlsx", "sha256": "reg-1", "records": TOTAL})
     save_hits(artifact_id, list(rule.run(issue)))
     case_stations._compute.cache_clear()
-    monkeypatch.setattr(case_stations, "stored_issue", lambda *_: issue)
+    monkeypatch.setattr(case_stations, "load_issue", lambda *_: issue)
     monkeypatch.setattr(case_stations, "load_stations_cached", lambda *_: stations)
     monkeypatch.setattr(case_stations, "_digest", lambda *_: "reg-1")
     with session_scope() as s:

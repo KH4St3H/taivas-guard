@@ -14,12 +14,8 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
-from sqlalchemy import select
-
 from ..config import get_settings
-from ..db import session_scope
-from ..models import Artifact, Case, CaseOccurrence
-from .issue_cache import stored_issue
+from .issue_cache import CaseSource, Unavailable, case_source, load_issue
 from .m4 import load_m4_rows
 from .rule_pfd import PfdRule
 from .rule_stations import StationOverlapRule
@@ -30,12 +26,7 @@ CACHED_CASES = 4
 _lock = threading.Lock()  # one recomputation at a time: each can hold a whole issue and register in memory
 
 
-class NoStationList(Exception):
-    """The case has no station list, or what it needs is gone. The message is for the reviewer."""
-
-    def __init__(self, message: str, status: int):
-        super().__init__(message)
-        self.status = status
+NoStationList = Unavailable  # kept for the app's import
 
 
 @dataclass(frozen=True)
@@ -56,35 +47,12 @@ def _digest(path: Path) -> str:
         return hashlib.file_digest(stream, "sha256").hexdigest()
 
 
-def _target(case_id: int) -> tuple[tuple[int, str, int, str, int, str, str | None], int]:
-    with session_scope() as s:
-        case = s.get(Case, case_id)
-        if case is None:
-            raise NoStationList(f"No case {case_id}.", 404)
-        if not has_station_list(case.rule_id):
-            raise NoStationList("This case has no station list.", 404)
-        occurrences = list(s.scalars(select(CaseOccurrence).where(CaseOccurrence.case_id == case_id)))
-        occurrence = next((o for o in occurrences if o.artifact_id == case.changed_artifact_id), None)
-        if occurrence is None and occurrences:
-            occurrence = max(occurrences, key=lambda o: o.artifact_id)
-        if occurrence is None:
-            raise NoStationList("No screened issue holds this case any more, so its stations can't be listed.", 409)
-        artifact = s.get(Artifact, occurrence.artifact_id)
-        if artifact is None or artifact.domain != "space":
-            raise NoStationList("The issue this case came from is no longer stored.", 409)
-        dataset = (case.details or {}).get("station_dataset") or {}
-        return (case.id, case.material_hash, artifact.id, artifact.mdb_path, artifact.issue_no, case.rule_id,
-                dataset.get("sha256")), int(occurrence.hit["family_id"])
-
-
 @lru_cache(maxsize=CACHED_CASES)
-def _compute(case_id: int, material_hash: str, artifact_id: int, mdb_path: str, issue_no: int, rule_id: str,
-             screened_sha: str | None, family_id: int, register_sha: str) -> StationList:
+def _compute(source: CaseSource, register_sha: str) -> StationList:
     settings = get_settings()
-    try:
-        issue = stored_issue(artifact_id, mdb_path)
-    except FileNotFoundError:
-        raise NoStationList(f"The file for IFIC {issue_no} is no longer stored, so the stations can't be recomputed.", 409) from None
+    issue = load_issue(source)
+    family_id, rule_id, issue_no = source.family_id, source.rule_id, source.issue_no
+    screened_sha = (source.details.get("station_dataset") or {}).get("sha256")
     stations = load_stations_cached(STATIONS_PATH)
     pfd = PfdRule(settings, stations, station_limit=None, families={family_id})
     if rule_id == STATION_RULE:
@@ -104,9 +72,9 @@ def _compute(case_id: int, material_hash: str, artifact_id: int, mdb_path: str, 
 
 
 def station_list(case_id: int) -> StationList:
-    key, family_id = _target(case_id)
+    source = case_source(case_id, lambda c: has_station_list(c.rule_id), "This case has no station list.")
     with _lock:
-        return _compute(*key, family_id, _digest(STATIONS_PATH))
+        return _compute(source, _digest(STATIONS_PATH))
 
 
 def matching(rows: tuple[dict[str, Any], ...], status: str | None, licence: str | None) -> Iterator[dict[str, Any]]:

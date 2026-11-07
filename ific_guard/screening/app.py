@@ -15,6 +15,7 @@ from ..llm.template import CaseView
 from ..models import Artifact, Case
 from ..schemas import CaseOut, CaseReview, CaseSummary
 from ..service import consume, create_app, require_api_key
+from .coverage import coverage
 from .case_stations import CSV_COLUMNS, NoStationList, counts, csv_row, matching, station_list
 from .engine import handle_issue_fetched
 from .rules_api import router as rules_router, visible_cases
@@ -96,6 +97,18 @@ def case_stations_csv(
 
     name = f"case-{case_id}-stations-ific{result.issue_no}.csv"
     return StreamingResponse(lines(), media_type="text/csv", headers={"Content-Disposition": f'attachment; filename="{name}"'})
+
+
+@router.get("/cases/{case_id}/coverage")
+def case_coverage(case_id: int) -> dict:
+    """Where over Finland the case's satellite can reach, its worst-case pfd, and the listed stations in its bands.
+
+    Computed from the issue file on request; nothing is stored on the case.
+    """
+    try:
+        return coverage(case_id)
+    except NoStationList as exc:
+        raise HTTPException(exc.status, str(exc)) from None
 
 
 @router.get("/cases/{case_id}/draft", response_model=Draft)
