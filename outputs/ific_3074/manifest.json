@@ -1,12 +1,14 @@
 {
-  "case_count": 51,
+  "case_count": 102,
   "code_sha256": {
     "__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "cli.py": "e96b23d23ab365dc8c9988c860623a025b37bfe8822e512ad9bdd425d62b58a0",
     "config.py": "5c9209f90168f08ced4af4cc4c1d958a9b08a8686ba7ab32abdf5fd6089a01d4",
     "db.py": "afd0276cb67bc21490a049e54df3d17dfe4c5c2a539f40d1f1c4828eca5a2222",
+    "engines/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "engines/pfd.py": "2e9cd78a5388a4fabc7bcc225bdcc87e252f73ca27d470fe90b1814db6b3a933",
     "events.py": "97a681667f85a7a63985209e3190046492c5ece8ce9e832d2106616b718755d0",
-    "export.py": "75ddd85bd46cdb62a8725316ca000b82b6b09c68baa429e5ba3ed2b0d13cd439",
+    "export.py": "cea7036e74628359a7124f6df258265eb0c8f6c9a2e1cd68478c85f255c1edc5",
     "models.py": "e70b2c41fccea85116ae2c9ef0109260367c77e3e4826c81a7f24e33fb465ad2",
     "notifier/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "notifier/app.py": "14aa9e114356dbd9f197f032bbdc1c2e115baa8ae10ee55a4dea085fc3da7baf",
@@ -16,8 +18,10 @@
     "screening/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "screening/app.py": "901a2c084572c0c7e9821125320cd87f50e722c04774a8211120ec8557724267",
     "screening/engine.py": "ec7917f53a6745e5d4b07e594dfae68c140d7ef3c7cc96718a798eacb8badd21",
-    "screening/rules.py": "f4f6833cdf9d2d4d8ca06445cfa8e18ed1e499e4304ad4b7f7ad160710aa8913",
+    "screening/rule_stations.py": "8b6eb4ccf8b62f845597e6f14aaf6c8a9923d467a8047ecd3618b4bb62e96b98",
+    "screening/rules.py": "f44d3f3b1dd890b8171768b3f43663c18ce0becc1d758ab7295aa6cc3ae3d57d",
     "screening/space.py": "0d2700ec15cd4e28b27cf81623eced08ae7232d607b7ad633f4a091c06e02427",
+    "screening/stations.py": "c89f668f53b5fda671a70e5bb103293ec030dcb9d65896687067a214ecc31a25",
     "service.py": "d1cafab92b752e47280e237650787c3e3b41ef91836704bd89179ae669715fba",
     "sync/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "sync/app.py": "d9a868857f309792567623722e011f5fdc9c7c118d730d48a205b0cffac4c872",
@@ -29,7 +33,7 @@
     "terrestrial/diff.py": "4082c008511b7be30aad48509806f3313f8ea0ea778aa3bebf4f2d2271573eb5"
   },
   "code_version": {
-    "commit": "9b431ace5278d8659519b1f23ee8230288190f8c",
+    "commit": "4fe287424f39fd5e05b8f6c41eadfd9ca412d856",
     "dirty": false
   },
   "config": {
@@ -41,27 +45,28 @@
   },
   "domain": "space",
   "format_version": 1,
-  "generated_at": "2026-11-07T01:58:23.199884+00:00",
+  "generated_at": "2026-11-07T02:16:56.443564+00:00",
   "issue_no": 3074,
   "limitations": [
     "Possible concerns for expert review, not confirmed interference or regulatory breaches.",
     "AP30/AP30A/AP30B are not screened; current scope is API/A and CR/C.",
     "No beam coverage or power-flux-density calculation.",
     "The current M4 file merges 3400-4200 MHz and can miss 3400-3800 MHz concerns.",
-    "Special-interest station overlap is not yet implemented.",
+    "Special-interest station overlap is frequency overlap only; stations with no RX frequency are skipped.",
     "Comment deadlines are estimates requiring expert confirmation."
   ],
   "mdb_sha256": "a9755213b6cdb7a26a1ca1dcf95ba69a362d3bcc2cb088e91b6b8e01e4790e31",
   "output_sha256": {
-    "cases.csv": "fcd70baa05e33406770aa7551a3d1e428f82a032718582b2df64c832897fb50b",
-    "cases.json": "d5fbf07e8d3947ef29ac6b4fff95dc77cd663f2542afd8e9de9afbfc97d834ee"
+    "cases.csv": "aa5e72ad7e225a765704e3ccad1199c250cadd5d8df6d893a570fd635d3bbb02",
+    "cases.json": "d2fed838893f6a0b684d478915452794cc1bcd3f057af1e2f9941d1bbf45f88f"
   },
   "provisional_format": true,
   "rule_ids": [
     "fin-named-by-br",
-    "m4-no-space-to-earth"
+    "m4-no-space-to-earth",
+    "station-rx-overlap"
   ],
-  "run_time_s": 35.350657,
+  "run_time_s": 73.262311,
   "scope": {
     "ap30_coverage": "not implemented",
     "notice_reasons": [
@@ -71,5 +76,5 @@
   },
   "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
   "source_size_bytes": 60837631,
-  "source_url": "https://www.itu.int/sns/ific10/ific3074.zip"
+  "source_url": "import:ific3074.zip"
 }
