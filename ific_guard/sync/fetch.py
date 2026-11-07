@@ -1,5 +1,6 @@
 """Downloads, verifies and stores one IFIC file. Nothing becomes visible until every check passes."""
 import hashlib
+import re
 import shutil
 import tempfile
 import zipfile
@@ -11,6 +12,7 @@ import httpx
 from ..config import Settings
 
 _MDB_MAGIC = (b"Standard Jet DB", b"Standard ACE DB")
+MDB_SUFFIXES = (".mdb", ".accdb")
 
 
 class BadArtifact(Exception):
@@ -30,7 +32,7 @@ def _extract_mdb(zip_path: Path, out_dir: Path, max_bytes: int) -> Path:
         with zipfile.ZipFile(zip_path) as archive:
             if archive.testzip() is not None:
                 raise BadArtifact("A file inside the zip failed its CRC check")
-            members = [m for m in archive.infolist() if m.filename.lower().endswith((".mdb", ".accdb"))]
+            members = [m for m in archive.infolist() if m.filename.lower().endswith(MDB_SUFFIXES)]
             if len(members) != 1:
                 raise BadArtifact(f"Expected one database in the zip, found {len(members)}")
             member = members[0]
@@ -47,31 +49,67 @@ def _extract_mdb(zip_path: Path, out_dir: Path, max_bytes: int) -> Path:
                     dst.write(chunk)
     except zipfile.BadZipFile as exc:
         raise BadArtifact(f"Not a valid zip: {exc}") from exc
-    with target.open("rb") as f:
-        if f.read(32)[4:19] not in _MDB_MAGIC:
-            raise BadArtifact(f"{target.name} is not an Access database")
+    _check_mdb(target)
     return target
 
 
-def store_zip(zip_path: Path, domain: str, issue_no: int, settings: Settings, etag: str | None = None) -> Stored:
-    """Verifies a zip and moves it into place at data/ific/<domain>/<issue>/<sha12>/."""
+def _check_mdb(path: Path) -> None:
+    with path.open("rb") as f:
+        if f.read(32)[4:19] not in _MDB_MAGIC:
+            raise BadArtifact(f"{path.name} is not an Access database")
+
+
+def _store(source: Path, domain: str, issue_no: int, settings: Settings, etag: str | None, prepare) -> Stored:
+    """Moves a verified file into place at data/ific/<domain>/<issue>/<sha12>/."""
     digest = hashlib.sha256()
-    with zip_path.open("rb") as f:
+    with source.open("rb") as f:
         while chunk := f.read(1024 * 1024):
             digest.update(chunk)
     sha = digest.hexdigest()
-    size = zip_path.stat().st_size
+    size = source.stat().st_size
     final = settings.data_dir / "ific" / domain / str(issue_no) / sha[:12]
     if not final.exists():
         final.parent.mkdir(parents=True, exist_ok=True)
         with tempfile.TemporaryDirectory(dir=final.parent, prefix=".tmp-") as tmp:
             work = Path(tmp) / "new"
             work.mkdir()
-            _extract_mdb(zip_path, work, settings.max_mdb_bytes)
-            shutil.copy2(zip_path, work / zip_path.name)
+            prepare(work)
+            shutil.copy2(source, work / source.name)
             work.rename(final)  # atomic: readers see all of it or none of it
-    mdb = next(p for p in final.iterdir() if p.suffix.lower() in (".mdb", ".accdb"))
+    mdb = next(p for p in final.iterdir() if p.suffix.lower() in MDB_SUFFIXES)
     return Stored(mdb, sha, size, etag)
+
+
+def store_zip(zip_path: Path, domain: str, issue_no: int, settings: Settings, etag: str | None = None) -> Stored:
+    def prepare(work: Path) -> None:
+        _extract_mdb(zip_path, work, settings.max_mdb_bytes)
+
+    return _store(zip_path, domain, issue_no, settings, etag, prepare)
+
+
+def store_mdb(mdb_path: Path, domain: str, issue_no: int, settings: Settings) -> Stored:
+    if mdb_path.stat().st_size > settings.max_mdb_bytes:
+        raise BadArtifact(f"{mdb_path.name} is over the {settings.max_mdb_bytes} byte limit")
+    _check_mdb(mdb_path)
+    return _store(mdb_path, domain, issue_no, settings, None, lambda _work: None)
+
+
+def store_file(path: Path, domain: str, issue_no: int, settings: Settings) -> Stored:
+    """Stores an IFIC given as a zip or as a bare Access database."""
+    suffix = path.suffix.lower()
+    if suffix == ".zip":
+        return store_zip(path, domain, issue_no, settings)
+    if suffix in MDB_SUFFIXES:
+        return store_mdb(path, domain, issue_no, settings)
+    raise BadArtifact(f"{path.name}: expected a .zip, .mdb or .accdb file")
+
+
+def parse_issue_filename(name: str) -> tuple[str, int] | None:
+    """ITU's own names say what a file is: ific3074 is space, brific3076 is terrestrial."""
+    found = re.fullmatch(r"(br)?ific[ _-]?(\d{4})\.(zip|mdb|accdb)", name.strip(), re.I)
+    if not found:
+        return None
+    return ("terrestrial" if found.group(1) else "space"), int(found.group(2))
 
 
 def download(client: httpx.Client, url: str, domain: str, issue_no: int, settings: Settings) -> Stored | None:

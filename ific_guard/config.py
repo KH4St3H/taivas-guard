@@ -3,6 +3,8 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Literal
 
+from croniter import croniter
+from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -16,9 +18,9 @@ class Settings(BaseSettings):
     worker_poll_s: float = 5.0
 
     # sync
-    poll_interval_s: int = 6 * 3600  # issues appear every two weeks; 6 h finds one the same day
-    retry_interval_s: int = 15 * 60  # sooner than the normal poll after a run with errors
-    min_issue: int = 3074  # the oldest issue the challenge evaluates
+    sync_cron: str = "0 */6 * * *"  # UTC. Issues appear every two weeks; this finds one the same day
+    retry_interval_s: int = 15 * 60  # sooner than the next scheduled run after a run with errors
+    min_issue: int = 3074  # the oldest issue the challenge evaluates; older ones can be uploaded
     stale_after_days: int = 21  # observed gaps are 14-17 days
     space_index_base: str = "https://www.itu.int/sns/wic/"
     terrestrial_index_url: str = "https://www.itu.int/en/ITU-R/terrestrial/brific/Pages/default.aspx"
@@ -49,6 +51,16 @@ class Settings(BaseSettings):
     notify_min_severity: Literal["low", "medium", "high"] = "medium"
     digest_max_cases: int = 50
     public_base_url: str = "http://localhost:8002"
+
+    # terrestrial: administrations whose notices are in scope (ITU codes: Russia, Sweden, Estonia, Norway, Denmark)
+    neighbour_adms: list[str] = ["RUS", "S", "EST", "NOR", "DNK"]
+
+    @field_validator("sync_cron")
+    @classmethod
+    def _valid_cron(cls, value: str) -> str:
+        if not croniter.is_valid(value):
+            raise ValueError(f"IFIC_SYNC_CRON is not a valid cron expression: {value!r}")
+        return value
 
 
 @lru_cache

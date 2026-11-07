@@ -3,7 +3,7 @@
 Status: ready-for-agent
 Type: task
 Size: M
-Blocked by: 03, 04, 05, 06, 07, 08, 09, 10, 11, 12, 13 (a cut ticket no longer blocks this)
+Blocked by: 03, 04, 05, 06, 07, 08, 09, 10, 11, 12, 13, 15
 Owner: the coordinator
 
 ## Goal
@@ -13,7 +13,7 @@ Everything the brief's section 07 asks for, produced from the merged code in one
 ## Do
 
 1. Merge finished branches in dependency order, resolving the one-line `space_rules()` conflicts, and run `uv run pytest` after each merge.
-2. From an empty database, run the full stack with `docker compose up --build`, with `IFIC_MIN_ISSUE=3074`. Confirm that Space 3074 and Terrestrial 3076 both reach `screen_status: done`, and a digest is written to a file.
+2. From an empty database, run the full stack with `docker compose up --build`, with `IFIC_MIN_ISSUE=3074`. Confirm that the cron-driven first sync downloads Space 3074 and Terrestrial 3076, that both reach `screen_status: done`, and that a digest is written to a file. Then repeat on another empty database using `POST /issues/upload` with the `.zip` for one and the `.mdb` for the other, and compare the results. They must match.
 3. Export `outputs/ific_3074/` and `outputs/ific_3076/`, in Traficom's format if ticket 02 got an answer.
 4. Check a sample of cases from each rule by hand, and report false positives and misses as far as they can be judged. Do not claim accuracy that was not measured.
 5. Update the docs:
@@ -33,7 +33,7 @@ Everything the brief's section 07 asks for, produced from the merged code in one
 | Code repository | Pushed, with the user's approval |
 | Clarifying documentation | The docs above |
 
-Every known limitation is stated in the README. Anything cut from this plan is listed there too.
+Every known limitation is stated in the README.
 
 ## Not in scope
 

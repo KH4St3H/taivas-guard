@@ -2,7 +2,7 @@
 from datetime import date, datetime
 from typing import Any
 
-from sqlalchemy import JSON, Date, DateTime, Index, Integer, String, Text, UniqueConstraint
+from sqlalchemy import JSON, BigInteger, Date, DateTime, Index, Integer, String, Text, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column
 
 from .db import Base, utcnow
@@ -20,7 +20,7 @@ class Artifact(Base):
     published_on: Mapped[date | None] = mapped_column(Date)
     source_url: Mapped[str] = mapped_column(Text)
     sha256: Mapped[str] = mapped_column(String(64))
-    size_bytes: Mapped[int] = mapped_column(Integer)
+    size_bytes: Mapped[int] = mapped_column(BigInteger)  # uploaded databases can pass 2 GB
     etag: Mapped[str | None] = mapped_column(Text)
     mdb_path: Mapped[str] = mapped_column(Text)
     fetched_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)

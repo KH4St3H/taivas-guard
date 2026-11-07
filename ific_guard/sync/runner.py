@@ -1,16 +1,18 @@
 """One sync pass: discover issues, fetch the missing ones, announce each in the outbox."""
 import logging
 import threading
-from datetime import date
+from datetime import date, datetime
+from pathlib import Path
 
 import httpx
+from croniter import croniter
 from sqlalchemy import func, select
 
 from .. import events
 from ..config import Settings, get_settings
 from ..db import session_scope, utcnow
 from ..models import Artifact, SyncRun
-from .fetch import Stored, download
+from .fetch import Stored, download, parse_issue_filename, store_file
 from .sources import DISCOVERERS, IssueRef
 
 log = logging.getLogger(__name__)
@@ -128,20 +130,41 @@ def run_sync(trigger: str = "schedule", client: httpx.Client | None = None) -> i
             client.close()
 
 
-def scheduled_pass() -> float:
-    """Runs one scheduled sync. Returns how long to wait: shorter if anything failed."""
+def seconds_until_next_run(now: datetime | None = None) -> float:
+    """Time until the next IFIC_SYNC_CRON slot, in UTC."""
+    now = now or utcnow()
+    return (croniter(get_settings().sync_cron, now).get_next(datetime) - now).total_seconds()
+
+
+def has_run_before() -> bool:
+    with session_scope() as s:
+        return s.scalars(select(SyncRun.id).limit(1)).first() is not None
+
+
+def scheduled_pass(now: datetime | None = None) -> float:
+    """Runs one scheduled sync. Returns how long to wait: the next cron slot, or sooner if anything failed."""
     settings = get_settings()
-    run_id = None
+    status = None
     try:
         run_id = run_sync("schedule")
+        if run_id is not None:  # None: another pass, such as a manual one, is running
+            with session_scope() as s:
+                status = s.get_one(SyncRun, run_id).status
     except Exception:  # e.g. database briefly unavailable
         log.exception("scheduled sync crashed")
-        return settings.retry_interval_s
-    if run_id is None:  # another pass, such as a manual one, is running
-        return settings.retry_interval_s
-    with session_scope() as s:
-        status = s.get_one(SyncRun, run_id).status
-    return settings.poll_interval_s if status == "ok" else settings.retry_interval_s
+    wait = seconds_until_next_run(now)
+    return wait if status == "ok" else min(wait, settings.retry_interval_s)
+
+
+def ingest_file(path: Path, domain: str | None, issue_no: int | None, source: str) -> tuple[Artifact, bool]:
+    """Stores a file someone supplied. Same checks and events as a download, so screening cannot tell them apart."""
+    if domain is None or issue_no is None:
+        parsed = parse_issue_filename(path.name)
+        if parsed is None:
+            raise ValueError(f"Cannot tell the domain and issue from {path.name!r}. Give both explicitly.")
+        domain, issue_no = domain or parsed[0], issue_no or parsed[1]
+    stored = store_file(path, domain, issue_no, get_settings())
+    return record_artifact(domain, issue_no, stored, source)
 
 
 def freshness() -> dict[str, dict]:

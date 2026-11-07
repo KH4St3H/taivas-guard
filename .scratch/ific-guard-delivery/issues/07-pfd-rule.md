@@ -24,7 +24,7 @@ From IFIC 3083's schema; confirm against 3074 and the Space Preface:
 2. For visible GSO space-to-Earth groups in masked bands, evaluate using worst-case inputs from ARCHITECTURE.md section 7: boresight gain towards Finland and maximum power density.
 3. Fill the `details` contract in `map.md`, including `calc_inputs` and `assumptions`. Label Article 21 results and Appendix 5 results separately.
 4. Add `scoring.py`, implementing ARCHITECTURE.md section 4.7, with weights as configuration. Show the reasons for each score. Ticket 10 reuses it.
-5. Non-GSO: if time allows, implement the one-minute orbit propagation. Otherwise screen on frequency and inclination, set `method: "screening"`, and flag for expert review, as section 4.5 permits.
+5. Non-GSO: implement the one-minute orbit propagation in ARCHITECTURE.md section 4.5, since the brief names non-GSO pfd as being of special interest. Where orbit data is missing, screen on frequency and inclination, set `method: "screening"`, and flag for expert review.
 
 ## Wording
 

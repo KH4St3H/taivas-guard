@@ -3,7 +3,7 @@
 Status: ready-for-agent
 Type: task
 Size: M
-Blocked by: 01
+Blocked by: none
 Owns: `ific_guard/llm/`, `data/refdocs/`, a read endpoint `GET /cases/{id}/draft` in `ific_guard/screening/app.py`, `tests/test_llm.py`
 
 ## Goal

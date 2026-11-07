@@ -3,7 +3,7 @@
 Status: ready-for-agent
 Type: task
 Size: M
-Blocked by: 01
+Blocked by: none
 Owns: `app.py`, a `ui` dependency group in `pyproject.toml`, `tests/test_ui_client.py`
 
 ## Goal
@@ -15,9 +15,10 @@ A Streamlit page where an expert can work through cases, as in ARCHITECTURE.md s
 1. Ranked case list with filters for severity, rule, administration, status and issue.
 2. Case detail: why it was raised, notices, bands, stations, comment deadline, then calculation inputs, assumptions, margin and citations where present. Handle `method: "screening"` cases with no numbers.
 3. Accept or reject with a note, through `PATCH /cases/{id}`. Read the API key from the environment, and never show it.
-4. A status strip from `GET /status` on the sync service: latest issue per domain and whether it is stale.
-5. A clear statement that a case is a possible concern for review, unless it carries a calculated exceedance.
-6. Build against the `details` contract in `map.md`, with sample data until tickets 07 and 10 merge.
+4. A status strip from `GET /status` on the sync service: latest issue per domain, whether it is stale, and the next scheduled run.
+5. An upload control that sends an `.mdb` or `.zip` to `POST /issues/upload`, then shows the issue being screened. Show the API's error text for a rejected file.
+6. A clear statement that a case is a possible concern for review, unless it carries a calculated exceedance.
+7. Build against the `details` contract in `map.md`, with sample data until tickets 07 and 10 merge.
 
 ## Acceptance
 

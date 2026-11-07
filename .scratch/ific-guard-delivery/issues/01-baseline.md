@@ -56,3 +56,5 @@ verified MDBs to `data/shared/`. All archive sizes match the expected values.
 The earlier macOS shared-data path in the plan is obsolete for this checkout;
 use this repository's `data/shared/`. Data and local tooling remain ignored.
 Tests were run in this clean baseline checkout, not a separate worktree.
+
+Additional upstream verification: `schema.sql` creates all 12 tables in DuckDB.

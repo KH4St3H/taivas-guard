@@ -12,33 +12,36 @@ Status values come from `docs/agents/triage-labels.md`. Size is a rough relative
 
 | # | Ticket | Owner | Size | Blocked by | Priority |
 |---|---|---|---|---|---|
-| 01 | Baseline: commit, fix stray text, fetch shared data | Human + coordinator | S | none | Required |
+| 01 | Baseline: commit, fix stray text, fetch shared data | Done | S | none | Required |
 | 02 | Ask Traficom the open questions | Human | S | none | Required |
-| 03 | Space 3074 evaluation export | Agent | M | 01 | Required |
-| 04 | M4 bands from Traficom's API | Agent | M | 01 | High |
-| 05 | Station loader and overlap rule | Agent | M | 01 | High |
-| 06 | pfd engine and limit masks | Agent | L | 01 | High |
-| 07 | pfd rule on real filings | Agent | M | 06 | High |
-| 08 | Terrestrial adapter, diff and filter | Agent | L | 01 | Required |
-| 09 | P.1546 engine and T/R 25-08 triggers | Agent | L | 01 | Required |
+| 03 | Space 3074 evaluation export | Agent | M | none | Required |
+| 04 | M4 bands from Traficom's API | Agent | M | none | Required |
+| 05 | Station loader and overlap rule | Agent | M | none | Required |
+| 06 | pfd engine and limit masks | Agent | L | none | Required |
+| 07 | pfd rule on real filings | Agent | M | 06 | Required |
+| 08 | Terrestrial adapter, diff and filter | Agent | L | none | Required |
+| 09 | P.1546 engine and T/R 25-08 triggers | Agent | L | none | Required |
 | 10 | Terrestrial findings and 3076 export | Agent | M | 03, 08, 09 | Required |
-| 11 | Neighbour trends and anomalies | Agent | S | 08 | Medium |
-| 12 | Review UI | Agent | M | 01 | Medium |
-| 13 | Explanations and draft letters | Agent | M | 01 | High |
+| 11 | Neighbour trends and anomalies | Agent | S | 08 | Required |
+| 12 | Review UI | Agent | M | none | Wanted |
+| 13 | Explanations and draft letters | Agent | M | none | Required |
 | 14 | Final run, evaluation files and demo | Coordinator | M | all others | Required |
+| 15 | Older IFIC issues | Agent | M | 03 | Required |
+
+"Required" follows the brief: datasets marked `**` are mandatory, it asks for GSO and non-GSO pfd, the side quest including trends, and for all existing issues to be evaluable. A UI is not named in the brief.
 
 ### Order
 
+The team set no deadline for this plan, so the aim is the full scope, in dependency order. Nothing is planned for cutting.
+
 ```
-Wave 0   01  02 (02 runs alongside everything; answers feed later tickets)
-Wave 1   03  04  05  06  08  09  12  13   in parallel
-Wave 2   07  10  11                       as their blockers finish
-Wave 3   14
+Now        02 (runs alongside everything; answers feed later tickets)
+Wave 1     03  04  05  06  08  09  12  13   in parallel
+Wave 2     07  10  11  15                   as their blockers finish
+Wave 3     14
 ```
 
-With fewer agents, start in this order: 03, 08, 09, 06, 04, 13, 05, 12. These are the two mandatory evaluated issues first, then the calculation that gives space cases their evidence.
-
-If time runs out, cut in this order: 11, then 12 (the API and exports can carry a demo), then 07's non-GSO part, then 05. Keep 13 at least as deterministic templates, since draft correspondence is in the brief's guiding question.
+With fewer agents than tickets, start in this order: 03, 08, 09, 06, 04, 05, 13, 12. The evaluated issues come first, then the calculation that gives space cases their evidence.
 
 ### How agents work
 
@@ -47,7 +50,7 @@ The coordinator is one agent or person who assigns tickets, merges and updates t
 1. **One worktree and branch per ticket:** `agent/NN-slug`, from the latest baseline. Commit there. Never commit to `main`, and do not push unless the coordinator says so.
 2. **The coordinator assigns tickets.** Worktrees each hold their own copy of `.scratch/`, so self-claiming by editing a status file would not be seen by other agents. Report results in your final message; the coordinator records them here.
 3. **Stay inside your ticket's "Owns" list.** If you need a change elsewhere, make the smallest additive change and name it in your report.
-4. **Shared data is read-only.** `data/` and `files/` are git-ignored, so a worktree does not contain them. Point to the shared copy from ticket 01 with an absolute path: `/Users/mehrshad/personal/radio/data/shared/`. Do not download from ITU again.
+4. **Shared data is read-only.** `data/` and `files/` are git-ignored, so a worktree does not contain them. Use the shared copy with an absolute path: `/Users/mehrshad/personal/radio/data/shared/`, which holds `ific3074`, `ific3083`, `brific3075` and `brific3076`, each as `.zip` and `.mdb`. Do not download these from ITU again.
 5. **Never send real email.** Keep `IFIC_EMAIL_BACKEND` at `console` or `file`.
 6. **Do not use Docker Compose or fixed ports 8001-8003 in parallel work.** Use the test client, or pick an unused port. Ticket 14 runs the full stack.
 7. **Do not invent regulatory values.** Limits, trigger values and clause numbers must come from a source you read, and carry a citation. If you cannot get the source, stop and report `needs-info`.
@@ -112,12 +115,15 @@ Screening rules without a calculation use `method: "screening"` and leave the nu
 - **The terrestrial diff uses 3075 to 3076**, since the brief asks for consecutive issues.
 - **Deterministic code decides.** The LLM only explains and drafts (ARCHITECTURE.md section 2).
 - **Baseline verified (2026-11-07):** services and stray-text fix were already committed at `bc9c594`; 41 baseline tests pass. All four verified archives and MDBs are in this checkout's ignored `data/shared/`. See [ticket 01](issues/01-baseline.md). The old macOS shared-data path does not apply here.
-- **Sequential implementation:** the user requested issues one by one. Work continues in the existing `services-foundation-v2` checkout without parallel agents, commits or pushes. Ticket 02 remains a human question list; ticket 03 uses a clearly provisional export format.
+- **Sequential implementation:** the user requested issues one by one. Work continues in the existing `services-foundation-v2` checkout without parallel agents. The user subsequently authorized committing and pulling this branch; nothing has been pushed. Ticket 02 remains a human question list; ticket 03 uses a clearly provisional export format.
 - **Space 3074 export complete:** [ticket 03](issues/03-space-3074-export.md) produced 51 possible concerns (10 high, 41 medium), identical CSV/JSON across two runs, five source-row checks, and 45 passing tests. Export re-evaluates the source artifact so mutable cross-issue review state cannot contaminate historical results. AP30-family coverage remains a declared gap.
+- **The deadline does not constrain this plan** (team decision, 2026-11-07).
+- **Issues arrive two ways:** from ITU on a cron schedule, or uploaded as an `.mdb` or a `.zip` containing one. Both are built (`IFIC_SYNC_CRON`, `POST /issues/upload`).
+- **Terrestrial neighbours are Russia, Sweden, Estonia, Norway and Denmark** (team decision). ITU codes `RUS`, `S`, `EST`, `NOR`, `DNK`, confirmed in `ref_adm`, in setting `neighbour_adms`. Sweden's code is `S`, not `SWE`. Treated as a terrestrial scope only, because the brief says a satellite from anywhere can reach Finland.
 
 ## Fog
 
-- **Submission deadline.** The event runs 6-8 Nov 2026, and the exact time is not in the brief. It decides how much of this plan is realistic.
 - **Evaluation file format** for 3074 and 3076 (ticket 02). Ticket 03 builds a provisional format.
+- **What Sweden, Norway and Denmark contribute.** In Terrestrial 3075, 3076 and 3083, none of them notifies any station in `fxm_terra` or `fmtv_terra`. Only Russia and Estonia do. See ticket 08.
 - **Whether teammates are already building** the pfd engine, P.1546 or the UI. If so, remove those tickets rather than duplicating.
 - **Whether Octave is acceptable** for P.1546 in the demo environment (ticket 09).

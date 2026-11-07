@@ -22,6 +22,11 @@ class ArtifactOut(_Orm):
     screened_at: datetime | None
 
 
+class UploadOut(BaseModel):
+    artifact: ArtifactOut
+    new: bool  # false: this exact file was already stored
+
+
 class SyncRunOut(_Orm):
     id: int
     trigger: str

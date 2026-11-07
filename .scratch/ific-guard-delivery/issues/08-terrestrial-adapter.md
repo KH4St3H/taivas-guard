@@ -3,7 +3,7 @@
 Status: ready-for-agent
 Type: task
 Size: L
-Blocked by: 01
+Blocked by: none
 Owns: `ific_guard/terrestrial/adapter.py`, `ific_guard/terrestrial/diff.py`, `tests/test_terrestrial_adapter.py`
 
 ## Goal
@@ -28,7 +28,17 @@ Read `ReadMe_3076.pdf` (`.../BRIFIC/ReadMe/ReadMe_3076.pdf`) for structure. Note
 1. Define land mobile using service and station-class codes from the reference tables. State the exact codes and why.
 2. Produce a typed `TerrestrialIssue`, keeping `terrakey` verbatim plus raw source rows.
 3. Diff two issues using the data's own `action` and `target` fields if they mean what they appear to, otherwise by comparing rows. Check this: an IFIC is an update, so absence from the next issue may not mean withdrawn. Report what you conclude and why.
-4. Filter to foreign stations near Finland: by administration (neighbours, per ticket 02), and by distance to the Finnish border, with a band-dependent limit in configuration.
+4. Filter to foreign stations near Finland: by administration using `settings.neighbour_adms` (`RUS`, `S`, `EST`, `NOR`, `DNK`), and by distance to the Finnish border, with a band-dependent limit in configuration. The distance matters: Russian notices include stations far from Finland, and `DNK` may include Greenland and the Faroes. Do not hard-code the country list.
+
+   **Known data pattern.** Station rows by notifying administration, before any land-mobile or distance filter:
+
+   | Issue | `fxm_terra` RUS | EST | S, NOR, DNK | `fmtv_terra` RUS | EST | S, NOR, DNK |
+   |---|---:|---:|---:|---:|---:|---:|
+   | 3075 | 499 | 24 | 0 | 78 | 0 | 0 |
+   | 3076 | 313 | 0 | 0 | 51 | 0 | 0 |
+   | 3083 | 815 | 70 | 0 | 4 | 2 | 0 |
+
+   So in 3076, stations come from Russia alone. Do not treat zero Swedish, Norwegian or Danish notices as a bug or a clean result: state it in the output. `fxm_coord` does name `S`, `EST` and `NOR` on some notices. Work out what those rows mean from the ReadMe, and report whether they add anything relevant to Finland.
 5. Add land/sea path information, or a clear interface for ticket 09 to compute it.
 
 ## Acceptance

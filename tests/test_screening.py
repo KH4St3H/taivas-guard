@@ -128,6 +128,16 @@ def test_rescreening_is_idempotent_and_only_material_change_reopens_a_case():
         assert (case.review_status, case.severity, case.changed_artifact_id) == ("pending", "high", newer)
 
 
+def test_an_older_issue_processed_later_moves_first_issue_back_without_reopening():
+    newer = _artifact(issue=3083, sha="a" * 64)
+    screen_artifact(newer, _tables(), _rules())
+    older = _artifact(issue=3074, sha="b" * 64)
+    assert screen_artifact(older, _tables(1410), _rules())["changed"] == 0
+    with session_scope() as s:
+        case = s.scalars(select(Case)).one()
+        assert (case.first_issue, case.last_issue, case.changed_artifact_id) == (3074, 3083, newer)
+
+
 def test_terrestrial_reports_no_rules_rather_than_no_concerns():
     artifact_id = _artifact(domain="terrestrial")
     assert screen_artifact(artifact_id)["status"] == "no_rules"
