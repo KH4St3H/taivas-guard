@@ -25,8 +25,11 @@ Status values come from `docs/agents/triage-labels.md`. Size is a rough relative
 | 11 | Neighbour trends and anomalies | Done, merged in `integration/wave-3` | S | 08 | Required |
 | 12 | Review UI | Done, React in `frontend/`, by `ar6aaz` | M | none | Wanted |
 | 13 | Explanations and draft letters | Done, `agent/13-llm-drafts` | M | none | Required |
-| 14 | Final run, evaluation files and demo | Coordinator | M | all others | Required |
+| 14 | Final run, evaluation files and demo | Coordinator | M | all others except 17 and 18 | Required |
 | 15 | Older IFIC issues | Done for version 10 only, merged in `integration/wave-3` | M | 03 | Required |
+| 16 | Protect TX as well as RX frequencies | Agent, do now | M | none | Required |
+| 17 | AP30, AP30A and AP30B plan screening | Later, `needs-info` | L | none | Required by the brief, gap declared for now |
+| 18 | Pending work before submission (checklist) | Coordinator | L | none | Mixed, see ticket |
 
 "Required" follows the brief: datasets marked `**` are mandatory, it asks for GSO and non-GSO pfd, the side quest including trends, and for all existing issues to be evaluable. A UI is not named in the brief.
 
