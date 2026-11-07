@@ -7,6 +7,8 @@ How IFIC Guard runs as FastAPI services: keeping IFIC databases up to date, scre
 | Decision | Choice | Why |
 |---|---|---|
 | Service split | Three services in one repo and one Python package: `sync`, `screening`, `notifier` | They fail and scale differently, but a small team can still change them together |
+| How issues arrive | Downloaded from ITU on a cron schedule, or uploaded as an `.mdb` or a `.zip` containing one | Both take the same path afterwards, so screening cannot tell them apart |
+| Terrestrial neighbours | Russia, Sweden, Estonia, Norway, Denmark (`RUS`, `S`, `EST`, `NOR`, `DNK`) | Set by the team, and configurable with `IFIC_NEIGHBOUR_ADMS`. Space filings are not limited to these, because a satellite from anywhere can reach Finland |
 | Messaging | Outbox table in the operational database | No broker to run. An event commits together with the change it announces, so neither is lost |
 | Operational data | Postgres (SQLite for local development) | Several processes must write at once |
 | Analytical data | DuckDB as in `schema.sql`, written only by `screening` | DuckDB allows one writing process, so it cannot be the shared store |
@@ -20,7 +22,8 @@ How IFIC Guard runs as FastAPI services: keeping IFIC databases up to date, scre
 
 ```mermaid
 flowchart LR
-    ITU[ITU public listings<br/>and zip files] -->|poll every 6 h| SYNC
+    ITU[ITU public listings<br/>and zip files] -->|cron schedule| SYNC
+    UPLOAD[Uploaded .mdb or .zip] -->|POST /issues/upload| SYNC
 
     subgraph Services
         SYNC[sync :8001]
@@ -48,11 +51,11 @@ flowchart LR
 | | `sync` | `screening` | `notifier` |
 |---|---|---|---|
 | Job | Find and store new issues | Turn issues into cases; serve review | Email experts and operators |
-| Consumes | ITU listings on a timer | `issue.fetched` | `issue.screened`, `ops.alert` |
+| Consumes | ITU listings on a cron schedule, uploaded files | `issue.fetched` | `issue.screened`, `ops.alert` |
 | Publishes | `issue.fetched`, `ops.alert` | `issue.screened` | Nothing |
 | Writes | `artifact`, `sync_run`, IFIC files | `case_`, DuckDB, `artifact.screen_status` | `notification` |
 | Read API | `GET /issues`, `/runs`, `/status` | `GET /cases`, `/cases/{id}` | `GET /notifications` |
-| Write API (needs key) | `POST /sync` | `PATCH /cases/{id}`, `POST /issues/{id}/screen` | `POST /notifications/test` |
+| Write API (needs key) | `POST /sync`, `POST /issues/upload` | `PATCH /cases/{id}`, `POST /issues/{id}/screen` | `POST /notifications/test` |
 
 Every service also serves `/health`, `/ready` and FastAPI's `/docs`. Each runs as one uvicorn process with its background loops in the app lifespan. **Run one replica of each for now.** The outbox is safe with more, but the sync scheduler's lock is per process.
 
@@ -90,13 +93,23 @@ Issues appear about every two weeks. Issue 3084's files return 404 for now, whic
 5. Move it atomically to `data/ific/<domain>/<issue>/<sha12>/`. Files are never overwritten.
 6. Commit the `artifact` row and `issue.fetched` together.
 
+**Schedule.** `IFIC_SYNC_CRON` takes a standard cron expression, in UTC. The default, `0 */6 * * *`, runs every 6 hours. The `sync` service runs it in-process, so containers need no system cron. A brand new install syncs at once rather than waiting for the first slot. To use a system crontab instead, call `python -m ific_guard.cli sync`, and do not run the `sync` service's schedule alongside it.
+
+**Upload.** `POST /issues/upload` takes a multipart `file`, either an `.mdb` or `.accdb`, or a `.zip` containing exactly one. ITU-style names identify it (`ific3074` is space, `brific3076` is terrestrial). For any other name, send `domain` and `issue_no` as form fields. The same exact file uploaded twice is stored and screened once, and an uploaded issue is not downloaded again.
+
+```bash
+curl -H "X-API-Key: $IFIC_API_KEY" -F file=@ific3074.zip localhost:8001/issues/upload
+```
+
+The hash is taken from the file as supplied, so the same issue given as an `.mdb` and as a `.zip` counts as two revisions. Cases are not duplicated if that happens, because they are matched by fingerprint.
+
 **Failing visibly matters most here,** because a broken sync otherwise looks the same as "no new issue":
 
 | Situation | Behaviour |
 |---|---|
 | Listing loads but no issues can be read (page redesign) | Raises `ListingChanged`; the run is marked failed and ops is alerted |
 | One domain is down | The other still syncs; the run is `partial` |
-| Any errors in a run | Retry after 15 minutes instead of 6 hours; at most one sync alert per day |
+| Any errors in a run | Retry after 15 minutes rather than waiting for the next slot; at most one sync alert per day |
 | No issue for over 21 days (normal gap is 14-17) | `GET /status` reports `stale: true`. It does not raise an alert yet |
 | Corrupt, truncated or oversized file | Rejected before anything becomes visible |
 | Download link outside `itu.int` | Refused |
@@ -158,7 +171,7 @@ uv run uvicorn ific_guard.notifier.app:app --port 8003
 uv run pytest
 ```
 
-To skip a download, load a local copy: `uv run python -m ific_guard.cli import files/ific3083.zip --domain space --issue 3083`. Full stack: `docker compose up --build`.
+To skip a download, load a local copy with `uv run python -m ific_guard.cli import files/ific3083.zip`, or upload it (section 4). Full stack: `docker compose up --build`.
 
 With the default `IFIC_MIN_ISSUE=3074`, the first sync downloads about 20 zips. The space ones are 20-60 MB each.
 
@@ -169,6 +182,9 @@ With the default `IFIC_MIN_ISSUE=3074`, the first sync downloads about 20 zips. 
 - Automated tests pass, using fake servers and no real mail.
 - All three services as separate processes on SQLite, against live ITU: both 3083 files fetched in 45 s, 39 cases opened (9 high, 30 medium), one digest written to a file, in 64 s overall. The downloaded space zip's SHA-256 matches `files/ific3083.zip`.
 - On Postgres through Compose, against live ITU: sync run `ok`, the same 39 cases as SQLite, one digest written to a file. Re-screening the issue added no cases and no email.
+- Uploads with the real files, on SQLite: `brific3076.mdb` and `ific3074.zip` were accepted, a repeat upload was recognised, and a request with no key got 401. Space 3074 screened in under a minute at about 700 MB peak memory.
+- Cron, on SQLite with an every-minute schedule: runs started on the minute with no errors.
+- Discovery finds Space and Terrestrial 3074-3083 with `IFIC_MIN_ISSUE=3074`, and downloading Space 3074 and Terrestrial 3076 directly gave the same hashes as the shared copies.
 
 **Open or not yet verified**
 
@@ -176,6 +192,8 @@ With the default `IFIC_MIN_ISSUE=3074`, the first sync downloads about 20 zips. 
 |---|---|
 | **One unexplained download failure under Compose** | One of two runs ended `partial` with `could not fetch space issue 3083`; the error text was lost, and the next run was clean. It may have been a network problem, but that is unconfirmed. The failure alert fired and the other domain still synced. If it recurs, read `errors` from `GET localhost:8001/runs` |
 | Real SMTP | Tested with a mocked client only |
+| A full first sync | With `IFIC_MIN_ISSUE=3074` this fetches about 20 zips. Each path was tested, but not that whole run |
+| Cron and upload on Postgres | Tested on SQLite only so far |
 | Case accuracy | The 39 cases have not been checked by an expert or compared with Traficom's results |
 
 **Known gaps**
@@ -183,6 +201,8 @@ With the default `IFIC_MIN_ISSUE=3074`, the first sync downloads about 20 zips. 
 | Gap | Effect | Fix |
 |---|---|---|
 | Terrestrial has no rules | Files sync, but report `no_rules`, deliberately not "no concerns" | Land-mobile adapter and P.1546 engine |
+| Cases span issues | A case seen in two issues counts once, so a digest or count for one issue can omit it. **Export per issue, not from "new" cases** | Ticket 03 |
+| Older issues untested | The brief says all existing issues must be evaluable. Space discovery looks back 3 years, and older databases may differ | Ticket 15. Upload works as a way in meanwhile |
 | `m4_satellite_filter.csv` merges 3400-4200 MHz as one shared band | **False negatives in 3.4-3.8 GHz**, which ARCHITECTURE.md names as a key national case | Rebuild from Traficom's API, which has sub-band rows |
 | No beam coverage or pfd check | `m4-no-space-to-earth` over-flags and cannot confirm an exceedance | pfd engine, then GIMS contours |
 | AP30, AP30A, AP30B not screened | The brief puts them in scope; issue 3083's plan tables are empty, so this is untested | Add notice handling using an issue that contains them |
@@ -192,9 +212,9 @@ With the default `IFIC_MIN_ISSUE=3074`, the first sync downloads about 20 zips. 
 
 ## 10. Next steps, in order
 
-For the challenge, the deadline is what matters, so these come first:
+The full breakdown is in `.scratch/ific-guard-delivery/map.md`.
 
-1. Run sync with `IFIC_MIN_ISSUE=3074` and process Space 3074, which is evaluated separately. Export cases as the required CSV and JSON.
+1. Process Space 3074, which is evaluated separately, and export its cases.
 2. Replace the band file with Traficom API data to close the 3.4-3.8 GHz gap.
 3. Add a special-interest station overlap rule.
 4. Add the pfd engine as a rule, which is what allows a case to say a limit is exceeded.
@@ -208,5 +228,7 @@ After the hackathon: Alembic, SSO, staleness alerts, a stuck-event view and metr
 Added to ARCHITECTURE.md section 9:
 
 1. Who should receive the email, and would they want a digest or also immediate alerts for high-severity cases?
-2. Would ITU's terms allow automated polling and retention of these files in production?
+2. Would ITU's terms allow automated downloads and retention of these files in production?
 3. Is the 4-month comment window right for every section in scope, including API/A?
+4. Do you provide a template for the 3074 and 3076 results? The brief says "separate file(s) to be provided".
+5. Terrestrial 3075, 3076 and 3083 hold fixed and mobile notices from Russia and Estonia only among the five neighbours. Is coordination data (`fxm_coord`), which also names Sweden and Norway, what matters for those countries?

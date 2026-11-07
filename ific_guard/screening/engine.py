@@ -52,6 +52,7 @@ def save_hits(artifact_id: int, hits: list[Hit], domain: str = SPACE) -> tuple[i
                     )
                 )
                 continue
+            case.first_issue = min(case.first_issue, artifact.issue_no)  # issues can arrive out of order by upload
             case.last_issue = max(case.last_issue, artifact.issue_no)
             if case.material_hash != material and artifact.issue_no >= case.last_issue:
                 changed += 1
