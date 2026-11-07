@@ -143,6 +143,14 @@ export interface CustomRuleRef {
   matchedCount: number;
 }
 
+export interface CeptCompliance {
+  doc: string;
+  clause: string;
+  page: number;
+  listed: boolean;
+  systems: { adm: string; network: string; commitment: string }[];
+}
+
 export interface Finding {
   id: string;
   issueId: string;
@@ -179,6 +187,8 @@ export interface Finding {
   /** Distinct M4 primary services across `bands`. List rows carry this even though they carry no bands. */
   m4PrimaryServices: string[];
   customRule?: CustomRuleRef | null;
+  /** On a CEPT pfd case: whether the CEPT document lists this filing as compliant. */
+  ceptCompliance?: CeptCompliance | null;
   visibility: string[];
   basis: string | null;
   calc: PfdCalculation | null;

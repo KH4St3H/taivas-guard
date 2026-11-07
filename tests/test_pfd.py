@@ -214,6 +214,8 @@ def test_appendix_5_is_kept_separate_from_article_21():
     for m in MASKS.masks:
         if m.mask_id.startswith("art21"):
             assert m.kind == "pfd_art21" and "21.16" in m.citation["clause"]
+        elif m.mask_id.startswith("cept-"):
+            assert m.kind == "pfd_cept" and m.citation["doc"] != "RR"
         else:
             assert m.kind == "pfd_app5" and "Appendix 5" in m.citation["clause"]
     assert MASKS.select(1525, 1530, "pfd_app5", "GSO") != MASKS.select(1525, 1530, "pfd_art21", "GSO")
@@ -300,10 +302,13 @@ def test_every_mask_is_well_formed_and_cited():
     raw = json.loads((MASK_DIR / "limit_masks.json").read_text(encoding="utf-8"))
     assert len({m["mask_id"] for m in raw["masks"]}) == len(raw["masks"])
     assert {s["sha256"] for s in raw["sources"]["RR"]}
+    cept = json.loads((MASK_DIR / "cept_masks.json").read_text(encoding="utf-8"))
+    assert all(len(s["sha256"]) == 64 and s["url"] for s in cept["sources"].values())
     for m in MASKS.masks:
         angles = [b[0] for b in m.breakpoints]
         assert angles[0] == 0 and angles[-1] == 90 and angles == sorted(angles), m.mask_id
-        assert m.citation["doc"] == "RR" and m.citation["clause"] and m.citation["printed_page"], m.mask_id
+        sources = {"RR"} if m.kind != "pfd_cept" else set(cept["sources"])
+        assert m.citation["doc"] in sources and m.citation["clause"] and m.citation["printed_page"], m.mask_id
         assert m.unit == "dB(W/m2)" and m.ref_bw_hz in (4000, 1e6) and m.services, m.mask_id
 
 

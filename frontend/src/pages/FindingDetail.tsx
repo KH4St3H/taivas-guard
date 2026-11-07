@@ -47,6 +47,14 @@ export function FindingDetail() {
             {f.basis && <p className="muted">{f.basis}</p>}
             {f.coordProvisions.length > 0 && <p>Provisions: <strong>{f.coordProvisions.join(', ')}</strong>. ITU’s list is for information only (RR No. 9.36.1), so an expert still decides.</p>}
             {f.visibility.length > 0 && <p className="muted">Visibility: {f.visibility.join('; ')}</p>}
+            {f.ceptCompliance && (
+              <p className={f.ceptCompliance.listed ? 'notice' : 'notice notice-warn'}>
+                {f.ceptCompliance.listed
+                  ? <><strong>On the {f.ceptCompliance.doc} list of compliant systems</strong> ({f.ceptCompliance.clause}, page {f.ceptCompliance.page}): {f.ceptCompliance.systems.map((s) => `${s.network} (${s.adm}), commitment ${s.commitment}`).join('; ')}.</>
+                  : <><strong>Not on the {f.ceptCompliance.doc} list of compliant systems</strong> ({f.ceptCompliance.clause}, page {f.ceptCompliance.page}). Listed: {f.ceptCompliance.systems.map((s) => `${s.network} (${s.adm})`).join(', ')}.</>}
+                {' '}Matched on administration and network name only.
+              </p>
+            )}
             {unconfirmed && <p className="notice notice-warn"><strong>Possible concern.</strong> No calculation backs this case, so it doesn’t show that any limit is exceeded.</p>}
             <p className="fine">{f.customRule ? <>Severity is set by the rule an expert wrote, under <Link to="/rules">Screening rules</Link>.</> : <>Severity follows fixed rules listed under <Link to="/reference">Rules and data</Link>.</>} No AI was involved in this assessment.</p>
           </section>

@@ -1,0 +1,76 @@
+{
+ "description": "Power flux-density values from CEPT (ECC) documents that a satellite filing visible from Finland can be screened against. Only values read at the source are included, each with its page.",
+ "applicability": {
+  "pfd_cept": "A CEPT condition, not an RR limit. Crossing one is a concern for expert review; it does not by itself make a filing non-compliant with the Radio Regulations."
+ },
+ "sources": {
+  "ECC/DEC/(25)02": {
+   "doc": "ECC Decision (25)02 on low power devices communicating with satellites (LPD-S) within the frequency range 862-870 MHz, approved 27 June 2025",
+   "url": "https://docdb.cept.org/download/4784",
+   "sha256": "71038a01ca25d711fea08af423e3e21bfd7e806a3ff54ec8972da816de199454",
+   "retrieved": "2026-11-07",
+   "finland_implementation": {
+    "status": "planned",
+    "date": "31-01-2027",
+    "url": "https://docdb.cept.org/implementation/28652",
+    "retrieved": "2026-11-07"
+   }
+  }
+ },
+ "transcription": "Read from the text of the PDF above (Annex 1, printed page 5; Annex 2, printed page 6).",
+ "masks": [
+  {
+   "mask_id": "cept-dec2502-862-870",
+   "kind": "pfd_cept",
+   "f_low_mhz": 862,
+   "f_high_mhz": 870,
+   "services": ["Space-to-Earth transmissions of satellites communicating with low power devices"],
+   "orbit_type": null,
+   "ref_bw_hz": 4000.0,
+   "breakpoints": [[0, -142], [90, -142]],
+   "unit": "dB(W/m2)",
+   "citation": {
+    "doc": "ECC/DEC/(25)02",
+    "clause": "Annex 1: \"The PFD of space-to-Earth transmissions does not exceed -142 dB(W/(m².4kHz)) on the surface of the Earth within 862-870 MHz.\"",
+    "printed_page": 5,
+    "url": "https://docdb.cept.org/download/4784"
+   },
+   "note": "The same at every angle of arrival: the Decision states it on the surface of the Earth. There is no satellite allocation in 862-870 MHz in CEPT countries (considering l), so satellites there operate under RR No. 4.4. Finland's implementation is planned (EFIS, 31-01-2027)."
+  }
+ ],
+ "compliance_lists": {
+  "cept-dec2502-862-870": {
+   "doc": "ECC/DEC/(25)02",
+   "clause": "Annex 2: satellite systems declaring compliance with the requirements of Annex 1",
+   "printed_page": 6,
+   "systems": [
+    {"adm": "D", "network": "LS-4", "operator": "Lacuna Space", "commitment": "C-D-25060008 dated 2 June 2025"},
+    {"adm": "TUR", "network": "Connecta IoT", "operator": "Plan-S", "commitment": "C-TUR-25060153 dated 3 June 2025; C-TUR-25060408 dated 5 June 2025"}
+   ]
+  }
+ },
+ "no_limit_for_finland": [],
+ "not_covered": [
+  {
+   "f_low_mhz": 862,
+   "f_high_mhz": 870,
+   "source": "ECC/DEC/(25)02, Annex 1, printed page 5",
+   "what": "-146 dB(W/(m2.1MHz)) on the surface of the Earth outside 862-870 MHz, for the unwanted emissions of these transmissions",
+   "why": "IFIC filings do not describe unwanted emissions, so this can't be calculated."
+  },
+  {
+   "f_low_mhz": 8025,
+   "f_high_mhz": 8400,
+   "source": "ECC Report 115 (January 2008), section 5 Conclusions, https://docdb.cept.org/download/474, sha256 7e902f20339054c33ea1b71925dd4590ab04eaa8e2df0ae8695c3fbe37550f34",
+   "what": "EESS spacecraft using non-directional antennas be designed to limit their spectral pfd on the Earth's surface to less than -123 dB(W/m2/MHz), corresponding to -147 dBW/m2 in 4 kHz, at their sub-satellite points",
+   "why": "A Report's mitigation to be considered, not a Decision, and it applies only to non-directional antennas and only at the sub-satellite point; the filing doesn't say whether an antenna is non-directional."
+  },
+  {
+   "f_low_mhz": 698,
+   "f_high_mhz": 3800,
+   "source": "ECC Report 373 (approved 13 February 2026), sections 3.3 and 4.2, https://docdb.cept.org/download/4910, sha256 1f154ca531d000c79082a663879e63682d2ef2a193cfbec9ccc1e4cf0774d36e",
+   "what": "pfd limits to protect terrestrial mobile networks from satellite direct-to-device downlinks in MFCN bands",
+   "why": "The Report says such limits \"should be defined\" and that \"the actual future limits are still under study\"; it gives no value of its own (its Table 2 repeats RR Appendix 5)."
+  }
+ ]
+}

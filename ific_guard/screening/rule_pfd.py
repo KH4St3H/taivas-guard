@@ -22,7 +22,7 @@ from functools import lru_cache
 from typing import Any
 
 from ..config import Settings
-from ..engines.pfd import GroundPoint, LimitMask, evaluate_gso, finland_points, gso_geometry, load_masks, pfd_db
+from ..engines.pfd import GroundPoint, LimitMask, compliance_lists, evaluate_gso, finland_points, gso_geometry, load_masks, pfd_db
 from ..engines.pfd_ngso import (
     ENVELOPE_STEP_DEG,
     PROPAGATION_MINUTES,
@@ -481,6 +481,33 @@ STATION_ASSUMPTIONS = [
 ]
 
 
+KIND_LABELS = {"art21": "Article 21 limit", "app5": "Appendix 5 coordination trigger", "cept": "CEPT pfd condition"}
+CEPT_ASSUMPTION = (
+    "A CEPT condition is not an RR limit: crossing it is a concern for expert review, not non-compliance with the Radio "
+    "Regulations. It is checked under the same worst-case assumptions as the RR masks."
+)
+
+
+def _plain(name: str | None) -> str:
+    return "".join(ch for ch in (name or "").upper() if ch.isalnum())
+
+
+def _compliance(notices: list[SpaceNotice], mask_ids: set[str]) -> dict[str, Any] | None:
+    """Whether a CEPT document lists this filing as compliant. Matched on administration and name only."""
+    for mask_id in sorted(mask_ids):
+        listing = compliance_lists().get(mask_id)
+        if not listing:
+            continue
+        names = {(n.adm, _plain(n.name)) for n in notices}
+        found = [s for s in listing["systems"] if (s["adm"], _plain(s["network"])) in names]
+        return {
+            "mask_id": mask_id, "doc": listing["doc"], "clause": listing["clause"], "printed_page": listing["printed_page"],
+            "listed": bool(found), "systems": found or listing["systems"],
+            "how": "Matched on notifying administration and network name only; a commitment letter is what the Decision relies on.",
+        }
+    return None
+
+
 def _station_details(links: list[dict[str, Any]], limit: int | None = STATION_SAMPLE) -> dict[str, Any]:
     return station_summary(links, limit)
 
@@ -524,6 +551,10 @@ def _hit(
         details["source_rows"] = {"notice_ids": [n.ntc_id for n in notices]}
         details["input_flagged"] = flagged
         details["result_counts"] = dict(sorted(Counter(c["result"] for c in calculations).items()))
+    if rule_id.endswith("-cept"):
+        details["assumptions"].append(CEPT_ASSUMPTION)
+        if listed := _compliance(notices, {c["mask_id"] for c in calculations if c.get("mask_id")}):
+            details["cept_compliance_list"] = listed
     if links:
         details.update(_station_details(links, station_limit))
         details["assumptions"] += STATION_ASSUMPTIONS
@@ -539,7 +570,7 @@ def _hit(
         severity = "low"
 
     head = notices[0]
-    label = "Article 21 limit" if "art21" in rule_id else "Appendix 5 coordination trigger"
+    label = KIND_LABELS[rule_id.rsplit("-", 1)[-1]]
     orbit_label = "GSO" if rule_id.startswith("pfd-gso-") else "NGSO"
     title = f"{head.name or head.ntc_id} ({head.adm}) {orbit_label} {label}"
     if worst:
@@ -604,7 +635,7 @@ class PfdRule:
                 notices = [n for n in family if n.ntc_type == code]
                 if not notices:
                     continue
-                for kind, kind_prefix in (("pfd_art21", "art21"), ("pfd_app5", "app5")):
+                for kind, kind_prefix in (("pfd_art21", "art21"), ("pfd_app5", "app5"), ("pfd_cept", "cept")):
                     calculations: list[dict[str, Any]] = []
                     missing: list[dict[str, Any]] = []
                     not_visible: list[dict[str, Any]] = []

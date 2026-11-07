@@ -141,9 +141,10 @@ margin = pfd − limit(δ)                        positive = exceeds
 
 - Free-space propagation only (RR Article 21 limits are defined that way); no atmospheric losses.
 - Limits from `limit_mask`, piecewise in δ (typically 0–5°, 5–25°, 25–90°).
-- Two separate tests, labelled in the output:
+- Three separate tests, labelled in the output:
   - **Article 21 limits** — compliance; exceeding means a non-compliant filing.
   - **Appendix 5 thresholds** — coordination trigger under RR No. 9.14.
+  - **CEPT conditions** — from ECC documents (`data/masks/cept_masks.json`), such as ECC/DEC/(25)02 in 862–870 MHz. A concern for review, not an RR limit.
 - Evaluated on a ~0.5° grid over Finland; the worst point is reported. Each calculation is also evaluated at the special-interest stations whose band overlaps the part of the assignment the mask covers (ticket 19).
 - Northern Finland sees GSO satellites at low elevation and therefore the strictest part of the mask; the grid captures this.
 

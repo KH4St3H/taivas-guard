@@ -1,7 +1,7 @@
 // Talks to the IFIC Guard services through the /api proxy. Their shapes are defined in
 // ific_guard/schemas.py and the Case.details contract in .scratch/ific-guard-delivery/map.md.
 import { SEVERITY_ORDER } from '../lib/severity';
-import type { Api, BandMatch, Coverage, NewRun, Run, CalculatedResult, CustomRule, CustomRuleRef, Domain, DomainFreshness, Finding, FunnelStage, IssueSummary, MonitorStatus, ReferenceSource, ReviewState, RuleDefinition, RuleSave, RuleSpec, RuleVersion, ScreenStatus, StationQuery, Severity, StationResult, SyncRun } from './types';
+import type { Api, BandMatch, CeptCompliance, Coverage, NewRun, Run, CalculatedResult, CustomRule, CustomRuleRef, Domain, DomainFreshness, Finding, FunnelStage, IssueSummary, MonitorStatus, ReferenceSource, ReviewState, RuleDefinition, RuleSave, RuleSpec, RuleVersion, ScreenStatus, StationQuery, Severity, StationResult, SyncRun } from './types';
 
 export interface ArtifactOut { id: number; domain: string; issue_no: number; published_on: string | null; source_url: string; sha256: string; size_bytes: number; fetched_at: string; screen_status: string; screened_at: string | null }
 export interface SyncRunOut { id: number; trigger: string; started_at: string; finished_at: string | null; status: string; discovered: number; fetched: number; errors: string[] }
@@ -50,6 +50,12 @@ const RULE_LABELS: Record<string, string> = {
   'fin-named-by-br': 'ITU names Finland',
   'm4-no-space-to-earth': 'No space-to-Earth allocation in Finland',
   'station-rx-overlap': 'On a Finnish station’s frequency',
+  'pfd-gso-art21': 'pfd against RR Article 21 (GSO)',
+  'pfd-ngso-art21': 'pfd against RR Article 21 (non-GSO)',
+  'pfd-gso-app5': 'pfd against RR Appendix 5 (GSO)',
+  'pfd-ngso-app5': 'pfd against RR Appendix 5 (non-GSO)',
+  'pfd-gso-cept': 'pfd against a CEPT condition (GSO)',
+  'pfd-ngso-cept': 'pfd against a CEPT condition (non-GSO)',
 };
 export const ruleLabel = (id: string) => RULE_LABELS[id] ?? (id.startsWith('custom-') ? `Custom rule ${id.slice(7)}` : id);
 
@@ -92,6 +98,12 @@ const stationParams = (q: StationQuery) => {
   for (const [k, v] of Object.entries(q)) if (v !== undefined && v !== '') p.set(k, String(v));
   return p.toString();
 };
+
+function mapCompliance(d: Record<string, unknown>): CeptCompliance | null {
+  const c = d.cept_compliance_list as Record<string, unknown> | undefined;
+  if (!c || typeof c.listed !== 'boolean') return null;
+  return { doc: String(c.doc), clause: String(c.clause), page: Number(c.printed_page), listed: c.listed, systems: (c.systems as { adm: string; network: string; commitment: string }[]) ?? [] };
+}
 
 function mapCustomRule(d: Record<string, unknown>): CustomRuleRef | null {
   const rule = d.custom_rule as { id?: number; name?: string; version?: number } | undefined;
@@ -197,7 +209,7 @@ export function mapCase(c: CaseOut, issueId: string, sourceName: string): Findin
     stationsListed: typeof d.stations_listed === 'number' ? d.stations_listed : undefined,
     stationStatusCounts: (d.station_status_counts as Record<string, number> | undefined) ?? undefined,
     stationIds: strings(d.station_ids), stationClasses: (d.classes as Record<string, number>) ?? {}, stationResults: mapStationResults(d),
-    bands, customRule: mapCustomRule(d), visibility: strings(d.visibility), basis: typeof d.basis === 'string' ? d.basis : null, result, assumptions: strings(d.assumptions), citations: mapCitations(d),
+    bands, customRule: mapCustomRule(d), ceptCompliance: mapCompliance(d), visibility: strings(d.visibility), basis: typeof d.basis === 'string' ? d.basis : null, result, assumptions: strings(d.assumptions), citations: mapCitations(d),
     evidence: [
       { table: 'notice', key: `ntc_id in ${c.notice_ids.join(', ')}` },
       ...(Array.isArray(d.group_ids) ? [{ table: 'grp', key: `${d.group_ids.length} group(s) named in the coordination data` }] : []),
@@ -289,6 +301,7 @@ const SOURCES: ReferenceSource[] = [
   { name: 'ITU coordination data', version: 'Each IFIC’s provn tables', detail: 'Finds filings where ITU names Finland.', url: null, status: 'loaded' },
   { name: 'Traficom frequencies of interest', version: 'v05112026 (synthetic)', detail: 'Compares receive frequency only. Stations with no receive frequency are skipped.', url: null, status: 'partial' },
   { name: 'ITU Radio Regulations limits', version: '2024 edition', detail: 'The pfd engine and limits are in the code, but no screening rule uses them yet, so no limit is checked.', url: 'https://www.itu.int/pub/r-reg-rr', status: 'planned' },
+  { name: 'ECC Decision (25)02', version: 'Approved 27 June 2025; Finland: implementation planned, 31 Jan 2027', detail: 'pfd from satellites in 862–870 MHz must not exceed −142 dB(W/(m²·4 kHz)) on the Earth’s surface. Checked as a CEPT condition, not an RR limit, with the Decision’s list of compliant systems. Its limit on unwanted emissions outside the band can’t be checked from filings.', url: 'https://docdb.cept.org/download/4784', status: 'loaded' },
   { name: 'ECC T/R 25-08 and ITU-R P.1546', version: 'June 2025; P.1546-6', detail: 'Terrestrial rules not added yet.', url: 'https://docdb.cept.org/document/909', status: 'planned' },
 ];
 

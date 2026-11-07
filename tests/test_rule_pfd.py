@@ -481,3 +481,40 @@ def test_worst_row_is_chosen_after_the_cap_not_by_density():
     ref = 10 * math.log10(calc["calc_inputs"]["ref_bw_hz"])
     assert calc["calc_inputs"]["emission_seq_no"] == 2
     assert calc["calc_inputs"]["power_in_ref_bw_dbw"] == pytest.approx(-65.0 + ref)
+
+
+# ---- CEPT: ECC/DEC/(25)02, -142 dB(W/(m2.4kHz)) on the Earth's surface in 862-870 MHz, at every angle
+
+
+def _cept_hit(adm="USA", name="SAT", power=-40.0):
+    reader = gso_reader(low=865, high=868, power=power, pep=20.0)
+    reader.tables["notice"] = [notice(1, adm=adm)]
+    reader.tables["geo"] = [{"ntc_id": 1, "sat_name": name, "long_nom": 25.0}]
+    return next(h for h in run(reader) if h.rule_id == "pfd-gso-cept")
+
+
+def test_cept_condition_is_its_own_case_with_its_citation():
+    hit = _cept_hit()
+    d = hit.details
+    # P -40 dBW/Hz in 4 kHz = -3.98 dBW (under the 20 dBW peak), G 30 dBi; the limit is flat, so the worst
+    # point is the nearest one: value = -3.98 + 30 - spread(d), margin = value + 142.
+    spread = 10 * math.log10(4 * math.pi * (1000 * d["worst_point"]["distance_km"]) ** 2)
+    assert d["value_db"] == pytest.approx(-40 + 10 * math.log10(4000) + 30 - spread, abs=1e-6)
+    assert d["limit_db"] == -142 and d["margin_db"] == pytest.approx(d["value_db"] + 142)
+    assert d["mask_id"] == "cept-dec2502-862-870" and hit.severity == "high"
+    assert "CEPT pfd condition exceeds" in hit.title
+    assert any("ECC/DEC/(25)02" == c.get("doc") for c in d["citations"])
+    assert any("not an RR limit" in a for a in d["assumptions"])
+    assert d["cept_compliance_list"]["listed"] is False
+
+
+def test_a_system_on_the_decisions_annex_2_list_says_so():
+    listed = _cept_hit(adm="D", name="LS-4")
+    assert listed.details["cept_compliance_list"]["listed"] is True
+    assert listed.details["cept_compliance_list"]["systems"][0]["commitment"].startswith("C-D-25060008")
+
+
+def test_rr_cases_carry_no_cept_assumption():
+    hits = run(gso_reader(low=8025, high=8040))
+    assert hits and not any(h.rule_id.endswith("-cept") for h in hits)
+    assert not any("not an RR limit" in a for h in hits for a in h.details["assumptions"])

@@ -88,6 +88,7 @@ python -m ific_guard.cli export --domain terrestrial --issue 3076 --out outputs/
 | Special-interest stations (synthetic) | Traficom | `docs/challenge/` |
 | Article 21 and Appendix 5 limit masks | ITU Radio Regulations | `data/masks/limit_masks.json`, with a citation on each row |
 | T/R 25-08 indicative thresholds | CEPT | `data/masks/field_strength.json` |
+| ECC Decision (25)02 pfd condition, 862-870 MHz | CEPT | `data/masks/cept_masks.json`, with the page cited, and the CEPT values that can't be checked and why |
 | Finnish boundary and land mask | Natural Earth | `data/masks/` |
 
 ## Outputs
