@@ -16,6 +16,7 @@ Row = dict[str, Any]
 # Sections the brief puts in scope. AP30/30A/30B filings are added here once an issue with them is tested.
 IN_SCOPE_REASONS = {"A", "C"}  # A = advance publication (9.1/IA), C = coordination request (9.6)
 SATELLITE_NOTICE_TYPES = {"G", "N"}  # G = GSO, N = non-GSO, S = earth station
+EARTH_BODY = "T"  # SNS non_geo.ref_body code for the Earth
 SUPPORTED_DATABASE_VERSIONS = frozenset({"10"})
 
 
@@ -133,9 +134,15 @@ class SpaceIssue:
 
     @cached_property
     def notices(self) -> dict[int, SpaceNotice]:
+        """API/A and CR/C notices for technical screening rules."""
+        return {i: n for i, n in self.coordination_notices.items() if n.reason in IN_SCOPE_REASONS}
+
+    @cached_property
+    def coordination_notices(self) -> dict[int, SpaceNotice]:
+        """Also retain notifications for the BR-names-Finland rule only."""
         out: dict[int, SpaceNotice] = {}
         for row in self._reader.table("notice"):
-            if _text(row.get("ntf_rsn")) not in IN_SCOPE_REASONS or _text(row.get("act_code")) == "S":
+            if _text(row.get("ntf_rsn")) not in IN_SCOPE_REASONS | {"N"} or _text(row.get("act_code")) == "S":
                 continue
             ntc_id = int(row["ntc_id"])
             target = row.get("tgt_ntc_id")
@@ -226,13 +233,15 @@ class SpaceIssue:
         for row in self._reader.table("provn"):
             if _text(row.get("adm")) == adm or _text(row.get("ctry")) == adm:
                 ntc_id = self.group_notice.get(int(row["grp_id"]))
-                if ntc_id in self.notices:
+                if ntc_id in self.coordination_notices:
                     found[ntc_id]["groups"].add(int(row["grp_id"]))
                     if prov := _text(row.get("coord_prov")):
                         found[ntc_id]["provisions"].add(prov)
         for row in self._reader.table("tr_provn"):
             if _text(row.get("adm")) == adm or _text(row.get("ctry")) == adm:
                 ntc_id = int(row["ntc_id"])
-                if ntc_id in self.notices and (prov := _text(row.get("coord_prov"))):
-                    found[ntc_id]["provisions"].add(prov)
+                if ntc_id in self.coordination_notices:
+                    found[ntc_id]  # FIN still matters if the provision code is missing.
+                    if prov := _text(row.get("coord_prov")):
+                        found[ntc_id]["provisions"].add(prov)
         return dict(found)

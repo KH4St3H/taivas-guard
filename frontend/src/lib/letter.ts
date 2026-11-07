@@ -19,6 +19,25 @@ Yours faithfully,
 [Name, title]
 Traficom, Spectrum and Space`;
 
+  if (f.kind === 'station-rx-overlap') {
+    const results = f.stationResults ?? [];
+    const calculated = results.filter((r) => r.marginDb !== null).slice(0, 10);
+    const lines = calculated.map((r) => `- Station ${r.id} (${r.sides.join('/').toUpperCase()}): ${signed(r.valueDb ?? 0)} dB against ${signed(r.limitDb ?? 0)} dB, margin ${signed(r.marginDb ?? 0)} dB${r.atSiteOnly ? ', at the site, which is not where this band is received' : ''}`);
+    const evidence = calculated.length
+      ? `Our screening calculates the power flux-density at the coordinates of these stations, under free-space assumptions and using the maximum notified antenna gain:\n\n${lines.join('\n')}${results.length > calculated.length ? `\n- and ${results.length - calculated.length} more station${results.length - calculated.length === 1 ? '' : 's'}, listed in the case` : ''}`
+      : 'No power flux-density value has been calculated at these stations, so this is a possible concern only. Any upper bound applies to the filing, not to a station.';
+    return `${header}
+Dear colleagues,
+
+Finland has examined the above filing. It includes space-to-Earth transmissions in the following band(s), which overlap frequencies used by Finnish stations:
+
+${f.bands.map((b) => `- ${b.lowMhz}–${b.highMhz} MHz${b.m4SpaceToEarth ? ` (space-to-Earth in Finland's frequency table: ${b.m4SpaceToEarth})` : ''}`).join('\n')}
+
+${evidence}
+
+[Expert: decide whether this needs raising, and state the Finnish assignments relied on.]
+${close}`;
+  }
   if (f.calc) {
     const c = f.calc;
     return `${header}
@@ -50,19 +69,6 @@ Dear colleagues,
 Finland has been identified under ${f.coordProvisions.join(', ')} in relation to the above filing${f.band ? `, in the band ${f.band}` : ''}.
 
 [Expert: state agreement or disagreement under the applicable provision, with information on the Finnish assignments concerned and any suggestions for resolving the matter.]
-${close}`;
-  }
-  if (f.kind === 'station-rx-overlap') {
-    return `${header}
-Dear colleagues,
-
-Finland has examined the above filing. It includes space-to-Earth transmissions in the following band(s), which overlap frequencies used by Finnish stations:
-
-${f.bands.map((b) => `- ${b.lowMhz}–${b.highMhz} MHz`).join('\n')}
-
-This is a possible concern only. The comparison is by frequency: no power flux-density has been calculated, and neither beam coverage nor station location has been checked.
-
-[Expert: decide whether this needs raising, and state the Finnish assignments relied on.]
 ${close}`;
   }
   if (f.bands.length) {

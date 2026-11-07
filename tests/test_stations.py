@@ -7,6 +7,7 @@ from sqlalchemy import select
 from ific_guard.config import get_settings
 from ific_guard.db import session_scope
 from ific_guard.models import Artifact, Case
+from ific_guard.screening import station_links as st_links
 from ific_guard.screening import stations as st
 from ific_guard.screening.engine import screen_artifact
 from ific_guard.screening.rule_stations import StationOverlapRule, station_overlap_rule
@@ -195,7 +196,7 @@ def test_downlink_on_a_receive_band_uses_the_details_contract():
     assert details["source"] == {"domain": "space", "notice_ids": ["1"]}
     assert details["assumptions"] and not {"value_db", "limit_db", "margin_db"} & set(details)
     assert details["bands"] == [
-        {"low_mhz": 2237.5, "high_mhz": 2242.5, "classes": {"FX": 1}, "station_ids": ["1000@R100"], "sides": {"rx": 1}, "group_ids": [1]}
+        {"low_mhz": 2237.5, "high_mhz": 2242.5, "classes": {"FX": 1}, "station_count": 1, "station_ids": ["1000@R100"], "sides": {"rx": 1}, "group_ids": [1]}
     ]
 
 
@@ -206,6 +207,7 @@ def test_downlink_on_a_receive_band_uses_the_details_contract():
         dict(notice=[notice(1)], geo=gso(1), freq=[freq(1, 2242.5, 2250)]),  # touches the band edge only
         dict(notice=[notice(1)], geo=gso(1, lon=140.0), freq=[freq(1, 2230, 2250)]),  # beyond the visible arc
         dict(notice=[notice(1, ntc_type="N")], orbit=[dict(ntc_id=1, inclin_ang=30.0)], freq=[freq(1, 2230, 2250)]),  # never reaches Finland
+        dict(notice=[notice(1, ntc_type="N")], non_geo=[dict(ntc_id=1, ref_body="L")], freq=[freq(1, 2230, 2250)]),  # Moon-referred orbit
         dict(notice=[notice(1, ntc_type="S")], freq=[freq(1, 2230, 2250)]),  # earth station
         dict(notice=[notice(1, reason="N")], geo=gso(1), freq=[freq(1, 2230, 2250)]),  # out of scope
         dict(notice=[notice(1, act="S")], geo=gso(1), freq=[freq(1, 2230, 2250)]),  # suppression
@@ -258,13 +260,13 @@ def test_station_with_no_frequency_is_skipped_and_the_count_is_stated():
 
 def test_rx_match_is_labelled_rx():
     hits = run([station(tx_mhz=2300.0)], notice=[notice(1)], geo=gso(1), freq=[freq(1, 2230, 2250)])
-    assert hits[0].details["matched_on"] == {"rx": ["1000@R100"]}
+    assert hits[0].details["matched_on"] == {"rx": 1}
     assert "TX side only" not in hits[0].title
 
 
 def test_tx_match_is_found_and_labelled_when_rx_does_not_overlap():
     hits = run([station(tx_mhz=2300.0)], notice=[notice(1)], geo=gso(1), freq=[freq(1, 2290, 2310)])
-    assert hits[0].details["matched_on"] == {"tx": ["1000@R100"]}
+    assert hits[0].details["matched_on"] == {"tx": 1}
     assert hits[0].title.endswith("; TX side only")
     assert hits[0].details["bands"][0]["sides"] == {"tx": 1}
 
@@ -272,12 +274,12 @@ def test_tx_match_is_found_and_labelled_when_rx_does_not_overlap():
 def test_tx_only_row_produces_a_case():
     tx_only = station(rx=None, tx_mhz=2300.0, quality_flags=(st.NO_RX,))
     hits = run([tx_only], notice=[notice(1)], geo=gso(1), freq=[freq(1, 2290, 2310)])
-    assert hits[0].details["matched_on"] == {"tx": ["1000@R100"]}
+    assert hits[0].details["matched_on"] == {"tx": 1}
 
 
 def test_equal_rx_and_tx_match_once_as_both():
     hits = run([station(tx_mhz=2240.0)], notice=[notice(1)], geo=gso(1), freq=[freq(1, 2230, 2250)])
-    assert hits[0].details["matched_on"] == {"both": ["1000@R100"]}
+    assert hits[0].details["matched_on"] == {"both": 1}
     assert hits[0].details["bands"][0]["sides"] == {"both": 1}
 
 
@@ -285,22 +287,25 @@ def test_station_matching_on_both_sides_counts_once():
     hits = run([station(tx_mhz=2300.0)], notice=[notice(1)], geo=gso(1), freq=[freq(1, 2230, 2310)])
     details = hits[0].details
     assert details["station_ids"] == ["1000@R100"] and details["classes"] == {"FX": 1}
-    assert details["matched_on"] == {"rx": ["1000@R100"], "tx": ["1000@R100"]}
+    assert details["matched_on"] == {"rx": 1, "tx": 1}
     assert "1 protected station(s)" in hits[0].title and [b["sides"] for b in details["bands"]] == [{"rx": 1}, {"tx": 1}]
 
 
 def test_bandwidth_quality_flags_reach_the_case():
     mismatch = replace(station(), quality_flags=(st.BW_MISMATCH,))
     hits = run([mismatch], notice=[notice(1)], geo=gso(1), freq=[freq(1, 2230, 2250)])
-    assert hits[0].details["station_band_flags"] == {st.BW_MISMATCH: ["1000@R100"]}
+    assert hits[0].details["station_band_flags"] == {st.BW_MISMATCH: 1}
 
 
 def test_rule_is_enabled_and_records_the_real_dataset():
     rule = next(r for r in space_rules(get_settings()) if r.id == "station-rx-overlap")
-    assert rule.total == 873 and len(rule.protected) == 870
+    # Traficom's 873 sheet rows plus the receiving earth station at Sodankylä Tähtelä (ticket 21).
+    assert rule.total == 874 and len(rule.protected) == 871
     hits = list(rule.run(SpaceIssue(FakeReader(notice=[notice(1)], geo=gso(1), freq=[freq(1, 2219, 2246)]))))
-    assert hits[0].details["assumptions"][0].startswith("3 of 873 stations")
+    assert hits[0].details["assumptions"][0].startswith("3 of 874 stations")
     assert hits[0].details["station_dataset"]["file"] == st.STATIONS_PATH.name
+    assert hits[0].details["station_dataset"]["records"] == 873
+    assert hits[0].details["station_dataset"]["earth_stations"] == {"file": st.EARTH_STATIONS_PATH.name, "records": 1}
     assert len(hits[0].details["station_dataset"]["sha256"]) == 64
     assert hits[0].details["classes"]["FX"] > 100
 
@@ -321,3 +326,84 @@ def test_case_saves_through_the_engine_and_a_rerun_changes_nothing(tmp_path):
         case = s.scalars(select(Case)).one()
         assert case.rule_id == "station-rx-overlap" and case.details["method"] == "screening"
         assert case.details["station_ids"]
+
+
+def test_index_finds_exactly_what_a_full_scan_finds():
+    import random
+
+    rng = random.Random(7)
+    pool = [
+        station(row=i, rx=rng.uniform(100, 3000), bw=rng.choice([0.0125, 0.025, 1, 5, 20, 250]),
+                tx_mhz=rng.choice([None, rng.uniform(100, 3000)]))
+        for i in range(2000)
+    ]
+    index = st.StationIndex(pool)
+    for _ in range(300):
+        low = rng.uniform(50, 3050)
+        high = low + rng.choice([0.0, 0.01, 1, 30, 400])
+        expected = tuple(
+            (s, bands) for s in index.stations
+            if (bands := tuple(b for b in s.protected_bands if b.overlaps(low, high)))
+        )
+        assert index.overlapping(low, high) == expected
+
+
+def test_a_case_keeps_the_worst_stations_and_counts_every_one():
+    many = [station(row=i, number=10_000 + i) for i in range(st_links.STATION_SAMPLE + 50)]
+    hit = run(many, notice=[notice(1)], geo=gso(1), freq=[freq(1, 2230, 2250)])[0]
+    d = hit.details
+    total = st_links.STATION_SAMPLE + 50
+    assert d["station_count"] == total and f"{total} protected station(s)" in hit.title
+    assert len(d["stations_overlapping"]) == len(d["station_ids"]) == d["stations_listed"] == st_links.STATION_SAMPLE
+    assert sum(d["station_status_counts"].values()) == total
+    assert d["bands"][0]["station_count"] == total and len(d["bands"][0]["station_ids"]) == st_links.BAND_ID_SAMPLE
+    assert d["classes"] == {"FX": total} and d["matched_on"] == {"rx": total}
+
+
+def _row(number, rx="2240 MHz"):
+    cells = dict.fromkeys(st.COLUMNS, None)
+    cells.update({"Station number": number, "Class of licence": "FX", "Longitude": 25.0, "Latitude": 62.0,
+                  "Channel bandwidth": "25k", "RX frequency": rx, "TX frequency": "2250 MHz"})
+    return [cells[c] for c in st.COLUMNS]
+
+
+def _workbook(path, sheets):
+    from openpyxl import Workbook
+
+    book = Workbook()
+    book.remove(book.active)
+    for title, rows in sheets:
+        sheet = book.create_sheet(title)
+        for row in rows:
+            sheet.append(row)
+    book.save(path)
+    return path
+
+
+def test_loader_reads_every_sheet_and_keeps_sheet_one_keys(tmp_path):
+    original = [["Title"]] + [[None]] * (st.HEADER_ROW - 2) + [list(st.COLUMNS), ["Suomeksi"], _row(1), _row(2)]
+    # Station 2's row again (an exact duplicate), and station 1 with another frequency, on a second sheet.
+    more = [list(st.COLUMNS), _row(3), _row(2), _row(1, rx="2260 MHz")]
+    loaded = load_stations(_workbook(tmp_path / "big.xlsx", [("A", original), ("B", more), ("Empty", [])]))
+    assert [s.key for s in loaded] == ["1@R13", "2@R14", "3@S2R2", "1@S2R4"]
+    assert st.STATION_NUMBER_REUSED in loaded[0].quality_flags and st.STATION_NUMBER_REUSED in loaded[3].quality_flags
+    assert st.DUPLICATE_REMOVED in loaded[1].quality_flags
+
+
+def test_loader_refuses_a_sheet_it_cannot_read(tmp_path):
+    original = [[None]] * (st.HEADER_ROW - 1) + [list(st.COLUMNS), ["Suomeksi"], _row(1)]
+    with pytest.raises(ValueError, match="sheet 'B'"):
+        load_stations(_workbook(tmp_path / "bad.xlsx", [("A", original), ("B", [["Something else"], _row(2)])]))
+
+
+def test_loader_reads_a_csv(tmp_path):
+    import csv
+
+    path = tmp_path / "register.csv"
+    with path.open("w", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow(st.COLUMNS)
+        writer.writerows([_row(5), _row(6, rx="")])
+    loaded = load_stations(path)
+    assert [(s.key, s.rx_mhz) for s in loaded] == [("5@R2", 2240.0), ("6@R3", None)]
+    assert st.NO_RX in loaded[1].quality_flags

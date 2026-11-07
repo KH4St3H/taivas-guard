@@ -119,3 +119,54 @@ class Event(Base):
     last_error: Mapped[str | None] = mapped_column(Text)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
     done_at: Mapped[datetime | None] = mapped_column(DateTime)
+
+
+class CustomRule(Base):
+    """A screening rule written by an expert as data. Its cases use rule_id `custom-<id>`."""
+
+    __tablename__ = "custom_rule"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(Text)
+    description: Mapped[str] = mapped_column(Text, default="")
+    domain: Mapped[str] = mapped_column(String(16), default="space")
+    enabled: Mapped[bool] = mapped_column(default=True)
+    version: Mapped[int] = mapped_column(Integer, default=1)
+    severity: Mapped[str] = mapped_column(String(8))
+    title_template: Mapped[str] = mapped_column(Text)
+    definition: Mapped[dict[str, Any]] = mapped_column(JSON)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow, onupdate=utcnow)
+
+
+class CustomRuleVersion(Base):
+    """Every saved state of a custom rule, so a case can be traced to the conditions that raised it."""
+
+    __tablename__ = "custom_rule_version"
+    __table_args__ = (UniqueConstraint("rule_id", "version"),)
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    rule_id: Mapped[int] = mapped_column(ForeignKey("custom_rule.id"), index=True)
+    version: Mapped[int] = mapped_column(Integer)
+    name: Mapped[str] = mapped_column(Text)
+    description: Mapped[str] = mapped_column(Text, default="")
+    enabled: Mapped[bool] = mapped_column(default=True)
+    severity: Mapped[str] = mapped_column(String(8))
+    title_template: Mapped[str] = mapped_column(Text)
+    definition: Mapped[dict[str, Any]] = mapped_column(JSON)
+    saved_by: Mapped[str] = mapped_column(Text, default="")
+    note: Mapped[str] = mapped_column(Text, default="")
+    saved_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
+
+
+class IssueSummary(Base):
+    """Descriptive counts for one stored issue, for the Trends page. Recomputed when `version` changes."""
+
+    __tablename__ = "issue_summary"
+
+    artifact_id: Mapped[int] = mapped_column(ForeignKey("artifact.id"), primary_key=True)
+    domain: Mapped[str] = mapped_column(String(16))
+    issue_no: Mapped[int] = mapped_column(Integer, index=True)
+    version: Mapped[int] = mapped_column(Integer)
+    summary: Mapped[dict[str, Any]] = mapped_column(JSON)
+    computed_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)

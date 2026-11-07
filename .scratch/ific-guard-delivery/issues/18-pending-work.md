@@ -12,8 +12,9 @@ Everything still open as of 2026-11-07, checked against `integration/wave-3` at 
 
 Answers came on Discord, 2026-11-07 8:39-8:55, from Pekka, Otto and the Traficom account.
 
-- [ ] **Record the answers in ticket 02,** with who answered and when. Its answer section is empty.
-- [ ] **Search CEPT sources for pfd concerns.** Traficom: the RR table is "the main source", but "CEPT for instance can elaborate on the defined limits in Europe as you might want to focus on concerns instead of just hard limits". `limit_masks.json` cites only the RR. The brief lists `https://docdb.cept.org/implementation/overview`. Add only values read at the source.
+- [x] **Record the answers in ticket 02,** with who answered and when. Its answer section is empty.
+- [x] **Search CEPT sources for pfd concerns.** Traficom: the RR table is "the main source", but "CEPT for instance can elaborate on the defined limits in Europe as you might want to focus on concerns instead of just hard limits". `limit_masks.json` cites only the RR. The brief lists `https://docdb.cept.org/implementation/overview`. Add only values read at the source.
+  Done 2026-11-07: ECC/DEC/(25)02 (-142 dB(W/(m2.4kHz)) on the Earth's surface in 862-870 MHz; Finland: planned, 31-01-2027) is in `data/masks/cept_masks.json` and runs as `pfd-gso-cept` / `pfd-ngso-cept`, with its Annex 2 list of compliant systems. Read but not applied, with reasons in `not_covered`: the Decision's -146 dB(W/(m2.1MHz)) for unwanted emissions, ECC Report 115's -123 dB(W/m2/MHz) for non-directional EESS antennas at the sub-satellite point, and ECC Report 373, which gives no D2D values yet. Other CEPT documents may hold more; the search covered docdb full-text hits for satellite pfd conditions.
 - [ ] **Remove GIMS as a future step.** Docs done; the `rule_pfd.py` docstring remains. Traficom: beams "are not relevant" and "the worst case scenario should always be assumed". Update `ARCHITECTURE.md:235` and `:243`, `docs/services-architecture.md:238`, and `rule_pfd.py:9`, and cite Traficom for worst case. Keep "exceeds under worst-case assumptions". The `:238` row also still says there is no pfd check, which ticket 07 fixed.
 - [ ] **State that the 3 dB watch band is our choice.** `WATCH_DB` comes from `ARCHITECTURE.md` section 4.7, not from Traficom.
 
@@ -23,9 +24,9 @@ Answers came on Discord, 2026-11-07 8:39-8:55, from Pekka, Otto and the Traficom
 - [ ] **Older issues are rejected.** Only database version 10 screens; versions 8, 7 and 5 (samples 2925, 2809, 2559) return an error, so "all existing IFICs" is not met. Needs a decision: build them, or declare the limit.
 - [ ] **5,429 records are unevaluated,** because we do not know which columns supply the X and Y mask parameters. Each one is a possible missed case. Ask Traficom, or find it in the Space Preface.
 - [ ] **No space-side trends.** The brief mentions "trends and planned usage of new satellites systems"; `trends.py` covers terrestrial only. Decide whether to add a small version.
-- [ ] **pfd results never count as special interest.** `scoring.py` gives a boost for `special_interest`, but only the terrestrial rule sets it. Link pfd results to stations using the bands from ticket 16.
+- [ ] **pfd results never count as special interest.** Now ticket 19.
 - [ ] **No ITU tool cross-check is recorded.** `ARCHITECTURE.md:152` plans to compare some 3074 networks with ITU's PFD GSO software, and the brief names GIBC. Nothing in `outputs/` records this. Run it if the tools are available, or say it was not done.
-- [ ] **M15 is unused.** `ARCHITECTURE.md:111` plans low-severity notes only, and the brief calls it less relevant. Decide, and state it either way.
+- [x] **M15 scope decided (ticket 34): excluded, with the reason in README and ARCHITECTURE.** `ARCHITECTURE.md:111` plans low-severity notes only, and the brief calls it less relevant. Decide, and state it either way.
 
 ## Integration and delivery
 
@@ -43,10 +44,10 @@ Answers came on Discord, 2026-11-07 8:39-8:55, from Pekka, Otto and the Traficom
 
 Ask these first, because they change what is submitted:
 
-- [ ] **Output format:** format and mandatory fields for the 3074 and 3076 files (Q1). Both exports are provisional until then.
+- [x] **Output format:** answered. Xls/csv or doc/pdf preferred, any open machine-readable format is fine, JSON preferred over MDB, and no mandatory fields named.
 - [ ] **Terrestrial calculation points:** the Finnish border or coast, or the Excel station locations. Passed to Jaakko, no reply seen. `rule_field_strength.py:84` uses boundary and coast points, stated as an assumption.
-- [ ] **Terrestrial limits:** trigger values and time percentage per neighbour, the Russian border, bilateral agreements, above 470 MHz, and 793-795 MHz (Q6, Q8-10).
-- [ ] **Demo video:** may we show rows of the Excel table and an unfinished prototype?
+- [ ] **Terrestrial limits:** trigger values and time percentage per neighbour, the Russian border and bilateral agreements (Q6, Q8, Q9). Above 470 MHz is answered (Q10): ticket 20.
+- [x] **Demo video:** yes, "as you see best".
 - [ ] **Over-flagging:** how much is acceptable (Q4)? Bring ticket 16's counts: no new cases, but 75% more station links on 3074.
 
 Useful, but work can continue without them:

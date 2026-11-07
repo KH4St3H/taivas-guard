@@ -70,7 +70,7 @@ function mergePairs<T>(rows: T[], key: (r: T) => string, id: (r: T) => number, p
 
 function buildSpace(raw: SpaceRaw): Finding[] {
   const issueId = `space-${raw.issue}`;
-  const common = (r: RawPfd | RawBr) => ({ issueId, domain: 'space' as Domain, issue: raw.issue, firstIssue: raw.issue, lastIssue: raw.issue, adm: r.adm, orbit: r.orbit, provision: r.provision, sections: r.sections, file: raw.file, review: blankReview(), terrestrial: null, summary: null, stationIds: [], stationClasses: {}, bands: [], visibility: [], basis: null, result: null, updatedAt: null });
+  const common = (r: RawPfd | RawBr) => ({ issueId, domain: 'space' as Domain, issue: raw.issue, firstIssue: raw.issue, lastIssue: raw.issue, adm: r.adm, orbit: r.orbit, provision: r.provision, sections: r.sections, file: raw.file, review: blankReview(), terrestrial: null, summary: null, stationIds: [], stationClasses: {}, bands: [], m4PrimaryServices: [], visibility: [], basis: null, result: null, updatedAt: null });
   const pfd = mergePairs(raw.findings, (r) => `${r.network}|${r.calc.fMinMhz}|${r.calc.fMaxMhz}`, (r) => r.ntcId, (r) => r.targetNtcId !== null, (a, b) => a.calc.marginDb === b.calc.marginDb).map(({ row: r, ids }): Finding => {
     const { severity, reasons } = scorePfd(r.calc.marginDb, r.stationCount);
     const conf = confidencePfd(r.calc.angleDeg, r.orbit, r.calc.altitudeKm);
@@ -93,7 +93,7 @@ function buildSpace(raw: SpaceRaw): Finding[] {
 function buildTerr(raw: TerrRaw): Finding[] {
   const issueId = `terrestrial-${raw.issue}`;
   return raw.nearBorder.map((n): Finding => ({
-    id: `${issueId}-${n.terrakey}`, issueId, domain: 'terrestrial', issue: raw.issue, firstIssue: raw.issue, lastIssue: raw.issue, summary: null, stationIds: [], stationClasses: {}, bands: [], visibility: [], basis: null, result: null, updatedAt: null, kind: 'near_border', kindLabel: 'Near the border', title: n.site, adm: n.adm, orbit: null, band: `${n.fMhz} MHz`, sourceId: String(n.terrakey), relatedSourceIds: [], provision: null, sections: [n.noticeType], coordProvisions: [],
+    id: `${issueId}-${n.terrakey}`, issueId, domain: 'terrestrial', issue: raw.issue, firstIssue: raw.issue, lastIssue: raw.issue, summary: null, stationIds: [], stationClasses: {}, bands: [], m4PrimaryServices: [], visibility: [], basis: null, result: null, updatedAt: null, kind: 'near_border', kindLabel: 'Near the border', title: n.site, adm: n.adm, orbit: null, band: `${n.fMhz} MHz`, sourceId: String(n.terrakey), relatedSourceIds: [], provision: null, sections: [n.noticeType], coordProvisions: [],
     severity: 'unscored', severityReasons: ['P.1546 field strength not calculated yet'], confidence: 'not_calculated', confidenceReasons: ['Only distance and band are known so far'], marginDb: null, stationCount: 0, stations: [], calc: null, terrestrial: { terrakey: n.terrakey, stationClass: n.stationClass, fMhz: n.fMhz, bandwidthKhz: n.bandwidthKhz, intent: n.intent, noticeType: n.noticeType, site: n.site, lat: n.lat, lon: n.lon, borderKm: n.borderKm, powerDbw: n.powerDbw, powerType: n.powerType, gainDbi: n.gainDbi, heightM: n.heightM },
     windowDeadline: null, assumptions: ['Distance is to the nearest of 14 rough border points', 'Strongest listed antenna record shown'], citations: ['ECC T/R 25-08 (criterion to be confirmed)', 'ITU-R P.1546-6 (not run)'],
     evidence: [{ table: 'fxm_terra', key: `terrakey = ${n.terrakey}` }, { table: 'fxm_ant', key: `terrakey = ${n.terrakey}` }], file: raw.file, review: blankReview(),
@@ -156,8 +156,19 @@ function advance(run: Run): Run {
 
 export const mockApi: Api = {
   mode: 'sample',
-  capabilities: { upload: true, checkItuNow: false, rescreen: false, reviewStatuses: ['accepted', 'needs_info', 'rejected'], letterStorage: 'browser' },
+  capabilities: { upload: true, checkItuNow: false, rescreen: false, reviewStatuses: ['accepted', 'needs_info', 'rejected'], letterStorage: 'browser', customRules: false, stationLists: false, coverage: false, trends: false },
   severityNote: 'Starter rules for the demo. Traficom’s experts should set the real ones.',
+  // Sample mode has no screening service, so rules can't be run or stored.
+  listRules: async () => [],
+  getRule: async () => null,
+  ruleOptions: async () => ({ m4PrimaryServices: [], titleFields: {} }),
+  saveRule: async () => { throw new Error('Rules need the live services. Start the frontend without sample mode.'); },
+  previewRule: async () => { throw new Error('Rules need the live services. Start the frontend without sample mode.'); },
+  rescreenSpace: async () => [],
+  listCaseStations: async () => { throw new Error('Station lists need the live services.'); },
+  caseStationsCsvUrl: () => null,
+  getTrends: async () => { throw new Error('Trends need the live services.'); },
+  getCoverage: async () => { throw new Error('Maps need the live services.'); },
   listSeverityRules: async () => SEVERITY_RULES,
   listSyncRuns: async () => [],
   checkItuNow: async () => { throw new Error('Not available in sample mode.'); },

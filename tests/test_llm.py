@@ -51,6 +51,28 @@ def named_case() -> Case:
     return make_case(provisions=["9.14"], group_ids=[125780383], sections=["9.6"], basis="FIN appears in provn.")
 
 
+def test_terrestrial_draft_handles_station_fields_without_pfd_status():
+    case = make_case(
+        "terrestrial-p1546", method="p1546", station_ids=["rx-site", "tx-site"], station_count=2,
+        stations_overlapping=[
+            {"station_id": "rx-site", "matched_bands": [{"side": "rx"}], "value_db": 25.0, "distance_km": 10.0},
+            {"station_id": "tx-site", "matched_bands": [{"side": "tx"}], "value_db": None,
+             "not_calculated": "the station has no antenna height", "field_location": "remote receiver"},
+        ],
+    )
+    case.domain = "terrestrial"
+    with session_scope() as session:
+        session.add(case)
+    response = TestClient(screening_app).get("/cases/7/draft")
+    assert response.status_code == 200
+    result = response.json()
+    assert result["sent"] is False
+    assert "25.0 dB(uV/m)" in result["letter"]
+    assert "no station-specific criterion comparison" in result["letter"]
+    assert "the station has no antenna height" in result["letter"]
+    assert "not where this band is received" in result["letter"]
+
+
 def m4_case() -> Case:
     band = {
         "low_mhz": 13400.0,

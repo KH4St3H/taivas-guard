@@ -40,3 +40,7 @@ Known layout and problems:
 ## Not in scope
 
 Power, geometry or antenna-direction calculations. Ticket 07 can use your loader for those.
+
+## Comments
+
+2026-11-07: The power, geometry and antenna-direction work this ticket handed to ticket 07 was never picked up. It is now tracked in ticket 19.

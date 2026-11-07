@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { draftLetter } from '../lib/letter';
 import { formatDuration } from '../lib/format';
-import { caseInIssue, errorMessage, fileName, mapBands, mapCase, mapSummary, rankFindings, ruleLabel, runFromArtifact, summariseIssue, type ArtifactOut, type CaseOut, type CaseSummary } from './http';
+import { caseInIssue, definitionIn, definitionOf, errorMessage, fileName, mapBands, mapCase, mapSummary, rankFindings, ruleLabel, runFromArtifact, summariseIssue, type ArtifactOut, type CaseOut, type CaseSummary } from './http';
 
 const summary = (over: Partial<CaseSummary> = {}): CaseSummary => ({ id: 1, domain: 'space', rule_id: 'fin-named-by-br', severity: 'high', title: 'BR names Finland in SAT (USA)', adm: 'USA', network: 'SAT', first_issue: 3083, last_issue: 3083, comment_deadline: '2027-02-27', review_status: 'pending', ...over });
 const full = (over: Partial<CaseOut> = {}): CaseOut => ({ ...summary(), notice_ids: ['11', '31'], details: {}, source_sha256: 'abc', review_note: null, created_at: '2026-11-07T00:00:00', updated_at: '2026-11-07T00:00:00', ...over });
@@ -32,6 +32,12 @@ describe('mapCase', () => {
 
 describe('mapBands', () => {
   it('tolerates a case with no bands', () => expect(mapBands({})).toEqual([]));
+  it('reads Finnish restrictions and RR footnotes naming Finland', () => {
+    const [b] = mapBands({ bands: [{ low_mhz: 430, high_mhz: 432, m4_restrictions: ['Restrictions on use (RR 5.113).'], m4_national_use: ['Military use'], m4_rr_footnotes: ['5.113'], rr_footnotes_naming_finland: [{ footnote: '5.275', kind: 'Additional allocation', pdf_page: 104 }] }] });
+    expect(b.restrictions).toEqual(['Restrictions on use (RR 5.113).']);
+    expect(b.nationalUse).toEqual(['Military use']);
+    expect(b.rrFootnotesNamingFinland).toEqual([{ footnote: '5.275', kind: 'Additional allocation', pdfPage: 104 }]);
+  });
 });
 
 describe('mapSummary', () => {
@@ -40,6 +46,10 @@ describe('mapSummary', () => {
     expect(f.title).toBe('BR names Finland in SAT (USA)');
     expect(f.windowDeadline).toBe('2027-02-27');
     expect(f.review.status).toBe('pending');
+  });
+  it('carries M4 primary services on list rows, and none when the service omits them', () => {
+    expect(mapSummary({ ...summary(), m4_primary_services: ['FIXED', 'MOBILE'] }, 'x').m4PrimaryServices).toEqual(['FIXED', 'MOBILE']);
+    expect(mapSummary(summary(), 'x').m4PrimaryServices).toEqual([]);
   });
   it('doesn’t treat an unknown severity as a real one', () => expect(mapSummary(summary({ severity: 'odd' }), 'x').severity).toBe('unscored'));
 });
@@ -76,7 +86,7 @@ describe('summariseIssue', () => {
 
   it('states the terrestrial limits once terrestrial rules have run', () => {
     const s = summariseIssue(artifact({ domain: 'terrestrial', screen_status: 'done' }), []);
-    expect(s.limitations.join(' ')).toContain('stop at 470 MHz');
+    expect(s.limitations.join(' ')).toContain('extended above 470 MHz');
     expect(s.limitations.join(' ')).not.toContain('no rules');
   });
 });
@@ -102,7 +112,7 @@ describe('station overlap cases', () => {
   const f = mapCase(full({ rule_id: 'station-rx-overlap', severity: 'medium', details }), 'space-3083', 'ific3083.zip');
 
   it('reads stations from the case, overall and per band', () => {
-    expect(f.kindLabel).toBe('Overlaps a Finnish receiver');
+    expect(f.kindLabel).toBe('On a Finnish station’s frequency');
     expect(f.stationCount).toBe(2);
     expect(f.stationIds).toEqual(['600529@R215', '601452@R224']);
     expect(f.stationClasses).toEqual({ 'no class': 2 });
@@ -115,6 +125,33 @@ describe('station overlap cases', () => {
     expect(letter).toContain('18875–19067.5 MHz');
     expect(letter).not.toContain('no space-to-Earth allocation');
     expect(letter).not.toMatch(/exceed/i);
+  });
+});
+
+describe('station cases with pfd evidence', () => {
+  const details = {
+    method: 'pfd_gso', value_db: -111.2, limit_db: -113.2, margin_db: 2.0, station_ids: ['624714@R352', '1000@R100'],
+    bands: [{ low_mhz: 18415, high_mhz: 18525, station_ids: ['624714@R352'], group_ids: [1], m4_space_to_earth: 'allocated', m4_primary_services: 'FIXED' }],
+    stations_overlapping: [
+      { station_id: '624714@R352', status: 'exceeds', value_db: -111.2, limit_db: -113.2, margin_db: 2.0, angle_deg: 8.55, matched_bands: [{ side: 'tx' }], field_location: 'station site, not the receiver' },
+      { station_id: '1000@R100', status: 'bound_above', matched_bands: [{ side: 'rx' }], filing_upper_bound: { margin_db: 4.1 } },
+    ],
+  };
+  const f = mapCase(full({ rule_id: 'station-rx-overlap', severity: 'high', details }), 'space-3074', 'ific3074.zip');
+
+  it('maps each station’s result, and never turns a filing bound into a station value', () => {
+    const [tx, bound] = f.stationResults ?? [];
+    expect(tx).toMatchObject({ id: '624714@R352', sides: ['tx'], status: 'exceeds', marginDb: 2.0, atSiteOnly: true });
+    expect(bound).toMatchObject({ status: 'bound_above', marginDb: null, valueDb: null, filingBoundDb: 4.1, atSiteOnly: false });
+    expect(f.bands[0].m4SpaceToEarth).toBe('allocated');
+  });
+  it('drafts a letter quoting only values calculated at stations', () => {
+    const letter = draftLetter(f);
+    expect(letter).toContain('Station 624714@R352 (TX)');
+    expect(letter).toContain('at the site, which is not where this band is received');
+    expect(letter).toContain("space-to-Earth in Finland's frequency table: allocated");
+    expect(letter).not.toContain('Station 1000@R100');
+    expect(letter).toContain('1 more station, listed in the case');
   });
 });
 
@@ -155,5 +192,42 @@ describe('labels and durations', () => {
     expect(formatDuration(5 * 3600 + 720)).toBe('5 h 12 min');
     expect(formatDuration(7200)).toBe('2 h');
     expect(formatDuration(5 * 86400)).toBe('5 days');
+  });
+});
+
+describe('rules written by experts', () => {
+  it('round-trips a rule definition between the service and the UI', () => {
+    const wire = { orbit: 'gso' as const, visible_from_finland: false, adm_in: ['RUS'], adm_not_in: [], provision_in: ['9.6'], direction: 'receive' as const,
+      frequency_ranges: [{ low_mhz: 5925, high_mhz: 6425 }], m4: { space_to_earth: 'any' as const, earth_to_space: 'yes' as const, terrestrial_primary: 'no' as const, passive: 'any' as const, primary_services_any: ['FIXED'] } };
+    const ui = definitionOf(wire);
+    expect(ui.frequencyRanges).toEqual([{ lowMhz: 5925, highMhz: 6425 }]);
+    expect(ui.m4.earthToSpace).toBe('yes');
+    expect(definitionIn(ui)).toEqual(wire);
+  });
+
+  it('labels and explains a case from a custom rule', () => {
+    expect(ruleLabel('custom-42')).toBe('Custom rule 42');
+    const f = mapCase(full({ rule_id: 'custom-3', details: {
+      custom_rule: { id: 3, name: 'Uplinks', version: 2 }, conditions: ['The satellite receives'],
+      matched_assignments: [{ group_id: 9, freq_min_mhz: 14100, freq_max_mhz: 14200, direction: 'receive' }], matched_assignment_count: 140,
+    } }), 'space-3083', 'x');
+    expect(f.customRule).toEqual({ id: 3, name: 'Uplinks', version: 2, conditions: ['The satellite receives'], matchedAssignments: [{ groupId: 9, fMinMhz: 14100, fMaxMhz: 14200, direction: 'receive' }], matchedCount: 140 });
+    expect(mapCase(full(), 'x', 'y').customRule).toBeNull();
+  });
+});
+
+describe('large station lists', () => {
+  it('counts stations from the stored total, not the sample the case keeps', () => {
+    const f = mapCase(full({ rule_id: 'station-rx-overlap', details: {
+      station_count: 2_400_000, stations_listed: 1, station_ids: ['1@R13'], station_status_counts: { below: 2_400_000 },
+      stations_overlapping: [{ station_id: '1@R13', status: 'below', matched_bands: [{ side: 'rx' }] }],
+      bands: [{ low_mhz: 1, high_mhz: 2, station_count: 2_400_000, station_ids: ['1@R13'] }],
+    } }), 'space-3083', 'x');
+    expect([f.stationCount, f.stationsListed, f.stationResults?.length, f.bands[0].stationCount]).toEqual([2_400_000, 1, 1, 2_400_000]);
+  });
+
+  it('falls back to the id list on cases saved before the cap', () => {
+    const f = mapCase(full({ details: { station_ids: ['1@R13', '2@R14'], bands: [{ low_mhz: 1, high_mhz: 2, station_ids: ['1@R13'] }] } }), 'x', 'y');
+    expect([f.stationCount, f.bands[0].stationCount]).toEqual([2, 1]);
   });
 });

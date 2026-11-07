@@ -131,6 +131,7 @@ New checks plug in here, including the pfd engine and special-interest station o
 | Rule | Fires when | Severity |
 |---|---|---|
 | `fin-named-by-br` | Tier 1: `FIN` appears in `provn` or `tr_provn` for an in-scope notice | High |
+| `station-rx-overlap` | A visible satellite transmits on the RX or TX band of a station in Traficom's list. Each station gets the pfd result at its coordinates, read from the pfd rule's `StationEvidence` | From the strongest evidence: high for a calculated exceedance at a station; medium within 3 dB, for a bound near the limit or no calculation; low when below everywhere or not visible. The project's choice |
 | `m4-no-space-to-earth` | A visible satellite transmits in a band with Finnish terrestrial or passive use and no space-to-Earth allocation in `data/national/m4_bands.csv` (built by `tools/build_m4_bands.py`) | Medium; high for a passive band |
 | `terrestrial-p1546` | A land-mobile notice from a configured neighbour passes the distance screen and has calculable inputs | High above a T/R 25-08 threshold; medium with no criterion, or where the notifier declares FIN coordination completed, or with data-quality items; low below it |
 | `terrestrial-not-calculated` | The same notice lacks an input the calculation needs | Medium: never a clear result |
@@ -179,11 +180,19 @@ With the default `IFIC_MIN_ISSUE=3074`, the first sync downloads about 20 zips. 
 
 ## 9. Current status
 
+The current code screens API/A and CR/C technically, plus notification-stage filings naming FIN through `fin-named-by-br` without inventing a response deadline (ticket 22). Non-Earth reference bodies are excluded from M4, station and custom screening; PFD keeps explicit unevaluated records (ticket 23).
+
+Space rules include RR Article 21, Appendix 5 and CEPT ECC/DEC/(25)02 checks, station-specific PFD evidence, M4 Finnish restrictions and Finland-named footnotes, and versioned `custom-<id>` rules. The receiving bands of the named Sodankyla earth station are protected by frequency; coordinates remain unavailable. M15 is deliberately excluded; README records the scope decision.
+
+The UI includes the reach map with stations filtered to the satellite frequencies, paged station results, custom rule editing, and descriptive space/terrestrial trends from `/trends`. The `compact-stations` CLI reduces legacy stored lists while preserving review decisions (tickets 24/30/31). `/cases/{id}/coverage` returns approximate reach geometry, `/cases/{id}/stations` recomputes the complete list, and `/rules` manages versioned custom definitions. The UI still drafts locally; the guarded `/cases/{id}/draft` API is separate (ticket 25).
+
+Evaluation exports require a clean Git checkout and record its commit and dirty state. `--allow-dirty` is an explicit exploratory override. Compact JSON retains all calculations and evidence. The current 3074 export has 175 cases (43 high, 94 medium, 38 low); the paired 3076 export and reproduction details are in `outputs/ific_3076/verification.md`. These replace the earlier artifact counts below. Final integrated checks: 637 backend tests passed with all real-file tests enabled and zero skips; 40 frontend tests and the production build passed.
+
 ### Historical issue support observed on 2026-11-07
 
 | Sample / range | How obtained | Observed format/version | Screens? |
 |---|---|---|---|
-| 3074-3083 (2026) | `sns/wic/demowic26.html` → `sns/ific10/ific{N}.zip` | Space SNS, version 10 | Yes; all ten screened in the clean run of 2026-11-07 (3074: 182 cases) |
+| 3074-3083 (2026) | `sns/wic/demowic26.html` → `sns/ific10/ific{N}.zip` | Space SNS, version 10 | Yes; all ten screened in the clean run of 2026-11-07 (3074: 182 cases at that historical revision) |
 | 2925 (2020) | `sns/wic/demowic20.html` → `sns/ific8/ific2925.zip` | Space SNS, version 8 | No; clearly rejected as unsupported |
 | 2809 (2015) | `sns/wic/demowic15.html` → `sns/ific61/ific2809.zip` | Space SNS, version 7 | No; clearly rejected as unsupported |
 | 2559 (2005) | `sns/wic/demowic05.html` → `sns/ific5/ific2559.zip` | Space SNS, version 5 | No; clearly rejected as unsupported |
@@ -220,7 +229,7 @@ CSV/JSON stays identical.
 - **Upload on Postgres:** a second empty database given `ific3074.zip`, `brific3075.mdb` and `brific3076.mdb` produced the same cases. The only differences were the source URL and the hash and size of the uploaded file. A request with no key got 401, and repeat uploads were recognised.
 - **Demo rehearsal from a clean start:** see `docs/demo.md`. Drafts returned 200 for all 224 cases in 3083, and screening the issue again added no cases or notifications.
 - **Hand check:** see `outputs/hand-check.md`. All 21 P.1546 values match upstream code in Octave to within 0.006 dB (`tools/crosscheck_p1546_octave.py`).
-- The Python suite passes, with 554 tests including those reading real issues, and the frontend's 32 tests pass.
+- That earlier revision passed 554 Python tests including real-file checks and 32 frontend tests. Current test results are recorded with the submission refresh; these historical totals do not describe the current suite.
 
 **Open or not yet verified**
 
@@ -236,25 +245,25 @@ CSV/JSON stays identical.
 
 | Gap | Effect | Fix |
 |---|---|---|
-| Terrestrial criteria are partial | Land-mobile notices get a P.1546 field strength. T/R 25-08 Annex 1 thresholds apply only up to 470 MHz and are unconfirmed on the Russian border; above that the value has no comparison | Traficom's answer on the criteria (ticket 02) |
-| Cases span issues | A case seen in two issues counts once, so a digest or count for one issue can omit it. **Export per issue, not from "new" cases** | Ticket 03 |
+| Terrestrial criteria are partial | Land-mobile notices get a P.1546 field strength against the T/R 25-08 Annex 1 indicative threshold. Above 470 MHz the 400-470 MHz value is applied as Traficom said (ticket 20). The values are unconfirmed on the Russian border, and Annexes 3 and 4 aren't used | Traficom's answers on Q6, Q8 and Q9 (ticket 02) |
+| Review cases span issues | Review state is shared across issues; `case_occurrence` retains per-artifact snapshots, and exports re-evaluate the selected source | Use issue-specific exports for evaluation |
 | Older issues reject | Only Space database version 10 screens. Versions 8, 7 and 5 are rejected with a clear error, not read | The brief asks for all existing issues | Add readers for each version |
 | Worst-case gain | pfd results apply maximum notified gain towards Finland, as Traficom said to assume, and frequency rules over-flag. `s_beam` has no boresight in 3074 | None planned: Traficom said beams "are not relevant" |
 | AP30, AP30A, AP30B not screened | The brief puts them in scope; issue 3083's plan tables are empty, so this is untested | Add notice handling using an issue that contains them |
 | DuckDB store deferred | Rules read the `.mdb` directly, which has been fast enough one issue at a time | Load `schema.sql` tables inside `screening` when cross-issue analysis needs it |
 | Tables made with `create_all` | Schema changes need manual work | Alembic |
-| Filings around the Moon | Six networks in 3074 get M4 and station cases as if they were Earth satellites; pfd sets them aside | Apply `ref_body` in the visibility screen |
+| Non-Earth orbits are not evaluated physically | Six networks in 3074 now produce zero M4 and zero station cases, instead of six each. PFD reports them as unevaluated; absence of an Earth-screening case is not clearance of a lunar link | A separate non-Earth propagation model would be required |
 | `access-parser` is a young library | Parsing errors could go unnoticed | Compare row counts against `mdbtools` on 3074 and 3076 |
 
 ## 10. Next steps, in order
 
 The full breakdown is in `.scratch/ific-guard-delivery/map.md`.
 
-1. Process Space 3074, which is evaluated separately, and export its cases.
-2. Add a special-interest station overlap rule.
-3. Add the pfd engine as a rule, which is what allows a case to say a limit is exceeded.
-4. Add the terrestrial land-mobile adapter, the diff between issues, and P.1546 for Terrestrial 3076.
-5. Add LLM explanations and draft letters to the case detail. The review UI in `frontend/` already uses the services.
+1. Complete AP30/AP30A/AP30B coverage using representative data and add historical schema adapters.
+2. Protect Finnish satellites already operating and resolve unsupported PFD-mask parameters.
+3. Connect the UI to guarded drafting (ticket 25), exercise a real model (26), and rehearse the updated demo (32).
+4. Verify regulatory applicability and recognition accuracy with Traficom; do not infer clearance from missing data.
+5. Keep final exports and their provenance aligned with the submitted main branch (tickets 28/29/36).
 
 After the hackathon: Alembic, SSO, staleness alerts, a stuck-event view and metrics.
 

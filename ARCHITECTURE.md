@@ -108,7 +108,7 @@ class DomainAdapter:
 | M4 band summary | `m4_satellite_filter.csv` | 212 bands from 30 MHz up, with space/terrestrial/passive flags and a concern level |
 | Special-interest XLS (SinceAI platform) | `protected_station` | Station number, frequency, coordinates, antenna data |
 | Finnish satellite networks | `fin_satellite_band` | All `adm = 'FIN'` networks in the SRS |
-| M15 (licence-exempt) | optional | Low-severity notes only |
+| M15 (licence-exempt) | optional; excluded from this demonstrator | No M15-specific screening or low-severity notes. A licence-exempt band match alone does not establish a satellite interference concern; M4 remains the national allocation input. See the scope decision in README (ticket 34). |
 
 ### 4.4 Relevance filter
 
@@ -141,10 +141,11 @@ margin = pfd − limit(δ)                        positive = exceeds
 
 - Free-space propagation only (RR Article 21 limits are defined that way); no atmospheric losses.
 - Limits from `limit_mask`, piecewise in δ (typically 0–5°, 5–25°, 25–90°).
-- Two separate tests, labelled in the output:
+- Three separate tests, labelled in the output:
   - **Article 21 limits** — compliance; exceeding means a non-compliant filing.
   - **Appendix 5 thresholds** — coordination trigger under RR No. 9.14.
-- Evaluated on a ~0.5° grid over Finland plus the special-interest stations; the worst point is reported.
+  - **CEPT conditions** — from ECC documents (`data/masks/cept_masks.json`), such as ECC/DEC/(25)02 in 862–870 MHz. A concern for review, not an RR limit.
+- Evaluated on a ~0.5° grid over Finland; the worst point is reported. Each calculation is also evaluated at the special-interest stations whose band overlaps the part of the assignment the mask covers (ticket 19).
 - Northern Finland sees GSO satellites at low elevation and therefore the strictest part of the mask; the grid captures this.
 
 **NGSO**, implemented in `engines/pfd_ngso.py`. Each calculation gives two results of different kinds, kept apart in the output:

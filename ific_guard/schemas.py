@@ -2,7 +2,7 @@
 from datetime import date, datetime
 from typing import Any, Literal
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, model_validator
 
 
 class _Orm(BaseModel):
@@ -50,6 +50,25 @@ class CaseSummary(_Orm):
     last_issue: int
     comment_deadline: date | None
     review_status: str
+    # Distinct M4 primary services across the case's bands, so a list can be filtered without opening each case.
+    m4_primary_services: list[str] = []
+
+    @model_validator(mode="before")
+    @classmethod
+    def _primary_services(cls, data: Any) -> Any:
+        if isinstance(data, dict):
+            return data
+        details = getattr(data, "details", None) or {}
+        bands = details.get("bands") if isinstance(details, dict) else None
+        services = {
+            s.strip()
+            for b in bands or []
+            if isinstance(b, dict)
+            for s in str(b.get("m4_primary_services") or "").split(";")
+            if s.strip()
+        }
+        return {**{name: getattr(data, name) for name in cls.model_fields if hasattr(data, name)},
+                "m4_primary_services": sorted(services)}
 
 
 class CaseOut(CaseSummary):

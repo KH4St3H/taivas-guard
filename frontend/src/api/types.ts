@@ -98,8 +98,33 @@ export interface BandMatch {
   passive: boolean;
   pages: string;
   groupCount: number;
-  stationIds: string[];
+  stationIds: string[]; // a sample when stationCount is larger
+  stationCount: number;
   classes: Record<string, number>;
+  /** What M4 allocates for space-to-Earth across the band, on station cases. */
+  m4SpaceToEarth: string | null;
+  /** Finland's restrictions in the band, verbatim from Traficom's table, and RR footnotes naming Finland. */
+  restrictions: string[];
+  nationalUse: string[];
+  rrFootnotesCited: string[];
+  rrFootnotesNamingFinland: { footnote: string; kind: string; pdfPage: number }[];
+}
+
+/** What was found at one station in Traficom's list: a value at its coordinates, a bound, or nothing. */
+export interface StationResult {
+  id: string;
+  licence: string | null;
+  sides: string[];
+  status: string;
+  valueDb: number | null;
+  limitDb: number | null;
+  marginDb: number | null;
+  angleDeg: number | null;
+  /** True when no RX band matched, so the value is at the site and not where the band is received. */
+  atSiteOnly: boolean;
+  locationFlagged: boolean;
+  /** The filing's non-GSO upper bound. It applies to the filing, never to this station. */
+  filingBoundDb: number | null;
 }
 
 /** A calculated result in the shape agreed in Case.details. */
@@ -111,6 +136,24 @@ export interface CalculatedResult {
   marginDb: number | null;
   maskId: string | null;
   worstPoint: Record<string, unknown> | null;
+}
+
+/** On a case raised by a rule an expert wrote: which rule and version, and what it matched. */
+export interface CustomRuleRef {
+  id: number;
+  name: string;
+  version: number;
+  conditions: string[];
+  matchedAssignments: { groupId: number; fMinMhz: number; fMaxMhz: number; direction: string }[];
+  matchedCount: number;
+}
+
+export interface CeptCompliance {
+  doc: string;
+  clause: string;
+  page: number;
+  listed: boolean;
+  systems: { adm: string; network: string; commitment: string }[];
 }
 
 export interface Finding {
@@ -141,7 +184,16 @@ export interface Finding {
   stations: StationRef[];
   stationIds: string[];
   stationClasses: Record<string, number>;
+  stationResults?: StationResult[];
+  /** How many of the stations the case itself keeps: the worst ones. The rest come from listCaseStations. */
+  stationsListed?: number;
+  stationStatusCounts?: Record<string, number>;
   bands: BandMatch[];
+  /** Distinct M4 primary services across `bands`. List rows carry this even though they carry no bands. */
+  m4PrimaryServices: string[];
+  customRule?: CustomRuleRef | null;
+  /** On a CEPT pfd case: whether the CEPT document lists this filing as compliant. */
+  ceptCompliance?: CeptCompliance | null;
   visibility: string[];
   basis: string | null;
   calc: PfdCalculation | null;
@@ -242,6 +294,119 @@ export interface Capabilities {
   rescreen: boolean;
   reviewStatuses: ReviewStatus[];
   letterStorage: 'browser' | 'server';
+  customRules: boolean; // experts can write screening rules
+  stationLists: boolean; // a case's full station list can be recomputed on request
+  coverage: boolean; // a finding's reach over Finland can be mapped
+  trends: boolean; // counts across stored issues
+}
+
+export interface TrendFlag { name: string; issue: number; count: number; earlierAverage: number }
+export interface LargeSystem { ntcId: number; network: string | null; adm: string | null; satellites: number; reason: string | null }
+
+/** Descriptive counts per stored issue. Series are dimension -> category -> issue -> count. */
+export interface Trends {
+  domain: Domain;
+  issues: number[];
+  series: Record<string, Record<string, Record<number, number>>>;
+  flags: Record<string, TrendFlag[]>;
+  rule: string;
+  problems: string[];
+  totals?: Record<number, { filings: number; visibleFromFinland: number }>;
+  largestNgso?: Record<number, LargeSystem[]>;
+  assumptions: string[];
+}
+
+/** Where over Finland a case's satellite can reach. Computed on request; there is no beam footprint. */
+export interface Coverage {
+  issueNo: number;
+  mapped: boolean; // false: reach couldn't be placed, so empty cells are unknown, not out of view
+  boundary: number[][][]; // rings of [lon, lat]
+  cell: { latStep: number; lonStep: number };
+  orbit: 'gso' | 'ngso' | 'mixed' | 'none';
+  gsoLonDeg: number | null;
+  satellites: string[];
+  cells: { lat: number; lon: number; angleDeg: number | null; minutes: number | null; pfdDb: number | null; marginDb: number | null }[];
+  pfd: { available: boolean; reason?: string; refBwHz?: number; groupId?: number; fLowMhz?: number; fHighMhz?: number; powerInRefBwDbw?: number; gainDbi?: number; maskId?: string | null };
+  stations: { total: number; segments?: { lowMhz: number; highMhz: number }[]; withoutLocation: number; byClass: Record<string, number>; points?: { id: string; lat: number; lon: number; licence: string | null }[]; bins?: { lat: number; lon: number; count: number }[] };
+  notes: string[];
+  assumptions: string[];
+}
+
+export interface StationQuery {
+  offset?: number;
+  limit?: number;
+  status?: string;
+  licence?: string;
+}
+
+/** One page of a case's full station list, recomputed from the issue file. */
+export interface StationPage {
+  total: number;
+  matching: number;
+  offset: number;
+  rows: StationResult[];
+  counts: { status: Record<string, number>; licence: Record<string, number> };
+  notVisible: number;
+  issueNo: number;
+  datasetChanged: boolean;
+}
+
+export type Tri = 'any' | 'yes' | 'no';
+
+export interface RuleDefinition {
+  orbit: 'any' | 'gso' | 'ngso';
+  visibleFromFinland: boolean;
+  admIn: string[];
+  admNotIn: string[];
+  provisionIn: string[];
+  direction: 'transmit' | 'receive' | 'either';
+  frequencyRanges: { lowMhz: number; highMhz: number }[];
+  m4: { spaceToEarth: Tri; earthToSpace: Tri; terrestrialPrimary: Tri; passive: Tri; primaryServicesAny: string[] };
+}
+
+export interface RuleSpec {
+  name: string;
+  description: string;
+  severity: 'high' | 'medium' | 'low';
+  titleTemplate: string;
+  definition: RuleDefinition;
+}
+
+export interface RuleVersion extends RuleSpec {
+  version: number;
+  enabled: boolean;
+  savedBy: string;
+  note: string;
+  savedAt: string;
+}
+
+export interface CustomRule extends RuleSpec {
+  id: number;
+  ruleId: string;
+  enabled: boolean;
+  version: number;
+  conditions: string[];
+  caseCount: number;
+  updatedAt: string;
+  versions: RuleVersion[];
+}
+
+export interface RuleSave extends RuleSpec {
+  enabled: boolean;
+  savedBy: string;
+  note: string;
+}
+
+export interface RulePreview {
+  issueNo: number;
+  total: number;
+  byAdm: Record<string, number>;
+  hits: { network: string | null; adm: string | null; title: string; severity: Severity; noticeIds: number[]; bands: number; assignments: number }[];
+}
+
+export interface RuleOptions {
+  m4PrimaryServices: string[];
+  titleFields: Record<string, string>;
 }
 
 /** Anything implementing this can drive the UI: sample data or the live services. */
@@ -263,6 +428,17 @@ export interface Api {
   listReferenceSources(): Promise<ReferenceSource[]>;
   listLimits(): Promise<LimitRow[]>;
   listSeverityRules(): Promise<{ severity: string; rule: string }[]>;
+  listRules(): Promise<CustomRule[]>;
+  getRule(id: number): Promise<CustomRule | null>;
+  ruleOptions(): Promise<RuleOptions>;
+  saveRule(rule: RuleSave, id?: number): Promise<CustomRule>;
+  previewRule(spec: RuleSpec, artifactId: number): Promise<RulePreview>;
+  /** Queues every stored space issue, so cases follow the current rules. Returns the issue numbers. */
+  rescreenSpace(): Promise<number[]>;
+  listCaseStations(id: string, query: StationQuery): Promise<StationPage>;
+  caseStationsCsvUrl(id: string, query: StationQuery): string | null;
+  getCoverage(id: string): Promise<Coverage>;
+  getTrends(domain: Domain): Promise<Trends>;
   severityNote: string;
 }
 

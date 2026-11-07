@@ -38,3 +38,6 @@ export const signed = (n: number, digits = 1) => `${n < 0 ? '−' : ''}${Math.ab
 export function refBandwidth(hz: number): string {
   return hz >= 1e6 ? `${hz / 1e6} MHz` : `${hz / 1e3} kHz`;
 }
+
+/** M4 joins a band's primary services with semicolons; the screening service splits them the same way. */
+export const m4Services = (joined: string): string[] => joined.split(';').map((s) => s.trim()).filter(Boolean);

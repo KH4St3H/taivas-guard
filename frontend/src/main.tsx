@@ -9,6 +9,8 @@ import { RunDetail } from './pages/RunDetail';
 import { Findings } from './pages/Findings';
 import { FindingDetail } from './pages/FindingDetail';
 import { Reference } from './pages/Reference';
+import { RuleEditor, Rules } from './pages/Rules';
+import { Trends } from './pages/Trends';
 import '@fontsource-variable/geist';
 import '@fontsource-variable/geist-mono';
 import './styles.css';
@@ -25,6 +27,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           <Route path="findings" element={<Findings />} />
           <Route path="findings/:id" element={<FindingDetail />} />
           <Route path="reference" element={<Reference />} />
+          <Route path="trends" element={<Trends />} />
+          <Route path="rules" element={<Rules />} />
+          <Route path="rules/:id" element={<RuleEditor />} />
           <Route path="*" element={<div className="empty"><h1>Page not found</h1></div>} />
         </Route>
       </Routes>

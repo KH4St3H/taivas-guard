@@ -10,8 +10,8 @@ from datetime import date
 from typing import Any, Protocol
 
 from ..config import Settings
-from .m4 import M4Band, load_m4_conflict_bands
-from .space import SATELLITE_NOTICE_TYPES, SpaceIssue, SpaceNotice, add_months
+from .m4 import M4Band, finnish_notes, load_m4_conflict_bands, load_rr_footnotes_finland
+from .space import EARTH_BODY, SATELLITE_NOTICE_TYPES, SpaceIssue, SpaceNotice, add_months
 
 FINLAND = "FIN"
 
@@ -48,6 +48,9 @@ def _families(notices: Iterable[SpaceNotice]) -> dict[int, list[SpaceNotice]]:
 
 
 def visible_from_finland(notice: SpaceNotice, s: Settings) -> tuple[bool, str]:
+    if notice.ntc_type == "N" and notice.ref_body not in (None, EARTH_BODY):
+        body = "Moon" if notice.ref_body == "L" else f"reference body {notice.ref_body}"
+        return False, f"Non-GSO orbit referred to {body} ({notice.ref_body}), not the Earth; Earth visibility model is not applicable"
     if notice.ntc_type == "G":
         if notice.gso_lon_deg is None:
             return True, "GSO longitude missing; kept as a precaution"
@@ -70,15 +73,17 @@ class FinlandNamedRule:
 
     def run(self, issue: SpaceIssue) -> Iterable[Hit]:
         named = issue.provisions_for_adm(FINLAND)
-        for family_id, notices in _families(issue.notices[i] for i in named).items():
+        for family_id, notices in _families(issue.coordination_notices[i] for i in named).items():
             provisions = sorted({p for n in notices for p in named[n.ntc_id]["provisions"]})
             groups = sorted({g for n in notices for g in named[n.ntc_id]["groups"]})
             head = notices[0]
+            notification_stage = any(n.reason == "N" for n in notices)
             yield Hit(
                 rule_id=self.id,
                 family_id=family_id,
                 severity="high",
-                title=f"BR names Finland in {head.name or head.ntc_id} ({head.adm}) under {', '.join(provisions) or 'coordination data'}",
+                title=f"BR names Finland in {head.name or head.ntc_id} ({head.adm}) under {', '.join(provisions) or 'coordination data'}"
+                      + (" (notification stage)" if notification_stage else ""),
                 adm=head.adm,
                 network=head.name,
                 notice_ids=sorted(n.ntc_id for n in notices),
@@ -87,8 +92,14 @@ class FinlandNamedRule:
                     "group_ids": groups,
                     "sections": sorted({n.provision for n in notices if n.provision}),
                     "basis": "Administration FIN appears in the provn or tr_provn tables of this IFIC.",
+                    "notice_reasons": sorted({n.reason for n in notices if n.reason}),
+                    **({
+                        "stage": "notification",
+                        "response_guidance": "Notification-stage filing: expert review of the cited provisions is required; no applicable response window has been established.",
+                        "assumptions": ["No API/A or CR/C comment window is assumed for a notification-stage filing."],
+                    } if notification_stage else {}),
                 },
-                comment_deadline=_deadline(notices, self.settings.comment_window_months),
+                comment_deadline=None if notification_stage else _deadline(notices, self.settings.comment_window_months),
             )
 
 
@@ -160,6 +171,7 @@ class M4NoDownlinkRule:
                             **({"m4_api_row_ids": b.api_row_ids, "m4_snapshot": b.source} if b.api_row_ids else {}),
                             **({"space_down_unresolved": b.space_down_unresolved} if b.space_down_unresolved else {}),
                             **({"no_row_gaps_mhz": b.no_row_gaps_mhz} if b.no_row_gaps_mhz else {}),
+                            **finnish_notes(b.low_mhz, b.high_mhz, [b], load_rr_footnotes_finland()),
                         }
                         for b, groups in sorted(matched.items(), key=lambda kv: kv[0].low_mhz)
                     ],
@@ -174,10 +186,13 @@ class M4NoDownlinkRule:
 def space_rules(settings: Settings) -> list[Rule]:
     from .rule_stations import station_overlap_rule  # imported here because rule_stations uses Hit from this module
     from .rule_pfd import pfd_rule
+    from .stations import protected_stations
 
+    stations = protected_stations()
+    pfd = pfd_rule(settings, stations)  # the station rule reads the pfd rule's per-station results
     return [
         FinlandNamedRule(settings),
         M4NoDownlinkRule(settings, load_m4_conflict_bands(settings.m4_filter_path)),
-        station_overlap_rule(settings),
-        pfd_rule(settings),
+        station_overlap_rule(settings, pfd=pfd, stations=stations),
+        pfd,
     ]

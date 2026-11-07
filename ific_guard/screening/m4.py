@@ -15,11 +15,13 @@ A satellite service with no direction in its text takes it from an earth station
 same sub-band. When there is none the direction stays unresolved: it is logged, not guessed.
 """
 import csv
+import json
 import re
 from bisect import bisect_left, bisect_right
 from collections import defaultdict
 from collections.abc import Iterable
 from dataclasses import dataclass
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
@@ -29,6 +31,7 @@ BAND_COLUMNS = [
     "space_down_allocated", "space_up_allocated", "space_down_unresolved",
     "passive_or_radio_astronomy", "terrestrial_primary", "concern_if_satellite_transmits",
     "no_row_gaps_mhz", "notes", "api_row_ids", "m4_table_pages", "source",
+    "restrictions", "rr_footnotes", "national_use",
 ]
 LOG_COLUMNS = ["category", "service_text", "low_mhz", "high_mhz", "api_row_ids", "reason"]
 
@@ -49,6 +52,12 @@ SATELLITE = {
 ALWAYS_SPACE_TO_EARTH = {"BROADCASTING-SATELLITE"}
 NEVER_SPACE_TO_EARTH = {"INTER-SATELLITE"}
 PARENTHESES = {"R", "OR", "SPACE-TO-EARTH", "EARTH-TO-SPACE", "SPACE-TO-SPACE", "PASSIVE", "ACTIVE"}
+# Comments that restrict, prohibit, reserve or exclude use. Kept verbatim; nothing here weighs them (ticket 21).
+RESTRICTION = re.compile(
+    r"prohibit|restrict|reserved|not allowed|not permitted|not in use|shall not|exclusively|only for|distress", re.I
+)
+RR_FOOTNOTE = re.compile(r"\bRR\s*(?:No\.\s*)?(5\.\d+[A-Z]?)")
+NATIONAL_USE = re.compile(r"\b(military|government|defen[cs]e)\b", re.I)
 NOTE_WORTHY = re.compile(r"not in use in finland|all emissions prohibited|receiving satellite earth station", re.I)
 
 
@@ -250,7 +259,15 @@ def _band_record(band: dict[str, Any], services: dict[int, Service], pages, sour
         "api_row_ids": _id_ranges(r["ID"] for r in rows),
         "m4_table_pages": _pages_for(band["low"], band["high"], list(pages)),
         "source": source,
+        "restrictions": " | ".join(sorted({" ".join(r["Comment"].split()) for r in rows if RESTRICTION.search(r["Comment"])})),
+        "rr_footnotes": " ".join(sorted({n for r in rows for n in RR_FOOTNOTE.findall(r["Comment"])}, key=_footnote_order)),
+        "national_use": "; ".join(sorted({" ".join(r["Sub_band_usage"].split()) for r in rows if NATIONAL_USE.search(r["Sub_band_usage"])})),
     }
+
+
+def _footnote_order(number: str) -> tuple[int, str]:
+    digits = re.match(r"5\.(\d+)", number)
+    return int(digits[1]), number
 
 
 def _joined(gaps: list[tuple[int, int]]) -> list[tuple[int, int]]:
@@ -276,6 +293,42 @@ class M4Band:
     space_down_unresolved: str = ""
     no_row_gaps_mhz: str = ""
     source: str = ""
+    restrictions: str = ""
+    rr_footnotes: str = ""
+    national_use: str = ""
+
+
+@dataclass(frozen=True)
+class M4Row:
+    """One row of the national band table, whatever it allocates."""
+    low_mhz: float
+    high_mhz: float
+    primary_services: str
+    finnish_use: str
+    space_down_allocated: bool
+    space_down_unresolved: str
+    passive: bool
+    terrestrial_primary: bool
+    pages: str
+    space_up_allocated: bool = False
+    restrictions: str = ""
+    rr_footnotes: str = ""
+    national_use: str = ""
+
+
+def load_m4_rows(path: Path) -> list[M4Row]:
+    with path.open(newline="", encoding="utf-8") as f:
+        rows = list(csv.DictReader(f))
+    flag = lambda value: value.strip().lower() == "true"  # noqa: E731
+    return [
+        M4Row(
+            float(r["band_low_mhz"]), float(r["band_high_mhz"]), r["primary_services"], r["finnish_terrestrial_use"],
+            flag(r["space_down_allocated"]), r.get("space_down_unresolved", ""), flag(r["passive_or_radio_astronomy"]),
+            flag(r["terrestrial_primary"]), r["m4_table_pages"], flag(r.get("space_up_allocated", "")),
+            r.get("restrictions", ""), r.get("rr_footnotes", ""), r.get("national_use", ""),
+        )
+        for r in rows
+    ]
 
 
 def load_m4_conflict_bands(path: Path) -> list[M4Band]:
@@ -300,7 +353,44 @@ def load_m4_conflict_bands(path: Path) -> list[M4Band]:
             r.get("space_down_unresolved", ""),
             r.get("no_row_gaps_mhz", ""),
             r.get("source", ""),
+            r.get("restrictions", ""),
+            r.get("rr_footnotes", ""),
+            r.get("national_use", ""),
         )
         for r in rows
         if not flag(r["space_down_allocated"]) and (flag(r["terrestrial_primary"]) or flag(r["passive_or_radio_astronomy"]))
     ]
+
+
+RR_FINLAND_PATH = Path(__file__).resolve().parents[2] / "data/national/rr_footnotes_finland.json"
+
+
+@lru_cache(maxsize=1)
+def load_rr_footnotes_finland(path: Path = RR_FINLAND_PATH) -> tuple[dict[str, Any], ...]:
+    """RR Article 5 footnotes that name Finland, from tools/build_rr_footnotes.py (ticket 21)."""
+    if not path.exists():
+        return ()
+    return tuple(json.loads(path.read_text(encoding="utf-8"))["footnotes"])
+
+
+def finnish_notes(low: float, high: float, rows: Iterable[Any], footnotes: Iterable[dict[str, Any]] = ()) -> dict[str, Any]:
+    """What Finland restricts in a band, verbatim from M4 rows that overlap it, and the RR footnotes naming Finland.
+
+    Shown on cases for the expert. Nothing here changes severity: Traficom has not said how these weigh.
+    """
+    found = [r for r in rows if r.low_mhz < high and r.high_mhz > low]
+    split = lambda values, sep: sorted({v.strip() for value in values for v in value.split(sep) if v.strip()})  # noqa: E731
+    out: dict[str, Any] = {}
+    if restrictions := split((r.restrictions for r in found), " | "):
+        out["m4_restrictions"] = restrictions
+    if cited := split((r.rr_footnotes for r in found), " "):
+        out["m4_rr_footnotes"] = cited
+    if national := split((r.national_use for r in found), "; "):
+        out["m4_national_use"] = national
+    naming = [
+        {"footnote": f["footnote"], "kind": f["kind"], "pdf_page": f["pdf_page"]}
+        for f in footnotes if any(a < high and b > low for a, b in f["bands_mhz"])
+    ]
+    if naming:
+        out["rr_footnotes_naming_finland"] = naming
+    return out

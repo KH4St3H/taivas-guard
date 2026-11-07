@@ -103,7 +103,7 @@ def _interpolate(points: list[list[float]], x: float) -> float:
 @dataclass(frozen=True)
 class LimitMask:
     mask_id: str
-    kind: str  # pfd_art21 is a compliance limit; pfd_app5 is a coordination trigger
+    kind: str  # pfd_art21 is a compliance limit; pfd_app5 is a coordination trigger; pfd_cept is a CEPT condition
     f_low_mhz: float
     f_high_mhz: float
     services: list[str]
@@ -180,11 +180,31 @@ def _highly_inclined(inclination_deg: float | None, apogee_km: float | None) -> 
     )
 
 
+RR_MASKS = MASK_DIR / "limit_masks.json"
+CEPT_MASKS = MASK_DIR / "cept_masks.json"
+
+
 @lru_cache
-def load_masks(path: Path = MASK_DIR / "limit_masks.json") -> MaskSet:
-    with path.open(encoding="utf-8") as f:
-        raw = json.load(f)
-    return MaskSet(tuple(LimitMask(**m) for m in raw["masks"]), tuple(raw["no_limit_for_finland"]), tuple(raw["not_covered"]))
+def load_masks(path: Path = RR_MASKS, *extra: Path) -> MaskSet:
+    """The RR masks, plus the CEPT ones when the default file is read. Each file keeps its own citations."""
+    paths = [path, *(extra or ((CEPT_MASKS,) if path == RR_MASKS and CEPT_MASKS.exists() else ()))]
+    masks, no_limit, not_covered = [], [], []
+    for p in paths:
+        with p.open(encoding="utf-8") as f:
+            raw = json.load(f)
+        masks += [LimitMask(**m) for m in raw["masks"]]
+        no_limit += raw["no_limit_for_finland"]
+        not_covered += raw["not_covered"]
+    return MaskSet(tuple(masks), tuple(no_limit), tuple(not_covered))
+
+
+@lru_cache(maxsize=1)
+def compliance_lists() -> dict[str, dict[str, Any]]:
+    """Satellite systems a CEPT document lists as compliant with a mask, by mask id."""
+    if not CEPT_MASKS.exists():
+        return {}
+    with CEPT_MASKS.open(encoding="utf-8") as f:
+        return json.load(f).get("compliance_lists", {})
 
 
 def _inside(lon: float, lat: float, ring: list[list[float]]) -> bool:

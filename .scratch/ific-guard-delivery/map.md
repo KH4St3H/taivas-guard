@@ -30,6 +30,26 @@ Status values come from `docs/agents/triage-labels.md`. Size is a rough relative
 | 16 | Protect TX as well as RX frequencies | Done, merged in `integration/wave-3` | M | none | Required |
 | 17 | AP30, AP30A and AP30B plan screening | Later, `needs-info` | L | none | Required by the brief, gap declared for now |
 | 18 | Pending work before submission (checklist) | Coordinator | L | none | Mixed, see ticket |
+| 19 | Link pfd results to special-interest stations | Open, on `develop` | L | none | Top priority for the user |
+| 21 | Finnish restrictions, RR footnotes naming Finland, real earth stations | Done on `agent/21-finnish-restrictions`; earth station coordinates still needed | L | none | Wanted: Finnish data the brief says to use |
+| 20 | Terrestrial criterion above 470 MHz | Done at `909f2de` on `develop` | S | none | Required: Traficom answered Q10 |
+| 22 | Screen notification-stage filings that name Finland | Done, 2026-11-07; see ticket evidence | S | none | Accuracy (06 D): three known 3074 misses |
+| 23 | Set aside orbits not referred to the Earth | Done, 2026-11-07; see ticket evidence | S | none | Accuracy (06 D): six known 3074 false positives |
+| 24 | Map station layer on the satellite's own frequencies | Done on `develop` | S | none | Output quality (06 C, D) |
+| 25 | Finding page drafts from the drafting service | Open, `ready-for-agent` | M | none | The visible AI part (02 step 9, title) |
+| 26 | Run the drafting path with a real model | Open, `ready-for-human` | S | 25 | Untested AI component |
+| 27 | Letters name the kind of criterion | Open, `ready-for-agent` | S | none | Auditability (06 E) |
+| 28 | README, Reference page and docs match the code | Done, 2026-11-07; see ticket evidence | S | 29 | Submission (07) |
+| 29 | Re-export 3074 and 3076, commit in the manifest | Done, 2026-11-07; see ticket evidence | M | 22, 23 | Submission (07), reproducibility (06 A) |
+| 30 | Trends in the app, terrestrial and space | Done on `develop` | M | none | Side quest trends; guiding question |
+| 31 | Shrink stored station lists without resetting reviews | Done on `develop` | S | none | Keeps review decisions |
+| 32 | Update and rehearse the demo | Claimed by Person C | S | 24, 25, 28, 29 | Submission (07) |
+| 33 | Cross-check pfd with ITU's software | Open, `ready-for-human` | M | none | Credibility (06 A) |
+| 34 | Decide on Regulation M15 | Done, 2026-11-07; see ticket evidence | S | none | Brief 02 names it |
+| 35 | Questions for Traficom before submission | Open, `ready-for-human` | S | none | Accuracy reference, terrestrial framework |
+| 36 | Merge develop to main for submission | Delivered by the authorized submission PR; see ticket | S | 28, 29 | Submission (07); needs approval |
+
+Tickets 22-36 come from a requirement-by-requirement check of the brief on 2026-11-07. The larger gaps it found stay where they were already tracked: protecting Finnish satellites and older database versions in ticket 18, AP30 in ticket 17.
 
 "Required" follows the brief: datasets marked `**` are mandatory, it asks for GSO and non-GSO pfd, the side quest including trends, and for all existing issues to be evaluable. A UI is not named in the brief.
 
@@ -138,3 +158,5 @@ Screening rules without a calculation use `method: "screening"` and leave the nu
 - **What Sweden, Norway and Denmark contribute.** In Terrestrial 3075, 3076 and 3083, none of them notifies any station in `fxm_terra` or `fmtv_terra`. Only Russia and Estonia do. See ticket 08.
 - **Whether teammates are already building** the pfd engine, P.1546 or the UI. If so, remove those tickets rather than duplicating.
 - **Whether Octave is acceptable** for P.1546 in the demo environment (ticket 09).
+
+- **Tasks 22, 23, 28, 29 and 34 completed (2026-11-07):** notification-stage FIN cases, non-Earth screening exclusion, clean-commit exports, current docs/Reference page and explicit M15 exclusion. Both evaluations were generated from clean `941282f`: 175 Space cases and 29 Terrestrial. Backend 626 passed with all real-file tests; frontend 40 passed and production build passed. Task 36 is delivered by the authorized develop-to-main submission PR; its merge record confirms completion. Final integrated verification: 637 backend tests passed, zero skipped; frontend 40 passed and production build passed.

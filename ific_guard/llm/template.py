@@ -45,6 +45,11 @@ class CaseView:
         return source.get("issue_no") or self.last_issue
 
 
+def _station_count(d: dict[str, Any]) -> int:
+    """Cases keep a sample of station ids; the count covers all. Older cases have only the full id list."""
+    return d["station_count"] if isinstance(d.get("station_count"), int) else len(d.get("station_ids", []))
+
+
 def _is_number(value: Any) -> bool:
     return isinstance(value, Real) and not isinstance(value, bool)
 
@@ -89,6 +94,60 @@ def _joined(values: list[str]) -> str:
     return ", ".join(values) if values else "none recorded"
 
 
+STATION_RULE = "station-rx-overlap"
+STATIONS_IN_TEXT = 10
+_STATUS_TEXT = {
+    "exceeds": "calculated above the limit",
+    "exceeds_flagged": "calculated above the limit, but an input or the station's location is flagged",
+    "within_3db": "calculated within 3 dB below the limit",
+    "bound_above": "no value at the station; the filing's upper bound is near or above the limit",
+    "no_calculation": "no calculation",
+    "below": "calculated below the limit",
+    "bound_below": "no value at the station; the filing's upper bound is below the limit",
+}
+
+
+def _station_line(record: dict[str, Any]) -> str:
+    sides = "/".join(sorted({b["side"].upper() for b in record.get("matched_bands", [])}))
+    if "status" not in record:
+        # Terrestrial station records carry a field strength, not a PFD result or a station criterion.
+        value = record.get("value_db")
+        result = (f"calculated field strength {_db(value)} dB(uV/m); no station-specific criterion comparison"
+                  if _is_number(value) else f"not calculated: {record.get('not_calculated') or 'no station result'}")
+        line = f"- Station {record['station_id']} ({sides}): {result}"
+        if record.get("field_location"):
+            line += "; at the station's site, which is not where this band is received"
+        return line
+    line = f"- Station {record['station_id']} ({sides}): {_STATUS_TEXT.get(record['status'], record['status'])}"
+    if _is_number(record.get("margin_db")):
+        line += (f", {_db(record['value_db'])} dB against {_db(record['limit_db'])} dB, margin {_db(record['margin_db'])} dB"
+                 f" at {_db(record['angle_deg'])} degrees")
+    if record.get("field_location"):
+        line += "; at the station's site, which is not where this band is received"
+    return line
+
+
+def _station_paragraphs(d: dict[str, Any]) -> list[str]:
+    """The listed stations a case names, worst first. Only values calculated at a station are quoted for it."""
+    records = d.get("stations_overlapping") or []
+    if not records:
+        return []
+    shown = records[:STATIONS_IN_TEXT]
+    more = f"\n- and {len(records) - len(shown)} more, listed in the case" if len(records) > len(shown) else ""
+    return [
+        f"Finnish stations whose frequencies overlap this filing's transmissions ({len(records)}), worst first:",
+        "\n".join(_station_line(r) for r in shown) + more,
+    ]
+
+
+def _finnish_notes(band: dict[str, Any]) -> str:
+    """Finland's restrictions and the RR footnotes naming Finland, as written in the sources."""
+    parts = [f"Finnish restriction: {r}" for r in band.get("m4_restrictions", [])]
+    parts += [f"national use: {u}" for u in band.get("m4_national_use", [])]
+    parts += [f"RR No. {f['footnote']} names Finland" for f in band.get("rr_footnotes_naming_finland", [])]
+    return "".join(f"; {p}" for p in parts)
+
+
 def _section_label(section: str) -> str:
     name = _SECTION_NAMES.get(provision_number(section))
     return f"{section} ({name})" if name else section
@@ -120,13 +179,21 @@ def facts(case: CaseView) -> dict[str, Any]:
                 "finnish_use": b.get("finnish_use"),
                 "passive": b.get("passive"),
                 "m4_table_pages": b.get("m4_table_pages"),
+                **{k: b[k] for k in ("m4_restrictions", "m4_national_use", "m4_rr_footnotes", "rr_footnotes_naming_finland") if b.get(k)},
+                **({"m4_space_to_earth": b["m4_space_to_earth"]} if "m4_space_to_earth" in b else {}),
             }
             for b in d["bands"]
+        ]
+    if d.get("stations_overlapping"):
+        out["stations"] = [
+            {k: r.get(k) for k in ("station_id", "status", "value_db", "limit_db", "margin_db", "field_location") if r.get(k) is not None}
+            for r in d["stations_overlapping"][:STATIONS_IN_TEXT]
         ]
     if d.get("visibility"):
         out["visibility"] = d["visibility"]
     if d.get("station_ids"):
-        out["station_ids"] = d["station_ids"]
+        out["station_count"] = _station_count(d)
+        out["station_ids"] = d["station_ids"]  # the worst stations when there are more than a case keeps
     if is_calculated(d):
         out["calculation"] = {
             key: d.get(key) for key in ("value_db", "limit_db", "margin_db", "mask_id", "worst_point", "calc_inputs")
@@ -149,11 +216,41 @@ def _concern_paragraphs(case: CaseView) -> list[str]:
             f"The data published by the Radiocommunication Bureau in this IFIC names Finland in connection with "
             f"this filing, under provision(s) {provisions}.",
         ]
+    if custom := d.get("custom_rule"):
+        out = [
+            f"This filing was raised by a screening rule written by Finland's experts (\u201c{custom.get('name')}\u201d). "
+            "It matched these conditions:",
+            "\n".join(f"- {c}." for c in d.get("conditions", [])),
+        ]
+        if d.get("bands"):
+            out += [
+                "The matched frequencies fall in these bands of the Finnish Frequency Allocation Table (Regulation M4):",
+                "\n".join(
+                    f"- {_band(b)}: M4 primary services {b.get('m4_primary_services') or 'not listed'}; "
+                    f"Finnish use: {b.get('finnish_use') or 'not listed'}"
+                    + (f"; M4 table page(s) {b['m4_table_pages']}" if b.get("m4_table_pages") else "")
+                    for b in d["bands"]
+                ),
+            ]
+        return out
+    if case.rule_id == STATION_RULE:
+        lines = [
+            f"- {_band(b)}: M4 primary services {b.get('m4_primary_services') or 'not listed'}; space-to-Earth in M4: "
+            f"{b.get('m4_space_to_earth', 'not checked')}"
+            + (f"; M4 Frequency Allocation Table page(s) {b['m4_table_pages']}" if b.get("m4_table_pages") else "")
+            + ("; passive or radio astronomy band" if b.get("passive") else "") + _finnish_notes(b)
+            for b in d.get("bands", [])
+        ]
+        return [
+            "According to the filing, the space station transmits in the band(s) below, which overlap the receive or "
+            "transmit frequencies of Finnish stations:",
+            "\n".join(lines),
+        ]
     if d.get("bands"):
         lines = [
             f"- {_band(b)}: M4 primary services {b.get('m4_primary_services') or 'not listed'}; "
             f"Finnish use: {b.get('finnish_use') or 'not listed'}; M4 Frequency Allocation Table page(s) {b.get('m4_table_pages')}"
-            + ("; passive or radio astronomy band" if b.get("passive") else "")
+            + ("; passive or radio astronomy band" if b.get("passive") else "") + _finnish_notes(b)
             for b in d["bands"]
         ]
         return [
@@ -165,7 +262,18 @@ def _concern_paragraphs(case: CaseView) -> list[str]:
 
 
 def _position_paragraphs(case: CaseView) -> list[str]:
+    return [*_station_paragraphs(case.details), *_calculation_paragraphs(case)]
+
+
+def _calculation_paragraphs(case: CaseView) -> list[str]:
     d = case.details
+    if not is_calculated(d) and d.get("stations_overlapping"):
+        return [
+            "No power flux-density value has been calculated at any of these stations, so this letter makes no finding "
+            "on compliance with any limit or provision. Any upper bound mentioned applies to the filing, not to a station.",
+            "Finland asks for the information needed to assess the concern, in particular the transmitting beams "
+            "and any coverage over Finnish territory.",
+        ]
     if not is_calculated(d):
         return [
             "This is a possible concern from screening. No pfd or field-strength calculation has been made, and "
@@ -222,8 +330,18 @@ def explain_case(case: CaseView) -> str:
         )
     else:
         outcome = "No calculation has been made, so this is a possible concern and not a finding about any limit."
-    if case.rule_id == "fin-named-by-br":
+    if custom := d.get("custom_rule"):
+        why = (
+            f"{network} matches the user-defined rule \u201c{custom.get('name')}\u201d (version {custom.get('version')}): "
+            + "; ".join(c[0].lower() + c[1:] for c in d.get("conditions", [])) + "."
+        )
+    elif case.rule_id == "fin-named-by-br":
         why = f"The Bureau's own data for {network} names Finland under {_joined(d.get('provisions', []))}."
+    elif case.rule_id == STATION_RULE:
+        why = (
+            f"{network} transmits on the RX or TX frequencies of {_station_count(d)} station(s) in Traficom's "
+            f"list; the strongest evidence at a station is: {_STATUS_TEXT.get(d.get('evidence_status', 'no_calculation'), 'no calculation')}."
+        )
     elif d.get("bands"):
         bands = _joined([_band(b) for b in d["bands"]])
         why = (
@@ -250,7 +368,7 @@ def review_notes(case: CaseView, passages: list[Passage], missing: list[str]) ->
         notes.append("No. 9.52 asks a disagreeing administration for its own assignments. This draft attaches none.")
     if "9.52A" in have:
         notes.append("No. 9.52A lets an administration ask the Bureau to apply the Appendix 5 criteria.")
-    if "9.3" in have and d.get("bands"):
+    if "9.3" in have and d.get("bands") and case.rule_id != STATION_RULE and not d.get("custom_rule"):
         notes.append(
             "No. 9.3 concerns existing or planned satellite networks or systems. Decide whether this concern, "
             "based on terrestrial use in M4, fits that route."
@@ -280,6 +398,8 @@ def reference_block(case: CaseView, cited: list[dict[str, Any]]) -> str:
         lines.append(f"Provision(s) named by the Bureau: {_joined(d['provisions'])}")
     if d.get("bands"):
         lines.append(f"Band(s): {_joined([_band(b) for b in d['bands']])}")
+    if d.get("station_ids"):
+        lines.append(f"Listed stations in band: {_station_count(d)}; by evidence: {d.get('station_status_counts')}")
     if case.comment_deadline:
         lines.append(f"Estimated comment deadline: {case.comment_deadline.isoformat()}")
     if is_calculated(d):
@@ -306,6 +426,7 @@ def evidence_values(case: CaseView, passages: list[Passage]) -> list[Any]:
         list(levels_of(case.details).values()),
         case.title,
         ["Regulation M4, Frequency Allocation Table"] if case.details.get("bands") else [],
+        [_station_line(r) for r in case.details.get("stations_overlapping", [])[:STATIONS_IN_TEXT]],
         [f"Article {provision_number(p).split('.')[0]}" for p in wanted_provisions(case.details)],
         [[p.doc, p.clause, p.text] for p in passages],
     ]

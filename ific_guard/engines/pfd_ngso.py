@@ -158,6 +158,41 @@ def propagate(
     points: tuple[GroundPoint, ...],
 ) -> Propagation:
     """Two-body flight of one satellite. At minute 0 it is `phase_deg` past the ascending node."""
+    unit = [_unit(p) for p in points]
+    region = _region(unit)
+    candidates: list[tuple[float, float, float, float, float, int]] = []
+    visible_minutes = 0
+    for position in _positions_over(perigee_km, apogee_km, inclination_deg, perigee_arg_deg, node_lon_deg, phase_deg, region):
+        any_visible = False
+        for point in unit:
+            if (candidate := _seen_from(position, point)) is not None:
+                any_visible = True
+                candidates.append(candidate)
+        visible_minutes += any_visible
+    return Propagation(_frontier(candidates), visible_minutes)
+
+
+def _unit(point: GroundPoint) -> tuple[float, float, float, GroundPoint]:
+    lat, lon = math.radians(point.lat_deg), math.radians(point.lon_deg)
+    return math.cos(lat) * math.cos(lon), math.cos(lat) * math.sin(lon), math.sin(lat), point
+
+
+def _region(unit: list[tuple[float, float, float, GroundPoint]]) -> tuple[float, float, float, float, float]:
+    """The centre of some points and their angular radius, as (x, y, z, cos radius, sin radius)."""
+    n = len(unit)
+    centre = (sum(u[0] for u in unit) / n, sum(u[1] for u in unit) / n, sum(u[2] for u in unit) / n)
+    norm = math.sqrt(sum(c * c for c in centre))
+    cx, cy, cz = (c / norm for c in centre)
+    cos_spread = min(cx * u[0] + cy * u[1] + cz * u[2] for u in unit)
+    return cx, cy, cz, cos_spread, math.sqrt(max(0.0, 1 - cos_spread**2))
+
+
+@lru_cache(maxsize=None)
+def _positions_over(
+    perigee_km: float, apogee_km: float, inclination_deg: float, perigee_arg_deg: float, node_lon_deg: float, phase_deg: float,
+    region: tuple[float, float, float, float, float],
+) -> tuple[tuple[int, float, float, float, float], ...]:
+    """(minute, unit x, y, z, radius) for the minutes the satellite is above the region's horizon."""
     perigee_radius = EARTH_RADIUS_KM + perigee_km
     apogee_radius = EARTH_RADIUS_KM + apogee_km
     a = (perigee_radius + apogee_radius) / 2
@@ -168,25 +203,8 @@ def propagate(
     m0 = e0 - e * math.sin(e0)
     sin_i, cos_i = math.sin(math.radians(inclination_deg)), math.cos(math.radians(inclination_deg))
     omega = math.radians(perigee_arg_deg)
-
-    unit = [
-        (
-            math.cos(math.radians(p.lat_deg)) * math.cos(math.radians(p.lon_deg)),
-            math.cos(math.radians(p.lat_deg)) * math.sin(math.radians(p.lon_deg)),
-            math.sin(math.radians(p.lat_deg)),
-            p,
-        )
-        for p in points
-    ]
-    n = len(unit)
-    centre = (sum(u[0] for u in unit) / n, sum(u[1] for u in unit) / n, sum(u[2] for u in unit) / n)
-    norm = math.sqrt(sum(c * c for c in centre))
-    cx, cy, cz = (c / norm for c in centre)
-    cos_spread = min(cx * u[0] + cy * u[1] + cz * u[2] for u in unit)  # the region's angular radius
-    sin_spread = math.sqrt(max(0.0, 1 - cos_spread**2))
-
-    candidates: list[tuple[float, float, float, float, float, int]] = []
-    visible_minutes = 0
+    cx, cy, cz, cos_spread, sin_spread = region
+    positions = []
     for minute in range(0, PROPAGATION_MINUTES, PROPAGATION_STEP_MINUTES):
         mean = m0 + mean_motion * minute
         ecc = mean
@@ -209,30 +227,53 @@ def propagate(
         cos_horizon = EARTH_RADIUS_KM / radius
         sin_horizon = math.sqrt(1 - cos_horizon**2)
         # Quick rejection against the whole region: the horizon plus the region's radius.
-        if x * cx + y * cy + z * cz < cos_horizon * cos_spread - sin_horizon * sin_spread:
-            continue
-        any_visible = False
-        for px, py, pz, point in unit:
-            cos_psi = x * px + y * py + z * pz
-            if cos_psi < cos_horizon:
-                continue
-            any_visible = True
-            distance = math.sqrt(radius**2 + EARTH_RADIUS_KM**2 - 2 * radius * EARTH_RADIUS_KM * cos_psi)
-            sin_angle = (radius * cos_psi - EARTH_RADIUS_KM) / distance
-            candidates.append((sin_angle, distance, radius - EARTH_RADIUS_KM, point.lat_deg, point.lon_deg, minute))
-        visible_minutes += any_visible
+        if x * cx + y * cy + z * cz >= cos_horizon * cos_spread - sin_horizon * sin_spread:
+            positions.append((minute, x, y, z, radius))
+    return tuple(positions)
 
+
+def _seen_from(position: tuple[int, float, float, float, float], point: tuple[float, float, float, GroundPoint]):
+    minute, x, y, z, radius = position
+    px, py, pz, ground = point
+    cos_psi = x * px + y * py + z * pz
+    if cos_psi < EARTH_RADIUS_KM / radius:
+        return None
+    distance = math.sqrt(radius**2 + EARTH_RADIUS_KM**2 - 2 * radius * EARTH_RADIUS_KM * cos_psi)
+    sin_angle = (radius * cos_psi - EARTH_RADIUS_KM) / distance
+    return sin_angle, distance, radius - EARTH_RADIUS_KM, ground.lat_deg, ground.lon_deg, minute
+
+
+class StationFlights:
+    """One satellite's flight tested at single points, computed only for the points asked about.
+
+    Shares `propagate`'s positions and frontier, so a station result and a grid result are the same
+    kind of sample. `region` is fixed for a run from every point that may be asked about.
+    """
+
+    def __init__(self, points: list[GroundPoint]):
+        self.region = _region([_unit(p) for p in points]) if points else None
+        self._flights: dict[tuple, Propagation] = {}
+
+    def at(self, elements: tuple[float, float, float, float, float, float], point: GroundPoint) -> Propagation:
+        key = (elements, point)
+        if key not in self._flights:
+            unit = _unit(point)
+            seen = [c for p in _positions_over(*elements, self.region) if (c := _seen_from(p, unit)) is not None]
+            self._flights[key] = Propagation(_frontier(seen), len(seen))
+        return self._flights[key]
+
+
+def _frontier(candidates: list[tuple[float, float, float, float, float, int]]) -> tuple[Sample, ...]:
     closest: dict[int, tuple[float, float, float, float, float, int]] = {}
     for candidate in candidates:
         angle = math.degrees(math.asin(max(-1.0, min(1.0, candidate[0]))))
         slot = int(max(0.0, angle) * 10)
         if slot not in closest or candidate[1:] < closest[slot][1:]:
             closest[slot] = candidate
-    frontier = tuple(
+    return tuple(
         Sample(max(0.0, math.degrees(math.asin(max(-1.0, min(1.0, row[0]))))), row[1], row[2], row[3], row[4], row[5])
         for _, row in sorted(closest.items())
     )
-    return Propagation(frontier, visible_minutes)
 
 
 def best_sample(propagation: Propagation, mask: LimitMask) -> tuple[Sample, float, float] | None:

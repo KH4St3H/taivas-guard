@@ -70,6 +70,21 @@ def test_passive_band_raises_severity():
     assert hits[0].severity == "high"
 
 
+def test_non_earth_orbits_are_set_aside_but_missing_reference_body_is_kept():
+    from ific_guard.screening.rules import visible_from_finland
+
+    issue = SpaceIssue(FakeReader(
+        notice=[notice(i, ntc_type="N") for i in (1, 2, 3)],
+        non_geo=[dict(ntc_id=1, ref_body="L"), dict(ntc_id=3, ref_body="M")],
+        freq=[freq(i, 3500, 3540) for i in (1, 2, 3)],
+    ))
+    visible, reason = visible_from_finland(issue.notices[1], get_settings())
+    assert not visible and "Moon" in reason and "L" in reason
+    assert not visible_from_finland(issue.notices[3], get_settings())[0]
+    hits = list(M4NoDownlinkRule(get_settings(), [BAND]).run(issue))
+    assert [h.notice_ids for h in hits] == [[2]]
+
+
 def test_a_modification_and_its_target_form_one_case():
     hits = m4_hits(
         notice=[notice(1), notice(9, act="M", target=1)],
@@ -92,6 +107,25 @@ def test_finland_named_by_br_is_found_in_both_tables():
 
 def test_comment_deadline_clamps_to_month_end():
     assert add_months(date(2026, 10, 31), 4) == date(2027, 2, 28)
+
+
+def test_notification_named_by_br_is_reviewed_without_widening_other_rules():
+    issue = SpaceIssue(FakeReader(
+        notice=[notice(i, reason="N") for i in (1, 2, 3, 4)],
+        geo=[dict(ntc_id=i, long_nom=25) for i in (1, 2, 3, 4)],
+        freq=[freq(i, 3500, 3540) for i in (1, 2, 3, 4)],
+        grp=[dict(grp_id=10, ntc_id=1)],
+        provn=[dict(grp_id=10, adm="FIN", coord_prov="9.7")],
+        tr_provn=[dict(ntc_id=2, ctry="FIN", coord_prov="9.14"),
+                  dict(ntc_id=3, adm="FIN", coord_prov=None)],
+    ))
+    hits = list(FinlandNamedRule(get_settings()).run(issue))
+    assert {h.family_id for h in hits} == {1, 2, 3}
+    assert all(h.comment_deadline is None for h in hits)
+    assert all(h.details["stage"] == "notification" and "notification stage" in h.title for h in hits)
+    assert hits[0].details["sections"] == ["9.6"]
+    assert not issue.notices  # PFD, M4, stations and custom rules retain A/C scope.
+    assert not list(M4NoDownlinkRule(get_settings(), [BAND]).run(issue))
 
 
 def _artifact(domain="space", issue=3083, sha="a" * 64):
