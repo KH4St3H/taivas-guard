@@ -5,6 +5,7 @@ description = "Monitors ITU BR IFIC publications and flags items relevant to Fin
 requires-python = ">=3.11,<3.14"
 dependencies = [
     "access-parser==0.0.6",
+    "anthropic>=1,<2",
     "croniter>=3,<7",
     "fastapi>=0.115,<1",
     "httpx>=0.27,<1",

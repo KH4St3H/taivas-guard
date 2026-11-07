@@ -1,11 +1,13 @@
 """Screening service: turns fetched issues into cases and serves them for expert review."""
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, Header, HTTPException, Query, status
 from sqlalchemy import select
 
 from .. import events
 from ..db import session_scope
+from ..llm import Draft, configured_model, draft, generate
+from ..llm.template import CaseView
 from ..models import Artifact, Case
 from ..schemas import CaseOut, CaseReview, CaseSummary
 from ..service import consume, create_app, require_api_key
@@ -37,6 +39,22 @@ def get_case(case_id: int):
         if case is None:
             raise HTTPException(status.HTTP_404_NOT_FOUND, f"No case {case_id}.")
         return case
+
+
+@router.get("/cases/{case_id}/draft", response_model=Draft)
+def get_case_draft(case_id: int, use_llm: bool = False, x_api_key: Annotated[str | None, Header()] = None):
+    """An explanation and draft letter for expert review. Stores and sends nothing.
+
+    Returns the deterministic template by default. `use_llm=true` can cost money, so it needs the API key.
+    """
+    if use_llm:
+        require_api_key(x_api_key)
+    with session_scope() as s:
+        case = s.get(Case, case_id)
+        if case is None:
+            raise HTTPException(status.HTTP_404_NOT_FOUND, f"No case {case_id}.")
+        view = CaseView.of(case)
+    return generate(view, configured_model()) if use_llm else draft(view)
 
 
 @router.patch("/cases/{case_id}", response_model=CaseOut, dependencies=[Depends(require_api_key)])

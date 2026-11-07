@@ -7,6 +7,9 @@ WORKDIR /app
 COPY pyproject.toml uv.lock ./
 COPY ific_guard ./ific_guard
 COPY generetated-files/m4_satellite_filter.csv ./generetated-files/m4_satellite_filter.csv
+# Outside /app/data, which compose mounts a volume over.
+COPY data/refdocs ./refdocs
+ENV IFIC_REFDOCS_DIR=/app/refdocs
 RUN uv sync --frozen --no-dev
 
 RUN useradd --create-home app && mkdir -p /app/data && chown -R app /app/data
