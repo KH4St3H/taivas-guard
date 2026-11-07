@@ -1,0 +1,72 @@
+{
+  "case_count": 51,
+  "code_sha256": {
+    "__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "cli.py": "07955ae7b0ed141568118767a93358b10f592034e90b7b91ffafad58ce3da38a",
+    "config.py": "86fa10f2edc07d68e1ed917134e4e02debb59e0496fffe38c1c61899154cc0a0",
+    "db.py": "d8c06b3c7d5c345a31a4e6d556b63f97c8bbbb2915b51161cf4e06c67becfc72",
+    "events.py": "65ce6adaad58d8dc6e0eaf328a18ec1be2288970501e48247946f89353c53a2f",
+    "export.py": "df55187b050be6411b46e716e5420e0183760c85f9e2e4c66c006cf86bacac31",
+    "models.py": "6060da258572ef719efb5eff3d67bb18d349f6531047a6f7db6812e94618371b",
+    "notifier/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "notifier/app.py": "071a79ffd1a9f0736f3ab1fe2dd11892ed1d6f0550fd21cfe9dbb1650343fff3",
+    "notifier/mailer.py": "932a5da9b3e02643e78d3765c0f7424148831f4801dcff64fc612051dab65363",
+    "notifier/runner.py": "42834ef2ff47d05e223dc34cb40fe8955843921f1d4cac663827d31c0fed0e56",
+    "schemas.py": "f99b16c9411ac09ded1ff4bc03931bec6bc65ba91d57bffc461329592f7a705d",
+    "screening/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "screening/app.py": "d0b50f5d546e468776be131a4dfde79edf13aa117bd45dabd52ae45c4bf6371c",
+    "screening/engine.py": "8bad888d1efc319b8593ff09c6fd7800d9bc02b66e8f2a92f5d12ae738ed6a60",
+    "screening/rules.py": "9f65e9ef74227a30c40e4887af77e08d0fb2069f658d285e8c9512928603484b",
+    "screening/space.py": "0999db672ba6713a389b07c94740fe69976de9fc46671263a4e41e502b0aa1bc",
+    "service.py": "7c7807cc5ba4e672232f7b5cc8d886bdad4de25ab7d4c8af7e8efd54597a6d0e",
+    "sync/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "sync/app.py": "7eddebbd14da459d8a2143c02c357a42c5a3d852bada70c9c3209d9e0e30a45f",
+    "sync/fetch.py": "67380bde00149f9852bf838c6d6a667511ef9a883215a5372362449875513ec3",
+    "sync/runner.py": "c0d13a67d5a25fbfcfaec65fe6fa0417ebf1167a9b7451f23037a3e836164e78",
+    "sync/sources.py": "1f9fbf6b1da5cb0336842cf1afac947f120d73e5c5ee9d8eba462043e9f2c14a"
+  },
+  "code_version": {
+    "commit": "bc9c59423b14d89e74e882127499697ee0d73b76",
+    "dirty": true
+  },
+  "config": {
+    "comment_window_months": 4,
+    "gso_visible_east_deg": 97.0,
+    "gso_visible_west_deg": -47.0,
+    "m4_filter_sha256": "0fdb244342e627ff23b5ddfe74a4a9d830277ba35d2ae888508382a0860ce4b8",
+    "ngso_min_inclination_deg": 55.0
+  },
+  "domain": "space",
+  "format_version": 1,
+  "generated_at": "2026-11-07T00:44:02.518012+00:00",
+  "issue_no": 3074,
+  "limitations": [
+    "Possible concerns for expert review, not confirmed interference or regulatory breaches.",
+    "AP30/AP30A/AP30B are not screened; current scope is API/A and CR/C.",
+    "No beam coverage or power-flux-density calculation.",
+    "The current M4 file merges 3400-4200 MHz and can miss 3400-3800 MHz concerns.",
+    "Special-interest station overlap is not yet implemented.",
+    "Comment deadlines are estimates requiring expert confirmation."
+  ],
+  "mdb_sha256": "a9755213b6cdb7a26a1ca1dcf95ba69a362d3bcc2cb088e91b6b8e01e4790e31",
+  "output_sha256": {
+    "cases.csv": "23f31016a08ab4ab28620c1baf65fe2b9190d69257918ebf206b87aed9ddce34",
+    "cases.json": "117b862c1c3a4fd7b43cde3838b399590506241e18248f8ef867c9e6abf8311a"
+  },
+  "provisional_format": true,
+  "rule_ids": [
+    "fin-named-by-br",
+    "m4-no-space-to-earth"
+  ],
+  "run_time_s": 54.730213,
+  "scope": {
+    "ap30_coverage": "not implemented",
+    "notice_reasons": [
+      "A",
+      "C"
+    ]
+  },
+  "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
+  "source_size_bytes": 60837631,
+  "source_url": "https://www.itu.int/sns/ific10/ific3074.zip"
+}

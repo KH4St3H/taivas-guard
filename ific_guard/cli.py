@@ -17,11 +17,24 @@ def main() -> None:
     add.add_argument("zip", type=Path)
     add.add_argument("--domain", choices=["space", "terrestrial"], required=True)
     add.add_argument("--issue", type=int, required=True)
+    export = commands.add_parser("export", help="Evaluate an imported issue and write ranked CSV/JSON with provenance")
+    export.add_argument("--domain", choices=["space", "terrestrial"], required=True)
+    export.add_argument("--issue", type=int, required=True)
+    export.add_argument("--out", type=Path, required=True)
+    export.add_argument("--sha256", help="Select a specific imported revision instead of the latest")
     args = parser.parse_args()
 
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
     init_db()
-    if args.command == "sync":
+    if args.command == "export":
+        from .export import export_issue
+
+        try:
+            result = export_issue(args.domain, args.issue, args.out, sha256=args.sha256)
+        except ValueError as exc:
+            parser.error(str(exc))
+        print(json.dumps(result))
+    elif args.command == "sync":
         from .sync.runner import run_sync
 
         print(json.dumps({"run_id": run_sync("manual")}))

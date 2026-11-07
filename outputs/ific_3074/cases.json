@@ -1,0 +1,4027 @@
+[
+  {
+    "adm": "QAT",
+    "comment_deadline": "2026-10-23",
+    "details": {
+      "basis": "Administration FIN appears in the provn or tr_provn tables of this IFIC.",
+      "group_ids": [
+        124793424,
+        124793425,
+        124793426,
+        124793427,
+        124793428,
+        124793429,
+        124793430,
+        124793431,
+        124793432,
+        124793433,
+        124793434,
+        124793435,
+        124793436,
+        124793437,
+        124793438,
+        124793439,
+        124793440,
+        124793441,
+        124793442,
+        124793443,
+        124793444,
+        124793445,
+        124793446,
+        124793447,
+        124793448,
+        124793449,
+        124793450,
+        124793451,
+        124793452,
+        124793453,
+        124793454,
+        124793455,
+        124793456,
+        124793457,
+        124793458,
+        124793459,
+        124793460,
+        124793461,
+        124793462,
+        124793463,
+        324793424,
+        324793425,
+        324793426,
+        324793427,
+        324793428,
+        324793429,
+        324793430,
+        324793431,
+        324793432,
+        324793433,
+        324793434,
+        324793435,
+        324793436,
+        324793437,
+        324793438,
+        324793439,
+        324793440,
+        324793441,
+        324793442,
+        324793443,
+        324793444,
+        324793445,
+        324793446,
+        324793447,
+        324793448,
+        324793449,
+        324793450,
+        324793451,
+        324793452,
+        324793453,
+        324793454,
+        324793455,
+        324793456,
+        324793457,
+        324793458,
+        324793459,
+        324793460,
+        324793461,
+        324793462,
+        324793463
+      ],
+      "method": "screening",
+      "provisions": [
+        "9.21/C"
+      ],
+      "sections": [
+        "9.6"
+      ],
+      "source": {
+        "domain": "space",
+        "issue_no": 3074,
+        "notice_ids": [
+          "124520173",
+          "324520173"
+        ],
+        "sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721"
+      }
+    },
+    "domain": "space",
+    "family_id": 124520173,
+    "issue_no": 3074,
+    "network": "QATARGOV-G1-25.5E",
+    "notice_ids": [
+      "124520173",
+      "324520173"
+    ],
+    "rank": 1,
+    "rule_id": "fin-named-by-br",
+    "severity": "high",
+    "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "BR names Finland in QATARGOV-G1-25.5E (QAT) under 9.21/C"
+  },
+  {
+    "adm": "E",
+    "comment_deadline": "2026-10-23",
+    "details": {
+      "basis": "Administration FIN appears in the provn or tr_provn tables of this IFIC.",
+      "group_ids": [
+        124711730,
+        124711731,
+        124711732,
+        124711733,
+        124711734,
+        124711735,
+        124711736,
+        124711737,
+        124711738,
+        124711739,
+        124711740,
+        124711741,
+        124711742,
+        124711743,
+        124711744,
+        124711745,
+        124711746,
+        124711747,
+        124712821,
+        124712822,
+        124712823,
+        124712824,
+        124712825,
+        124712826,
+        124712827,
+        124712828,
+        124712829,
+        124712830,
+        124712831,
+        124712832,
+        124712833,
+        124712834,
+        124712835,
+        124712836,
+        124712837,
+        124712838,
+        324711730,
+        324711731,
+        324711732,
+        324711733,
+        324711734,
+        324711735,
+        324711736,
+        324711737,
+        324711738,
+        324711739,
+        324711740,
+        324711741,
+        324711742,
+        324711743,
+        324711744,
+        324711745,
+        324711746,
+        324711747,
+        324712821,
+        324712822,
+        324712823,
+        324712824,
+        324712825,
+        324712826,
+        324712827,
+        324712828,
+        324712829,
+        324712830,
+        324712831,
+        324712832,
+        324712833,
+        324712834,
+        324712835,
+        324712836,
+        324712837,
+        324712838
+      ],
+      "method": "screening",
+      "provisions": [
+        "9.11"
+      ],
+      "sections": [
+        "9.6"
+      ],
+      "source": {
+        "domain": "space",
+        "issue_no": 3074,
+        "notice_ids": [
+          "124520179",
+          "324520179"
+        ],
+        "sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721"
+      }
+    },
+    "domain": "space",
+    "family_id": 124520179,
+    "issue_no": 3074,
+    "network": "HISPASAT-5-52.5W",
+    "notice_ids": [
+      "124520179",
+      "324520179"
+    ],
+    "rank": 2,
+    "rule_id": "fin-named-by-br",
+    "severity": "high",
+    "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "BR names Finland in HISPASAT-5-52.5W (E) under 9.11"
+  },
+  {
+    "adm": "CHN",
+    "comment_deadline": "2026-10-23",
+    "details": {
+      "basis": "Administration FIN appears in the provn or tr_provn tables of this IFIC.",
+      "group_ids": [
+        124793660,
+        124793661,
+        124793662,
+        124793663,
+        124793664,
+        124793665,
+        124793666,
+        124793667,
+        124793668,
+        124793669,
+        124793670,
+        124793671,
+        124793672,
+        124793673,
+        124793674,
+        124793675,
+        324793660,
+        324793661,
+        324793662,
+        324793663,
+        324793664,
+        324793665,
+        324793666,
+        324793667,
+        324793668,
+        324793669,
+        324793670,
+        324793671,
+        324793672,
+        324793673,
+        324793674,
+        324793675
+      ],
+      "method": "screening",
+      "provisions": [
+        "9.14"
+      ],
+      "sections": [
+        "9.6"
+      ],
+      "source": {
+        "domain": "space",
+        "issue_no": 3074,
+        "notice_ids": [
+          "124520184",
+          "324520184"
+        ],
+        "sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721"
+      }
+    },
+    "domain": "space",
+    "family_id": 124520184,
+    "issue_no": 3074,
+    "network": "CHINASAT-G-33.5E",
+    "notice_ids": [
+      "124520184",
+      "324520184"
+    ],
+    "rank": 3,
+    "rule_id": "fin-named-by-br",
+    "severity": "high",
+    "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "BR names Finland in CHINASAT-G-33.5E (CHN) under 9.14"
+  },
+  {
+    "adm": "E",
+    "comment_deadline": "2026-10-23",
+    "details": {
+      "basis": "Administration FIN appears in the provn or tr_provn tables of this IFIC.",
+      "group_ids": [
+        124725054,
+        124725055,
+        124725406,
+        124725407,
+        124725408,
+        124725409,
+        124725548,
+        124725549,
+        124725550,
+        124725551,
+        124725552,
+        324725054,
+        324725055,
+        324725406,
+        324725407,
+        324725408,
+        324725409,
+        324725548,
+        324725549,
+        324725550,
+        324725551,
+        324725552
+      ],
+      "method": "screening",
+      "provisions": [
+        "9.21/C"
+      ],
+      "sections": [
+        "9.6"
+      ],
+      "source": {
+        "domain": "space",
+        "issue_no": 3074,
+        "notice_ids": [
+          "124520194",
+          "324520194"
+        ],
+        "sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721"
+      }
+    },
+    "domain": "space",
+    "family_id": 124520194,
+    "issue_no": 3074,
+    "network": "SECOMSAT-5-78E",
+    "notice_ids": [
+      "124520194",
+      "324520194"
+    ],
+    "rank": 4,
+    "rule_id": "fin-named-by-br",
+    "severity": "high",
+    "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "BR names Finland in SECOMSAT-5-78E (E) under 9.21/C"
+  },
+  {
+    "adm": "F",
+    "comment_deadline": "2026-10-23",
+    "details": {
+      "basis": "Administration FIN appears in the provn or tr_provn tables of this IFIC.",
+      "group_ids": [
+        124813282,
+        324813282
+      ],
+      "method": "screening",
+      "provisions": [
+        "9.21/C"
+      ],
+      "sections": [
+        "9.6"
+      ],
+      "source": {
+        "domain": "space",
+        "issue_no": 3074,
+        "notice_ids": [
+          "124520200",
+          "324520200"
+        ],
+        "sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721"
+      }
+    },
+    "domain": "space",
+    "family_id": 124520200,
+    "issue_no": 3074,
+    "network": "UVSQ-SAT-NG",
+    "notice_ids": [
+      "124520200",
+      "324520200"
+    ],
+    "rank": 5,
+    "rule_id": "fin-named-by-br",
+    "severity": "high",
+    "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "BR names Finland in UVSQ-SAT-NG (F) under 9.21/C"
+  },
+  {
+    "adm": "HOL",
+    "comment_deadline": "2026-10-23",
+    "details": {
+      "basis": "Administration FIN appears in the provn or tr_provn tables of this IFIC.",
+      "group_ids": [
+        124770975,
+        324770975
+      ],
+      "method": "screening",
+      "provisions": [
+        "9.21/C"
+      ],
+      "sections": [
+        "9.6"
+      ],
+      "source": {
+        "domain": "space",
+        "issue_no": 3074,
+        "notice_ids": [
+          "124520212",
+          "324520212"
+        ],
+        "sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721"
+      }
+    },
+    "domain": "space",
+    "family_id": 124520212,
+    "issue_no": 3074,
+    "network": "HOL-NGSO2-I-S",
+    "notice_ids": [
+      "124520212",
+      "324520212"
+    ],
+    "rank": 6,
+    "rule_id": "fin-named-by-br",
+    "severity": "high",
+    "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "BR names Finland in HOL-NGSO2-I-S (HOL) under 9.21/C"
+  },
+  {
+    "adm": "IND",
+    "comment_deadline": "2026-10-23",
+    "details": {
+      "basis": "Administration FIN appears in the provn or tr_provn tables of this IFIC.",
+      "group_ids": [
+        124728094,
+        324728094
+      ],
+      "method": "screening",
+      "provisions": [
+        "A30A#7.1"
+      ],
+      "sections": [
+        "9.6"
+      ],
+      "source": {
+        "domain": "space",
+        "issue_no": 3074,
+        "notice_ids": [
+          "124520214",
+          "324520214"
+        ],
+        "sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721"
+      }
+    },
+    "domain": "space",
+    "family_id": 124520214,
+    "issue_no": 3074,
+    "network": "INSAT-COM(71E)",
+    "notice_ids": [
+      "124520214",
+      "324520214"
+    ],
+    "rank": 7,
+    "rule_id": "fin-named-by-br",
+    "severity": "high",
+    "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "BR names Finland in INSAT-COM(71E) (IND) under A30A#7.1"
+  },
+  {
+    "adm": "CHN",
+    "comment_deadline": "2026-10-23",
+    "details": {
+      "basis": "Administration FIN appears in the provn or tr_provn tables of this IFIC.",
+      "group_ids": [
+        125849380,
+        125849383
+      ],
+      "method": "screening",
+      "provisions": [
+        "9.14"
+      ],
+      "sections": [
+        "9.6"
+      ],
+      "source": {
+        "domain": "space",
+        "issue_no": 3074,
+        "notice_ids": [
+          "125520111"
+        ],
+        "sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721"
+      }
+    },
+    "domain": "space",
+    "family_id": 125520111,
+    "issue_no": 3074,
+    "network": "STARERA-3",
+    "notice_ids": [
+      "125520111"
+    ],
+    "rank": 8,
+    "rule_id": "fin-named-by-br",
+    "severity": "high",
+    "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "BR names Finland in STARERA-3 (CHN) under 9.14"
+  },
+  {
+    "adm": "CHN",
+    "comment_deadline": "2026-10-23",
+    "details": {
+      "assumptions": [
+        "Beam coverage over Finland is not checked.",
+        "No power or pfd calculation was done."
+      ],
+      "bands": [
+        {
+          "finnish_use": "Data transfer for business activities; Digital broadband 450 mobile network; On-site paging; Radiotelephony for business activities",
+          "group_ids": [
+            125749495
+          ],
+          "high_mhz": 470.0,
+          "low_mhz": 450.0,
+          "m4_primary_services": "MOBILE",
+          "m4_table_pages": "110-114",
+          "passive": false
+        },
+        {
+          "finnish_use": "(SRD) Radio microphones, hearing aids, in-ear monitoring; Cognitive radio networks; Television",
+          "group_ids": [
+            125749496
+          ],
+          "high_mhz": 694.0,
+          "low_mhz": 470.0,
+          "m4_primary_services": "BROADCASTING; MOBILE",
+          "m4_table_pages": "115-115",
+          "passive": false
+        },
+        {
+          "finnish_use": "Government; Mobile radio; Terrestrial systems capable of providing electronic communications services",
+          "group_ids": [
+            124747448,
+            124747449,
+            125749496,
+            125749498
+          ],
+          "high_mhz": 791.0,
+          "low_mhz": 694.0,
+          "m4_primary_services": "MOBILE",
+          "m4_table_pages": "115-116",
+          "passive": false
+        },
+        {
+          "finnish_use": "(SRD) Radio microphones, hearing aids, in-ear monitoring; Terrestrial systems capable of providing electronic communications services",
+          "group_ids": [
+            124747448,
+            124747449,
+            125749498,
+            125749501
+          ],
+          "high_mhz": 862.0,
+          "low_mhz": 791.0,
+          "m4_primary_services": "MOBILE",
+          "m4_table_pages": "116-117",
+          "passive": false
+        },
+        {
+          "finnish_use": "(SRD) Low-power alarms for security and safety, social alarms; (SRD) Narrow band analogue voice devices; (SRD) Non-specific Short Range Devices; (SRD) Radio frequency identification devices (RFID); (SRD) Radio microphones; (SRD) Short range devices; (SRD) Tracking, tracing and data acquisition systems; (SRD) Wide-band data transmission equipment; (SRD) Wireless audio applications; Cordless telephones (CT 1); Cordless telephones (CT 2); Digital mobile network; Mobile radio",
+          "group_ids": [
+            125749501,
+            125749502
+          ],
+          "high_mhz": 960.0,
+          "low_mhz": 862.0,
+          "m4_primary_services": "MOBILE",
+          "m4_table_pages": "117-127",
+          "passive": false
+        },
+        {
+          "finnish_use": "Military use; Terrestrial systems capable of providing electronic communications services",
+          "group_ids": [
+            125749504
+          ],
+          "high_mhz": 1452.0,
+          "low_mhz": 1427.0,
+          "m4_primary_services": "FIXED AND MOBILE; MOBILE",
+          "m4_table_pages": "131-131",
+          "passive": false
+        },
+        {
+          "finnish_use": "Military use; Terrestrial systems capable of providing electronic communications services",
+          "group_ids": [
+            125749504
+          ],
+          "high_mhz": 1492.0,
+          "low_mhz": 1452.0,
+          "m4_primary_services": "FIXED AND MOBILE; MOBILE",
+          "m4_table_pages": "131-131",
+          "passive": false
+        },
+        {
+          "finnish_use": "Military use; Terrestrial systems capable of providing electronic communications services",
+          "group_ids": [
+            125749504
+          ],
+          "high_mhz": 1518.0,
+          "low_mhz": 1492.0,
+          "m4_primary_services": "FIXED AND MOBILE; MOBILE",
+          "m4_table_pages": "131-131",
+          "passive": false
+        },
+        {
+          "finnish_use": "(SRD) Radio microphones, hearing aids, in-ear monitoring; (SRD) Wireless audio applications; DECT; Digital mobile network; Mobile radio",
+          "group_ids": [
+            124747452,
+            124747453,
+            125749506
+          ],
+          "high_mhz": 1980.0,
+          "low_mhz": 1710.0,
+          "m4_primary_services": "MOBILE",
+          "m4_table_pages": "137-139",
+          "passive": false
+        },
+        {
+          "finnish_use": "Wireless cameras",
+          "group_ids": [
+            125749506
+          ],
+          "high_mhz": 2025.0,
+          "low_mhz": 2010.0,
+          "m4_primary_services": "FIXED",
+          "m4_table_pages": "140-140",
+          "passive": false
+        },
+        {
+          "finnish_use": "Digital mobile network",
+          "group_ids": [
+            125749509,
+            125749510
+          ],
+          "high_mhz": 2170.0,
+          "low_mhz": 2110.0,
+          "m4_primary_services": "MOBILE",
+          "m4_table_pages": "140-140",
+          "passive": false
+        },
+        {
+          "finnish_use": "Military use",
+          "group_ids": [
+            124747307
+          ],
+          "high_mhz": 2245.0,
+          "low_mhz": 2200.0,
+          "m4_primary_services": "FIXED",
+          "m4_table_pages": "141-141",
+          "passive": false
+        },
+        {
+          "finnish_use": "(SRD) Equipment for automatic vehicle identification for railways (AVI); (SRD) Equipment for detecting movement and for alert; (SRD) Non-specific Short Range Devices; (SRD) Radio frequency identification devices (RFID); (SRD) Wideband data transmission systems (WAS/RLAN); Wireless cameras",
+          "group_ids": [
+            125749511
+          ],
+          "high_mhz": 2483.5,
+          "low_mhz": 2300.0,
+          "m4_primary_services": "FIXED; MOBILE",
+          "m4_table_pages": "142-144",
+          "passive": false
+        },
+        {
+          "finnish_use": "Terrestrial systems capable of providing electronic communications services",
+          "group_ids": [
+            125749513
+          ],
+          "high_mhz": 2690.0,
+          "low_mhz": 2500.0,
+          "m4_primary_services": "MOBILE",
+          "m4_table_pages": "145-146",
+          "passive": false
+        },
+        {
+          "finnish_use": "Military use; Radars",
+          "group_ids": [
+            125749515
+          ],
+          "high_mhz": 3400.0,
+          "low_mhz": 3300.0,
+          "m4_primary_services": "RADIOLOCATION",
+          "m4_table_pages": "147-147",
+          "passive": false
+        },
+        {
+          "finnish_use": "Military use",
+          "group_ids": [
+            125749527
+          ],
+          "high_mhz": 4990.0,
+          "low_mhz": 4800.0,
+          "m4_primary_services": "FIXED; MOBILE",
+          "m4_table_pages": "149-149",
+          "passive": false
+        },
+        {
+          "finnish_use": "Fixed radiolinks; Mobile radio",
+          "group_ids": [
+            125749535
+          ],
+          "high_mhz": 10450.0,
+          "low_mhz": 10000.0,
+          "m4_primary_services": "EARTH EXPLORATION-SATELLITE; FIXED; MOBILE",
+          "m4_table_pages": "164-165",
+          "passive": false
+        },
+        {
+          "finnish_use": "(SRD) Equipment for detecting movement and for alert",
+          "group_ids": [
+            125749535
+          ],
+          "high_mhz": 10500.0,
+          "low_mhz": 10450.0,
+          "m4_primary_services": "RADIOLOCATION",
+          "m4_table_pages": "165-166",
+          "passive": false
+        },
+        {
+          "finnish_use": "Fixed radiolinks",
+          "group_ids": [
+            125749537
+          ],
+          "high_mhz": 13250.0,
+          "low_mhz": 12750.0,
+          "m4_primary_services": "FIXED; FIXED SATELLITE (EARTH-TO-SPACE)",
+          "m4_table_pages": "168-170",
+          "passive": false
+        },
+        {
+          "finnish_use": "Fixed radiolinks",
+          "group_ids": [
+            125749539
+          ],
+          "high_mhz": 15350.0,
+          "low_mhz": 14500.0,
+          "m4_primary_services": "FIXED",
+          "m4_table_pages": "172-172",
+          "passive": false
+        },
+        {
+          "finnish_use": "Terrestrial systems capable of providing electronic communications services",
+          "group_ids": [
+            124747311,
+            124747320
+          ],
+          "high_mhz": 27500.0,
+          "low_mhz": 27000.0,
+          "m4_primary_services": "MOBILE AND FIXED",
+          "m4_table_pages": "186-186",
+          "passive": false
+        },
+        {
+          "finnish_use": "Fixed radiolinks; Radionavigation",
+          "group_ids": [
+            124747312,
+            124747321
+          ],
+          "high_mhz": 33400.0,
+          "low_mhz": 31800.0,
+          "m4_primary_services": "FIXED; RADIONAVIGATION",
+          "m4_table_pages": "189-190",
+          "passive": false
+        },
+        {
+          "finnish_use": "(SRD) Non-specific Short Range Devices; (SRD) Transport and Traffic telematics (TTT); Fixed radiolinks; Mobile radio; Radiolocation",
+          "group_ids": [
+            124747313,
+            124747322
+          ],
+          "high_mhz": 64000.0,
+          "low_mhz": 59300.0,
+          "m4_primary_services": "FIXED; MOBILE; RADIOLOCATION",
+          "m4_table_pages": "198-199",
+          "passive": false
+        },
+        {
+          "finnish_use": "(SRD) Transport and Traffic telematics (TTT); Fixed radiolinks; Mobile radio",
+          "group_ids": [
+            124747313,
+            124747322
+          ],
+          "high_mhz": 65000.0,
+          "low_mhz": 64000.0,
+          "m4_primary_services": "FIXED; MOBILE",
+          "m4_table_pages": "199-200",
+          "passive": false
+        },
+        {
+          "finnish_use": "(SRD) Transport and Traffic telematics (TTT); Fixed; Mobile radio",
+          "group_ids": [
+            124747313,
+            124747322
+          ],
+          "high_mhz": 66000.0,
+          "low_mhz": 65000.0,
+          "m4_primary_services": "FIXED; MOBILE",
+          "m4_table_pages": "200-200",
+          "passive": false
+        },
+        {
+          "finnish_use": "Mobile radio; Radionavigation",
+          "group_ids": [
+            124747314,
+            124747323,
+            124747400,
+            124747401,
+            124747402
+          ],
+          "high_mhz": 71000.0,
+          "low_mhz": 66000.0,
+          "m4_primary_services": "MOBILE; MOBILE-SATELLITE; RADIONAVIGATION; RADIONAVIGATION-SATELLITE",
+          "m4_table_pages": "200-200",
+          "passive": false
+        },
+        {
+          "finnish_use": "",
+          "group_ids": [
+            124747316,
+            124747325
+          ],
+          "high_mhz": 119980.0,
+          "low_mhz": 116000.0,
+          "m4_primary_services": "EARTH EXPLORATION-SATELLITE (PASSIVE); INTER-SATELLITE; SPACE RESEARCH (PASSIVE)",
+          "m4_table_pages": "216-216",
+          "passive": true
+        },
+        {
+          "finnish_use": "(SRD) Non-specific Short Range Devices",
+          "group_ids": [
+            124747316,
+            124747325
+          ],
+          "high_mhz": 122250.0,
+          "low_mhz": 119980.0,
+          "m4_primary_services": "EARTH EXPLORATION-SATELLITE (PASSIVE); INTER-SATELLITE; MOBILE; SPACE RESEARCH (PASSIVE)",
+          "m4_table_pages": "217-217",
+          "passive": true
+        },
+        {
+          "finnish_use": "(SRD) Non-specific Short Range Devices; Fixed",
+          "group_ids": [
+            124747317,
+            124747326
+          ],
+          "high_mhz": 123000.0,
+          "low_mhz": 122250.0,
+          "m4_primary_services": "FIXED; INTER-SATELLITE; MOBILE",
+          "m4_table_pages": "217-218",
+          "passive": false
+        },
+        {
+          "finnish_use": "Fixed; Mobile radio",
+          "group_ids": [
+            124747315,
+            124747324
+          ],
+          "high_mhz": 134000.0,
+          "low_mhz": 130000.0,
+          "m4_primary_services": "EARTH EXPLORATION-SATELLITE (ACTIVE); FIXED; INTER-SATELLITE; MOBILE; RADIO ASTRONOMY",
+          "m4_table_pages": "218-219",
+          "passive": true
+        },
+        {
+          "finnish_use": "Fixed; Mobile radio; Radionavigation",
+          "group_ids": [
+            124747394,
+            124747395
+          ],
+          "high_mhz": 200000.0,
+          "low_mhz": 191800.0,
+          "m4_primary_services": "FIXED; INTER-SATELLITE; MOBILE; MOBILE-SATELLITE; RADIONAVIGATION; RADIONAVIGATION-SATELLITE",
+          "m4_table_pages": "223-224",
+          "passive": false
+        }
+      ],
+      "method": "screening",
+      "sections": [
+        "9.1/IA"
+      ],
+      "source": {
+        "domain": "space",
+        "issue_no": 3074,
+        "notice_ids": [
+          "124545403"
+        ],
+        "sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721"
+      },
+      "visibility": [
+        "Non-GSO reaching 82.24 deg latitude"
+      ]
+    },
+    "domain": "space",
+    "family_id": 124545403,
+    "issue_no": 3074,
+    "network": "CSN-SSO",
+    "notice_ids": [
+      "124545403"
+    ],
+    "rank": 9,
+    "rule_id": "m4-no-space-to-earth",
+    "severity": "high",
+    "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "CSN-SSO (CHN) transmits in 31 band(s) with no space-to-Earth allocation in Finland, including a passive band"
+  },
+  {
+    "adm": "USA",
+    "comment_deadline": "2026-10-23",
+    "details": {
+      "assumptions": [
+        "Beam coverage over Finland is not checked.",
+        "No power or pfd calculation was done."
+      ],
+      "bands": [
+        {
+          "finnish_use": "",
+          "group_ids": [
+            125743475,
+            125743477,
+            125743479,
+            125743481,
+            125743483,
+            125743485
+          ],
+          "high_mhz": 1660.5,
+          "low_mhz": 1660.0,
+          "m4_primary_services": "MOBILE-SATELLITE (EARTH-TO-SPACE); RADIO ASTRONOMY",
+          "m4_table_pages": "136-136",
+          "passive": true
+        }
+      ],
+      "method": "screening",
+      "sections": [
+        "9.1/IA"
+      ],
+      "source": {
+        "domain": "space",
+        "issue_no": 3074,
+        "notice_ids": [
+          "125545390"
+        ],
+        "sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721"
+      },
+      "visibility": [
+        "Non-GSO reaching 83.3 deg latitude"
+      ]
+    },
+    "domain": "space",
+    "family_id": 125545390,
+    "issue_no": 3074,
+    "network": "USASAT-30-3",
+    "notice_ids": [
+      "125545390"
+    ],
+    "rank": 10,
+    "rule_id": "m4-no-space-to-earth",
+    "severity": "high",
+    "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "USASAT-30-3 (USA) transmits in 1 band(s) with no space-to-Earth allocation in Finland, including a passive band"
+  },
+  {
+    "adm": "F",
+    "comment_deadline": "2026-10-23",
+    "details": {
+      "assumptions": [
+        "Beam coverage over Finland is not checked.",
+        "No power or pfd calculation was done."
+      ],
+      "bands": [
+        {
+          "finnish_use": "Terrestrial systems capable of providing electronic communications services",
+          "group_ids": [
+            124818514,
+            124818515,
+            124818516,
+            124818517,
+            324818514,
+            324818515
+          ],
+          "high_mhz": 2690.0,
+          "low_mhz": 2500.0,
+          "m4_primary_services": "MOBILE",
+          "m4_table_pages": "145-146",
+          "passive": false
+        }
+      ],
+      "method": "screening",
+      "sections": [
+        "9.6"
+      ],
+      "source": {
+        "domain": "space",
+        "issue_no": 3074,
+        "notice_ids": [
+          "117520372",
+          "317520372"
+        ],
+        "sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721"
+      },
+      "visibility": [
+        "Non-GSO reaching 90 deg latitude"
+      ]
+    },
+    "domain": "space",
+    "family_id": 117520372,
+    "issue_no": 3074,
+    "network": "AST-NG-C-4",
+    "notice_ids": [
+      "117520372",
+      "317520372"
+    ],
+    "rank": 11,
+    "rule_id": "m4-no-space-to-earth",
+    "severity": "medium",
+    "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "AST-NG-C-4 (F) transmits in 1 band(s) with no space-to-Earth allocation in Finland"
+  },
+  {
+    "adm": "CHN",
+    "comment_deadline": "2026-10-23",
+    "details": {
+      "assumptions": [
+        "Beam coverage over Finland is not checked.",
+        "No power or pfd calculation was done."
+      ],
+      "bands": [
+        {
+          "finnish_use": "(SRD) Wideband data transmission systems (WAS/RLAN)",
+          "group_ids": [
+            119826169
+          ],
+          "high_mhz": 5350.0,
+          "low_mhz": 5250.0,
+          "m4_primary_services": "MOBILE",
+          "m4_table_pages": "151-151",
+          "passive": false
+        },
+        {
+          "finnish_use": "(SRD) Wideband data transmission systems (WAS/RLAN); Meteorological radars; Military use; Radars",
+          "group_ids": [
+            119826169
+          ],
+          "high_mhz": 5725.0,
+          "low_mhz": 5350.0,
+          "m4_primary_services": "MOBILE; RADIOLOCATION",
+          "m4_table_pages": "151-153",
+          "passive": false
+        },
+        {
+          "finnish_use": "(SRD) Equipment for detecting movement and for alert; Military use; Radars",
+          "group_ids": [
+            119826171
+          ],
+          "high_mhz": 10000.0,
+          "low_mhz": 8500.0,
+          "m4_primary_services": "EARTH EXPLORATION-SATELLITE; RADIOLOCATION",
+          "m4_table_pages": "163-163",
+          "passive": false
+        }
+      ],
+      "method": "screening",
+      "sections": [
+        "9.1/IA"
+      ],
+      "source": {
+        "domain": "space",
+        "issue_no": 3074,
+        "notice_ids": [
+          "119545232"
+        ],
+        "sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721"
+      },
+      "visibility": [
+        "Non-GSO reaching 82.5 deg latitude"
+      ]
+    },
+    "domain": "space",
+    "family_id": 119545232,
+    "issue_no": 3074,
+    "network": "TYSAR-01",
+    "notice_ids": [
+      "119545232"
+    ],
+    "rank": 12,
+    "rule_id": "m4-no-space-to-earth",
+    "severity": "medium",
+    "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "TYSAR-01 (CHN) transmits in 3 band(s) with no space-to-Earth allocation in Finland"
+  },
+  {
+    "adm": "QAT",
+    "comment_deadline": "2026-10-23",
+    "details": {
+      "assumptions": [
+        "Beam coverage over Finland is not checked.",
+        "No power or pfd calculation was done."
+      ],
+      "bands": [
+        {
+          "finnish_use": "Military use",
+          "group_ids": [
+            124793444,
+            124793445,
+            124793446,
+            124793447,
+            324793444,
+            324793445,
+            324793446,
+            324793447
+          ],
+          "high_mhz": 267.0,
+          "low_mhz": 235.0,
+          "m4_primary_services": "FIXED; MOBILE",
+          "m4_table_pages": "93-93",
+          "passive": false
+        },
+        {
+          "finnish_use": "Military use",
+          "group_ids": [
+            124793444,
+            124793445,
+            124793446,
+            124793447,
+            324793444,
+            324793445,
+            324793446,
+            324793447
+          ],
+          "high_mhz": 272.0,
+          "low_mhz": 267.0,
+          "m4_primary_services": "FIXED; MOBILE",
+          "m4_table_pages": "93-93",
+          "passive": false
+        },
+        {
+          "finnish_use": "Military use",
+          "group_ids": [
+            124793444,
+            124793445,
+            124793446,
+            124793447,
+            324793444,
+            324793445,
+            324793446,
+            324793447
+          ],
+          "high_mhz": 273.0,
+          "low_mhz": 272.0,
+          "m4_primary_services": "FIXED; MOBILE",
+          "m4_table_pages": "94-94",
+          "passive": false
+        },
+        {
+          "finnish_use": "Military use",
+          "group_ids": [
+            124793444,
+            124793445,
+            124793446,
+            124793447,
+            124793452,
+            124793453,
+            124793454,
+            124793455,
+            324793444,
+            324793445,
+            324793446,
+            324793447,
+            324793452,
+            324793453,
+            324793454,
+            324793455
+          ],
+          "high_mhz": 322.0,
+          "low_mhz": 273.0,
+          "m4_primary_services": "FIXED; MOBILE",
+          "m4_table_pages": "94-94",
+          "passive": false
+        },
+        {
+          "finnish_use": "Guardband for ILS; Military use",
+          "group_ids": [
+            124793448,
+            124793449,
+            124793450,
+            124793451,
+            324793448,
+            324793449,
+            324793450,
+            324793451
+          ],
+          "high_mhz": 339.0,
+          "low_mhz": 335.4,
+          "m4_primary_services": "FIXED; MOBILE",
+          "m4_table_pages": "95-95",
+          "passive": false
+        },
+        {
+          "finnish_use": "Guardband for emergency services network (VIRVE); Military use",
+          "group_ids": [
+            124793448,
+            124793449,
+            124793450,
+            124793451,
+            324793448,
+            324793449,
+            324793450,
+            324793451
+          ],
+          "high_mhz": 380.0,
+          "low_mhz": 339.0,
+          "m4_primary_services": "FIXED; MOBILE",
+          "m4_table_pages": "95-95",
+          "passive": false
+        },
+        {
+          "finnish_use": "Emergency services network (VIRVE); TETRA",
+          "group_ids": [
+            124793448,
+            124793449,
+            124793450,
+            124793451,
+            124793456,
+            124793457,
+            124793458,
+            124793459,
+            124793460,
+            124793461,
+            124793462,
+            124793463,
+            324793448,
+            324793449,
+            324793450,
+            324793451,
+            324793456,
+            324793457,
+            324793458,
+            324793459,
+            324793460,
+            324793461,
+            324793462,
+            324793463
+          ],
+          "high_mhz": 399.9,
+          "low_mhz": 380.0,
+          "m4_primary_services": "MOBILE",
+          "m4_table_pages": "96-97",
+          "passive": false
+        },
+        {
+          "finnish_use": "Mobile radio; Radionavigation",
+          "group_ids": [
+            124793537,
+            124793538,
+            124793539,
+            124793540
+          ],
+          "high_mhz": 47000.0,
+          "low_mhz": 43500.0,
+          "m4_primary_services": "MOBILE; MOBILE-SATELLITE; RADIONAVIGATION; RADIONAVIGATION-SATELLITE",
+          "m4_table_pages": "193-193",
+          "passive": false
+        }
+      ],
+      "method": "screening",
+      "sections": [
+        "9.6"
+      ],
+      "source": {
+        "domain": "space",
+        "issue_no": 3074,
+        "notice_ids": [
+          "124520173",
+          "324520173"
+        ],
+        "sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721"
+      },
+      "visibility": [
+        "GSO at 25.5 deg, inside the arc visible from Finland"
+      ]
+    },
+    "domain": "space",
+    "family_id": 124520173,
+    "issue_no": 3074,
+    "network": "QATARGOV-G1-25.5E",
+    "notice_ids": [
+      "124520173",
+      "324520173"
+    ],
+    "rank": 13,
+    "rule_id": "m4-no-space-to-earth",
+    "severity": "medium",
+    "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "QATARGOV-G1-25.5E (QAT) transmits in 8 band(s) with no space-to-Earth allocation in Finland"
+  },
+  {
+    "adm": "E",
+    "comment_deadline": "2026-10-23",
+    "details": {
+      "assumptions": [
+        "Beam coverage over Finland is not checked.",
+        "No power or pfd calculation was done."
+      ],
+      "bands": [
+        {
+          "finnish_use": "(SRD) Wideband data transmission systems (WAS/RLAN); Aeronautical radionavigation",
+          "group_ids": [
+            124741924,
+            124741925,
+            124741926,
+            124741927,
+            324741924,
+            324741925,
+            324741926,
+            324741927
+          ],
+          "high_mhz": 5250.0,
+          "low_mhz": 5150.0,
+          "m4_primary_services": "AERONAUTICAL; FIXED SATELLITE (EARTH-TO-SPACE); MOBILE; RADIONAVIGATION",
+          "m4_table_pages": "150-150",
+          "passive": false
+        },
+        {
+          "finnish_use": "(SRD) Equipment for detecting movement and for alert; Military use; Radars",
+          "group_ids": [
+            124741920,
+            124741921,
+            324741920,
+            324741921
+          ],
+          "high_mhz": 10000.0,
+          "low_mhz": 8500.0,
+          "m4_primary_services": "EARTH EXPLORATION-SATELLITE; RADIOLOCATION",
+          "m4_table_pages": "163-163",
+          "passive": false
+        },
+        {
+          "finnish_use": "Fixed radiolinks; Mobile radio",
+          "group_ids": [
+            124741921,
+            324741921
+          ],
+          "high_mhz": 10450.0,
+          "low_mhz": 10000.0,
+          "m4_primary_services": "EARTH EXPLORATION-SATELLITE; FIXED; MOBILE",
+          "m4_table_pages": "164-165",
+          "passive": false
+        }
+      ],
+      "method": "screening",
+      "sections": [
+        "9.6"
+      ],
+      "source": {
+        "domain": "space",
+        "issue_no": 3074,
+        "notice_ids": [
+          "124520174",
+          "324520174"
+        ],
+        "sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721"
+      },
+      "visibility": [
+        "Non-GSO reaching 82.6 deg latitude"
+      ]
+    },
+    "domain": "space",
+    "family_id": 124520174,
+    "issue_no": 3074,
+    "network": "PAZ_2-A",
+    "notice_ids": [
+      "124520174",
+      "324520174"
+    ],
+    "rank": 14,
+    "rule_id": "m4-no-space-to-earth",
+    "severity": "medium",
+    "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "PAZ_2-A (E) transmits in 3 band(s) with no space-to-Earth allocation in Finland"
+  },
+  {
+    "adm": "CHN",
+    "comment_deadline": "2026-10-23",
+    "details": {
+      "assumptions": [
+        "Beam coverage over Finland is not checked.",
+        "No power or pfd calculation was done."
+      ],
+      "bands": [
+        {
+          "finnish_use": "Military use; Terrestrial systems capable of providing electronic communications services",
+          "group_ids": [
+            124794050,
+            124794051,
+            124794052,
+            124794053,
+            124794054,
+            124794055,
+            124794056,
+            124794057,
+            324794050,
+            324794051,
+            324794052,
+            324794053,
+            324794054,
+            324794055,
+            324794056,
+            324794057
+          ],
+          "high_mhz": 1492.0,
+          "low_mhz": 1452.0,
+          "m4_primary_services": "FIXED AND MOBILE; MOBILE",
+          "m4_table_pages": "131-131",
+          "passive": false
+        },
+        {
+          "finnish_use": "Military use",
+          "group_ids": [
+            124794079
+          ],
+          "high_mhz": 2245.0,
+          "low_mhz": 2200.0,
+          "m4_primary_services": "FIXED",
+          "m4_table_pages": "141-141",
+          "passive": false
+        },
+        {
+          "finnish_use": "(SRD) Equipment for detecting movement and for alert",
+          "group_ids": [
+            124794039,
+            124794040,
+            124794041,
+            124794042,
+            124794043,
+            324794039,
+            324794040,
+            324794041,
+            324794042,
+            324794043
+          ],
+          "high_mhz": 13750.0,
+          "low_mhz": 13400.0,
+          "m4_primary_services": "EARTH EXPLORATION-SATELLITE; RADIOLOCATION",
+          "m4_table_pages": "170-170",
+          "passive": false
+        },
+        {
+          "finnish_use": "Terrestrial systems capable of providing electronic communications services",
+          "group_ids": [
+            124793964
+          ],
+          "high_mhz": 27500.0,
+          "low_mhz": 27000.0,
+          "m4_primary_services": "MOBILE AND FIXED",
+          "m4_table_pages": "186-186",
+          "passive": false
+        },
+        {
+          "finnish_use": "Fixed radiolinks; Radionavigation",
+          "group_ids": [
+            124793965,
+            124793966
+          ],
+          "high_mhz": 33400.0,
+          "low_mhz": 31800.0,
+          "m4_primary_services": "FIXED; RADIONAVIGATION",
+          "m4_table_pages": "189-190",
+          "passive": false
+        },
+        {
+          "finnish_use": "Mobile radio; Radionavigation",
+          "group_ids": [
+            124794067,
+            124794068,
+            124794069,
+            124794070
+          ],
+          "high_mhz": 47000.0,
+          "low_mhz": 43500.0,
+          "m4_primary_services": "MOBILE; MOBILE-SATELLITE; RADIONAVIGATION; RADIONAVIGATION-SATELLITE",
+          "m4_table_pages": "193-193",
+          "passive": false
+        },
+        {
+          "finnish_use": "Fixed radiolinks",
+          "group_ids": [
+            124794108
+          ],
+          "high_mhz": 57000.0,
+          "low_mhz": 55780.0,
+          "m4_primary_services": "FIXED",
+          "m4_table_pages": "195-195",
+          "passive": false
+        },
+        {
+          "finnish_use": "(SRD) Non-specific Short Range Devices; Fixed radiolinks; Mobile radio",
+          "group_ids": [
+            124794108
+          ],
+          "high_mhz": 58200.0,
+          "low_mhz": 57000.0,
+          "m4_primary_services": "FIXED; MOBILE",
+          "m4_table_pages": "195-196",
+          "passive": false
+        },
+        {
+          "finnish_use": "(SRD) Non-specific Short Range Devices; Fixed radiolinks; Mobile radio; Radiolocation",
+          "group_ids": [
+            124794108
+          ],
+          "high_mhz": 59300.0,
+          "low_mhz": 59000.0,
+          "m4_primary_services": "FIXED; MOBILE; RADIOLOCATION",
+          "m4_table_pages": "197-197",
+          "passive": false
+        },
+        {
+          "finnish_use": "(SRD) Non-specific Short Range Devices; (SRD) Transport and Traffic telematics (TTT); Fixed radiolinks; Mobile radio; Radiolocation",
+          "group_ids": [
+            124794108
+          ],
+          "high_mhz": 64000.0,
+          "low_mhz": 59300.0,
+          "m4_primary_services": "FIXED; MOBILE; RADIOLOCATION",
+          "m4_table_pages": "198-199",
+          "passive": false
+        },
+        {
+          "finnish_use": "(SRD) Transport and Traffic telematics (TTT); Fixed radiolinks; Mobile radio",
+          "group_ids": [
+            124794108
+          ],
+          "high_mhz": 65000.0,
+          "low_mhz": 64000.0,
+          "m4_primary_services": "FIXED; MOBILE",
+          "m4_table_pages": "199-200",
+          "passive": false
+        },
+        {
+          "finnish_use": "(SRD) Transport and Traffic telematics (TTT); Fixed; Mobile radio",
+          "group_ids": [
+            124794108
+          ],
+          "high_mhz": 66000.0,
+          "low_mhz": 65000.0,
+          "m4_primary_services": "FIXED; MOBILE",
+          "m4_table_pages": "200-200",
+          "passive": false
+        },
+        {
+          "finnish_use": "Mobile radio; Radionavigation",
+          "group_ids": [
+            124794090,
+            124794091,
+            124794092,
+            124794093,
+            124794104,
+            124794105,
+            124794106,
+            124794107,
+            124794108
+          ],
+          "high_mhz": 71000.0,
+          "low_mhz": 66000.0,
+          "m4_primary_services": "MOBILE; MOBILE-SATELLITE; RADIONAVIGATION; RADIONAVIGATION-SATELLITE",
+          "m4_table_pages": "200-200",
+          "passive": false
+        }
+      ],
+      "method": "screening",
+      "sections": [
+        "9.6"
+      ],
+      "source": {
+        "domain": "space",
+        "issue_no": 3074,
+        "notice_ids": [
+          "124520183",
+          "324520183"
+        ],
+        "sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721"
+      },
+      "visibility": [
+        "GSO at 60.5 deg, inside the arc visible from Finland"
+      ]
+    },
+    "domain": "space",
+    "family_id": 124520183,
+    "issue_no": 3074,
+    "network": "CHINASAT-H-60.5E",
+    "notice_ids": [
+      "124520183",
+      "324520183"
+    ],
+    "rank": 15,
+    "rule_id": "m4-no-space-to-earth",
+    "severity": "medium",
+    "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "CHINASAT-H-60.5E (CHN) transmits in 13 band(s) with no space-to-Earth allocation in Finland"
+  },
+  {
+    "adm": "CHN",
+    "comment_deadline": "2026-10-23",
+    "details": {
+      "assumptions": [
+        "Beam coverage over Finland is not checked.",
+        "No power or pfd calculation was done."
+      ],
+      "bands": [
+        {
+          "finnish_use": "Military use; Terrestrial systems capable of providing electronic communications services",
+          "group_ids": [
+            124793652,
+            124793653,
+            124793654,
+            124793655,
+            124793656,
+            124793657,
+            124793658,
+            124793659,
+            324793652,
+            324793653,
+            324793654,
+            324793655,
+            324793656,
+            324793657,
+            324793658,
+            324793659
+          ],
+          "high_mhz": 1492.0,
+          "low_mhz": 1452.0,
+          "m4_primary_services": "FIXED AND MOBILE; MOBILE",
+          "m4_table_pages": "131-131",
+          "passive": false
+        },
+        {
+          "finnish_use": "Military use",
+          "group_ids": [
+            124793697
+          ],
+          "high_mhz": 2245.0,
+          "low_mhz": 2200.0,
+          "m4_primary_services": "FIXED",
+          "m4_table_pages": "141-141",
+          "passive": false
+        },
+        {
+          "finnish_use": "(SRD) Equipment for detecting movement and for alert",
+          "group_ids": [
+            124793641,
+            124793642,
+            124793643,
+            124793644,
+            124793645,
+            124793950,
+            124793951,
+            124793952,
+            124793953,
+            124796220,
+            124796221,
+            124796222,
+            124796223,
+            324793641,
+            324793642,
+            324793643,
+            324793644,
+            324793645,
+            324793950,
+            324793951,
+            324793952,
+            324793953
+          ],
+          "high_mhz": 13750.0,
+          "low_mhz": 13400.0,
+          "m4_primary_services": "EARTH EXPLORATION-SATELLITE; RADIOLOCATION",
+          "m4_table_pages": "170-170",
+          "passive": false
+        },
+        {
+          "finnish_use": "Terrestrial systems capable of providing electronic communications services",
+          "group_ids": [
+            124793577
+          ],
+          "high_mhz": 27500.0,
+          "low_mhz": 27000.0,
+          "m4_primary_services": "MOBILE AND FIXED",
+          "m4_table_pages": "186-186",
+          "passive": false
+        },
+        {
+          "finnish_use": "Fixed radiolinks; Radionavigation",
+          "group_ids": [
+            124793578,
+            124793579
+          ],
+          "high_mhz": 33400.0,
+          "low_mhz": 31800.0,
+          "m4_primary_services": "FIXED; RADIONAVIGATION",
+          "m4_table_pages": "189-190",
+          "passive": false
+        },
+        {
+          "finnish_use": "Mobile radio; Radionavigation",
+          "group_ids": [
+            124793685,
+            124793686,
+            124793687,
+            124793688
+          ],
+          "high_mhz": 47000.0,
+          "low_mhz": 43500.0,
+          "m4_primary_services": "MOBILE; MOBILE-SATELLITE; RADIONAVIGATION; RADIONAVIGATION-SATELLITE",
+          "m4_table_pages": "193-193",
+          "passive": false
+        },
+        {
+          "finnish_use": "Fixed radiolinks",
+          "group_ids": [
+            124793726
+          ],
+          "high_mhz": 57000.0,
+          "low_mhz": 55780.0,
+          "m4_primary_services": "FIXED",
+          "m4_table_pages": "195-195",
+          "passive": false
+        },
+        {
+          "finnish_use": "(SRD) Non-specific Short Range Devices; Fixed radiolinks; Mobile radio",
+          "group_ids": [
+            124793726
+          ],
+          "high_mhz": 58200.0,
+          "low_mhz": 57000.0,
+          "m4_primary_services": "FIXED; MOBILE",
+          "m4_table_pages": "195-196",
+          "passive": false
+        },
+        {
+          "finnish_use": "(SRD) Non-specific Short Range Devices; Fixed radiolinks; Mobile radio; Radiolocation",
+          "group_ids": [
+            124793726
+          ],
+          "high_mhz": 59300.0,
+          "low_mhz": 59000.0,
+          "m4_primary_services": "FIXED; MOBILE; RADIOLOCATION",
+          "m4_table_pages": "197-197",
+          "passive": false
+        },
+        {
+          "finnish_use": "(SRD) Non-specific Short Range Devices; (SRD) Transport and Traffic telematics (TTT); Fixed radiolinks; Mobile radio; Radiolocation",
+          "group_ids": [
+            124793726
+          ],
+          "high_mhz": 64000.0,
+          "low_mhz": 59300.0,
+          "m4_primary_services": "FIXED; MOBILE; RADIOLOCATION",
+          "m4_table_pages": "198-199",
+          "passive": false
+        },
+        {
+          "finnish_use": "(SRD) Transport and Traffic telematics (TTT); Fixed radiolinks; Mobile radio",
+          "group_ids": [
+            124793726
+          ],
+          "high_mhz": 65000.0,
+          "low_mhz": 64000.0,
+          "m4_primary_services": "FIXED; MOBILE",
+          "m4_table_pages": "199-200",
+          "passive": false
+        },
+        {
+          "finnish_use": "(SRD) Transport and Traffic telematics (TTT); Fixed; Mobile radio",
+          "group_ids": [
+            124793726
+          ],
+          "high_mhz": 66000.0,
+          "low_mhz": 65000.0,
+          "m4_primary_services": "FIXED; MOBILE",
+          "m4_table_pages": "200-200",
+          "passive": false
+        },
+        {
+          "finnish_use": "Mobile radio; Radionavigation",
+          "group_ids": [
+            124793708,
+            124793709,
+            124793710,
+            124793711,
+            124793722,
+            124793723,
+            124793724,
+            124793725,
+            124793726
+          ],
+          "high_mhz": 71000.0,
+          "low_mhz": 66000.0,
+          "m4_primary_services": "MOBILE; MOBILE-SATELLITE; RADIONAVIGATION; RADIONAVIGATION-SATELLITE",
+          "m4_table_pages": "200-200",
+          "passive": false
+        }
+      ],
+      "method": "screening",
+      "sections": [
+        "9.6"
+      ],
+      "source": {
+        "domain": "space",
+        "issue_no": 3074,
+        "notice_ids": [
+          "124520184",
+          "324520184"
+        ],
+        "sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721"
+      },
+      "visibility": [
+        "GSO at 33.5 deg, inside the arc visible from Finland"
+      ]
+    },
+    "domain": "space",
+    "family_id": 124520184,
+    "issue_no": 3074,
+    "network": "CHINASAT-G-33.5E",
+    "notice_ids": [
+      "124520184",
+      "324520184"
+    ],
+    "rank": 16,
+    "rule_id": "m4-no-space-to-earth",
+    "severity": "medium",
+    "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "CHINASAT-G-33.5E (CHN) transmits in 13 band(s) with no space-to-Earth allocation in Finland"
+  },
+  {
+    "adm": "D",
+    "comment_deadline": "2026-10-23",
+    "details": {
+      "assumptions": [
+        "Beam coverage over Finland is not checked.",
+        "No power or pfd calculation was done."
+      ],
+      "bands": [
+        {
+          "finnish_use": "Military use",
+          "group_ids": [
+            124725808
+          ],
+          "high_mhz": 2245.0,
+          "low_mhz": 2200.0,
+          "m4_primary_services": "FIXED",
+          "m4_table_pages": "141-141",
+          "passive": false
+        }
+      ],
+      "method": "screening",
+      "sections": [
+        "9.6"
+      ],
+      "source": {
+        "domain": "space",
+        "issue_no": 3074,
+        "notice_ids": [
+          "124520192",
+          "324520192"
+        ],
+        "sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721"
+      },
+      "visibility": [
+        "GSO at 3.5 deg, inside the arc visible from Finland"
+      ]
+    },
+    "domain": "space",
+    "family_id": 124520192,
+    "issue_no": 3074,
+    "network": "MTG-EUM_3.5E",
+    "notice_ids": [
+      "124520192",
+      "324520192"
+    ],
+    "rank": 17,
+    "rule_id": "m4-no-space-to-earth",
+    "severity": "medium",
+    "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "MTG-EUM_3.5E (D) transmits in 1 band(s) with no space-to-Earth allocation in Finland"
+  },
+  {
+    "adm": "D",
+    "comment_deadline": "2026-10-23",
+    "details": {
+      "assumptions": [
+        "Beam coverage over Finland is not checked.",
+        "No power or pfd calculation was done."
+      ],
+      "bands": [
+        {
+          "finnish_use": "Military use",
+          "group_ids": [
+            124725815
+          ],
+          "high_mhz": 2245.0,
+          "low_mhz": 2200.0,
+          "m4_primary_services": "FIXED",
+          "m4_table_pages": "141-141",
+          "passive": false
+        }
+      ],
+      "method": "screening",
+      "sections": [
+        "9.6"
+      ],
+      "source": {
+        "domain": "space",
+        "issue_no": 3074,
+        "notice_ids": [
+          "124520193",
+          "324520193"
+        ],
+        "sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721"
+      },
+      "visibility": [
+        "GSO at 9.5 deg, inside the arc visible from Finland"
+      ]
+    },
+    "domain": "space",
+    "family_id": 124520193,
+    "issue_no": 3074,
+    "network": "MTG-EUM_9.5E",
+    "notice_ids": [
+      "124520193",
+      "324520193"
+    ],
+    "rank": 18,
+    "rule_id": "m4-no-space-to-earth",
+    "severity": "medium",
+    "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "MTG-EUM_9.5E (D) transmits in 1 band(s) with no space-to-Earth allocation in Finland"
+  },
+  {
+    "adm": "E",
+    "comment_deadline": "2026-10-23",
+    "details": {
+      "assumptions": [
+        "Beam coverage over Finland is not checked.",
+        "No power or pfd calculation was done."
+      ],
+      "bands": [
+        {
+          "finnish_use": "Military use",
+          "group_ids": [
+            124725054,
+            124725407,
+            324725054,
+            324725407
+          ],
+          "high_mhz": 267.0,
+          "low_mhz": 235.0,
+          "m4_primary_services": "FIXED; MOBILE",
+          "m4_table_pages": "93-93",
+          "passive": false
+        },
+        {
+          "finnish_use": "Military use",
+          "group_ids": [
+            124725054,
+            124725407,
+            324725054,
+            324725407
+          ],
+          "high_mhz": 272.0,
+          "low_mhz": 267.0,
+          "m4_primary_services": "FIXED; MOBILE",
+          "m4_table_pages": "93-93",
+          "passive": false
+        },
+        {
+          "finnish_use": "Military use",
+          "group_ids": [
+            124725407,
+            324725407
+          ],
+          "high_mhz": 273.0,
+          "low_mhz": 272.0,
+          "m4_primary_services": "FIXED; MOBILE",
+          "m4_table_pages": "94-94",
+          "passive": false
+        },
+        {
+          "finnish_use": "Military use",
+          "group_ids": [
+            124725407,
+            124725550,
+            324725407,
+            324725550
+          ],
+          "high_mhz": 322.0,
+          "low_mhz": 273.0,
+          "m4_primary_services": "FIXED; MOBILE",
+          "m4_table_pages": "94-94",
+          "passive": false
+        },
+        {
+          "finnish_use": "Guardband for ILS; Military use",
+          "group_ids": [
+            124725409,
+            324725409
+          ],
+          "high_mhz": 339.0,
+          "low_mhz": 335.4,
+          "m4_primary_services": "FIXED; MOBILE",
+          "m4_table_pages": "95-95",
+          "passive": false
+        },
+        {
+          "finnish_use": "Guardband for emergency services network (VIRVE); Military use",
+          "group_ids": [
+            124725409,
+            324725409
+          ],
+          "high_mhz": 380.0,
+          "low_mhz": 339.0,
+          "m4_primary_services": "FIXED; MOBILE",
+          "m4_table_pages": "95-95",
+          "passive": false
+        },
+        {
+          "finnish_use": "Emergency services network (VIRVE); TETRA",
+          "group_ids": [
+            124725409,
+            124725552,
+            324725409,
+            324725552
+          ],
+          "high_mhz": 399.9,
+          "low_mhz": 380.0,
+          "m4_primary_services": "MOBILE",
+          "m4_table_pages": "96-97",
+          "passive": false
+        },
+        {
+          "finnish_use": "Military use",
+          "group_ids": [
+            124725124,
+            124725125,
+            124725126,
+            124725127,
+            324725124,
+            324725125,
+            324725126,
+            324725127
+          ],
+          "high_mhz": 2245.0,
+          "low_mhz": 2200.0,
+          "m4_primary_services": "FIXED",
+          "m4_table_pages": "141-141",
+          "passive": false
+        }
+      ],
+      "method": "screening",
+      "sections": [
+        "9.6"
+      ],
+      "source": {
+        "domain": "space",
+        "issue_no": 3074,
+        "notice_ids": [
+          "124520194",
+          "324520194"
+        ],
+        "sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721"
+      },
+      "visibility": [
+        "GSO at 78.0 deg, inside the arc visible from Finland"
+      ]
+    },
+    "domain": "space",
+    "family_id": 124520194,
+    "issue_no": 3074,
+    "network": "SECOMSAT-5-78E",
+    "notice_ids": [
+      "124520194",
+      "324520194"
+    ],
+    "rank": 19,
+    "rule_id": "m4-no-space-to-earth",
+    "severity": "medium",
+    "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "SECOMSAT-5-78E (E) transmits in 8 band(s) with no space-to-Earth allocation in Finland"
+  },
+  {
+    "adm": "KOR",
+    "comment_deadline": "2026-10-23",
+    "details": {
+      "assumptions": [
+        "Beam coverage over Finland is not checked.",
+        "No power or pfd calculation was done."
+      ],
+      "bands": [
+        {
+          "finnish_use": "(SRD) Equipment for detecting movement and for alert; Military use; Radars",
+          "group_ids": [
+            124750545,
+            124750546,
+            324750545,
+            324750546
+          ],
+          "high_mhz": 10000.0,
+          "low_mhz": 8500.0,
+          "m4_primary_services": "EARTH EXPLORATION-SATELLITE; RADIOLOCATION",
+          "m4_table_pages": "163-163",
+          "passive": false
+        },
+        {
+          "finnish_use": "Fixed radiolinks; Mobile radio",
+          "group_ids": [
+            124750546,
+            324750546
+          ],
+          "high_mhz": 10450.0,
+          "low_mhz": 10000.0,
+          "m4_primary_services": "EARTH EXPLORATION-SATELLITE; FIXED; MOBILE",
+          "m4_table_pages": "164-165",
+          "passive": false
+        }
+      ],
+      "method": "screening",
+      "sections": [
+        "9.6"
+      ],
+      "source": {
+        "domain": "space",
+        "issue_no": 3074,
+        "notice_ids": [
+          "124520203",
+          "324520203"
+        ],
+        "sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721"
+      },
+      "visibility": [
+        "Non-GSO reaching 82.51 deg latitude"
+      ]
+    },
+    "domain": "space",
+    "family_id": 124520203,
+    "issue_no": 3074,
+    "network": "LUMIRX-1",
+    "notice_ids": [
+      "124520203",
+      "324520203"
+    ],
+    "rank": 20,
+    "rule_id": "m4-no-space-to-earth",
+    "severity": "medium",
+    "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "LUMIRX-1 (KOR) transmits in 2 band(s) with no space-to-Earth allocation in Finland"
+  },
+  {
+    "adm": "KAZ",
+    "comment_deadline": "2026-10-23",
+    "details": {
+      "assumptions": [
+        "Beam coverage over Finland is not checked.",
+        "No power or pfd calculation was done."
+      ],
+      "bands": [
+        {
+          "finnish_use": "Mobile radio; Radionavigation",
+          "group_ids": [
+            124725859,
+            124725860,
+            124725861,
+            124725862,
+            124725863,
+            124725864
+          ],
+          "high_mhz": 47000.0,
+          "low_mhz": 43500.0,
+          "m4_primary_services": "MOBILE; MOBILE-SATELLITE; RADIONAVIGATION; RADIONAVIGATION-SATELLITE",
+          "m4_table_pages": "193-193",
+          "passive": false
+        }
+      ],
+      "method": "screening",
+      "sections": [
+        "9.6"
+      ],
+      "source": {
+        "domain": "space",
+        "issue_no": 3074,
+        "notice_ids": [
+          "124520204",
+          "324520204"
+        ],
+        "sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721"
+      },
+      "visibility": [
+        "GSO at 67.2 deg, inside the arc visible from Finland"
+      ]
+    },
+    "domain": "space",
+    "family_id": 124520204,
+    "issue_no": 3074,
+    "network": "KAZSAT-KA-67.2E-2",
+    "notice_ids": [
+      "124520204",
+      "324520204"
+    ],
+    "rank": 21,
+    "rule_id": "m4-no-space-to-earth",
+    "severity": "medium",
+    "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "KAZSAT-KA-67.2E-2 (KAZ) transmits in 1 band(s) with no space-to-Earth allocation in Finland"
+  },
+  {
+    "adm": "IND",
+    "comment_deadline": "2026-10-23",
+    "details": {
+      "assumptions": [
+        "Beam coverage over Finland is not checked.",
+        "No power or pfd calculation was done."
+      ],
+      "bands": [
+        {
+          "finnish_use": "Fixed radiolinks",
+          "group_ids": [
+            124728093,
+            124728096,
+            124728101,
+            124728104
+          ],
+          "high_mhz": 29500.0,
+          "low_mhz": 27500.0,
+          "m4_primary_services": "FIXED; FIXED SATELLITE (EARTH-TO-SPACE)",
+          "m4_table_pages": "186-188",
+          "passive": false
+        }
+      ],
+      "method": "screening",
+      "sections": [
+        "9.6"
+      ],
+      "source": {
+        "domain": "space",
+        "issue_no": 3074,
+        "notice_ids": [
+          "124520214",
+          "324520214"
+        ],
+        "sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721"
+      },
+      "visibility": [
+        "GSO at 71.0 deg, inside the arc visible from Finland"
+      ]
+    },
+    "domain": "space",
+    "family_id": 124520214,
+    "issue_no": 3074,
+    "network": "INSAT-COM(71E)",
+    "notice_ids": [
+      "124520214",
+      "324520214"
+    ],
+    "rank": 22,
+    "rule_id": "m4-no-space-to-earth",
+    "severity": "medium",
+    "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "INSAT-COM(71E) (IND) transmits in 1 band(s) with no space-to-Earth allocation in Finland"
+  },
+  {
+    "adm": "D",
+    "comment_deadline": "2026-10-23",
+    "details": {
+      "assumptions": [
+        "Beam coverage over Finland is not checked.",
+        "No power or pfd calculation was done."
+      ],
+      "bands": [
+        {
+          "finnish_use": "(medelfrekvenser om delbandets gränskanaler) Amateur; Amateur",
+          "group_ids": [
+            124704723,
+            124704724,
+            124704725,
+            124704726
+          ],
+          "high_mhz": 438.0,
+          "low_mhz": 432.0,
+          "m4_primary_services": "AMATEUR; AMATEUR-SATELLITE",
+          "m4_table_pages": "103-106",
+          "passive": false
+        }
+      ],
+      "method": "screening",
+      "sections": [
+        "9.1/IA"
+      ],
+      "source": {
+        "domain": "space",
+        "issue_no": 3074,
+        "notice_ids": [
+          "124545327"
+        ],
+        "sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721"
+      },
+      "visibility": [
+        "Non-GSO reaching 82.6 deg latitude"
+      ]
+    },
+    "domain": "space",
+    "family_id": 124545327,
+    "issue_no": 3074,
+    "network": "CLOUDCT",
+    "notice_ids": [
+      "124545327"
+    ],
+    "rank": 23,
+    "rule_id": "m4-no-space-to-earth",
+    "severity": "medium",
+    "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "CLOUDCT (D) transmits in 1 band(s) with no space-to-Earth allocation in Finland"
+  },
+  {
+    "adm": "CHN",
+    "comment_deadline": "2026-10-23",
+    "details": {
+      "assumptions": [
+        "Beam coverage over Finland is not checked.",
+        "No power or pfd calculation was done."
+      ],
+      "bands": [
+        {
+          "finnish_use": "(SRD) Hearing aids; (SRD) Non-specific Short Range Devices; (SRD) Short range devices; Coast stations; Data transfer for business activities; Digital radiotelephony for business activities; Government; PMR (boating); Radiotelephony for business activities",
+          "group_ids": [
+            125849381,
+            125849382
+          ],
+          "high_mhz": 174.0,
+          "low_mhz": 154.0,
+          "m4_primary_services": "LAND MOBILE; MARITIME MOBILE; MOBILE",
+          "m4_table_pages": "81-92",
+          "passive": false
+        },
+        {
+          "finnish_use": "Terrestrial systems capable of providing electronic communications services",
+          "group_ids": [
+            125849373
+          ],
+          "high_mhz": 2690.0,
+          "low_mhz": 2500.0,
+          "m4_primary_services": "MOBILE",
+          "m4_table_pages": "145-146",
+          "passive": false
+        }
+      ],
+      "method": "screening",
+      "sections": [
+        "9.6"
+      ],
+      "source": {
+        "domain": "space",
+        "issue_no": 3074,
+        "notice_ids": [
+          "125520111"
+        ],
+        "sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721"
+      },
+      "visibility": [
+        "Non-GSO reaching 82.4 deg latitude"
+      ]
+    },
+    "domain": "space",
+    "family_id": 125520111,
+    "issue_no": 3074,
+    "network": "STARERA-3",
+    "notice_ids": [
+      "125520111"
+    ],
+    "rank": 24,
+    "rule_id": "m4-no-space-to-earth",
+    "severity": "medium",
+    "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "STARERA-3 (CHN) transmits in 2 band(s) with no space-to-Earth allocation in Finland"
+  },
+  {
+    "adm": "USA",
+    "comment_deadline": "2026-10-23",
+    "details": {
+      "assumptions": [
+        "Beam coverage over Finland is not checked.",
+        "No power or pfd calculation was done."
+      ],
+      "bands": [
+        {
+          "finnish_use": "Sondes; Ultra low-power medical implants",
+          "group_ids": [
+            125743708
+          ],
+          "high_mhz": 406.0,
+          "low_mhz": 401.0,
+          "m4_primary_services": "EARTH EXPLORATION-SATELLITE (EARTH-TO-SPACE); METEOROLOGICAL AIDS; METEOROLOGICAL-SATELLITE (EARTH-TO-SPACE); MOBILE",
+          "m4_table_pages": "97-98",
+          "passive": false
+        }
+      ],
+      "method": "screening",
+      "sections": [
+        "9.1/IA"
+      ],
+      "source": {
+        "domain": "space",
+        "issue_no": 3074,
+        "notice_ids": [
+          "125545338"
+        ],
+        "sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721"
+      },
+      "visibility": [
+        "Non-GSO reaching 82.5 deg latitude"
+      ]
+    },
+    "domain": "space",
+    "family_id": 125545338,
+    "issue_no": 3074,
+    "network": "SUNCET",
+    "notice_ids": [
+      "125545338"
+    ],
+    "rank": 25,
+    "rule_id": "m4-no-space-to-earth",
+    "severity": "medium",
+    "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "SUNCET (USA) transmits in 1 band(s) with no space-to-Earth allocation in Finland"
+  },
+  {
+    "adm": "USA",
+    "comment_deadline": "2026-10-23",
+    "details": {
+      "assumptions": [
+        "Beam coverage over Finland is not checked.",
+        "No power or pfd calculation was done."
+      ],
+      "bands": [
+        {
+          "finnish_use": "Military use",
+          "group_ids": [
+            125748048,
+            125748049,
+            125748050,
+            125748051,
+            125748053,
+            125748054,
+            125748055,
+            125748056
+          ],
+          "high_mhz": 2245.0,
+          "low_mhz": 2200.0,
+          "m4_primary_services": "FIXED",
+          "m4_table_pages": "141-141",
+          "passive": false
+        }
+      ],
+      "method": "screening",
+      "sections": [
+        "9.1/IA"
+      ],
+      "source": {
+        "domain": "space",
+        "issue_no": 3074,
+        "notice_ids": [
+          "125545347"
+        ],
+        "sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721"
+      },
+      "visibility": [
+        "Non-GSO reaching 80 deg latitude"
+      ]
+    },
+    "domain": "space",
+    "family_id": 125545347,
+    "issue_no": 3074,
+    "network": "RLNEUTRON-1",
+    "notice_ids": [
+      "125545347"
+    ],
+    "rank": 26,
+    "rule_id": "m4-no-space-to-earth",
+    "severity": "medium",
+    "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "RLNEUTRON-1 (USA) transmits in 1 band(s) with no space-to-Earth allocation in Finland"
+  },
+  {
+    "adm": "S",
+    "comment_deadline": "2026-10-23",
+    "details": {
+      "assumptions": [
+        "Beam coverage over Finland is not checked.",
+        "No power or pfd calculation was done."
+      ],
+      "bands": [
+        {
+          "finnish_use": "Military use",
+          "group_ids": [
+            125752687
+          ],
+          "high_mhz": 2245.0,
+          "low_mhz": 2200.0,
+          "m4_primary_services": "FIXED",
+          "m4_table_pages": "141-141",
+          "passive": false
+        }
+      ],
+      "method": "screening",
+      "sections": [
+        "9.1/IA"
+      ],
+      "source": {
+        "domain": "space",
+        "issue_no": 3074,
+        "notice_ids": [
+          "125545354"
+        ],
+        "sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721"
+      },
+      "visibility": [
+        "Non-GSO reaching 82.5 deg latitude"
+      ]
+    },
+    "domain": "space",
+    "family_id": 125545354,
+    "issue_no": 3074,
+    "network": "GARAI-B",
+    "notice_ids": [
+      "125545354"
+    ],
+    "rank": 27,
+    "rule_id": "m4-no-space-to-earth",
+    "severity": "medium",
+    "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "GARAI-B (S) transmits in 1 band(s) with no space-to-Earth allocation in Finland"
+  },
+  {
+    "adm": "USA",
+    "comment_deadline": "2026-10-23",
+    "details": {
+      "assumptions": [
+        "Beam coverage over Finland is not checked.",
+        "No power or pfd calculation was done."
+      ],
+      "bands": [
+        {
+          "finnish_use": "Military use",
+          "group_ids": [
+            125752920
+          ],
+          "high_mhz": 2245.0,
+          "low_mhz": 2200.0,
+          "m4_primary_services": "FIXED",
+          "m4_table_pages": "141-141",
+          "passive": false
+        }
+      ],
+      "method": "screening",
+      "sections": [
+        "9.1/IA"
+      ],
+      "source": {
+        "domain": "space",
+        "issue_no": 3074,
+        "notice_ids": [
+          "125545368"
+        ],
+        "sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721"
+      },
+      "visibility": [
+        "Non-GSO reaching 82 deg latitude"
+      ]
+    },
+    "domain": "space",
+    "family_id": 125545368,
+    "issue_no": 3074,
+    "network": "GRAVITAS",
+    "notice_ids": [
+      "125545368"
+    ],
+    "rank": 28,
+    "rule_id": "m4-no-space-to-earth",
+    "severity": "medium",
+    "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "GRAVITAS (USA) transmits in 1 band(s) with no space-to-Earth allocation in Finland"
+  },
+  {
+    "adm": "USA",
+    "comment_deadline": "2026-10-23",
+    "details": {
+      "assumptions": [
+        "Beam coverage over Finland is not checked.",
+        "No power or pfd calculation was done."
+      ],
+      "bands": [
+        {
+          "finnish_use": "(medelfrekvenser om delbandets gränskanaler) Amateur; Amateur",
+          "group_ids": [
+            125745951
+          ],
+          "high_mhz": 438.0,
+          "low_mhz": 432.0,
+          "m4_primary_services": "AMATEUR; AMATEUR-SATELLITE",
+          "m4_table_pages": "103-106",
+          "passive": false
+        },
+        {
+          "finnish_use": "(SRD) Equipment for automatic vehicle identification for railways (AVI); (SRD) Equipment for detecting movement and for alert; (SRD) Non-specific Short Range Devices; (SRD) Radio frequency identification devices (RFID); (SRD) Wideband data transmission systems (WAS/RLAN); Wireless cameras",
+          "group_ids": [
+            125745953
+          ],
+          "high_mhz": 2483.5,
+          "low_mhz": 2300.0,
+          "m4_primary_services": "FIXED; MOBILE",
+          "m4_table_pages": "142-144",
+          "passive": false
+        }
+      ],
+      "method": "screening",
+      "sections": [
+        "9.1/IA"
+      ],
+      "source": {
+        "domain": "space",
+        "issue_no": 3074,
+        "notice_ids": [
+          "125545387"
+        ],
+        "sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721"
+      },
+      "visibility": [
+        "Non-GSO reaching 82.6 deg latitude"
+      ]
+    },
+    "domain": "space",
+    "family_id": 125545387,
+    "issue_no": 3074,
+    "network": "SPRITE",
+    "notice_ids": [
+      "125545387"
+    ],
+    "rank": 29,
+    "rule_id": "m4-no-space-to-earth",
+    "severity": "medium",
+    "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "SPRITE (USA) transmits in 2 band(s) with no space-to-Earth allocation in Finland"
+  },
+  {
+    "adm": "USA",
+    "comment_deadline": "2026-10-23",
+    "details": {
+      "assumptions": [
+        "Beam coverage over Finland is not checked.",
+        "No power or pfd calculation was done."
+      ],
+      "bands": [
+        {
+          "finnish_use": "(medelfrekvenser om delbandets gränskanaler) Amateur; Amateur",
+          "group_ids": [
+            125744350
+          ],
+          "high_mhz": 438.0,
+          "low_mhz": 432.0,
+          "m4_primary_services": "AMATEUR; AMATEUR-SATELLITE",
+          "m4_table_pages": "103-106",
+          "passive": false
+        }
+      ],
+      "method": "screening",
+      "sections": [
+        "9.1/IA"
+      ],
+      "source": {
+        "domain": "space",
+        "issue_no": 3074,
+        "notice_ids": [
+          "125545388"
+        ],
+        "sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721"
+      },
+      "visibility": [
+        "Non-GSO reaching 82.6 deg latitude"
+      ]
+    },
+    "domain": "space",
+    "family_id": 125545388,
+    "issue_no": 3074,
+    "network": "3UCUBED-A",
+    "notice_ids": [
+      "125545388"
+    ],
+    "rank": 30,
+    "rule_id": "m4-no-space-to-earth",
+    "severity": "medium",
+    "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "3UCUBED-A (USA) transmits in 1 band(s) with no space-to-Earth allocation in Finland"
+  },
+  {
+    "adm": "USA",
+    "comment_deadline": "2026-10-23",
+    "details": {
+      "assumptions": [
+        "Beam coverage over Finland is not checked.",
+        "No power or pfd calculation was done."
+      ],
+      "bands": [
+        {
+          "finnish_use": "Military use",
+          "group_ids": [
+            125744830,
+            125744831,
+            125744833
+          ],
+          "high_mhz": 2245.0,
+          "low_mhz": 2200.0,
+          "m4_primary_services": "FIXED",
+          "m4_table_pages": "141-141",
+          "passive": false
+        },
+        {
+          "finnish_use": "Mobile radio; Wireless cameras",
+          "group_ids": [
+            125744830,
+            125744831
+          ],
+          "high_mhz": 2300.0,
+          "low_mhz": 2290.0,
+          "m4_primary_services": "FIXED; MOBILE",
+          "m4_table_pages": "141-141",
+          "passive": false
+        }
+      ],
+      "method": "screening",
+      "sections": [
+        "9.1/IA"
+      ],
+      "source": {
+        "domain": "space",
+        "issue_no": 3074,
+        "notice_ids": [
+          "125545391"
+        ],
+        "sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721"
+      },
+      "visibility": [
+        "Orbit inclination missing; kept as a precaution"
+      ]
+    },
+    "domain": "space",
+    "family_id": 125545391,
+    "issue_no": 3074,
+    "network": "USASAT-MK1",
+    "notice_ids": [
+      "125545391"
+    ],
+    "rank": 31,
+    "rule_id": "m4-no-space-to-earth",
+    "severity": "medium",
+    "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "USASAT-MK1 (USA) transmits in 2 band(s) with no space-to-Earth allocation in Finland"
+  },
+  {
+    "adm": "PHL",
+    "comment_deadline": "2026-10-23",
+    "details": {
+      "assumptions": [
+        "Beam coverage over Finland is not checked.",
+        "No power or pfd calculation was done."
+      ],
+      "bands": [
+        {
+          "finnish_use": "Military use",
+          "group_ids": [
+            125741809
+          ],
+          "high_mhz": 2245.0,
+          "low_mhz": 2200.0,
+          "m4_primary_services": "FIXED",
+          "m4_table_pages": "141-141",
+          "passive": false
+        }
+      ],
+      "method": "screening",
+      "sections": [
+        "9.1/IA"
+      ],
+      "source": {
+        "domain": "space",
+        "issue_no": 3074,
+        "notice_ids": [
+          "125545392"
+        ],
+        "sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721"
+      },
+      "visibility": [
+        "Non-GSO reaching 82.1 deg latitude"
+      ]
+    },
+    "domain": "space",
+    "family_id": 125545392,
+    "issue_no": 3074,
+    "network": "MULA",
+    "notice_ids": [
+      "125545392"
+    ],
+    "rank": 32,
+    "rule_id": "m4-no-space-to-earth",
+    "severity": "medium",
+    "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "MULA (PHL) transmits in 1 band(s) with no space-to-Earth allocation in Finland"
+  },
+  {
+    "adm": "CHN",
+    "comment_deadline": "2026-10-23",
+    "details": {
+      "assumptions": [
+        "Beam coverage over Finland is not checked.",
+        "No power or pfd calculation was done."
+      ],
+      "bands": [
+        {
+          "finnish_use": "Military use; Terrestrial systems capable of providing electronic communications services",
+          "group_ids": [
+            125752690
+          ],
+          "high_mhz": 1452.0,
+          "low_mhz": 1427.0,
+          "m4_primary_services": "FIXED AND MOBILE; MOBILE",
+          "m4_table_pages": "131-131",
+          "passive": false
+        },
+        {
+          "finnish_use": "Military use; Terrestrial systems capable of providing electronic communications services",
+          "group_ids": [
+            125752690
+          ],
+          "high_mhz": 1492.0,
+          "low_mhz": 1452.0,
+          "m4_primary_services": "FIXED AND MOBILE; MOBILE",
+          "m4_table_pages": "131-131",
+          "passive": false
+        },
+        {
+          "finnish_use": "Military use; Terrestrial systems capable of providing electronic communications services",
+          "group_ids": [
+            125752690
+          ],
+          "high_mhz": 1518.0,
+          "low_mhz": 1492.0,
+          "m4_primary_services": "FIXED AND MOBILE; MOBILE",
+          "m4_table_pages": "131-131",
+          "passive": false
+        },
+        {
+          "finnish_use": "(SRD) Radio microphones, hearing aids, in-ear monitoring; (SRD) Wireless audio applications; DECT; Digital mobile network; Mobile radio",
+          "group_ids": [
+            125752691
+          ],
+          "high_mhz": 1980.0,
+          "low_mhz": 1710.0,
+          "m4_primary_services": "MOBILE",
+          "m4_table_pages": "137-139",
+          "passive": false
+        },
+        {
+          "finnish_use": "(SRD) Non-specific Short Range Devices; (SRD) Transport and Traffic telematics (TTT); Fixed radiolinks; Mobile radio; Radiolocation",
+          "group_ids": [
+            125752695
+          ],
+          "high_mhz": 64000.0,
+          "low_mhz": 59300.0,
+          "m4_primary_services": "FIXED; MOBILE; RADIOLOCATION",
+          "m4_table_pages": "198-199",
+          "passive": false
+        },
+        {
+          "finnish_use": "(SRD) Transport and Traffic telematics (TTT); Fixed radiolinks; Mobile radio",
+          "group_ids": [
+            125752695
+          ],
+          "high_mhz": 65000.0,
+          "low_mhz": 64000.0,
+          "m4_primary_services": "FIXED; MOBILE",
+          "m4_table_pages": "199-200",
+          "passive": false
+        },
+        {
+          "finnish_use": "(SRD) Transport and Traffic telematics (TTT); Fixed; Mobile radio",
+          "group_ids": [
+            125752695
+          ],
+          "high_mhz": 66000.0,
+          "low_mhz": 65000.0,
+          "m4_primary_services": "FIXED; MOBILE",
+          "m4_table_pages": "200-200",
+          "passive": false
+        }
+      ],
+      "method": "screening",
+      "sections": [
+        "9.1/IA"
+      ],
+      "source": {
+        "domain": "space",
+        "issue_no": 3074,
+        "notice_ids": [
+          "125545393"
+        ],
+        "sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721"
+      },
+      "visibility": [
+        "Non-GSO reaching 89 deg latitude"
+      ]
+    },
+    "domain": "space",
+    "family_id": 125545393,
+    "issue_no": 3074,
+    "network": "EUHT",
+    "notice_ids": [
+      "125545393"
+    ],
+    "rank": 33,
+    "rule_id": "m4-no-space-to-earth",
+    "severity": "medium",
+    "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "EUHT (CHN) transmits in 7 band(s) with no space-to-Earth allocation in Finland"
+  },
+  {
+    "adm": "CHN",
+    "comment_deadline": "2026-10-23",
+    "details": {
+      "assumptions": [
+        "Beam coverage over Finland is not checked.",
+        "No power or pfd calculation was done."
+      ],
+      "bands": [
+        {
+          "finnish_use": "(SRD) Equipment for detecting movement and for alert; Military use; Radars",
+          "group_ids": [
+            125748057
+          ],
+          "high_mhz": 10000.0,
+          "low_mhz": 8500.0,
+          "m4_primary_services": "EARTH EXPLORATION-SATELLITE; RADIOLOCATION",
+          "m4_table_pages": "163-163",
+          "passive": false
+        }
+      ],
+      "method": "screening",
+      "sections": [
+        "9.1/IA"
+      ],
+      "source": {
+        "domain": "space",
+        "issue_no": 3074,
+        "notice_ids": [
+          "125545395"
+        ],
+        "sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721"
+      },
+      "visibility": [
+        "Non-GSO reaching 83.33 deg latitude"
+      ]
+    },
+    "domain": "space",
+    "family_id": 125545395,
+    "issue_no": 3074,
+    "network": "INSIGHT-A",
+    "notice_ids": [
+      "125545395"
+    ],
+    "rank": 34,
+    "rule_id": "m4-no-space-to-earth",
+    "severity": "medium",
+    "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "INSIGHT-A (CHN) transmits in 1 band(s) with no space-to-Earth allocation in Finland"
+  },
+  {
+    "adm": "CHN",
+    "comment_deadline": "2026-10-23",
+    "details": {
+      "assumptions": [
+        "Beam coverage over Finland is not checked.",
+        "No power or pfd calculation was done."
+      ],
+      "bands": [
+        {
+          "finnish_use": "(SRD) Equipment for detecting movement and for alert; Military use; Radars",
+          "group_ids": [
+            125746530
+          ],
+          "high_mhz": 10000.0,
+          "low_mhz": 8500.0,
+          "m4_primary_services": "EARTH EXPLORATION-SATELLITE; RADIOLOCATION",
+          "m4_table_pages": "163-163",
+          "passive": false
+        },
+        {
+          "finnish_use": "Radars",
+          "group_ids": [
+            125746528
+          ],
+          "high_mhz": 36000.0,
+          "low_mhz": 35500.0,
+          "m4_primary_services": "EARTH EXPLORATION-SATELLITE; RADIOLOCATION",
+          "m4_table_pages": "190-190",
+          "passive": false
+        }
+      ],
+      "method": "screening",
+      "sections": [
+        "9.1/IA"
+      ],
+      "source": {
+        "domain": "space",
+        "issue_no": 3074,
+        "notice_ids": [
+          "125545396"
+        ],
+        "sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721"
+      },
+      "visibility": [
+        "Non-GSO reaching 82.6 deg latitude"
+      ]
+    },
+    "domain": "space",
+    "family_id": 125545396,
+    "issue_no": 3074,
+    "network": "GY-2",
+    "notice_ids": [
+      "125545396"
+    ],
+    "rank": 35,
+    "rule_id": "m4-no-space-to-earth",
+    "severity": "medium",
+    "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "GY-2 (CHN) transmits in 2 band(s) with no space-to-Earth allocation in Finland"
+  },
+  {
+    "adm": "J",
+    "comment_deadline": "2026-10-23",
+    "details": {
+      "assumptions": [
+        "Beam coverage over Finland is not checked.",
+        "No power or pfd calculation was done."
+      ],
+      "bands": [
+        {
+          "finnish_use": "(SRD) Equipment for automatic vehicle identification for railways (AVI); (SRD) Equipment for detecting movement and for alert; (SRD) Non-specific Short Range Devices; (SRD) Radio frequency identification devices (RFID); (SRD) Wideband data transmission systems (WAS/RLAN); Wireless cameras",
+          "group_ids": [
+            125748067
+          ],
+          "high_mhz": 2483.5,
+          "low_mhz": 2300.0,
+          "m4_primary_services": "FIXED; MOBILE",
+          "m4_table_pages": "142-144",
+          "passive": false
+        }
+      ],
+      "method": "screening",
+      "sections": [
+        "9.1/IA"
+      ],
+      "source": {
+        "domain": "space",
+        "issue_no": 3074,
+        "notice_ids": [
+          "125545398"
+        ],
+        "sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721"
+      },
+      "visibility": [
+        "Non-GSO reaching 82.5 deg latitude"
+      ]
+    },
+    "domain": "space",
+    "family_id": 125545398,
+    "issue_no": 3074,
+    "network": "FUNADE",
+    "notice_ids": [
+      "125545398"
+    ],
+    "rank": 36,
+    "rule_id": "m4-no-space-to-earth",
+    "severity": "medium",
+    "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "FUNADE (J) transmits in 1 band(s) with no space-to-Earth allocation in Finland"
+  },
+  {
+    "adm": "I",
+    "comment_deadline": "2026-10-23",
+    "details": {
+      "assumptions": [
+        "Beam coverage over Finland is not checked.",
+        "No power or pfd calculation was done."
+      ],
+      "bands": [
+        {
+          "finnish_use": "Military use",
+          "group_ids": [
+            125748069
+          ],
+          "high_mhz": 2245.0,
+          "low_mhz": 2200.0,
+          "m4_primary_services": "FIXED",
+          "m4_table_pages": "141-141",
+          "passive": false
+        }
+      ],
+      "method": "screening",
+      "sections": [
+        "9.1/IA"
+      ],
+      "source": {
+        "domain": "space",
+        "issue_no": 3074,
+        "notice_ids": [
+          "125545399"
+        ],
+        "sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721"
+      },
+      "visibility": [
+        "Non-GSO reaching 82.56 deg latitude"
+      ]
+    },
+    "domain": "space",
+    "family_id": 125545399,
+    "issue_no": 3074,
+    "network": "ION SCV-024",
+    "notice_ids": [
+      "125545399"
+    ],
+    "rank": 37,
+    "rule_id": "m4-no-space-to-earth",
+    "severity": "medium",
+    "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "ION SCV-024 (I) transmits in 1 band(s) with no space-to-Earth allocation in Finland"
+  },
+  {
+    "adm": "I",
+    "comment_deadline": "2026-10-23",
+    "details": {
+      "assumptions": [
+        "Beam coverage over Finland is not checked.",
+        "No power or pfd calculation was done."
+      ],
+      "bands": [
+        {
+          "finnish_use": "Sondes; Ultra low-power medical implants",
+          "group_ids": [
+            125751060
+          ],
+          "high_mhz": 406.0,
+          "low_mhz": 401.0,
+          "m4_primary_services": "EARTH EXPLORATION-SATELLITE (EARTH-TO-SPACE); METEOROLOGICAL AIDS; METEOROLOGICAL-SATELLITE (EARTH-TO-SPACE); MOBILE",
+          "m4_table_pages": "97-98",
+          "passive": false
+        },
+        {
+          "finnish_use": "Military use",
+          "group_ids": [
+            125751062
+          ],
+          "high_mhz": 2245.0,
+          "low_mhz": 2200.0,
+          "m4_primary_services": "FIXED",
+          "m4_table_pages": "141-141",
+          "passive": false
+        }
+      ],
+      "method": "screening",
+      "sections": [
+        "9.1/IA"
+      ],
+      "source": {
+        "domain": "space",
+        "issue_no": 3074,
+        "notice_ids": [
+          "125545400"
+        ],
+        "sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721"
+      },
+      "visibility": [
+        "Non-GSO reaching 82.4 deg latitude"
+      ]
+    },
+    "domain": "space",
+    "family_id": 125545400,
+    "issue_no": 3074,
+    "network": "TYVAK-0404",
+    "notice_ids": [
+      "125545400"
+    ],
+    "rank": 38,
+    "rule_id": "m4-no-space-to-earth",
+    "severity": "medium",
+    "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "TYVAK-0404 (I) transmits in 2 band(s) with no space-to-Earth allocation in Finland"
+  },
+  {
+    "adm": "IND",
+    "comment_deadline": "2026-10-23",
+    "details": {
+      "assumptions": [
+        "Beam coverage over Finland is not checked.",
+        "No power or pfd calculation was done."
+      ],
+      "bands": [
+        {
+          "finnish_use": "Military use",
+          "group_ids": [
+            126662625
+          ],
+          "high_mhz": 2245.0,
+          "low_mhz": 2200.0,
+          "m4_primary_services": "FIXED",
+          "m4_table_pages": "141-141",
+          "passive": false
+        }
+      ],
+      "method": "screening",
+      "sections": [
+        "9.1/IA"
+      ],
+      "source": {
+        "domain": "space",
+        "issue_no": 3074,
+        "notice_ids": [
+          "126545057"
+        ],
+        "sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721"
+      },
+      "visibility": [
+        "Non-GSO reaching 90 deg latitude"
+      ]
+    },
+    "domain": "space",
+    "family_id": 126545057,
+    "issue_no": 3074,
+    "network": "LVI",
+    "notice_ids": [
+      "126545057"
+    ],
+    "rank": 39,
+    "rule_id": "m4-no-space-to-earth",
+    "severity": "medium",
+    "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "LVI (IND) transmits in 1 band(s) with no space-to-Earth allocation in Finland"
+  },
+  {
+    "adm": "J",
+    "comment_deadline": "2026-10-23",
+    "details": {
+      "assumptions": [
+        "Beam coverage over Finland is not checked.",
+        "No power or pfd calculation was done."
+      ],
+      "bands": [
+        {
+          "finnish_use": "(SRD) Low-power alarms for security and safety, social alarms; (SRD) Narrow band analogue voice devices; (SRD) Non-specific Short Range Devices; (SRD) Radio frequency identification devices (RFID); (SRD) Radio microphones; (SRD) Short range devices; (SRD) Tracking, tracing and data acquisition systems; (SRD) Wide-band data transmission equipment; (SRD) Wireless audio applications; Cordless telephones (CT 1); Cordless telephones (CT 2); Digital mobile network; Mobile radio",
+          "group_ids": [
+            126633253
+          ],
+          "high_mhz": 960.0,
+          "low_mhz": 862.0,
+          "m4_primary_services": "MOBILE",
+          "m4_table_pages": "117-127",
+          "passive": false
+        }
+      ],
+      "method": "screening",
+      "sections": [
+        "9.1/IA"
+      ],
+      "source": {
+        "domain": "space",
+        "issue_no": 3074,
+        "notice_ids": [
+          "126545060"
+        ],
+        "sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721"
+      },
+      "visibility": [
+        "Non-GSO reaching 82.6 deg latitude"
+      ]
+    },
+    "domain": "space",
+    "family_id": 126545060,
+    "issue_no": 3074,
+    "network": "AE4LA",
+    "notice_ids": [
+      "126545060"
+    ],
+    "rank": 40,
+    "rule_id": "m4-no-space-to-earth",
+    "severity": "medium",
+    "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "AE4LA (J) transmits in 1 band(s) with no space-to-Earth allocation in Finland"
+  },
+  {
+    "adm": "CHN",
+    "comment_deadline": "2026-10-23",
+    "details": {
+      "assumptions": [
+        "Beam coverage over Finland is not checked.",
+        "No power or pfd calculation was done."
+      ],
+      "bands": [
+        {
+          "finnish_use": "Military use",
+          "group_ids": [
+            126658657,
+            126658658,
+            126658659,
+            126658660,
+            126658668
+          ],
+          "high_mhz": 2245.0,
+          "low_mhz": 2200.0,
+          "m4_primary_services": "FIXED",
+          "m4_table_pages": "141-141",
+          "passive": false
+        }
+      ],
+      "method": "screening",
+      "sections": [
+        "9.1/IA"
+      ],
+      "source": {
+        "domain": "space",
+        "issue_no": 3074,
+        "notice_ids": [
+          "126545072"
+        ],
+        "sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721"
+      },
+      "visibility": [
+        "Orbit inclination missing; kept as a precaution"
+      ]
+    },
+    "domain": "space",
+    "family_id": 126545072,
+    "issue_no": 3074,
+    "network": "LUNAR-R1",
+    "notice_ids": [
+      "126545072"
+    ],
+    "rank": 41,
+    "rule_id": "m4-no-space-to-earth",
+    "severity": "medium",
+    "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "LUNAR-R1 (CHN) transmits in 1 band(s) with no space-to-Earth allocation in Finland"
+  },
+  {
+    "adm": "CHN",
+    "comment_deadline": "2026-10-23",
+    "details": {
+      "assumptions": [
+        "Beam coverage over Finland is not checked.",
+        "No power or pfd calculation was done."
+      ],
+      "bands": [
+        {
+          "finnish_use": "Military use",
+          "group_ids": [
+            126658679,
+            126658680,
+            126658688
+          ],
+          "high_mhz": 2245.0,
+          "low_mhz": 2200.0,
+          "m4_primary_services": "FIXED",
+          "m4_table_pages": "141-141",
+          "passive": false
+        }
+      ],
+      "method": "screening",
+      "sections": [
+        "9.1/IA"
+      ],
+      "source": {
+        "domain": "space",
+        "issue_no": 3074,
+        "notice_ids": [
+          "126545073"
+        ],
+        "sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721"
+      },
+      "visibility": [
+        "Orbit inclination missing; kept as a precaution"
+      ]
+    },
+    "domain": "space",
+    "family_id": 126545073,
+    "issue_no": 3074,
+    "network": "LUNAR-R2",
+    "notice_ids": [
+      "126545073"
+    ],
+    "rank": 42,
+    "rule_id": "m4-no-space-to-earth",
+    "severity": "medium",
+    "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "LUNAR-R2 (CHN) transmits in 1 band(s) with no space-to-Earth allocation in Finland"
+  },
+  {
+    "adm": "CHN",
+    "comment_deadline": "2026-10-23",
+    "details": {
+      "assumptions": [
+        "Beam coverage over Finland is not checked.",
+        "No power or pfd calculation was done."
+      ],
+      "bands": [
+        {
+          "finnish_use": "Military use",
+          "group_ids": [
+            126656562
+          ],
+          "high_mhz": 2245.0,
+          "low_mhz": 2200.0,
+          "m4_primary_services": "FIXED",
+          "m4_table_pages": "141-141",
+          "passive": false
+        }
+      ],
+      "method": "screening",
+      "sections": [
+        "9.1/IA"
+      ],
+      "source": {
+        "domain": "space",
+        "issue_no": 3074,
+        "notice_ids": [
+          "126545074"
+        ],
+        "sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721"
+      },
+      "visibility": [
+        "Orbit inclination missing; kept as a precaution"
+      ]
+    },
+    "domain": "space",
+    "family_id": 126545074,
+    "issue_no": 3074,
+    "network": "LUNAR-R3",
+    "notice_ids": [
+      "126545074"
+    ],
+    "rank": 43,
+    "rule_id": "m4-no-space-to-earth",
+    "severity": "medium",
+    "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "LUNAR-R3 (CHN) transmits in 1 band(s) with no space-to-Earth allocation in Finland"
+  },
+  {
+    "adm": "CHN",
+    "comment_deadline": "2026-10-23",
+    "details": {
+      "assumptions": [
+        "Beam coverage over Finland is not checked.",
+        "No power or pfd calculation was done."
+      ],
+      "bands": [
+        {
+          "finnish_use": "Military use",
+          "group_ids": [
+            126656570,
+            126656571
+          ],
+          "high_mhz": 2245.0,
+          "low_mhz": 2200.0,
+          "m4_primary_services": "FIXED",
+          "m4_table_pages": "141-141",
+          "passive": false
+        }
+      ],
+      "method": "screening",
+      "sections": [
+        "9.1/IA"
+      ],
+      "source": {
+        "domain": "space",
+        "issue_no": 3074,
+        "notice_ids": [
+          "126545075"
+        ],
+        "sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721"
+      },
+      "visibility": [
+        "Orbit inclination missing; kept as a precaution"
+      ]
+    },
+    "domain": "space",
+    "family_id": 126545075,
+    "issue_no": 3074,
+    "network": "LUNAR-R4",
+    "notice_ids": [
+      "126545075"
+    ],
+    "rank": 44,
+    "rule_id": "m4-no-space-to-earth",
+    "severity": "medium",
+    "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "LUNAR-R4 (CHN) transmits in 1 band(s) with no space-to-Earth allocation in Finland"
+  },
+  {
+    "adm": "CHN",
+    "comment_deadline": "2026-10-23",
+    "details": {
+      "assumptions": [
+        "Beam coverage over Finland is not checked.",
+        "No power or pfd calculation was done."
+      ],
+      "bands": [
+        {
+          "finnish_use": "Military use",
+          "group_ids": [
+            126658706
+          ],
+          "high_mhz": 2070.0,
+          "low_mhz": 2025.0,
+          "m4_primary_services": "FIXED",
+          "m4_table_pages": "140-140",
+          "passive": false
+        },
+        {
+          "finnish_use": "Wireless cameras",
+          "group_ids": [
+            126658706
+          ],
+          "high_mhz": 2110.0,
+          "low_mhz": 2070.0,
+          "m4_primary_services": "EARTH EXPLORATION-SATELLITE (EARTH-TO-SPACE, SPACE-TO-SPACE); FIXED; SPACE OPERATION (EARTH-TO-SPACE, SPACE-TO-SPACE)",
+          "m4_table_pages": "140-140",
+          "passive": false
+        }
+      ],
+      "method": "screening",
+      "sections": [
+        "9.1/IA"
+      ],
+      "source": {
+        "domain": "space",
+        "issue_no": 3074,
+        "notice_ids": [
+          "126545076"
+        ],
+        "sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721"
+      },
+      "visibility": [
+        "Orbit inclination missing; kept as a precaution"
+      ]
+    },
+    "domain": "space",
+    "family_id": 126545076,
+    "issue_no": 3074,
+    "network": "LUNAR-R5",
+    "notice_ids": [
+      "126545076"
+    ],
+    "rank": 45,
+    "rule_id": "m4-no-space-to-earth",
+    "severity": "medium",
+    "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "LUNAR-R5 (CHN) transmits in 2 band(s) with no space-to-Earth allocation in Finland"
+  },
+  {
+    "adm": "USA",
+    "comment_deadline": "2026-10-23",
+    "details": {
+      "assumptions": [
+        "Beam coverage over Finland is not checked.",
+        "No power or pfd calculation was done."
+      ],
+      "bands": [
+        {
+          "finnish_use": "Military use",
+          "group_ids": [
+            126662490,
+            126662494,
+            126662495,
+            126662499,
+            126662500,
+            126662501,
+            126662508,
+            126662509,
+            126662510,
+            126662511,
+            126662512,
+            126662513,
+            126662520,
+            126662521,
+            126662522,
+            126662523,
+            126662524,
+            126662525,
+            126662532,
+            126662533,
+            126662534,
+            126662541,
+            126662542,
+            126662543,
+            126662544,
+            126662545,
+            126662546,
+            126662547,
+            126662548,
+            126662549
+          ],
+          "high_mhz": 2245.0,
+          "low_mhz": 2200.0,
+          "m4_primary_services": "FIXED",
+          "m4_table_pages": "141-141",
+          "passive": false
+        }
+      ],
+      "method": "screening",
+      "sections": [
+        "9.1/IA"
+      ],
+      "source": {
+        "domain": "space",
+        "issue_no": 3074,
+        "notice_ids": [
+          "126545087"
+        ],
+        "sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721"
+      },
+      "visibility": [
+        "Non-GSO reaching 60 deg latitude"
+      ]
+    },
+    "domain": "space",
+    "family_id": 126545087,
+    "issue_no": 3074,
+    "network": "AMZLFG",
+    "notice_ids": [
+      "126545087"
+    ],
+    "rank": 46,
+    "rule_id": "m4-no-space-to-earth",
+    "severity": "medium",
+    "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "AMZLFG (USA) transmits in 1 band(s) with no space-to-Earth allocation in Finland"
+  },
+  {
+    "adm": "USA",
+    "comment_deadline": "2026-10-23",
+    "details": {
+      "assumptions": [
+        "Beam coverage over Finland is not checked.",
+        "No power or pfd calculation was done."
+      ],
+      "bands": [
+        {
+          "finnish_use": "Military use",
+          "group_ids": [
+            126662059
+          ],
+          "high_mhz": 2245.0,
+          "low_mhz": 2200.0,
+          "m4_primary_services": "FIXED",
+          "m4_table_pages": "141-141",
+          "passive": false
+        }
+      ],
+      "method": "screening",
+      "sections": [
+        "9.1/IA"
+      ],
+      "source": {
+        "domain": "space",
+        "issue_no": 3074,
+        "notice_ids": [
+          "126545098"
+        ],
+        "sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721"
+      },
+      "visibility": [
+        "Non-GSO reaching 82.6 deg latitude"
+      ]
+    },
+    "domain": "space",
+    "family_id": 126545098,
+    "issue_no": 3074,
+    "network": "SNAPPY",
+    "notice_ids": [
+      "126545098"
+    ],
+    "rank": 47,
+    "rule_id": "m4-no-space-to-earth",
+    "severity": "medium",
+    "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "SNAPPY (USA) transmits in 1 band(s) with no space-to-Earth allocation in Finland"
+  },
+  {
+    "adm": "CHN",
+    "comment_deadline": "2026-10-23",
+    "details": {
+      "assumptions": [
+        "Beam coverage over Finland is not checked.",
+        "No power or pfd calculation was done."
+      ],
+      "bands": [
+        {
+          "finnish_use": "(SRD) Wideband data transmission systems (WAS/RLAN)",
+          "group_ids": [
+            126662635,
+            126662645
+          ],
+          "high_mhz": 5350.0,
+          "low_mhz": 5250.0,
+          "m4_primary_services": "MOBILE",
+          "m4_table_pages": "151-151",
+          "passive": false
+        },
+        {
+          "finnish_use": "(SRD) Wideband data transmission systems (WAS/RLAN); Meteorological radars; Military use; Radars",
+          "group_ids": [
+            126662635,
+            126662645
+          ],
+          "high_mhz": 5725.0,
+          "low_mhz": 5350.0,
+          "m4_primary_services": "MOBILE; RADIOLOCATION",
+          "m4_table_pages": "151-153",
+          "passive": false
+        },
+        {
+          "finnish_use": "(SRD) Equipment for detecting movement and for alert; Military use; Radars",
+          "group_ids": [
+            126662631,
+            126662639,
+            126662646,
+            126662647
+          ],
+          "high_mhz": 10000.0,
+          "low_mhz": 8500.0,
+          "m4_primary_services": "EARTH EXPLORATION-SATELLITE; RADIOLOCATION",
+          "m4_table_pages": "163-163",
+          "passive": false
+        },
+        {
+          "finnish_use": "Terrestrial systems capable of providing electronic communications services",
+          "group_ids": [
+            126662632,
+            126662641
+          ],
+          "high_mhz": 27500.0,
+          "low_mhz": 27000.0,
+          "m4_primary_services": "MOBILE AND FIXED",
+          "m4_table_pages": "186-186",
+          "passive": false
+        }
+      ],
+      "method": "screening",
+      "sections": [
+        "9.1/IA"
+      ],
+      "source": {
+        "domain": "space",
+        "issue_no": 3074,
+        "notice_ids": [
+          "126545117"
+        ],
+        "sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721"
+      },
+      "visibility": [
+        "Non-GSO reaching 82.5 deg latitude"
+      ]
+    },
+    "domain": "space",
+    "family_id": 126545117,
+    "issue_no": 3074,
+    "network": "YG-1",
+    "notice_ids": [
+      "126545117"
+    ],
+    "rank": 48,
+    "rule_id": "m4-no-space-to-earth",
+    "severity": "medium",
+    "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "YG-1 (CHN) transmits in 4 band(s) with no space-to-Earth allocation in Finland"
+  },
+  {
+    "adm": "D",
+    "comment_deadline": "2026-10-23",
+    "details": {
+      "assumptions": [
+        "Beam coverage over Finland is not checked.",
+        "No power or pfd calculation was done."
+      ],
+      "bands": [
+        {
+          "finnish_use": "Sondes; Ultra low-power medical implants",
+          "group_ids": [
+            126664722
+          ],
+          "high_mhz": 406.0,
+          "low_mhz": 401.0,
+          "m4_primary_services": "EARTH EXPLORATION-SATELLITE (EARTH-TO-SPACE); METEOROLOGICAL AIDS; METEOROLOGICAL-SATELLITE (EARTH-TO-SPACE); MOBILE",
+          "m4_table_pages": "97-98",
+          "passive": false
+        },
+        {
+          "finnish_use": "Military use",
+          "group_ids": [
+            126664723,
+            126664724
+          ],
+          "high_mhz": 2245.0,
+          "low_mhz": 2200.0,
+          "m4_primary_services": "FIXED",
+          "m4_table_pages": "141-141",
+          "passive": false
+        }
+      ],
+      "method": "screening",
+      "sections": [
+        "9.1/IA"
+      ],
+      "source": {
+        "domain": "space",
+        "issue_no": 3074,
+        "notice_ids": [
+          "126545119"
+        ],
+        "sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721"
+      },
+      "visibility": [
+        "Non-GSO reaching 82.6 deg latitude"
+      ]
+    },
+    "domain": "space",
+    "family_id": 126545119,
+    "issue_no": 3074,
+    "network": "SOLAR SENTRY",
+    "notice_ids": [
+      "126545119"
+    ],
+    "rank": 49,
+    "rule_id": "m4-no-space-to-earth",
+    "severity": "medium",
+    "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "SOLAR SENTRY (D) transmits in 2 band(s) with no space-to-Earth allocation in Finland"
+  },
+  {
+    "adm": "I",
+    "comment_deadline": "2026-10-23",
+    "details": {
+      "assumptions": [
+        "Beam coverage over Finland is not checked.",
+        "No power or pfd calculation was done."
+      ],
+      "bands": [
+        {
+          "finnish_use": "Military use",
+          "group_ids": [
+            126656468
+          ],
+          "high_mhz": 2245.0,
+          "low_mhz": 2200.0,
+          "m4_primary_services": "FIXED",
+          "m4_table_pages": "141-141",
+          "passive": false
+        }
+      ],
+      "method": "screening",
+      "sections": [
+        "9.1/IA"
+      ],
+      "source": {
+        "domain": "space",
+        "issue_no": 3074,
+        "notice_ids": [
+          "126545131"
+        ],
+        "sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721"
+      },
+      "visibility": [
+        "Non-GSO reaching 82.56 deg latitude"
+      ]
+    },
+    "domain": "space",
+    "family_id": 126545131,
+    "issue_no": 3074,
+    "network": "ION SCV-025",
+    "notice_ids": [
+      "126545131"
+    ],
+    "rank": 50,
+    "rule_id": "m4-no-space-to-earth",
+    "severity": "medium",
+    "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "ION SCV-025 (I) transmits in 1 band(s) with no space-to-Earth allocation in Finland"
+  },
+  {
+    "adm": "KOR",
+    "comment_deadline": "2026-10-23",
+    "details": {
+      "assumptions": [
+        "Beam coverage over Finland is not checked.",
+        "No power or pfd calculation was done."
+      ],
+      "bands": [
+        {
+          "finnish_use": "(medelfrekvenser om delbandets gränskanaler) Amateur; Amateur",
+          "group_ids": [
+            126662558
+          ],
+          "high_mhz": 438.0,
+          "low_mhz": 432.0,
+          "m4_primary_services": "AMATEUR; AMATEUR-SATELLITE",
+          "m4_table_pages": "103-106",
+          "passive": false
+        },
+        {
+          "finnish_use": "(SRD) Equipment for automatic vehicle identification for railways (AVI); (SRD) Equipment for detecting movement and for alert; (SRD) Non-specific Short Range Devices; (SRD) Radio frequency identification devices (RFID); (SRD) Wideband data transmission systems (WAS/RLAN); Wireless cameras",
+          "group_ids": [
+            126662557
+          ],
+          "high_mhz": 2483.5,
+          "low_mhz": 2300.0,
+          "m4_primary_services": "FIXED; MOBILE",
+          "m4_table_pages": "142-144",
+          "passive": false
+        }
+      ],
+      "method": "screening",
+      "sections": [
+        "9.1/IA"
+      ],
+      "source": {
+        "domain": "space",
+        "issue_no": 3074,
+        "notice_ids": [
+          "126545140"
+        ],
+        "sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721"
+      },
+      "visibility": [
+        "Non-GSO reaching 82.2 deg latitude"
+      ]
+    },
+    "domain": "space",
+    "family_id": 126545140,
+    "issue_no": 3074,
+    "network": "UEL-Y-SYS",
+    "notice_ids": [
+      "126545140"
+    ],
+    "rank": 51,
+    "rule_id": "m4-no-space-to-earth",
+    "severity": "medium",
+    "source_sha256": "c8adf75044bca9d6a2be4213d051805f1b0a88d716fb184bcb1cd812216da721",
+    "source_url": "https://www.itu.int/sns/ific10/ific3074.zip",
+    "title": "UEL-Y-SYS (KOR) transmits in 2 band(s) with no space-to-Earth allocation in Finland"
+  }
+]

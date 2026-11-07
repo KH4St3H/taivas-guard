@@ -111,7 +111,9 @@ Screening rules without a calculation use `method: "screening"` and leave the nu
 - **The evaluated issues are Space 3074 and Terrestrial 3076.** 3083 is for development only.
 - **The terrestrial diff uses 3075 to 3076**, since the brief asks for consecutive issues.
 - **Deterministic code decides.** The LLM only explains and drafts (ARCHITECTURE.md section 2).
-- **Baseline:** the services, tests and plan are currently uncommitted. Agents cannot start until ticket 01 commits them.
+- **Baseline verified (2026-11-07):** services and stray-text fix were already committed at `bc9c594`; 41 baseline tests pass. All four verified archives and MDBs are in this checkout's ignored `data/shared/`. See [ticket 01](issues/01-baseline.md). The old macOS shared-data path does not apply here.
+- **Sequential implementation:** the user requested issues one by one. Work continues in the existing `services-foundation-v2` checkout without parallel agents, commits or pushes. Ticket 02 remains a human question list; ticket 03 uses a clearly provisional export format.
+- **Space 3074 export complete:** [ticket 03](issues/03-space-3074-export.md) produced 51 possible concerns (10 high, 41 medium), identical CSV/JSON across two runs, five source-row checks, and 45 passing tests. Export re-evaluates the source artifact so mutable cross-issue review state cannot contaminate historical results. AP30-family coverage remains a declared gap.
 
 ## Fog
 

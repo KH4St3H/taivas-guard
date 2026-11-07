@@ -1,6 +1,6 @@
 # 03 Space 3074 evaluation export
 
-Status: ready-for-agent
+Status: resolved
 Type: task
 Size: M
 Blocked by: 01
@@ -31,3 +31,31 @@ Process the mandatory Space IFIC 3074 and export its cases as files an evaluator
 ## Not in scope
 
 New rules, UI work, and `outputs/` for terrestrial.
+
+## Answer
+
+Implemented and verified on 2026-11-07. Added `ific_guard/export.py`, the
+`export` CLI command, four regression tests and `outputs/ific_3074/`.
+
+- Actual Space 3074: **51 cases**, 10 high and 41 medium.
+- Operational pipeline: `screen_artifact(1)` returned
+  `{'artifact_id': 1, 'status': 'done', 'opened': 51, 'changed': 0}`.
+- Two exports produced byte-identical CSV/JSON. Runtime: 70.53 / 54.73 s.
+- Full suite: **45 passed**, with one dependency deprecation warning.
+- Five source-row comparisons and AP30 observations are recorded in
+  [verification.md](../../../outputs/ific_3074/verification.md).
+- AP30-family support remains explicitly a gap. All three AP30B-specific
+  tables and `plan_pub` are empty in this MDB; `notice` contains only
+  provisions 9.6, 9.1/IA, 11.2 and RS49.
+
+The exporter re-evaluates the selected imported artifact rather than reading
+mutable cross-issue `Case` rows. This prevents later issues from contaminating
+the 3074 evaluation and leaves review decisions and notifications unchanged.
+`--sha256` pins a revision. Manifests include source and MDB hashes, code
+hashes, a secret-free screening configuration, rule IDs and known gaps.
+The format is provisional until ticket 02 is answered. Terrestrial export
+currently fails explicitly; ticket 10 must add its rule evaluation.
+
+No new screening rules or database columns were introduced. Raw ITU files
+remain ignored; only derived findings and verification documentation are
+included in outputs. No commits, pushes or external messages were sent.
