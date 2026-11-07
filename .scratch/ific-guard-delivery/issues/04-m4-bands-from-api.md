@@ -3,7 +3,7 @@
 Status: ready-for-agent
 Type: task
 Size: M
-Blocked by: 01
+Blocked by: none
 Owns: `tools/build_m4_bands.py`, `data/national/`, `ific_guard/screening/m4.py`, `tests/test_m4.py`, the band-loading part of `rules.py`
 
 ## Goal

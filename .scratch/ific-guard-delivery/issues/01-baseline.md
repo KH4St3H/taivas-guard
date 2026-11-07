@@ -1,6 +1,6 @@
 # 01 Baseline: commit, fix stray text, fetch shared data
 
-Status: ready-for-human
+Status: resolved
 Type: task
 Size: S
 Blocked by: none
@@ -31,3 +31,7 @@ for z in *.zip; do unzip -oq "$z"; done
 - `git status` is clean apart from ignored files.
 - `uv run pytest` passes on a fresh worktree of the baseline.
 - `data/shared/` holds `ific3074.mdb`, `ific3083.mdb`, `brific3075.mdb` and `brific3076.mdb`. Confirm the database names, since these come from the zips. Expected zip sizes: 60,837,631, 19,001,626, 3,427,636 and 2,406,450 bytes.
+
+## Answer
+
+Done on 2026-11-07. Baseline is on `services-foundation-v2`. Stray text removed, and `schema.sql` creates all 12 tables in DuckDB. The four issues are in `data/shared/`, with the expected sizes and names.

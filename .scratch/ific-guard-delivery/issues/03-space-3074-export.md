@@ -3,17 +3,21 @@
 Status: ready-for-agent
 Type: task
 Size: M
-Blocked by: 01
+Blocked by: none
 Owns: `ific_guard/export.py`, `outputs/`, one `export` command in `ific_guard/cli.py`, `tests/test_export.py`
 
 ## Goal
 
-Process the mandatory Space IFIC 3074 and export its cases as files an evaluator can read, using the existing pipeline. This is required for submission, and it is the first real test on the larger issue (61 MB zip, against 19 MB for 3083, which was the only one run so far).
+Export Space IFIC 3074's cases as files an evaluator can read. This is required for submission.
+
+A trial run already screened 3074 through `POST /issues/upload` with no errors, in under a minute at about 700 MB peak memory.
+
+**Watch out:** cases are deduplicated across issues. That trial reported 51 new cases for 3074, but 3083 was processed in the same database, so a family seen in both issues was not counted as new for 3074. The true 3074 count may be higher. **The export must reflect everything the rules find in that issue**, whatever else the database holds, and must not depend on the order issues arrive. A clean database for one issue is not enough, because the system must keep running with many issues.
 
 ## Do
 
-1. Import `data/shared/ific3074.zip` with `python -m ific_guard.cli import` into a database under your worktree, then run screening.
-2. Record run time and memory. Fix anything that breaks on this issue, including unexpected values in `SpaceIssue`.
+1. Import `/Users/mehrshad/personal/radio/data/shared/ific3074.zip` with `python -m ific_guard.cli import` into a database under your worktree, then run screening.
+2. Add a way to record which issues each case was found in, additively, so a per-issue export is exact. A separate table is acceptable here, as an exception to the map's rule against new columns.
 3. Add `python -m ific_guard.cli export --domain space --issue 3074 --out outputs/ific_3074/` writing:
    - `cases.csv`: one row per case, flat columns, ranked
    - `cases.json`: full `details`
@@ -23,6 +27,7 @@ Process the mandatory Space IFIC 3074 and export its cases as files an evaluator
 
 ## Acceptance
 
+- The 3074 export has the same cases whether 3083 is processed before it, after it, or not at all. A test proves this.
 - The export runs twice with identical content apart from timestamps.
 - Every case in `cases.csv` traces to notice IDs and the file SHA-256.
 - A hand check of 5 cases against the `.mdb`: reported in your final message with the rows you compared.

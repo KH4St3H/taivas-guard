@@ -3,7 +3,7 @@
 Status: ready-for-agent
 Type: task
 Size: M
-Blocked by: 01
+Blocked by: none
 Owns: `ific_guard/screening/stations.py`, `ific_guard/screening/rule_stations.py`, `tests/test_stations.py`
 
 ## Goal
