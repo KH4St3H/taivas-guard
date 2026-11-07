@@ -27,7 +27,7 @@ from ..engines.pfd import MASK_DIR
 from ..screening.rules import Hit
 from ..screening.scoring import score_finding
 from ..screening.space import MdbReader
-from ..screening.stations import Station, load_stations
+from ..screening.stations import SIDE_RX, ProtectedBand, Station, load_stations
 from ..sync.sources import TERRESTRIAL
 from .adapter import (
     LAND_MOBILE_CLASSES,
@@ -83,6 +83,7 @@ COMMON_ASSUMPTIONS = (
     "Receiver: 10 m above ground, 50% of locations, rural surroundings. Time: 10%. Height, locations and time follow T/R 25-08 A1.2.3; rural is our choice. The transmitter is treated as open, with no clutter correction, which biases high where it stands in clutter.",
     "Evaluated at Natural Earth points on the Finnish boundary, including the coast. This is not the legal border, and T/R 25-08 does not define the evaluation point for a sea border.",
     "pwr_dbw with pwr_eiv E is read as e.r.p., and with I as e.i.r.p. This is inferred from the data, because the ITU ReadMe could not be read.",
+    "Special-interest stations are matched on RX and TX bands, because Traficom said \"every TX is received in Finland\" (Discord, 2026-11-07). A field listed for a station with no separate RX match is at its site, using its antenna height, and is not the field at a receiver, which is elsewhere.",
 )
 
 
@@ -690,25 +691,27 @@ class FieldStrengthRule:
         }
 
     def _stations_affected(self, notice, antenna: TxAntenna) -> list[dict]:
-        """Special-interest stations whose receive band overlaps the notice, with the field at each."""
+        """Special-interest stations with an RX or TX band overlapping the notice, with the field at each site."""
         if notice.low_mhz is None or notice.high_mhz is None:
             return []
         found = []
         for station in self.stations:
-            band = station.rx_band_mhz
-            if band is None or station.lat_deg is None or station.lon_deg is None:
+            if station.lat_deg is None or station.lon_deg is None:
                 continue
-            if notice.low_mhz < band[1] and notice.high_mhz > band[0]:
-                found.append(self._field_at_station(notice, antenna, station))
+            bands = [b for b in station.protected_bands if b.overlaps(notice.low_mhz, notice.high_mhz)]
+            if bands:
+                found.append(self._field_at_station(notice, antenna, station, bands))
         return sorted(found, key=lambda s: (s["value_db"] is None, -(s["value_db"] or 0), s["station_id"]))
 
-    def _field_at_station(self, notice, antenna, station: Station) -> dict:
+    def _field_at_station(self, notice, antenna, station: Station, bands: list[ProtectedBand]) -> dict:
         entry = {
             "station_id": station.key,
-            "rx_band_mhz": list(station.rx_band_mhz),
+            "matched_bands": [{"side": b.side, "low_mhz": b.low_mhz, "high_mhz": b.high_mhz} for b in bands],
             "quality_flags": list(station.quality_flags),
             "data": "synthetic, from Traficom's special-interest list",
         }
+        if not any(b.side == SIDE_RX for b in bands):
+            entry["field_location"] = "station site, not the receiver: this band is received elsewhere"
         height = station.ant_height_agl_m
         distance = _haversine_km(notice.latitude_deg, notice.longitude_deg, station.lat_deg, station.lon_deg)
         entry.update(distance_km=round(distance, 2), value_db=None)

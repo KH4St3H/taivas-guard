@@ -56,7 +56,7 @@ ${close}`;
     return `${header}
 Dear colleagues,
 
-Finland has examined the above filing. It includes space-to-Earth transmissions in the following band(s), which overlap the receive frequencies of Finnish stations:
+Finland has examined the above filing. It includes space-to-Earth transmissions in the following band(s), which overlap frequencies used by Finnish stations:
 
 ${f.bands.map((b) => `- ${b.lowMhz}–${b.highMhz} MHz`).join('\n')}
 

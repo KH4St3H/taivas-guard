@@ -136,7 +136,7 @@ function BandsPanel({ f }: { f: Finding }) {
   return (
     <section className="panel">
       <h2>Bands involved</h2>
-      <p className="muted">{stationRule ? 'Bands where this filing transmits and a station in Traficom’s list receives. The comparison is by frequency only.' : 'Bands where this filing transmits and M4 has no space-to-Earth allocation.'}</p>
+      <p className="muted">{stationRule ? 'Bands where this filing transmits on an RX or TX frequency of a station in Traficom’s list. The comparison is by frequency only.' : 'Bands where this filing transmits and M4 has no space-to-Earth allocation.'}</p>
       <div className="table-wrap">
         <table>
           {stationRule ? (

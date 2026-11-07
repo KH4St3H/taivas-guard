@@ -47,6 +47,21 @@ _FREQUENCY = re.compile(r"(\d+(?:[.,]\d+)?)\s*([kMG])Hz")
 _BANDWIDTH = re.compile(r"(\d+(?:[.,]\d+)?)\s*([kMG])(?:Hz)?(\d*)")
 
 
+SIDE_RX = "rx"
+SIDE_TX = "tx"
+SIDE_BOTH = "both"  # RX and TX are the same band, as on broadcast rows
+
+
+@dataclass(frozen=True)
+class ProtectedBand:
+    side: str
+    low_mhz: float
+    high_mhz: float
+
+    def overlaps(self, low_mhz: float, high_mhz: float) -> bool:
+        return low_mhz < self.high_mhz and high_mhz > self.low_mhz
+
+
 @dataclass(frozen=True)
 class Station:
     row: int  # row in the sheet; station_no alone is not unique
@@ -81,11 +96,26 @@ class Station:
     def bandwidth_mhz(self) -> float | None:
         return self.channel_bw_mhz if self.channel_bw_mhz is not None else self.transmission_bw_mhz
 
+    def _band_mhz(self, centre_mhz: float | None) -> tuple[float, float] | None:
+        if centre_mhz is None or self.bandwidth_mhz is None:
+            return None
+        return centre_mhz - self.bandwidth_mhz / 2, centre_mhz + self.bandwidth_mhz / 2
+
     @property
     def rx_band_mhz(self) -> tuple[float, float] | None:
-        if self.rx_mhz is None or self.bandwidth_mhz is None:
-            return None
-        return self.rx_mhz - self.bandwidth_mhz / 2, self.rx_mhz + self.bandwidth_mhz / 2
+        return self._band_mhz(self.rx_mhz)
+
+    @property
+    def tx_band_mhz(self) -> tuple[float, float] | None:
+        return self._band_mhz(self.tx_mhz)
+
+    @property
+    def protected_bands(self) -> tuple[ProtectedBand, ...]:
+        """Traficom: "every TX is received in Finland", so a TX band is protected as well as an RX band."""
+        rx, tx = self.rx_band_mhz, self.tx_band_mhz
+        if rx is not None and rx == tx:
+            return (ProtectedBand(SIDE_BOTH, *rx),)
+        return tuple(ProtectedBand(side, *band) for side, band in ((SIDE_RX, rx), (SIDE_TX, tx)) if band is not None)
 
 
 def _text(value: Any) -> str | None:

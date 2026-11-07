@@ -1,3 +1,4 @@
+from collections import Counter
 from dataclasses import replace
 
 import pytest
@@ -110,6 +111,28 @@ def test_rows_with_no_frequency_are_kept_and_flagged(by_row, stations):
     assert by_row[363].tx_mhz == 107.5 and by_row[363].rx_band_mhz is None
 
 
+def test_protected_band_counts_on_the_real_sheet(stations):
+    sides = Counter(tuple(b.side for b in s.protected_bands) for s in stations)
+    assert sides == {("rx", "tx"): 572, ("tx",): 58, ("both",): 240, (): 3}
+    assert sum(1 for s in stations if not s.protected_bands and s.rx_mhz is None and s.tx_mhz is None) == 3
+
+
+def test_tx_only_row_is_protected_at_its_tx_frequency(by_row):
+    bands = by_row[363].protected_bands
+    assert [b.side for b in bands] == ["tx"]
+    assert bands[0].low_mhz < 107.5 < bands[0].high_mhz
+
+
+def test_equal_rx_and_tx_are_one_band():
+    bands = station(tx_mhz=2240.0).protected_bands
+    assert [(b.side, b.low_mhz, b.high_mhz) for b in bands] == [("both", 2237.5, 2242.5)]
+
+
+def test_different_rx_and_tx_are_two_labelled_bands():
+    bands = station(tx_mhz=2300.0).protected_bands
+    assert [(b.side, b.low_mhz, b.high_mhz) for b in bands] == [("rx", 2237.5, 2242.5), ("tx", 2297.5, 2302.5)]
+
+
 def test_mvv_gain_is_discarded(stations):
     mvv = [s for s in stations if s.licence_class == "MVV"]
     assert len(mvv) == 63 and flagged(stations, st.MVV_GAIN) == mvv
@@ -143,10 +166,10 @@ def test_changed_layout_is_refused(tmp_path):
 # The rule
 
 
-def station(row=100, rx=2240.0, bw=5.0, cls="FX", number=None, **kw):
+def station(row=100, rx=2240.0, bw=5.0, cls="FX", number=None, tx_mhz=None, **kw):
     return Station(
         row=row, station_no=number or row * 10, licence_class=cls, lon_deg=25.0, lat_deg=62.0, ground_height_m=None,
-        mast_height_m=None, ant_height_agl_m=None, ant_height_asl_m=None, ant_gain_db=None, tx_mhz=None, rx_mhz=rx,
+        mast_height_m=None, ant_height_agl_m=None, ant_height_asl_m=None, ant_gain_db=None, tx_mhz=tx_mhz, rx_mhz=rx,
         channel_bw_mhz=bw, transmission_bw_mhz=bw, transmission_class=None, radiation_direction_deg=None,
         polarisation=None, power=None, power_unit=None, power_itu=None, line_loss_db=None, directivity=None, **kw,
     )
@@ -172,7 +195,7 @@ def test_downlink_on_a_receive_band_uses_the_details_contract():
     assert details["source"] == {"domain": "space", "notice_ids": ["1"]}
     assert details["assumptions"] and not {"value_db", "limit_db", "margin_db"} & set(details)
     assert details["bands"] == [
-        {"low_mhz": 2237.5, "high_mhz": 2242.5, "classes": {"FX": 1}, "station_ids": ["1000@R100"], "group_ids": [1]}
+        {"low_mhz": 2237.5, "high_mhz": 2242.5, "classes": {"FX": 1}, "station_ids": ["1000@R100"], "sides": {"rx": 1}, "group_ids": [1]}
     ]
 
 
@@ -226,11 +249,44 @@ def test_invisible_notice_in_a_family_does_not_contribute():
     assert hits[0].details["station_ids"] == ["1000@R100"]
 
 
-def test_station_without_rx_is_skipped_and_the_count_is_stated():
-    no_rx = station(row=101, rx=None, quality_flags=(st.NO_RX,))
-    hits = run([station(), no_rx], notice=[notice(1)], geo=gso(1), freq=[freq(1, 2230, 2250)])
+def test_station_with_no_frequency_is_skipped_and_the_count_is_stated():
+    neither = station(row=101, rx=None, quality_flags=(st.NO_RX, st.NO_TX))
+    hits = run([station(), neither], notice=[notice(1)], geo=gso(1), freq=[freq(1, 2230, 2250)])
     assert hits[0].details["station_ids"] == ["1000@R100"]
-    assert hits[0].details["assumptions"][0].startswith("1 of 2 stations have no RX frequency")
+    assert hits[0].details["assumptions"][0].startswith("1 of 2 stations have no usable RX or TX frequency")
+
+
+def test_rx_match_is_labelled_rx():
+    hits = run([station(tx_mhz=2300.0)], notice=[notice(1)], geo=gso(1), freq=[freq(1, 2230, 2250)])
+    assert hits[0].details["matched_on"] == {"rx": ["1000@R100"]}
+    assert "TX side only" not in hits[0].title
+
+
+def test_tx_match_is_found_and_labelled_when_rx_does_not_overlap():
+    hits = run([station(tx_mhz=2300.0)], notice=[notice(1)], geo=gso(1), freq=[freq(1, 2290, 2310)])
+    assert hits[0].details["matched_on"] == {"tx": ["1000@R100"]}
+    assert hits[0].title.endswith("; TX side only")
+    assert hits[0].details["bands"][0]["sides"] == {"tx": 1}
+
+
+def test_tx_only_row_produces_a_case():
+    tx_only = station(rx=None, tx_mhz=2300.0, quality_flags=(st.NO_RX,))
+    hits = run([tx_only], notice=[notice(1)], geo=gso(1), freq=[freq(1, 2290, 2310)])
+    assert hits[0].details["matched_on"] == {"tx": ["1000@R100"]}
+
+
+def test_equal_rx_and_tx_match_once_as_both():
+    hits = run([station(tx_mhz=2240.0)], notice=[notice(1)], geo=gso(1), freq=[freq(1, 2230, 2250)])
+    assert hits[0].details["matched_on"] == {"both": ["1000@R100"]}
+    assert hits[0].details["bands"][0]["sides"] == {"both": 1}
+
+
+def test_station_matching_on_both_sides_counts_once():
+    hits = run([station(tx_mhz=2300.0)], notice=[notice(1)], geo=gso(1), freq=[freq(1, 2230, 2310)])
+    details = hits[0].details
+    assert details["station_ids"] == ["1000@R100"] and details["classes"] == {"FX": 1}
+    assert details["matched_on"] == {"rx": ["1000@R100"], "tx": ["1000@R100"]}
+    assert "1 protected station(s)" in hits[0].title and [b["sides"] for b in details["bands"]] == [{"rx": 1}, {"tx": 1}]
 
 
 def test_bandwidth_quality_flags_reach_the_case():
@@ -241,9 +297,9 @@ def test_bandwidth_quality_flags_reach_the_case():
 
 def test_rule_is_enabled_and_records_the_real_dataset():
     rule = next(r for r in space_rules(get_settings()) if r.id == "station-rx-overlap")
-    assert rule.total == 873 and len(rule.protected) == 812
+    assert rule.total == 873 and len(rule.protected) == 870
     hits = list(rule.run(SpaceIssue(FakeReader(notice=[notice(1)], geo=gso(1), freq=[freq(1, 2219, 2246)]))))
-    assert hits[0].details["assumptions"][0].startswith("61 of 873 stations")
+    assert hits[0].details["assumptions"][0].startswith("3 of 873 stations")
     assert hits[0].details["station_dataset"]["file"] == st.STATIONS_PATH.name
     assert len(hits[0].details["station_dataset"]["sha256"]) == 64
     assert hits[0].details["classes"]["FX"] > 100
