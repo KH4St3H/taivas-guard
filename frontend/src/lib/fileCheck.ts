@@ -11,7 +11,7 @@ export interface FileCheck {
   contains: string[];
 }
 
-export const MAX_BYTES = 1024 * 1024 * 1024; // 1 GiB; the largest IFIC we've seen unzips to 287 MB
+export const MAX_BYTES = 4 * 1024 * 1024 * 1024; // 4 GiB; the largest IFIC we've seen unzips to 287 MB
 
 const JET = 'Standard Jet DB';
 const ACE = 'Standard ACE DB';
@@ -61,7 +61,7 @@ export function zipEntries(tail: Uint8Array): string[] {
 export function evaluate(name: string, size: number, head: Uint8Array, tail: Uint8Array): FileCheck {
   const base = { type: null, domain: null, issue: null, contains: [] as string[] };
   if (size === 0) return { ...base, ok: false, message: 'This file is empty.' };
-  if (size > MAX_BYTES) return { ...base, ok: false, message: 'This file is larger than the 1 GB limit.' };
+  if (size > MAX_BYTES) return { ...base, ok: false, message: 'This file is larger than the 4 GB limit.' };
   const type = sniffType(head);
   if (!type) {
     return { ...base, ok: false, message: 'This isn’t a ZIP or Access database. Choose an IFIC .zip or .mdb file, even if the extension looks right.' };
