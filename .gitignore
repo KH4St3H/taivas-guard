@@ -9,3 +9,8 @@ files/
 __pycache__/
 .pytest_cache/
 *.egg-info/
+
+node_modules/
+dist/
+# data/ above is for runtime data; this is checked-in sample data the frontend imports.
+!frontend/src/data/
