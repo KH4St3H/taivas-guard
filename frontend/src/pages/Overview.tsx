@@ -197,7 +197,7 @@ function IssueResults({ issue, tick }: { issue: IssueSummary; tick: number }) {
               <h2>Top cases</h2>
               <Link to={`/findings?issue=${issue.id}`}>All findings</Link>
             </div>
-            {!findings ? <Loading error={error} /> : findings.length ? <TopFindings rows={findings.slice(0, 6)} /> : <p className="muted">No cases in this issue.</p>}
+            {!findings ? <Loading error={error} /> : findings.length ? <TopFindings rows={findings} /> : <p className="muted">No cases in this issue.</p>}
           </section>
         </div>
       )}
@@ -226,13 +226,22 @@ function Stat({ value, label, to, tone }: { value: number | string; label: strin
   );
 }
 
+const TOP_NETWORKS = 6;
+
+/** The worst networks, each once: a network raised by several rules is one line with its reasons. Rows arrive ranked. */
 function TopFindings({ rows }: { rows: Finding[] }) {
+  const groups = new Map<string, Finding[]>();
+  for (const f of rows) {
+    const key = `${f.title}|${f.adm}`;
+    if (!groups.has(key) && groups.size >= TOP_NETWORKS) continue;
+    groups.set(key, [...(groups.get(key) ?? []), f]);
+  }
   return (
     <ul className="top-list">
-      {rows.map((f) => (
+      {[...groups.values()].map(([f, ...more]) => (
         <li key={f.id}>
-          <Link to={`/findings/${f.id}`}>
-            <span className="top-main"><strong>{f.title}</strong> <span className="muted">{f.adm}{f.band ? ` · ${f.band}` : ` · ${f.kindLabel}`}</span></span>
+          <Link to={more.length ? `/findings?issue=${f.issueId}&q=${encodeURIComponent(f.title)}` : `/findings/${f.id}`}>
+            <span className="top-main"><strong>{f.title}</strong> <span className="muted">{f.adm} · {more.length ? `${f.kindLabel} and ${more.length} more` : f.band ?? f.kindLabel}</span></span>
             <span className="top-meta">
               {f.marginDb !== null && <span className="tnum">{db(f.marginDb)} dB</span>}
               {f.terrestrial && <span className="tnum">{f.terrestrial.borderKm} km</span>}
