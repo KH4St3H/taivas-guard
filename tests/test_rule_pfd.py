@@ -414,9 +414,9 @@ def test_real_3074_row_matches_hand_pfd_calculation(real_3074):
 def test_real_3074_counts_that_must_not_drift(real_3074):
     _, hits = real_3074
     summary = pfd_summary(hits)
-    assert summary["results"][("gso", "art21", "exceeds")] == 613
-    assert summary["results"][("gso", "art21", "within_3db")] == 107
-    assert summary["results"][("gso", "art21", "below")] == 672
+    assert summary["results"][("gso", "art21", "exceeds")] == 605
+    assert summary["results"][("gso", "art21", "within_3db")] == 162
+    assert summary["results"][("gso", "art21", "below")] == 684
     assert summary["unevaluated"][("ngso", "art21", "mask_parameter_not_evaluated", "X")] == 5398
     assert summary["unevaluated"][("ngso", "art21", "mask_parameter_not_evaluated", "Y")] == 31
     assert summary["not_visible"][("gso", "art21", "gso_below_horizon_from_every_finnish_point")] == 1622
@@ -449,3 +449,35 @@ def test_real_3074_eccentric_filing_matches_hand_envelope(real_3074):
     assert needed > 200  # it can't see Finland from perigee
     assert calc["envelope"]["central_angle_min_deg"] == pytest.approx(psi)
     assert calc["envelope"]["altitude_km"] >= needed - 1e-6
+
+
+def test_pep_max_caps_power_in_the_reference_bandwidth():
+    uncapped = only_calc(run(gso_reader(power=-60.0, pep=20.0)))
+    capped = only_calc(run(gso_reader(power=-60.0, pep=-40.0)))
+    ref = 10 * math.log10(capped["calc_inputs"]["ref_bw_hz"])
+    assert uncapped["calc_inputs"]["power_in_ref_bw_dbw"] == pytest.approx(-60.0 + ref)
+    assert capped["calc_inputs"]["power_in_ref_bw_dbw"] == -40.0
+    assert capped["value_db"] == pytest.approx(uncapped["value_db"] - (-60.0 + ref + 40.0))
+
+
+def test_pep_max_caps_non_gso_power_too():
+    orbit = {"perig_km": 600.0, "apog_km": 600.0, "inclin_ang": 97.0}
+    uncapped = only_calc(run(ngso_reader([orbit])))
+    reader = ngso_reader([orbit])
+    reader.tables["emiss"][0]["pep_max"] = -40.0
+    capped = only_calc(run(reader))
+    drop = uncapped["calc_inputs"]["power_in_ref_bw_dbw"] + 40.0
+    assert capped["calc_inputs"]["peak_power_dbw"] == -40.0
+    assert capped["envelope"]["margin_db"] == pytest.approx(uncapped["envelope"]["margin_db"] - drop)
+
+
+def test_worst_row_is_chosen_after_the_cap_not_by_density():
+    reader = gso_reader()
+    reader.tables["emiss"] = [
+        {"grp_id": 1, "seq_no": 1, "pwr_ds_max": -60.0, "pep_max": -40.0},  # densest, but capped hard
+        {"grp_id": 1, "seq_no": 2, "pwr_ds_max": -65.0, "pep_max": 20.0},
+    ]
+    calc = only_calc(run(reader))
+    ref = 10 * math.log10(calc["calc_inputs"]["ref_bw_hz"])
+    assert calc["calc_inputs"]["emission_seq_no"] == 2
+    assert calc["calc_inputs"]["power_in_ref_bw_dbw"] == pytest.approx(-65.0 + ref)

@@ -42,7 +42,10 @@ POWER_DENSITY_CITATION = {
 }
 UNIT_ASSUMPTION = "pwr_ds_max is treated as dBW/Hz per a secondary schema note; primary Space Preface confirmation is unavailable."
 OPEN_ITEMS = ["needs-info: the pwr_ds_max unit rests on a secondary note; the primary ITU Space Preface could not be retrieved."]
-NO_CAP_ASSUMPTION = "pep_max does not cap power in the reference bandwidth, so an emission narrower than it is over-estimated."
+PEAK_CAP_ASSUMPTION = (
+    "Power in the reference bandwidth is pwr_ds_max plus 10 log10(reference bandwidth), capped by the row's pep_max, treated as dBW; "
+    "the emission row used is the one with the most power after that cap. A row without pep_max is not capped."
+)
 ENVELOPE_ASSUMPTIONS = [
     "The envelope pairs each arrival angle with the shortest distance the orbit can have at that angle, for any node, phase, epoch or argument of perigee, at altitudes from notified perigee to apogee.",
     "Latitude reach comes from inclination and the southernmost Finnish point; relative longitude is unconstrained.",
@@ -146,6 +149,32 @@ def _best_join(issue: SpaceIssue, assignment: dict[str, Any]) -> tuple[float | N
     )
 
 
+def _power_in_ref_bw(power: float, peak: float | None, ref_bw_hz: float) -> float:
+    """The same cap `engines.pfd.pfd_db` applies: an emission can't put more than its total power in the bandwidth."""
+    in_ref = power + 10 * math.log10(ref_bw_hz)
+    return in_ref if peak is None else min(in_ref, peak)
+
+
+def _dedupe_power(power: float | None, peak: float | None, mask: LimitMask) -> float | None:
+    """Records with the same power in the reference bandwidth give the same result, so they count once."""
+    return None if power is None else _power_in_ref_bw(power, peak, mask.ref_bw_hz)
+
+
+def _emission_for_mask(
+    issue: SpaceIssue, join: dict[str, Any], mask: LimitMask
+) -> tuple[float | None, float | None, dict[str, Any]]:
+    """The usable row with the most power in this mask's bandwidth. Capping can make it differ from the densest row."""
+    rows = [
+        row for row in issue.emissions.get(join["group_id"], [])
+        if _number(row, "pwr_ds_max") is not None and not PowerScreen.inconsistent(row)
+    ]
+    if not rows:
+        return None, None, join
+    chosen = max(rows, key=lambda row: _power_in_ref_bw(_number(row, "pwr_ds_max"), _number(row, "pep_max"), mask.ref_bw_hz))
+    peak = _number(chosen, "pep_max")
+    return _number(chosen, "pwr_ds_max"), peak, {**join, "emission_seq_no": chosen.get("seq_no"), "pep_max_dbw": peak}
+
+
 def _flags(power: float, screen: PowerScreen, join: dict[str, Any], ntc_id: int) -> list[dict[str, Any]]:
     if screen.fence is None or power <= screen.fence:
         return []
@@ -162,10 +191,10 @@ def _flags(power: float, screen: PowerScreen, join: dict[str, Any], ntc_id: int)
 
 
 def _gso_calculation(
-    notice: SpaceNotice, power: float, gain: float, join: dict[str, Any], assignment: dict[str, Any], mask: LimitMask,
-    points: tuple[GroundPoint, ...],
+    notice: SpaceNotice, power: float, peak: float | None, gain: float, join: dict[str, Any], assignment: dict[str, Any],
+    mask: LimitMask, points: tuple[GroundPoint, ...],
 ) -> dict[str, Any] | None:
-    result = evaluate_gso(notice.gso_lon_deg, power, gain, mask, points)
+    result = evaluate_gso(notice.gso_lon_deg, power, gain, mask, points, peak_power_dbw=peak)
     if result.worst is None:
         return None
     return {
@@ -179,13 +208,14 @@ def _gso_calculation(
             "f_high_mhz": float(assignment["freq_max"]),
             "bandwidth_hz": _number(assignment, "bdwdth"),
             "ref_bw_hz": mask.ref_bw_hz,
+            "power_in_ref_bw_dbw": _power_in_ref_bw(power, peak, mask.ref_bw_hz),
             "points_evaluated": result.points_evaluated,
             **join,
         },
         "assumptions": [
             *result.assumptions,
             UNIT_ASSUMPTION,
-            NO_CAP_ASSUMPTION,
+            PEAK_CAP_ASSUMPTION,
             "Maximum gain and power density are used for the whole assignment.",
         ],
         "worst_point": {
@@ -259,6 +289,7 @@ def _ngso_calculation(
     notice: SpaceNotice,
     shapes: list[OrbitShape],
     power: float,
+    peak: float | None,
     gain: float,
     join: dict[str, Any],
     assignment: dict[str, Any],
@@ -267,7 +298,7 @@ def _ngso_calculation(
     south_lat_deg: float,
 ) -> dict[str, Any] | None:
     """Returns None when no shape can see Finland: the caller records that as a computed result."""
-    offset = power + 10 * math.log10(mask.ref_bw_hz) + gain
+    offset = _power_in_ref_bw(power, peak, mask.ref_bw_hz) + gain
     bound: tuple[float, OrbitShape, Any] | None = None
     reachable: list[OrbitShape] = []
     for shape in shapes:
@@ -364,6 +395,8 @@ def _ngso_calculation(
             "p_density_dbw_hz": power,
             "gain_dbi": gain,
             "ref_bw_hz": mask.ref_bw_hz,
+            "peak_power_dbw": peak,
+            "power_in_ref_bw_dbw": _power_in_ref_bw(power, peak, mask.ref_bw_hz),
             "orbit_shapes": [_shape_dict(s) for s in shapes],
             "orbit_shapes_never_seeing_finland": len(shapes) - len(reachable),
             "orbit_rows_considered": sum(s.orbit_rows for s in shapes),
@@ -380,7 +413,7 @@ def _ngso_calculation(
             "Angle of arrival is geometric elevation on a spherical Earth, with no refraction.",
             "Maximum notified gain applies towards every point at every moment. With boresight gain this over-estimates pfd off-axis.",
             UNIT_ASSUMPTION,
-            NO_CAP_ASSUMPTION,
+            PEAK_CAP_ASSUMPTION,
         ],
         "worst_point": worst_point,
         "value_db": value,
@@ -551,7 +584,8 @@ class PfdRule:
                         "missing": ["gso_longitude"], "reason": "gso_longitude_missing",
                     })
                     continue
-                key = (notice.ntc_id, low, high, power, gain, mask.mask_id)
+                power, peak, mask_join = _emission_for_mask(issue, join, mask)
+                key = (notice.ntc_id, low, high, _dedupe_power(power, peak, mask), gain, mask.mask_id)
                 if key in seen:
                     continue
                 seen.add(key)
@@ -562,10 +596,10 @@ class PfdRule:
                         "reason": "gso_below_horizon_from_every_finnish_point", "gso_lon_deg": notice.gso_lon_deg,
                     })
                     continue
-                if not _have_inputs(power, gain, join, notice, low, high, mask, missing):
+                if not _have_inputs(power, gain, mask_join, notice, low, high, mask, missing):
                     continue
-                calculation = _gso_calculation(notice, power, gain, join, assignment, mask, self._points())
-                _add(calculation, power, screen, join, notice, calculations, quality)
+                calculation = _gso_calculation(notice, power, peak, gain, mask_join, assignment, mask, self._points())
+                _add(calculation, power, screen, mask_join, notice, calculations, quality)
 
     def _ngso_notice(self, issue, notice, kind, screen, calculations, missing, not_visible, quality, seen, shapes_by_key) -> None:
         rows = issue.orbits.get(notice.ntc_id, [])
@@ -620,7 +654,8 @@ class PfdRule:
                         "frequency_screen_only": True,
                     })
                     continue
-                key = (notice.ntc_id, low, high, power, gain, mask.mask_id)
+                power, peak, mask_join = _emission_for_mask(issue, join, mask)
+                key = (notice.ntc_id, low, high, _dedupe_power(power, peak, mask), gain, mask.mask_id)
                 if key in seen:
                     continue
                 seen.add(key)
@@ -633,13 +668,13 @@ class PfdRule:
                         "finland_south_lat_deg": south,
                     })
                     continue
-                if not _have_inputs(power, gain, join, notice, low, high, mask, missing):
+                if not _have_inputs(power, gain, mask_join, notice, low, high, mask, missing):
                     continue
                 calculation = _ngso_calculation(
-                    notice, mask_shapes, power, gain, join, assignment, mask, self._ngso_points(), south
+                    notice, mask_shapes, power, peak, gain, mask_join, assignment, mask, self._ngso_points(), south
                 )
                 calculation["calc_inputs"]["orbit_rows_incomplete"] = incomplete
-                _add(calculation, power, screen, join, notice, calculations, quality)
+                _add(calculation, power, screen, mask_join, notice, calculations, quality)
 
     def _gso_visible(self, lon: float, mask: LimitMask) -> bool:
         # Visibility depends on neither power nor the mask, so one answer per longitude will do.

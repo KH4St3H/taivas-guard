@@ -3,8 +3,11 @@ import zipfile
 
 import pytest
 
-from ific_guard.config import get_settings
+from ific_guard.config import Settings, get_settings
 from ific_guard.db import init_db, reset_caches
+
+# A developer's .env must not change what the tests see, such as a real API key.
+Settings.model_config["env_file"] = None
 
 
 @pytest.fixture(autouse=True)
