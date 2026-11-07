@@ -2,7 +2,7 @@
 
 ## Current evaluation
 
-29 possible concerns for expert review. Generated from clean Git commit `941282f644cf7f771c5e9a79d284990953f35f8c` with `dirty: false`, using a newly created SQLite database and isolated data directory. The manifests were generated in an ignored staging directory before replacing tracked outputs. Both commits are retained in the submitted history; the later artifact commit contains these files.
+29 possible concerns for expert review. Generated from clean Git commit `941282f644cf7f771c5e9a79d284990953f35f8c` with `dirty: false`, using a newly created SQLite database and isolated data directory. The manifests were generated in an ignored staging directory before replacing tracked outputs. The source commit is retained in the submitted history; the later artifact commit contains these files.
 
 The Docker daemon was unavailable on this Windows machine. This refresh uses the application's importer, deterministic exporter and screening handlers directly, not a repeated Compose/cron rehearsal. Earlier Docker verification is preserved below as historical evidence. No real email is sent; the notifier uses the file backend. Custom-rule storage starts empty, so these evaluations contain built-in rules only.
 
@@ -24,6 +24,8 @@ The newly downloaded Terrestrial 3075 archive has SHA-256 `6f63a3dee548422cc722f
 ## Verification
 
 The full backend suite with `IFIC_SHARED_DATA` pointing at the three real fixtures passed: **626 passed, zero skipped**. The frontend suite passed **40 tests**, and TypeScript checking plus the production build passed. A single upstream deprecation warning remains. The earlier Octave and independent hand checks below were not rerun during this refresh.
+
+An additional isolated service check confirmed all three imported artifacts screen to `done`, both requested issues have stored occurrence counts and rule/severity identities matching their exports, and three digest files are produced. Case detail and guarded draft requests returned 200 for every represented rule family, including notification-stage and terrestrial missing-input cases; review acceptance returned 200. This exposed and fixed a terrestrial station-draft formatting bug, covered by a new regression. The fix affects correspondence, not the evaluation calculations recorded at the source commit. Later develop integration adds map/trend/storage features; final integrated test totals are recorded in README and the submission PR.
 
 All output hashes were recomputed and verified:
 

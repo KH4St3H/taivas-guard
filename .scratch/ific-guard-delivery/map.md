@@ -47,7 +47,7 @@ Status values come from `docs/agents/triage-labels.md`. Size is a rough relative
 | 33 | Cross-check pfd with ITU's software | Open, `ready-for-human` | M | none | Credibility (06 A) |
 | 34 | Decide on Regulation M15 | Done, 2026-11-07; see ticket evidence | S | none | Brief 02 names it |
 | 35 | Questions for Traficom before submission | Open, `ready-for-human` | S | none | Accuracy reference, terrestrial framework |
-| 36 | Merge develop to main for submission | Open, `ready-for-human` | S | 28, 29 | Submission (07); needs approval |
+| 36 | Merge develop to main for submission | Delivered by the authorized submission PR; see ticket | S | 28, 29 | Submission (07); needs approval |
 
 Tickets 22-36 come from a requirement-by-requirement check of the brief on 2026-11-07. The larger gaps it found stay where they were already tracked: protecting Finnish satellites and older database versions in ticket 18, AP30 in ticket 17.
 
@@ -159,4 +159,4 @@ Screening rules without a calculation use `method: "screening"` and leave the nu
 - **Whether teammates are already building** the pfd engine, P.1546 or the UI. If so, remove those tickets rather than duplicating.
 - **Whether Octave is acceptable** for P.1546 in the demo environment (ticket 09).
 
-- **Tasks 22, 23, 28, 29 and 34 completed (2026-11-07):** notification-stage FIN cases, non-Earth screening exclusion, clean-commit exports, current docs/Reference page and explicit M15 exclusion. Both evaluations were generated from clean `941282f`: 175 Space cases and 29 Terrestrial. Backend 626 passed with all real-file tests; frontend 40 passed and production build passed. Task 36 remains pending until the approved develop-to-main PR is merged.
+- **Tasks 22, 23, 28, 29 and 34 completed (2026-11-07):** notification-stage FIN cases, non-Earth screening exclusion, clean-commit exports, current docs/Reference page and explicit M15 exclusion. Both evaluations were generated from clean `941282f`: 175 Space cases and 29 Terrestrial. Backend 626 passed with all real-file tests; frontend 40 passed and production build passed. Task 36 is delivered by the authorized develop-to-main submission PR; its merge record confirms completion. Final integrated verification: 637 backend tests passed, zero skipped; frontend 40 passed and production build passed.

@@ -186,7 +186,7 @@ Space rules include RR Article 21, Appendix 5 and CEPT ECC/DEC/(25)02 checks, st
 
 The UI includes the reach map with stations filtered to the satellite frequencies, paged station results, custom rule editing, and descriptive space/terrestrial trends from `/trends`. The `compact-stations` CLI reduces legacy stored lists while preserving review decisions (tickets 24/30/31). `/cases/{id}/coverage` returns approximate reach geometry, `/cases/{id}/stations` recomputes the complete list, and `/rules` manages versioned custom definitions. The UI still drafts locally; the guarded `/cases/{id}/draft` API is separate (ticket 25).
 
-Evaluation exports require a clean Git checkout and record its commit and dirty state. `--allow-dirty` is an explicit exploratory override. Compact JSON retains all calculations and evidence. The current 3074 export has 175 cases (43 high, 94 medium, 38 low); the paired 3076 export and reproduction details are in `outputs/ific_3076/verification.md`. These replace the earlier artifact counts below.
+Evaluation exports require a clean Git checkout and record its commit and dirty state. `--allow-dirty` is an explicit exploratory override. Compact JSON retains all calculations and evidence. The current 3074 export has 175 cases (43 high, 94 medium, 38 low); the paired 3076 export and reproduction details are in `outputs/ific_3076/verification.md`. These replace the earlier artifact counts below. Final integrated checks: 637 backend tests passed with all real-file tests enabled and zero skips; 40 frontend tests and the production build passed.
 
 ### Historical issue support observed on 2026-11-07
 

@@ -143,6 +143,10 @@ The rehearsals found faults that the unit tests had not, all now fixed:
 
 The earlier hand check recomputed 13 pfd results from raw rows with no difference above 0.0001 dB. It recomputed four station margins, two GSO and two non-GSO, from raw rows and the sheet's coordinates, with no difference above 0.000001 dB, and found no station exceedance that the calculation over Finland didn't also show. All 21 P.1546 values match the upstream reference code in Octave to within 0.006 dB. Those sweeps predate the notification-stage and non-Earth-orbit fixes and do not establish current recognition accuracy. See [`outputs/hand-check.md`](outputs/hand-check.md).
 
+The submission refresh imports Space 3074 and Terrestrial 3075/3076 into an isolated empty SQLite database, runs the screening/export pipeline, verifies stored results against the files, exercises case details/drafts and review acceptance, and writes digests with the file backend. Docker was unavailable for this refresh, so the earlier Compose/cron rehearsal was not repeated. See each evaluation folder's verification notes.
+
+Final integrated checks: **637 backend tests passed, zero skipped**, with all real-file tests enabled; **40 frontend tests passed**, and TypeScript checking plus the production build passed.
+
 **Accuracy against expert judgement has not been measured.** No result has been compared with Traficom's own assessment.
 
 ## Known limitations
