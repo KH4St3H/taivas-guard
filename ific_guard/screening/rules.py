@@ -47,6 +47,19 @@ def _families(notices: Iterable[SpaceNotice]) -> dict[int, list[SpaceNotice]]:
     return grouped
 
 
+def visible_from_finland(notice: SpaceNotice, s: Settings) -> tuple[bool, str]:
+    if notice.ntc_type == "G":
+        if notice.gso_lon_deg is None:
+            return True, "GSO longitude missing; kept as a precaution"
+        visible = s.gso_visible_west_deg <= notice.gso_lon_deg <= s.gso_visible_east_deg
+        return visible, f"GSO at {notice.gso_lon_deg} deg, inside the arc visible from Finland"
+    if not notice.inclinations_deg:
+        return True, "Orbit inclination missing; kept as a precaution"
+    # a retrograde orbit reaches the same latitude as its supplement (e.g. 98 deg reaches 82 deg)
+    reach = max(min(i, 180 - i) for i in notice.inclinations_deg)
+    return reach >= s.ngso_min_inclination_deg, f"Non-GSO reaching {reach:g} deg latitude"
+
+
 class FinlandNamedRule:
     """Tier 1 in ARCHITECTURE.md 4.4: the BR itself names Finland in a filing's coordination data."""
 
@@ -92,26 +105,13 @@ class M4NoDownlinkRule:
         self.settings = settings
         self.bands = sorted(bands, key=lambda b: b.low_mhz)
 
-    def _visible(self, notice: SpaceNotice) -> tuple[bool, str]:
-        s = self.settings
-        if notice.ntc_type == "G":
-            if notice.gso_lon_deg is None:
-                return True, "GSO longitude missing; kept as a precaution"
-            visible = s.gso_visible_west_deg <= notice.gso_lon_deg <= s.gso_visible_east_deg
-            return visible, f"GSO at {notice.gso_lon_deg} deg, inside the arc visible from Finland"
-        if not notice.inclinations_deg:
-            return True, "Orbit inclination missing; kept as a precaution"
-        # a retrograde orbit reaches the same latitude as its supplement (e.g. 98 deg reaches 82 deg)
-        reach = max(min(i, 180 - i) for i in notice.inclinations_deg)
-        return reach >= s.ngso_min_inclination_deg, f"Non-GSO reaching {reach:g} deg latitude"
-
     def run(self, issue: SpaceIssue) -> Iterable[Hit]:
         satellites = (n for n in issue.notices.values() if n.ntc_type in SATELLITE_NOTICE_TYPES)
         for family_id, notices in _families(satellites).items():
             matched: dict[M4Band, set[int]] = defaultdict(set)
             reasons = set()
             for notice in notices:
-                visible, why = self._visible(notice)
+                visible, why = visible_from_finland(notice, self.settings)
                 if not visible:
                     continue
                 reasons.add(why)
@@ -172,4 +172,10 @@ class M4NoDownlinkRule:
 
 
 def space_rules(settings: Settings) -> list[Rule]:
-    return [FinlandNamedRule(settings), M4NoDownlinkRule(settings, load_m4_conflict_bands(settings.m4_filter_path))]
+    from .rule_stations import station_overlap_rule  # imported here because rule_stations uses Hit from this module
+
+    return [
+        FinlandNamedRule(settings),
+        M4NoDownlinkRule(settings, load_m4_conflict_bands(settings.m4_filter_path)),
+        station_overlap_rule(settings),
+    ]

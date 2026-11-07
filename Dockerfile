@@ -9,6 +9,7 @@ COPY ific_guard ./ific_guard
 # Not under /app/data: compose mounts a volume there, which would hide the table.
 COPY data/national/m4_bands.csv ./national/m4_bands.csv
 ENV IFIC_M4_FILTER_PATH=/app/national/m4_bands.csv
+COPY docs/challenge/Traficom_SinceAI_Frequencies_of_interest_v05112026.xlsx ./docs/challenge/Traficom_SinceAI_Frequencies_of_interest_v05112026.xlsx
 RUN uv sync --frozen --no-dev
 
 RUN useradd --create-home app && mkdir -p /app/data && chown -R app /app/data

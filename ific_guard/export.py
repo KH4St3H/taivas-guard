@@ -101,7 +101,7 @@ def export_issue(domain: str, issue_no: int, out: Path, *, sha256: str | None = 
             "Possible concerns for expert review, not confirmed interference or regulatory breaches.",
             "AP30/AP30A/AP30B are not screened; current scope is API/A and CR/C.",
             "No beam coverage or power-flux-density calculation.",
-            "Special-interest station overlap is not yet implemented.",
+            "Special-interest station overlap is frequency overlap only; stations with no RX frequency are skipped.",
             "Comment deadlines are estimates requiring expert confirmation.",
         ],
         "generated_at": datetime.now(UTC).isoformat(),
