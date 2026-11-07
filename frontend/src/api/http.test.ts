@@ -73,6 +73,12 @@ describe('summariseIssue', () => {
     expect(s.screenStatus).toBe('no_rules');
     expect(s.limitations.join(' ')).toContain('does not mean there are no concerns');
   });
+
+  it('states the terrestrial limits once terrestrial rules have run', () => {
+    const s = summariseIssue(artifact({ domain: 'terrestrial', screen_status: 'done' }), []);
+    expect(s.limitations.join(' ')).toContain('stop at 470 MHz');
+    expect(s.limitations.join(' ')).not.toContain('no rules');
+  });
 });
 
 describe('rankFindings', () => {
