@@ -40,7 +40,7 @@ def main() -> None:
     elif args.command == "import":
         from .sync.runner import ingest_file
 
-        row, is_new = ingest_file(args.file, args.domain, args.issue, f"file://{args.file.resolve()}")
+        row, is_new = ingest_file(args.file, args.domain, args.issue, f"import:{args.file.name}")
         print(json.dumps({"artifact_id": row.id, "new": is_new, "sha256": row.sha256}))
 
 

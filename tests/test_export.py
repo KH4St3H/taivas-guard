@@ -1,14 +1,18 @@
 import csv
+import hashlib
 import json
+import sys
 from pathlib import Path
 
 import pytest
 from sqlalchemy import select
 
+from ific_guard.cli import main
 from ific_guard.db import session_scope
 from ific_guard.export import export_issue
 from ific_guard.models import Artifact, Case, CaseOccurrence, Event
 from ific_guard.screening.engine import screen_artifact
+from tests.conftest import make_zip
 from tests.test_screening import FakeReader, freq, notice
 
 
@@ -135,3 +139,23 @@ def test_rescreen_replaces_only_its_own_occurrences(tmp_path, fake_reader):
         remaining = list(s.scalars(select(CaseOccurrence)))
         assert len(remaining) == 3
         assert all(row.artifact_id == second for row in remaining)
+
+
+def test_manifest_hashes_verify_and_files_use_fixed_line_endings(tmp_path, fake_reader):
+    source(tmp_path)
+    manifest = export_issue("space", 3074, tmp_path / "out")
+    assert manifest["case_count"] > 0
+    for name, recorded in manifest["output_sha256"].items():
+        content = (tmp_path / "out" / name).read_bytes()
+        assert hashlib.sha256(content).hexdigest() == recorded
+        assert b"\r" not in content  # Windows must not produce files git would rewrite
+    assert b"\r" not in (tmp_path / "out" / "manifest.json").read_bytes()
+
+
+def test_cli_import_does_not_record_a_local_path(tmp_path, monkeypatch):
+    archive = tmp_path / "ific3083.zip"
+    archive.write_bytes(make_zip())
+    monkeypatch.setattr(sys, "argv", ["ific_guard.cli", "import", str(archive)])
+    main()
+    with session_scope() as s:
+        assert s.scalars(select(Artifact)).one().source_url == "import:ific3083.zip"

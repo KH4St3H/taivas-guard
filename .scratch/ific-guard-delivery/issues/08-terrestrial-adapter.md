@@ -50,3 +50,9 @@ Read `ReadMe_3076.pdf` (`.../BRIFIC/ReadMe/ReadMe_3076.pdf`) for structure. Note
 ## Not in scope
 
 Field strength (ticket 09), cases and export (ticket 10), and trends (ticket 11).
+
+## Comments
+
+2026-11-07: `ific_guard/terrestrial/adapter.py` and `diff.py` arrived with PR #1, and now have tests in `tests/test_terrestrial.py`. Both run on real 3075 and 3076. 3076 has 1,858 land-mobile notices, 114 of them from the five neighbours, all Russian: 103 new and 11 modified.
+
+Still to do here: the filter using `settings.neighbour_adms` and distance to the Finnish border, the land/sea path information, reconciling totals against `pub_totals` and the Article 11 index, working out what `fxm_coord` adds for Sweden and Norway, and a hand check of 5 notices.

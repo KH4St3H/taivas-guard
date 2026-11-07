@@ -109,9 +109,10 @@ def export_issue(domain: str, issue_no: int, out: Path, *, sha256: str | None = 
         "run_time_s": round(perf_counter() - started, 6),
     }
     out.mkdir(parents=True, exist_ok=True)
-    (out / "cases.json").write_text(json.dumps(records, indent=2, ensure_ascii=False, sort_keys=True) + "\n", encoding="utf-8")
+    (out / "cases.json").write_text(json.dumps(records, indent=2, ensure_ascii=False, sort_keys=True) + "\n", encoding="utf-8", newline="\n")
     with (out / "cases.csv").open("w", newline="", encoding="utf-8") as stream:
-        writer = csv.DictWriter(stream, fieldnames=FIELDS, extrasaction="ignore")
+        # Fixed line endings: the hashes below must verify on any platform and after a git checkout.
+        writer = csv.DictWriter(stream, fieldnames=FIELDS, extrasaction="ignore", lineterminator="\n")
         writer.writeheader()
         for record in records:
             writer.writerow({**record, "notice_ids": ";".join(record["notice_ids"])})
@@ -119,5 +120,5 @@ def export_issue(domain: str, issue_no: int, out: Path, *, sha256: str | None = 
         name: hashlib.sha256((out / name).read_bytes()).hexdigest()
         for name in ("cases.csv", "cases.json")
     }
-    (out / "manifest.json").write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    (out / "manifest.json").write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8", newline="\n")
     return manifest
