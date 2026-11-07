@@ -47,7 +47,7 @@ Distances and the azimuth were recalculated separately from the coordinates. The
 
 All 21 calculated findings were recalculated at their worst points with the upstream MATLAB code (`eeveetza/p1546` commit 0e42639, `P1546FieldStrMixed`) in GNU Octave 9.2.0, in the `gnuoctave/octave:9.2.0` Docker image under amd64 emulation. Inputs were the frequency, effective height, height above ground, e.r.p. and path segments in `cases.json`, at 10% time with a rural receiver at 10 m. The largest difference was 0.005 dB, which is the rounding of the two-decimal exported values.
 
-This checks the Python port for these inputs only. It does not check the inputs, the land/sea split or the choice of worst point, because they come from this rule. The upstream run is not part of `pytest` and was not committed.
+This checks the Python port for these inputs only. It does not check the inputs, the land/sea split or the choice of worst point, because they come from this rule. The upstream run is not part of `pytest`. Reproduce it with `tools/crosscheck_p1546_octave.py`.
 
 ## Reproducibility
 
@@ -62,6 +62,5 @@ Two runs produced identical files. The manifest differs only in time and duratio
 ## Not verified
 
 - No expert or Traficom result has been compared with these findings.
-- Severity uses a placeholder until ticket 07's `score_finding` is merged.
 - `fxm_coord`, `action`, `target`, `pwr_eiv` and `pwr_xyz` meanings are inferred, because the ITU ReadMe could not be read.
 - T/R 25-08 does not say whether its values apply on the Russian border, and no bilateral agreement was checked.

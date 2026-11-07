@@ -11,7 +11,7 @@ How IFIC Guard runs as FastAPI services: keeping IFIC databases up to date, scre
 | Terrestrial neighbours | Russia, Sweden, Estonia, Norway, Denmark (`RUS`, `S`, `EST`, `NOR`, `DNK`) | Set by the team, and configurable with `IFIC_NEIGHBOUR_ADMS`. Space filings are not limited to these, because a satellite from anywhere can reach Finland |
 | Messaging | Outbox table in the operational database | No broker to run. An event commits together with the change it announces, so neither is lost |
 | Operational data | Postgres (SQLite for local development) | Several processes must write at once |
-| Analytical data | DuckDB as in `schema.sql`, written only by `screening` | DuckDB allows one writing process, so it cannot be the shared store |
+| Analytical data | **Deferred.** Designed as DuckDB as in `schema.sql`, written only by `screening`; rules read the `.mdb` directly for now | DuckDB allows one writing process, so it cannot be the shared store |
 | What triggers email | Deterministic rules only | Principle 1 in ARCHITECTURE.md: the LLM never decides relevance |
 | Email unit | One digest per issue, not one mail per case | IFIC 3083 alone produces 39 cases |
 | Wording | "Possible concern", never "violation" | Screening flags cases. Whether a filing breaks a limit takes the pfd engine and an expert |
@@ -39,7 +39,7 @@ flowchart LR
 
     SYNC --> FILES[/IFIC files<br/>immutable, by SHA-256/]
     FILES --> SCREEN
-    SCREEN --> DUCK[(DuckDB<br/>normalised store)]
+    SCREEN -.deferred.-> DUCK[(DuckDB<br/>normalised store)]
     NATIONAL[M4, special-interest<br/>stations] --> SCREEN
 
     NOTIFY -->|SMTP| MAIL[Experts and operators]
@@ -183,7 +183,7 @@ With the default `IFIC_MIN_ISSUE=3074`, the first sync downloads about 20 zips. 
 
 | Sample / range | How obtained | Observed format/version | Screens? |
 |---|---|---|---|
-| 3074, 3083 (2026) | `sns/wic/demowic26.html` → `sns/ific10/ific{N}.zip` | Space SNS, version 10 | Yes; 3074 real export produced 106 findings on this branch |
+| 3074-3083 (2026) | `sns/wic/demowic26.html` → `sns/ific10/ific{N}.zip` | Space SNS, version 10 | Yes; all ten screened in the clean run of 2026-11-07 (3074: 182 cases) |
 | 2925 (2020) | `sns/wic/demowic20.html` → `sns/ific8/ific2925.zip` | Space SNS, version 8 | No; clearly rejected as unsupported |
 | 2809 (2015) | `sns/wic/demowic15.html` → `sns/ific61/ific2809.zip` | Space SNS, version 7 | No; clearly rejected as unsupported |
 | 2559 (2005) | `sns/wic/demowic05.html` → `sns/ific5/ific2559.zip` | Space SNS, version 5 | No; clearly rejected as unsupported |
@@ -205,7 +205,7 @@ only that artifact's occurrences, atomically with case updates. Run
 then re-screen imported artifacts to backfill it. Exports continue evaluating
 the selected source directly without changing review state or notifications.
 Processing-order tests cover 3074 alone, before 3083 and after 3083; the 3074
-CSV/JSON stays identical. The suite now passes 68 tests.
+CSV/JSON stays identical.
 
 **Verified**
 
@@ -216,7 +216,11 @@ CSV/JSON stays identical. The suite now passes 68 tests.
 - Cron, on SQLite with an every-minute schedule: runs started on the minute with no errors.
 - Discovery finds Space and Terrestrial 3074-3083 with `IFIC_MIN_ISSUE=3074`, and downloading Space 3074 and Terrestrial 3076 directly gave the same hashes as the shared copies.
 
-- Merged code at `integration/wave-2`, with the export, M4 table, station rule, pfd engine, P.1546 engine, draft letters and frontend: 446 Python and 31 frontend tests pass, and the Docker image builds with all rules, services and data files. Real services took Space 3074 and Terrestrial 3076 by upload through to a digest with no errors. Space 3074 gives 106 cases. The full Compose stack has not been run on it, and the pfd and P.1546 engines are not yet connected to any rule.
+- **Clean Compose run on Postgres, 2026-11-07, at the commit named in `outputs/ific_3074/verification.md`:** from empty volumes, the first scheduled sync finished `ok` with 20 of 20 issues (Space and Terrestrial 3074-3083) fetched in about 3 minutes, all 20 reached `done` in about 8 minutes, and 20 digests were written to files. No real mail was sent.
+- **Upload on Postgres:** a second empty database given `ific3074.zip`, `brific3075.mdb` and `brific3076.mdb` produced the same cases. The only differences were the source URL and the hash and size of the uploaded file. A request with no key got 401, and repeat uploads were recognised.
+- **Demo rehearsal from a clean start:** see `docs/demo.md`. Drafts returned 200 for all 224 cases in 3083, and screening the issue again added no cases or notifications.
+- **Hand check:** see `outputs/hand-check.md`. All 21 P.1546 values match upstream code in Octave to within 0.006 dB (`tools/crosscheck_p1546_octave.py`).
+- The Python suite passes, with 544 tests including those reading real issues, and the frontend's 32 tests pass.
 
 **Open or not yet verified**
 
@@ -224,9 +228,9 @@ CSV/JSON stays identical. The suite now passes 68 tests.
 |---|---|
 | **One unexplained download failure under Compose** | One of two runs ended `partial` with `could not fetch space issue 3083`; the error text was lost, and the next run was clean. It may have been a network problem, but that is unconfirmed. The failure alert fired and the other domain still synced. If it recurs, read `errors` from `GET localhost:8001/runs` |
 | Real SMTP | Tested with a mocked client only |
-| A full first sync | With `IFIC_MIN_ISSUE=3074` this fetches about 20 zips. Each path was tested, but not that whole run |
-| Cron and upload on Postgres | Tested on SQLite only so far |
-| Case accuracy | The 39 cases have not been checked by an expert or compared with Traficom's results |
+| Clean-run faults, now fixed | The first full run found every terrestrial issue failing in the container (mask path) and Space 3077 lost to invalid date cells. The rehearsal found drafts crashing on pfd cases, and calling upper bounds exceedances. Each has a test |
+| Case rechecks | `outputs/hand-check.md` samples each rule from raw rows |
+| Case accuracy | No case has been checked by an expert or compared with Traficom's results |
 
 **Known gaps**
 
@@ -234,11 +238,12 @@ CSV/JSON stays identical. The suite now passes 68 tests.
 |---|---|---|
 | Terrestrial criteria are partial | Land-mobile notices get a P.1546 field strength. T/R 25-08 Annex 1 thresholds apply only up to 470 MHz and are unconfirmed on the Russian border; above that the value has no comparison | Traficom's answer on the criteria (ticket 02) |
 | Cases span issues | A case seen in two issues counts once, so a digest or count for one issue can omit it. **Export per issue, not from "new" cases** | Ticket 03 |
-| Older issues untested | The brief says all existing issues must be evaluable. Space discovery looks back 3 years, and older databases may differ | Ticket 15. Upload works as a way in meanwhile |
-| No beam coverage or pfd check | `m4-no-space-to-earth` over-flags and cannot confirm an exceedance | pfd engine, then GIMS contours |
+| Older issues reject | Only Space database version 10 screens. Versions 8, 7 and 5 are rejected with a clear error, not read | The brief asks for all existing issues | Add readers for each version |
+| No beam coverage | pfd results apply maximum notified gain towards Finland, and frequency rules over-flag. `s_beam` has no boresight in 3074 | GIMS contours |
 | AP30, AP30A, AP30B not screened | The brief puts them in scope; issue 3083's plan tables are empty, so this is untested | Add notice handling using an issue that contains them |
-| DuckDB store not connected | Rules read the `.mdb` directly | Load `schema.sql` tables inside `screening` |
+| DuckDB store deferred | Rules read the `.mdb` directly, which has been fast enough one issue at a time | Load `schema.sql` tables inside `screening` when cross-issue analysis needs it |
 | Tables made with `create_all` | Schema changes need manual work | Alembic |
+| Filings around the Moon | Six networks in 3074 get M4 and station cases as if they were Earth satellites; pfd sets them aside | Apply `ref_body` in the visibility screen |
 | `access-parser` is a young library | Parsing errors could go unnoticed | Compare row counts against `mdbtools` on 3074 and 3076 |
 
 ## 10. Next steps, in order

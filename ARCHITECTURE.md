@@ -39,7 +39,7 @@ flowchart TD
 
     S --> SA[Space adapter]
     T --> TA[Terrestrial adapter]
-    SA --> DB[(Normalised store<br/>DuckDB)]
+    SA --> DB[(Parsed IFIC tables<br/>read from the .mdb)]
     TA --> DB
     N --> DB
 
@@ -88,7 +88,7 @@ class DomainAdapter:
 
 ### 4.2 Normalised store
 
-DuckDB, single file shipped with the repo. Full DDL in `schema.sql`.
+**Deferred.** The design was a DuckDB file with the DDL in `schema.sql`. It isn't connected: the adapters read the `.mdb` directly for each screening run, and operational data (issues, cases, events, notifications) lives in Postgres, or SQLite for local work. Reading the source each time was fast enough for one issue at a time (about 45 seconds for Space 3074 with the pfd rule) and needs no second copy of the data. Cross-issue analysis, such as trends over many issues, would be the reason to revisit this. `schema.sql` stays as the design for it.
 
 | Group | Tables |
 |---|---|
@@ -147,9 +147,16 @@ margin = pfd − limit(δ)                        positive = exceeds
 - Evaluated on a ~0.5° grid over Finland plus the special-interest stations; the worst point is reported.
 - Northern Finland sees GSO satellites at low elevation and therefore the strictest part of the mask; the grid captures this.
 
-**NGSO:** propagate orbits in one-minute steps over a day, take the maximum pfd per point. If time is short, screen on frequency and inclination and flag for expert review. Article 22 epfd is out of scope.
+**NGSO**, implemented in `engines/pfd_ngso.py`. Each calculation gives two results of different kinds, kept apart in the output:
 
-**Validation:** hand-calculated unit tests, mask-edge tests at 5° and 25°, and a cross-check of a few IFIC 3074 networks against ITU's PFD GSO software.
+- **Upper-bound envelope.** For each arrival angle, it takes the shortest distance the notified perigee, apogee and inclination allow, for any node, phase, epoch or argument of perigee, and keeps the largest margin against the mask. It may describe a state the satellite never occupies, so a bound above the limit is `envelope_exceeds`, and is never reported as exceeding.
+- **One-day flight.** Two-body propagation with no J2, in one-minute steps over 24 hours, from the notified elements of one satellite per distinct orbit shape, tested at 90 Finnish points. It can miss the worst case. A positive margin here is the only non-GSO result reported as `exceeds`.
+
+For a notified orbit, the true worst margin lies between the two. Masks that need parameters X or Y, and orbits not referred to the Earth, are counted as not evaluated and sent for expert review.
+
+**Power.** Power in the reference bandwidth is `P_density + 10·log10(B_ref)`, capped at the row's `pep_max` because an emission can't put more than its total power there. The emission row used is the one with the most power after the cap, chosen separately for each mask's bandwidth.
+
+**Validation:** hand-calculated unit tests, mask-edge tests, real filings rechecked from raw rows (`tools/hand_check.py`, `outputs/hand-check.md`). The planned cross-check against ITU's PFD GSO software hasn't been done.
 
 ### 4.6 Field-strength engine (terrestrial)
 
@@ -212,20 +219,22 @@ Finding
 ## 6. Repository layout
 
 ```
-ific-guard/
-  adapters/    space.py  terrestrial.py
-  engines/     pfd.py    p1546.py
-  core/        store.py  filter.py  findings.py  ranking.py
-  llm/         retrieve.py  explain.py  draft.py
-  data/
-    national/  m4_allocations.csv  m4_satellite_filter.csv  special_interest.xlsx
-    masks/     limit_masks.json
-    refdocs/   RR, T/R 25-08, ECC decisions
-  tools/       parse_m4.py  build_filter.py
-  outputs/     ific_3074/  ific_3076/
-  tests/       test_pfd.py  test_p1546.py  test_filter.py
-  schema.sql
-  frontend/    React review UI
+ific_guard/
+  sync/        discovery, download, upload, cron
+  screening/   rules, pfd rule, scoring, space adapter, station loader, API
+  terrestrial/ adapter, diff, field-strength rule, neighbour trends
+  notifier/    digests and email backends
+  engines/     pfd.py  pfd_ngso.py  p1546.py
+  llm/         retrieval, template, guardrail, drafts
+  export.py    evaluation files
+data/
+  national/    M4 table from Traficom's API
+  masks/       limit masks, T/R 25-08 thresholds, Finnish boundary, land mask
+  refdocs/     retrieved regulation passages
+tools/         M4 and land-mask builders, hand check, P.1546 cross-check
+outputs/       ific_3074/  ific_3076/  hand-check.md
+frontend/      React review UI
+schema.sql     design for the deferred analytical store
 ```
 
 ## 7. Standard assumptions (shown on every finding)
