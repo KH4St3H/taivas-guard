@@ -2,9 +2,15 @@
 
 ## Result and reproduction
 
-51 possible concerns: 8 high from `fin-named-by-br`, 2 high and 41 medium
-from `m4-no-space-to-earth`. These are screening results, not a measured
-interference assessment or an expert accuracy evaluation.
+106 possible concerns across 59 filings: 8 high from `fin-named-by-br`, 2 high
+and 45 medium from `m4-no-space-to-earth`, and 51 medium from
+`station-rx-overlap`. A filing can appear under more than one rule. These are
+screening results, not a measured interference assessment or an expert accuracy
+evaluation.
+
+The earlier two-rule export had 51 cases. All 51 remain. The M4 table from
+Traficom's API adds 4 and the station overlap rule adds 51. The station rule
+checks frequency only, with no beam, power or geometry check.
 
 ```sh
 python -m ific_guard.cli export --domain space --issue 3074 --out outputs/ific_3074
@@ -15,15 +21,16 @@ Both real-data runs produced byte-identical CSV and JSON files:
 
 | File | SHA-256 |
 |---|---|
-| cases.csv | fcd70baa05e33406770aa7551a3d1e428f82a032718582b2df64c832897fb50b |
-| cases.json | d5fbf07e8d3947ef29ac6b4fff95dc77cd663f2542afd8e9de9afbfc97d834ee |
+| cases.csv | 4c0efb29e024431a5d2116910e2d6ea740e9be4590018c75be1305a6e69212e4 |
+| cases.json | 96cfafa1d63a18c4bb959d1c476d9f87d104b925ffeca4071c4a75493a3695cf |
 
 These hashes use LF line endings on every platform. Earlier values in this file
 covered Windows line endings, so they did not verify after a git checkout; the
 case content did not change.
 
 The files were regenerated on macOS from a clean commit, using Space 3074 downloaded
-directly from ITU, and took 35.35 seconds. Earlier measured export times were 70.53
+directly from ITU, and took 35.35 seconds. The current three-rule export took 35.28
+seconds, from the same verified file. Earlier measured export times were 70.53
 and 54.73 seconds on a Windows machine.
 An observed process peak working set during the first export was 774,938,624
 bytes (739 MiB); this was sampled during execution, not a final peak measurement.
@@ -31,6 +38,10 @@ The second run used streaming MDB hashing and adds per-source-file code hashes
 to the manifest. These provenance improvements did not change either case file.
 
 ## Five source-row checks
+
+These five checks predate the M4 table and station rule. All five filings are
+still in the export. They have not been repeated, and the new rule's cases were
+spot-checked on Space 3083, not 3074.
 
 Compared the exported fields with rows read directly from `ific3074.mdb`.
 For the first three, joined `grp.grp_id` to `provn.grp_id` and confirmed the
@@ -72,5 +83,5 @@ The known 3.4–3.8 GHz M4 gap, missing station overlap and missing pfd
 calculations remain tracked separately; all are also stated in the manifest.
 
 The operational pipeline separately returned `status: done`, `opened: 51`,
-`changed: 0` for artifact 1. Final regression suite: **77 passed** on macOS,
-with two dependency deprecation warnings. No notifications were delivered.
+`changed: 0` for artifact 1. Final regression suite: **392 passed** on macOS,
+with one dependency deprecation warning. No notifications were delivered.

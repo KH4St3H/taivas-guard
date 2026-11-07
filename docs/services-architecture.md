@@ -196,6 +196,8 @@ CSV/JSON stays identical. The suite now passes 68 tests.
 - Cron, on SQLite with an every-minute schedule: runs started on the minute with no errors.
 - Discovery finds Space and Terrestrial 3074-3083 with `IFIC_MIN_ISSUE=3074`, and downloading Space 3074 and Terrestrial 3076 directly gave the same hashes as the shared copies.
 
+- Integration branch `integration/wave-1`, combining the export, M4 table, station rule, P.1546 engine and draft letters: 392 tests pass, and the Docker image builds, with all rules and services loading inside it. The full Compose stack has not been run on it. Space 3074 gives 106 cases.
+
 **Open or not yet verified**
 
 | Item | Detail |
