@@ -639,3 +639,15 @@ def test_letters_quote_rounded_levels_and_a_model_may_repeat_them():
     text = "The calculated value of -86.34 dB exceeds the limit of -123.0 dB by a margin of 36.66 dB."
     assert generate(case, FakeModel(letter_body=text, explanation="Margin 36.66 dB.")).source == "llm"
 
+
+
+def test_terrestrial_template_names_p1546_as_the_cases_cite_it():
+    """A bare "P.1546" is a different citation from the cases' "ITU-R P.1546-6", so a rewrite keeping it would fail."""
+    case = make_case(
+        "terrestrial-p1546", method="p1546", value_db=34.5, limit_db=30.0, margin_db=4.5, mask_id="tr2508-sample",
+        citations=[{"doc": "ITU-R P.1546-6 (08/2019)", "clause": "Annex 5, Annex 6"}, {"doc": "T/R 25-08", "clause": "Annex 1"}],
+    )
+    view = CaseView.of(case)
+    body = draft_letter_body(view)
+    assert "ITU-R P.1546-6" in body
+    assert check_text(body, evidence_for(view, []), True, 4.5, levels_of(view.details)) == []

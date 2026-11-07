@@ -11,7 +11,7 @@ CALCULATED_METHODS = {"pfd_gso", "pfd_ngso", "p1546"}
 _METHOD_NAMES = {
     "pfd_gso": "a power flux-density calculation for a geostationary network",
     "pfd_ngso": "a power flux-density calculation for a non-geostationary system",
-    "p1546": "a field-strength calculation using the ITU-R P.1546 propagation model",
+    "p1546": "a field-strength calculation using the ITU-R P.1546-6 propagation model",
 }
 _SECTION_NAMES = {"9.1": "advance publication", "9.6": "coordination request"}
 
