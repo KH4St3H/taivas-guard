@@ -1,12 +1,14 @@
 import csv
 import json
+from pathlib import Path
 
 import pytest
 from sqlalchemy import select
 
 from ific_guard.db import session_scope
 from ific_guard.export import export_issue
-from ific_guard.models import Artifact, Case, Event
+from ific_guard.models import Artifact, Case, CaseOccurrence, Event
+from ific_guard.screening.engine import screen_artifact
 from tests.test_screening import FakeReader, freq, notice
 
 
@@ -86,3 +88,50 @@ def test_zero_findings_keeps_headers_and_rule_scope(tmp_path, fake_reader):
     assert manifest["scope"]["ap30_coverage"] == "not implemented"
     assert (tmp_path / "out/cases.json").read_text().strip() == "[]"
     assert (tmp_path / "out/cases.csv").read_text().startswith("rank,domain,issue_no,")
+
+
+@pytest.mark.parametrize("order", [(3074,), (3074, 3083), (3083, 3074)])
+def test_issue_findings_and_exports_do_not_depend_on_processing_order(tmp_path, monkeypatch, order):
+    readers = {
+        3074: FakeReader(notice=[notice(10)], geo=[dict(ntc_id=10, sat_name="Original", long_nom=25)],
+                         freq=[freq(10, 1410, 1412)]),
+        # Same family, materially different later finding and a second family.
+        3083: FakeReader(notice=[notice(10), notice(20)],
+                         geo=[dict(ntc_id=i, sat_name="Later", long_nom=25) for i in (10, 20)],
+                         freq=[freq(i, 1660.1, 1660.4) for i in (10, 20)]),
+    }
+    ids = {n: source(tmp_path, n, str(n)[0] * 64) for n in (3074, 3083)}
+    monkeypatch.setattr("ific_guard.export.MdbReader", lambda path: readers[int(Path(path).name[:4])])
+    baseline = tmp_path / "baseline"
+    export_issue("space", 3074, baseline)
+    for n in order:
+        screen_artifact(ids[n], reader=readers[n])
+    export_issue("space", 3074, tmp_path / "after")
+    for name in ("cases.csv", "cases.json"):
+        assert (baseline / name).read_bytes() == (tmp_path / "after" / name).read_bytes()
+    with session_scope() as s:
+        occurrence = s.scalars(select(CaseOccurrence).where(CaseOccurrence.artifact_id == ids[3074])).one()
+        assert occurrence.hit["network"] == "Original"
+        assert occurrence.hit["notice_ids"] == [10]
+        assert occurrence.hit["details"]["bands"][0]["low_mhz"] == 1400
+        if 3083 in order:
+            later = list(s.scalars(select(CaseOccurrence).where(CaseOccurrence.artifact_id == ids[3083])))
+            assert len(later) == 2
+            assert all(row.hit["network"] == "Later" for row in later)
+            assert occurrence.case_id in {row.case_id for row in later}
+
+
+def test_rescreen_replaces_only_its_own_occurrences(tmp_path, fake_reader):
+    first, second = source(tmp_path), source(tmp_path, 3083, "b" * 64)
+    screen_artifact(first, reader=fake_reader)
+    screen_artifact(second, reader=fake_reader)
+    screen_artifact(first, reader=fake_reader)
+    with session_scope() as s:
+        before = list(s.scalars(select(CaseOccurrence).where(CaseOccurrence.artifact_id == second)))
+        assert len(before) == 3
+        assert len(list(s.scalars(select(CaseOccurrence)))) == 6
+    screen_artifact(first, reader=FakeReader())
+    with session_scope() as s:
+        remaining = list(s.scalars(select(CaseOccurrence)))
+        assert len(remaining) == 3
+        assert all(row.artifact_id == second for row in remaining)

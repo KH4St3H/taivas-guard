@@ -123,6 +123,8 @@ Screening rules without a calculation use `method: "screening"` and leave the nu
 
 ## Fog
 
+- **Ticket 03 follow-up completed:** issue-local `case_occurrence` snapshots now persist during screening. Processing-order and re-screening tests pass; 68 tests total. Real backfill retained 51 occurrences for 3074 and 39 for 3083. Ticket 08 adapter work is in progress.
+
 - **Evaluation file format** for 3074 and 3076 (ticket 02). Ticket 03 builds a provisional format.
 - **What Sweden, Norway and Denmark contribute.** In Terrestrial 3075, 3076 and 3083, none of them notifies any station in `fxm_terra` or `fmtv_terra`. Only Russia and Estonia do. See ticket 08.
 - **Whether teammates are already building** the pfd engine, P.1546 or the UI. If so, remove those tickets rather than duplicating.

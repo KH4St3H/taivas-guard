@@ -177,6 +177,16 @@ With the default `IFIC_MIN_ISSUE=3074`, the first sync downloads about 20 zips. 
 
 ## 9. Current status
 
+Per-issue evidence is now retained in the additive `case_occurrence` table.
+Each row links an artifact to its cross-issue review case and stores the exact
+hit from that artifact's latest successful screening. Re-screening replaces
+only that artifact's occurrences, atomically with case updates. Run
+`python -m ific_guard.cli init-db` on existing installations to create the table,
+then re-screen imported artifacts to backfill it. Exports continue evaluating
+the selected source directly without changing review state or notifications.
+Processing-order tests cover 3074 alone, before 3083 and after 3083; the 3074
+CSV/JSON stays identical. The suite now passes 68 tests.
+
 **Verified**
 
 - Automated tests pass, using fake servers and no real mail.

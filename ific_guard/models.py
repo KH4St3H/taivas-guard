@@ -2,7 +2,7 @@
 from datetime import date, datetime
 from typing import Any
 
-from sqlalchemy import JSON, BigInteger, Date, DateTime, Index, Integer, String, Text, UniqueConstraint
+from sqlalchemy import JSON, BigInteger, Date, DateTime, ForeignKey, Index, Integer, String, Text, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column
 
 from .db import Base, utcnow
@@ -67,6 +67,23 @@ class Case(Base):
     review_note: Mapped[str | None] = mapped_column(Text)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow, onupdate=utcnow)
+
+
+class CaseOccurrence(Base):
+    """Issue-local evidence from the latest successful screening of one artifact.
+
+    Case is mutable review state across issues. This snapshot retains the exact
+    hit even when a newer issue changes that case or an older issue arrives late.
+    """
+
+    __tablename__ = "case_occurrence"
+    __table_args__ = (UniqueConstraint("artifact_id", "case_id"),)
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    artifact_id: Mapped[int] = mapped_column(ForeignKey("artifact.id"), index=True)
+    case_id: Mapped[int] = mapped_column(ForeignKey("case_.id"), index=True)
+    hit: Mapped[dict[str, Any]] = mapped_column(JSON)
+    screened_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
 
 
 class Notification(Base):

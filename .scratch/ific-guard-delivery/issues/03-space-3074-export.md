@@ -64,3 +64,23 @@ currently fails explicitly; ticket 10 must add its rule evaluation.
 No new screening rules or database columns were introduced. Raw ITU files
 remain ignored; only derived findings and verification documentation are
 included in outputs. No commits, pushes or external messages were sent.
+
+## Follow-up: per-issue occurrence persistence
+
+Completed the requirements added by the upstream plan on 2026-11-07.
+`case_occurrence` is an additive table linking each source artifact to a case,
+with a complete issue-local hit snapshot. Screening replaces only that
+artifact's occurrences in the same transaction as its case updates. A later
+issue cannot overwrite an earlier issue's evidence; empty re-screen results
+remove stale occurrences without deleting the expert's review case.
+
+The exporter still evaluates the selected artifact directly, preserving its
+side-effect-free behavior. Regression tests exercise the real screening path
+with 3074 alone, 3074 before 3083, and 3083 before 3074. All three produce
+byte-identical 3074 CSV/JSON and retain the correct per-issue evidence.
+An additional test covers repeated screening and empty replacement results.
+
+Validation: **68 tests passed**. On the actual imported databases, screening
+3083 followed by 3074 persisted **39 and 51 occurrences**, respectively.
+Existing installations need `python -m ific_guard.cli init-db` once to create
+the additive table, then re-screen existing artifacts to backfill occurrences.

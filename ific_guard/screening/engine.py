@@ -2,14 +2,15 @@
 import hashlib
 import json
 import logging
+from dataclasses import asdict
 from typing import Any
 
-from sqlalchemy import select
+from sqlalchemy import delete, select
 
 from .. import events
 from ..config import get_settings
 from ..db import session_scope, utcnow
-from ..models import Artifact, Case
+from ..models import Artifact, Case, CaseOccurrence
 from ..sync.sources import SPACE
 from .rules import Hit, Rule, space_rules
 from .space import MdbReader, SpaceIssue, TableReader
@@ -62,6 +63,17 @@ def save_hits(artifact_id: int, hits: list[Hit], domain: str = SPACE) -> tuple[i
                 case.comment_deadline = hit.comment_deadline
                 case.changed_artifact_id = artifact.id
                 case.review_status = "pending"  # the content changed, so an earlier decision no longer covers it
+        # Replace only this artifact's latest successful result, in the same
+        # transaction as case changes. Empty results clear obsolete occurrences;
+        # any failure rolls both changes back. Other issues/revisions are untouched.
+        s.flush()
+        s.execute(delete(CaseOccurrence).where(CaseOccurrence.artifact_id == artifact_id))
+        for hit in hits:
+            fingerprint = _digest(domain, hit.rule_id, hit.family_id)
+            case_id = s.scalars(select(Case.id).where(Case.fingerprint == fingerprint)).one()
+            snapshot = asdict(hit)
+            snapshot["comment_deadline"] = hit.comment_deadline.isoformat() if hit.comment_deadline else None
+            s.add(CaseOccurrence(artifact_id=artifact_id, case_id=case_id, hit=snapshot))
     return opened, changed
 
 
