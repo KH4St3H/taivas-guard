@@ -144,7 +144,7 @@ export const caseInIssue = (c: CaseSummary, domain: string, issue: number) => c.
 
 const GAPS: Record<Domain, string[]> = {
   space: ['No pfd check yet, so a case can’t say a limit is exceeded', 'No beam coverage check, so the M4 rule over-flags by design', 'M4 band file merges 3400–4200 MHz, which can miss cases in 3.4–3.8 GHz', 'AP30, AP30A and AP30B aren’t screened', 'Station overlap compares frequency only, not location, power or antenna direction'],
-  terrestrial: ['Terrestrial files are stored but no rules run yet', 'This does not mean there are no concerns'],
+  terrestrial: ['Land-mobile notices from the configured neighbours only, within an approximate 300 km screen', 'P.1546 without terrain; T/R 25-08 thresholds stop at 470 MHz and are unconfirmed on the Russian border', 'Notices that could not be calculated are listed for expert review; they are not clear results'],
 };
 
 export function summariseIssue(a: ArtifactOut, cases: CaseSummary[]): IssueSummary {
