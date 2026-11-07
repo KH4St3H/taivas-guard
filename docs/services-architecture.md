@@ -226,11 +226,10 @@ CSV/JSON stays identical. The suite now passes 68 tests.
 The full breakdown is in `.scratch/ific-guard-delivery/map.md`.
 
 1. Process Space 3074, which is evaluated separately, and export its cases.
-2. Replace the band file with Traficom API data to close the 3.4-3.8 GHz gap.
-3. Add a special-interest station overlap rule.
-4. Add the pfd engine as a rule, which is what allows a case to say a limit is exceeded.
-5. Add the terrestrial land-mobile adapter, the diff between issues, and P.1546 for Terrestrial 3076.
-6. Add LLM explanations and draft letters to the case detail. The review UI in `frontend/` already uses the services.
+2. Add a special-interest station overlap rule.
+3. Add the pfd engine as a rule, which is what allows a case to say a limit is exceeded.
+4. Add the terrestrial land-mobile adapter, the diff between issues, and P.1546 for Terrestrial 3076.
+5. Add LLM explanations and draft letters to the case detail. The review UI in `frontend/` already uses the services.
 
 After the hackathon: Alembic, SSO, staleness alerts, a stuck-event view and metrics.
 
