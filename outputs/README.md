@@ -31,4 +31,6 @@ notice-family ID.
 Case files are deterministic for fixed inputs and code. Manifest generation time
 and measured runtime vary. The format remains provisional pending ticket 02.
 
+`hand-check.md` rechecks a sample of each rule from raw rows, and `neighbour-trends.md` counts neighbouring notices across issues 3074-3083.
+
 Raw ITU archives and databases remain in ignored `data/shared/`, not in these outputs.

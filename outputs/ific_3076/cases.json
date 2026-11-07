@@ -434,7 +434,7 @@
     "rule_id": "terrestrial-p1546",
     "severity": "high",
     "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
-    "source_url": "import:brific3076.zip",
+    "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip",
     "title": "Possible concern: KRL LYASKELYA (RUS) 152.9 MHz: 21.0 dB(uV/m) at 42 km on the Finnish boundary, 9.0 dB above the T/R 25-08 indicative threshold of 12, under stated assumptions"
   },
   {
@@ -818,7 +818,7 @@
     "rule_id": "terrestrial-p1546",
     "severity": "medium",
     "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
-    "source_url": "import:brific3076.zip",
+    "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip",
     "title": "Possible concern: KRL KOSTOMUKSHA (RUS) 152.025 MHz: 25.0 dB(uV/m) at 32 km on the Finnish boundary, 13.0 dB above the T/R 25-08 indicative threshold of 12, under stated assumptions; NOTIFIER declares FIN coordination completed, please verify"
   },
   {
@@ -1253,7 +1253,7 @@
     "rule_id": "terrestrial-p1546",
     "severity": "medium",
     "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
-    "source_url": "import:brific3076.zip",
+    "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip",
     "title": "Possible concern: KRL KOSTOMUKSHA (RUS) 152.9 MHz: 24.7 dB(uV/m) at 32 km on the Finnish boundary, 12.7 dB above the T/R 25-08 indicative threshold of 12, under stated assumptions; NOTIFIER declares FIN coordination completed, please verify"
   },
   {
@@ -1637,7 +1637,7 @@
     "rule_id": "terrestrial-p1546",
     "severity": "medium",
     "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
-    "source_url": "import:brific3076.zip",
+    "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip",
     "title": "Possible concern: LEN VYBORG GRUZOVOI (RUS) 153.075 MHz: 20.2 dB(uV/m) at 30 km on the Finnish boundary, 8.2 dB above the T/R 25-08 indicative threshold of 12, under stated assumptions; NOTIFIER declares FIN coordination completed, please verify"
   },
   {
@@ -2023,7 +2023,7 @@
     "rule_id": "terrestrial-p1546",
     "severity": "medium",
     "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
-    "source_url": "import:brific3076.zip",
+    "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip",
     "title": "Possible concern: LEN VYBORG GRUZOVOI (RUS) 153.025 MHz: 20.2 dB(uV/m) at 30 km on the Finnish boundary, 8.2 dB above the T/R 25-08 indicative threshold of 12, under stated assumptions; NOTIFIER declares FIN coordination completed, please verify"
   },
   {
@@ -2387,7 +2387,7 @@
     "rule_id": "terrestrial-p1546",
     "severity": "medium",
     "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
-    "source_url": "import:brific3076.zip",
+    "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip",
     "title": "Possible concern: LEN VYBORG GRUZOVOI (RUS) 153.3 MHz: 20.2 dB(uV/m) at 30 km on the Finnish boundary, 8.2 dB above the T/R 25-08 indicative threshold of 12, under stated assumptions; NOTIFIER declares FIN coordination completed, please verify"
   },
   {
@@ -2805,7 +2805,7 @@
     "rule_id": "terrestrial-p1546",
     "severity": "medium",
     "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
-    "source_url": "import:brific3076.zip",
+    "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip",
     "title": "Possible concern, needs expert criterion: KRL RUSKEALA (RUS) 793.5 MHz: 35.1 dB(uV/m) at 14 km on the Finnish boundary; no criterion in the repository, so no comparison"
   },
   {
@@ -3246,7 +3246,7 @@
     "rule_id": "terrestrial-p1546",
     "severity": "medium",
     "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
-    "source_url": "import:brific3076.zip",
+    "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip",
     "title": "Possible concern, needs expert criterion: KRL RUSKEALA (RUS) 793.5 MHz: 21.6 dB(uV/m) at 14 km on the Finnish boundary; no criterion in the repository, so no comparison"
   },
   {
@@ -3705,7 +3705,7 @@
     "rule_id": "terrestrial-p1546",
     "severity": "medium",
     "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
-    "source_url": "import:brific3076.zip",
+    "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip",
     "title": "Possible concern, needs expert criterion: KRL RUSKEALA (RUS) 794.74 MHz: 21.6 dB(uV/m) at 14 km on the Finnish boundary; no criterion in the repository, so no comparison"
   },
   {
@@ -4183,7 +4183,7 @@
     "rule_id": "terrestrial-p1546",
     "severity": "medium",
     "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
-    "source_url": "import:brific3076.zip",
+    "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip",
     "title": "Possible concern, needs expert criterion: LEN PROMZONA (RUS) 794.74 MHz: -10.4 dB(uV/m) at 135 km on the Finnish boundary; no criterion in the repository, so no comparison"
   },
   {
@@ -4597,7 +4597,7 @@
     "rule_id": "terrestrial-p1546",
     "severity": "medium",
     "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
-    "source_url": "import:brific3076.zip",
+    "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip",
     "title": "Possible concern, needs expert criterion: MUR TITOVKA (RUS) 793.5 MHz: -18.5 dB(uV/m) at 101 km on the Finnish boundary; no criterion in the repository, so no comparison"
   },
   {
@@ -5029,7 +5029,7 @@
     "rule_id": "terrestrial-p1546",
     "severity": "medium",
     "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
-    "source_url": "import:brific3076.zip",
+    "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip",
     "title": "Possible concern, needs expert criterion: MUR TITOVKA (RUS) 794.74 MHz: -18.5 dB(uV/m) at 101 km on the Finnish boundary; no criterion in the repository, so no comparison"
   },
   {
@@ -5255,7 +5255,7 @@
     "rule_id": "terrestrial-not-calculated",
     "severity": "medium",
     "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
-    "source_url": "import:brific3076.zip",
+    "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip",
     "title": "Not calculated, expert review needed: LEN KINGISEPP (RUS) ML 415.825 MHz: fxm_ant has no height above ground or effective height; none was assumed."
   },
   {
@@ -5481,7 +5481,7 @@
     "rule_id": "terrestrial-not-calculated",
     "severity": "medium",
     "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
-    "source_url": "import:brific3076.zip",
+    "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip",
     "title": "Not calculated, expert review needed: LEN OBL (RUS) ML 424.575 MHz: fxm_ant has no height above ground or effective height; none was assumed."
   },
   {
@@ -5707,7 +5707,7 @@
     "rule_id": "terrestrial-not-calculated",
     "severity": "medium",
     "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
-    "source_url": "import:brific3076.zip",
+    "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip",
     "title": "Not calculated, expert review needed: LEN KINGISEPP (RUS) ML 414.075 MHz: fxm_ant has no height above ground or effective height; none was assumed."
   },
   {
@@ -5933,7 +5933,7 @@
     "rule_id": "terrestrial-not-calculated",
     "severity": "medium",
     "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
-    "source_url": "import:brific3076.zip",
+    "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip",
     "title": "Not calculated, expert review needed: LEN KINGISEPP (RUS) ML 414.475 MHz: fxm_ant has no height above ground or effective height; none was assumed."
   },
   {
@@ -6169,7 +6169,7 @@
     "rule_id": "terrestrial-not-calculated",
     "severity": "medium",
     "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
-    "source_url": "import:brific3076.zip",
+    "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip",
     "title": "Not calculated, expert review needed: PSK PSKOV (RUS) ML 154.6 MHz: fxm_ant has no height above ground or effective height; none was assumed."
   },
   {
@@ -6387,7 +6387,7 @@
     "rule_id": "terrestrial-not-calculated",
     "severity": "medium",
     "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
-    "source_url": "import:brific3076.zip",
+    "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip",
     "title": "Not calculated, expert review needed: KRL LYASKELYA (RUS) ML 152.9 MHz: fxm_ant has no height above ground or effective height; none was assumed."
   },
   {
@@ -6625,7 +6625,7 @@
     "rule_id": "terrestrial-not-calculated",
     "severity": "medium",
     "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
-    "source_url": "import:brific3076.zip",
+    "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip",
     "title": "Not calculated, expert review needed: KRL KOSTOMUKSHA (RUS) ML 152.9 MHz: fxm_ant has no height above ground or effective height; none was assumed."
   },
   {
@@ -6843,7 +6843,7 @@
     "rule_id": "terrestrial-not-calculated",
     "severity": "medium",
     "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
-    "source_url": "import:brific3076.zip",
+    "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip",
     "title": "Not calculated, expert review needed: KRL KOSTOMUKSHA (RUS) ML 155.6 MHz: fxm_ant has no height above ground or effective height; none was assumed."
   },
   {
@@ -7220,7 +7220,7 @@
     "rule_id": "terrestrial-p1546",
     "severity": "medium",
     "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
-    "source_url": "import:brific3076.zip",
+    "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip",
     "title": "LEN KINGISEPP (RUS) 425.825 MHz: 11.1 dB(uV/m) at 128 km on the Finnish boundary, 8.9 dB below the T/R 25-08 indicative threshold of 20, under stated assumptions"
   },
   {
@@ -7595,7 +7595,7 @@
     "rule_id": "terrestrial-p1546",
     "severity": "medium",
     "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
-    "source_url": "import:brific3076.zip",
+    "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip",
     "title": "LEN KINGISEPP (RUS) 424.075 MHz: 6.9 dB(uV/m) at 143 km on the Finnish boundary, 13.1 dB below the T/R 25-08 indicative threshold of 20, under stated assumptions"
   },
   {
@@ -7970,7 +7970,7 @@
     "rule_id": "terrestrial-p1546",
     "severity": "medium",
     "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
-    "source_url": "import:brific3076.zip",
+    "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip",
     "title": "LEN KINGISEPP (RUS) 424.475 MHz: 6.9 dB(uV/m) at 143 km on the Finnish boundary, 13.1 dB below the T/R 25-08 indicative threshold of 20, under stated assumptions"
   },
   {
@@ -8317,7 +8317,7 @@
     "rule_id": "terrestrial-p1546",
     "severity": "low",
     "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
-    "source_url": "import:brific3076.zip",
+    "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip",
     "title": "PSK PSKOV (RUS) 159.6 MHz: -22.3 dB(uV/m) at 301 km on the Finnish boundary, 34.3 dB below the T/R 25-08 indicative threshold of 12, under stated assumptions"
   },
   {
@@ -8664,7 +8664,7 @@
     "rule_id": "terrestrial-p1546",
     "severity": "low",
     "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
-    "source_url": "import:brific3076.zip",
+    "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip",
     "title": "PSK PSKOV (RUS) 154.6 MHz: -25.2 dB(uV/m) at 301 km on the Finnish boundary, 37.2 dB below the T/R 25-08 indicative threshold of 12, under stated assumptions"
   },
   {
@@ -9011,7 +9011,7 @@
     "rule_id": "terrestrial-p1546",
     "severity": "low",
     "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
-    "source_url": "import:brific3076.zip",
+    "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip",
     "title": "PSK PSKOV (RUS) 154.6 MHz: -25.4 dB(uV/m) at 301 km on the Finnish boundary, 37.5 dB below the T/R 25-08 indicative threshold of 12, under stated assumptions"
   },
   {
@@ -9358,7 +9358,7 @@
     "rule_id": "terrestrial-p1546",
     "severity": "low",
     "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
-    "source_url": "import:brific3076.zip",
+    "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip",
     "title": "PSK PSKOV (RUS) 154.6 MHz: -26.4 dB(uV/m) at 301 km on the Finnish boundary, 38.4 dB below the T/R 25-08 indicative threshold of 12, under stated assumptions"
   },
   {
@@ -9705,7 +9705,7 @@
     "rule_id": "terrestrial-p1546",
     "severity": "low",
     "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
-    "source_url": "import:brific3076.zip",
+    "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip",
     "title": "PSK PSKOV (RUS) 154.6 MHz: -27.3 dB(uV/m) at 301 km on the Finnish boundary, 39.3 dB below the T/R 25-08 indicative threshold of 12, under stated assumptions"
   },
   {
@@ -10052,7 +10052,7 @@
     "rule_id": "terrestrial-p1546",
     "severity": "low",
     "source_sha256": "ba9d0605a4a5494162e17650c290401d84deaef29030cbdbb61e4b00c834c4c2",
-    "source_url": "import:brific3076.zip",
+    "source_url": "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific3076.zip",
     "title": "PSK PSKOV (RUS) 154.6 MHz: -28.4 dB(uV/m) at 301 km on the Finnish boundary, 40.4 dB below the T/R 25-08 indicative threshold of 12, under stated assumptions"
   }
 ]

@@ -1,8 +1,8 @@
 # Space IFIC 3074 verification — 2026-11-07
 
-## Current export (ticket 16, code commit 8c70006)
+## Current export (clean Compose run, code commit ba6f09a)
 
-182 possible concerns: 30 high, 124 medium, 28 low. This is the first committed export with pfd results.
+182 possible concerns: 30 high, 123 medium, 29 low. Exported in the screening container from an empty database after the scheduled first sync, which finished `ok`. The manifest's `code_version` is empty because the image has no Git history, but its 44 code hashes identify the code and match that commit.
 
 | Rule | Cases |
 |---|---:|
@@ -16,10 +16,14 @@
 
 | File | SHA-256 |
 |---|---|
-| cases.csv | 9853462ea06a340c30772a51166767249f669e1da80a9ea7ca618037ff3058cd |
-| cases.json | 0a09f6f9b028221f397a6c01ee92733b90f2d2fffee6509943651f4ccbc5f0ac |
+| cases.csv | e1811b1b621bbf5a824ae50a7f869d6b1d2a3ced1ff980dc646fd6c7b10cc899 |
+| cases.json | 7822f99e5fb14576f561edbd280c2cd59f65373e5ed0bf7d0f006a70a959ddbb |
 
-Two runs produced byte-identical files. The sections below describe the earlier export, before pfd and TX protection, unless they say otherwise.
+A second empty database, loaded by uploading `ific3074.zip`, gave the same cases. The only difference was `source_url`. See `../hand-check.md` for the hand check.
+
+Compared with the ticket 16 export (30 high, 124 medium, 28 low), the only change in rule behaviour is the `pep_max` cap on pfd power. In this issue, no record's worst margin rose and 74 of 1,234 fell. GSO Article 21 `exceeds` went from 613 to 605 calculations, and one non-GSO family moved from medium to low.
+
+The sections below describe earlier exports unless they say otherwise.
 
 ### Effect of protecting TX frequencies
 
@@ -142,5 +146,5 @@ No independent MDB parser or expert case-accuracy check was available.
 At that earlier export, the pfd engine was not connected to a rule. It now is; see
 Current export. The manifest states the remaining limits.
 
-The regression suite at commit 0ab81a8: **446 passed** on macOS, with one
-dependency deprecation warning. The frontend's 31 tests also pass. No real mail was sent.
+The regression suite at commit ba6f09a: **554 passed** on macOS, including the tests that read real issues, with one
+dependency deprecation warning. The frontend's 32 tests also pass. No real mail was sent.

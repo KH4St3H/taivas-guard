@@ -14,7 +14,7 @@ Answers came on Discord, 2026-11-07 8:39-8:55, from Pekka, Otto and the Traficom
 
 - [ ] **Record the answers in ticket 02,** with who answered and when. Its answer section is empty.
 - [ ] **Search CEPT sources for pfd concerns.** Traficom: the RR table is "the main source", but "CEPT for instance can elaborate on the defined limits in Europe as you might want to focus on concerns instead of just hard limits". `limit_masks.json` cites only the RR. The brief lists `https://docdb.cept.org/implementation/overview`. Add only values read at the source.
-- [ ] **Remove GIMS as a future step.** Traficom: beams "are not relevant" and "the worst case scenario should always be assumed". Update `ARCHITECTURE.md:235` and `:243`, `docs/services-architecture.md:238`, and `rule_pfd.py:9`, and cite Traficom for worst case. Keep "exceeds under worst-case assumptions". The `:238` row also still says there is no pfd check, which ticket 07 fixed.
+- [ ] **Remove GIMS as a future step.** Docs done; the `rule_pfd.py` docstring remains. Traficom: beams "are not relevant" and "the worst case scenario should always be assumed". Update `ARCHITECTURE.md:235` and `:243`, `docs/services-architecture.md:238`, and `rule_pfd.py:9`, and cite Traficom for worst case. Keep "exceeds under worst-case assumptions". The `:238` row also still says there is no pfd check, which ticket 07 fixed.
 - [ ] **State that the 3 dB watch band is our choice.** `WATCH_DB` comes from `ARCHITECTURE.md` section 4.7, not from Traficom.
 
 ## Gaps against the brief
@@ -33,9 +33,9 @@ Answers came on Discord, 2026-11-07 8:39-8:55, from Pekka, Otto and the Traficom
 - [ ] **Push `agent/12-drafts-ui` (`1422f80`), then merge it.** It exists only in this Codespace and connects the case page to the draft API. On `wave-3` the UI still keeps letters in the browser (`http.ts:260`), and ticket 14's demo needs a draft letter. Expect frontend conflicts.
 - [ ] **Compare `01d4341` with `wave-3`'s terrestrial filter.** It is also local only, on `agent/08-terrestrial`, `agent/10-terrestrial-findings` and `agent/11-trends`. `wave-3` uses the version in `adapter.py`, and lacks this commit's `filter.py`, `geography.py` and `summary.py`. Keep anything better, then drop it.
 - [ ] **Check local worktrees for lost work.** `wt-07`, `wt-11` and `wt-15` have uncommitted files on commits older than their remote branches. Compare them before deleting.
-- [ ] **Write the root `README.md`.** There is none, and the brief asks for input and output information.
+- [x] **Write the root `README.md`.** There is none, and the brief asks for input and output information.
 - [ ] **Merge to `main`.** It is 59 commits behind `wave-3`. Open a PR from `wave-3` once it is ready, and close PR #1, whose content is already included.
-- [ ] **Delete `origin/agent/12-review-ui`.** Its two commits are already in `wave-3` under other hashes.
+- [x] **Delete `origin/agent/12-review-ui`.** Its two commits are already in `wave-3` under other hashes.
 - [ ] **Fix Git access in the Codespace.** `GITHUB_TOKEN` cannot see the repository, so plain `git fetch` returns 403. Use the stored `ar6aaz` login.
 - [ ] **Tidy the tracker.** Tickets 04-11, 13 and 15 still say `ready-for-agent` although the map marks them done, and the map still says wave 3 is not pushed.
 

@@ -25,7 +25,7 @@ Status values come from `docs/agents/triage-labels.md`. Size is a rough relative
 | 11 | Neighbour trends and anomalies | Done, merged in `integration/wave-3` | S | 08 | Required |
 | 12 | Review UI | Done, React in `frontend/`, by `ar6aaz` | M | none | Wanted |
 | 13 | Explanations and draft letters | Done, `agent/13-llm-drafts` | M | none | Required |
-| 14 | Final run, evaluation files and demo | Coordinator | M | all others except 17 and 18 | Required |
+| 14 | Final run, evaluation files and demo | Done at `ba6f09a`, except for pressing Accept by hand before the demo; see ticket 18 for what's still open | M | all others | Required |
 | 15 | Older IFIC issues | Done for version 10 only, merged in `integration/wave-3` | M | 03 | Required |
 | 16 | Protect TX as well as RX frequencies | Done, merged in `integration/wave-3` | M | none | Required |
 | 17 | AP30, AP30A and AP30B plan screening | Later, `needs-info` | L | none | Required by the brief, gap declared for now |

@@ -216,11 +216,11 @@ CSV/JSON stays identical.
 - Cron, on SQLite with an every-minute schedule: runs started on the minute with no errors.
 - Discovery finds Space and Terrestrial 3074-3083 with `IFIC_MIN_ISSUE=3074`, and downloading Space 3074 and Terrestrial 3076 directly gave the same hashes as the shared copies.
 
-- **Clean Compose run on Postgres, 2026-11-07, at the commit named in `outputs/ific_3074/verification.md`:** from empty volumes, the first scheduled sync finished `ok` with 20 of 20 issues (Space and Terrestrial 3074-3083) fetched in about 3 minutes, all 20 reached `done` in about 8 minutes, and 20 digests were written to files. No real mail was sent.
+- **Clean Compose run on Postgres, 2026-11-07, at commit ba6f09a:** from empty volumes, the first scheduled sync finished `ok` with 20 of 20 issues (Space and Terrestrial 3074-3083) fetched in about 3 minutes, all 20 reached `done` in about 8 minutes, and 20 digests were written to files. No real mail was sent.
 - **Upload on Postgres:** a second empty database given `ific3074.zip`, `brific3075.mdb` and `brific3076.mdb` produced the same cases. The only differences were the source URL and the hash and size of the uploaded file. A request with no key got 401, and repeat uploads were recognised.
 - **Demo rehearsal from a clean start:** see `docs/demo.md`. Drafts returned 200 for all 224 cases in 3083, and screening the issue again added no cases or notifications.
 - **Hand check:** see `outputs/hand-check.md`. All 21 P.1546 values match upstream code in Octave to within 0.006 dB (`tools/crosscheck_p1546_octave.py`).
-- The Python suite passes, with 544 tests including those reading real issues, and the frontend's 32 tests pass.
+- The Python suite passes, with 554 tests including those reading real issues, and the frontend's 32 tests pass.
 
 **Open or not yet verified**
 
@@ -239,7 +239,7 @@ CSV/JSON stays identical.
 | Terrestrial criteria are partial | Land-mobile notices get a P.1546 field strength. T/R 25-08 Annex 1 thresholds apply only up to 470 MHz and are unconfirmed on the Russian border; above that the value has no comparison | Traficom's answer on the criteria (ticket 02) |
 | Cases span issues | A case seen in two issues counts once, so a digest or count for one issue can omit it. **Export per issue, not from "new" cases** | Ticket 03 |
 | Older issues reject | Only Space database version 10 screens. Versions 8, 7 and 5 are rejected with a clear error, not read | The brief asks for all existing issues | Add readers for each version |
-| No beam coverage | pfd results apply maximum notified gain towards Finland, and frequency rules over-flag. `s_beam` has no boresight in 3074 | GIMS contours |
+| Worst-case gain | pfd results apply maximum notified gain towards Finland, as Traficom said to assume, and frequency rules over-flag. `s_beam` has no boresight in 3074 | None planned: Traficom said beams "are not relevant" |
 | AP30, AP30A, AP30B not screened | The brief puts them in scope; issue 3083's plan tables are empty, so this is untested | Add notice handling using an issue that contains them |
 | DuckDB store deferred | Rules read the `.mdb` directly, which has been fast enough one issue at a time | Load `schema.sql` tables inside `screening` when cross-issue analysis needs it |
 | Tables made with `create_all` | Schema changes need manual work | Alembic |

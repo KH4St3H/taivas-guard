@@ -15,7 +15,7 @@ It raises **possible concerns for expert review**. It doesn't decide that a fili
 |---|---|---|
 | `fin-named-by-br` | Space | The ITU's own data names Finland on a filing |
 | `m4-no-space-to-earth` | Space | A satellite that can reach Finland transmits in a band where Regulation M4 gives no space-to-Earth allocation |
-| `station-rx-overlap` | Space | A transmission overlaps the receive band of a Traficom special-interest station |
+| `station-rx-overlap` | Space | A transmission overlaps the RX or TX band of a Traficom special-interest station |
 | `pfd-gso-art21`, `pfd-gso-app5` | Space | Calculated GSO power flux-density against Article 21 limits and Appendix 5 coordination triggers |
 | `pfd-ngso-art21`, `pfd-ngso-app5` | Space | The same for non-GSO, as an upper bound and a one-day flight of the notified orbit |
 | `terrestrial-p1546` | Terrestrial | ITU-R P.1546-6 field strength on the Finnish boundary, for land-mobile notices from Russia, Sweden, Estonia, Norway and Denmark |
@@ -82,8 +82,9 @@ python -m ific_guard.cli export --domain terrestrial --issue 3076 --out outputs/
 | Output | What it is |
 |---|---|
 | [`outputs/ific_3074/`](outputs/ific_3074) | Space 3074: 182 cases (30 high, 123 medium, 29 low) |
-| [`outputs/ific_3076/`](outputs/ific_3076) | Terrestrial 3076: 29 cases (1 high, 20 medium, 8 low) |
+| [`outputs/ific_3076/`](outputs/ific_3076) | Terrestrial 3076: 29 cases (1 high, 22 medium, 6 low) |
 | [`outputs/hand-check.md`](outputs/hand-check.md) | Independent recheck of a sample, with the false positives and misses we could measure |
+| [`outputs/neighbour-trends.md`](outputs/neighbour-trends.md) | Counts of neighbouring notices across Terrestrial 3074-3083 |
 | Review cases | Stored in the database, served by the Screening API and the UI |
 | Digest email | One per issue |
 | Draft letter | `GET /cases/{id}/draft`; marked as a draft and never sent |
@@ -98,7 +99,7 @@ From an empty database with `docker compose up --build`:
 
 - The scheduled first sync finished `ok`, with all 20 issues (Space and Terrestrial 3074-3083) screened and a digest written for each. No real email was sent.
 - A second empty database, loaded by upload (`ific3074.zip`, `brific3075.mdb`, `brific3076.mdb`), gave the same cases as the download. The only differences were the source URL, and the hash and size of whichever file was uploaded.
-- A demo was rehearsed from a clean start, including a draft for each of the 224 cases in 3083.
+- A demo was rehearsed from a clean start, including a draft for each of the 224 cases in 3083. This ran just before the TX protection was merged, which changes station links but not the steps.
 
 The rehearsals found faults that the unit tests had not, all now fixed:
 
@@ -115,8 +116,8 @@ The hand check recomputed 13 pfd results from raw rows with no difference above 
 
 ### False positives
 
-- **No beam coverage.** GIMS antenna contours aren't used, and `s_beam` holds no boresight position for any of the 2,304 rows in 3074. Every pfd result applies the maximum notified gain towards Finland, so "exceeds" always means under worst-case assumptions. We can't tell how many of the high pfd cases would remain.
-- **Frequency-only rules.** `m4-no-space-to-earth` and `station-rx-overlap` ignore power, antenna direction and station location. A slight edge overlap counts. They over-flag by design.
+- **Worst-case gain.** Every pfd result applies the maximum notified gain towards Finland, as Traficom said to assume (beams "are not relevant", Discord, 2026-11-07). So "exceeds" always means under worst-case assumptions. `s_beam` holds no boresight position for any of the 2,304 rows in 3074, so we can't say how many of the high pfd cases a real beam would reach.
+- **Frequency-only rules.** `m4-no-space-to-earth` and `station-rx-overlap` ignore power, antenna direction and station location. A slight edge overlap counts. They over-flag by design. Protecting TX as well as RX, as Traficom asked, adds no cases but 75% more station links on 3074.
 - **Filings around the Moon.** In 3074, six networks (LUNAR-R1 to R5, USASAT-MK1) have an orbit referred to the Moon. They still get M4 and station cases as if they were Earth satellites. The pfd rule sets them aside as not evaluated.
 - **Synthetic stations.** Traficom's station list is synthetic, so station cases show that the rule works, not real interference.
 
@@ -127,6 +128,8 @@ The hand check recomputed 13 pfd results from raw rows with no difference above 
 - **Only Space database version 10 screens.** Issues in versions 8, 7 and 5 are rejected with a clear error, so "all existing issues" isn't met for older issues. Space discovery walks back to 1998, and 3074-3083 are all version 10.
 - **Terrestrial covers land mobile only.** Other services and terrain (`pathinfo = 1`) aren't calculated.
 - **Article 22 epfd isn't calculated.** Neither is the sum of several satellites at one point.
+- **Finnish satellites aren't protected.** The brief also asks about systems that could interfere with Finnish satellites, and no rule does this yet.
+- **No space-side trends.** `outputs/neighbour-trends.md` covers terrestrial only.
 
 ### Assumptions an expert should check
 
@@ -146,7 +149,7 @@ The hand check recomputed 13 pfd results from raw rows with no difference above 
 - **Severity scoring.** The configured boosts for stations and passive bands don't fire on the evaluated issues, so they don't affect ranking there.
 - **The MDB parser `access-parser` is a young library**, and row counts haven't been compared with `mdbtools`.
 - **A first sync sends one digest per issue**, so a low `IFIC_MIN_ISSUE` sends a burst of them.
-- **Not tested:** real SMTP (mocked only), and ITU's own PFD software as a cross-check.
+- **Not tested:** real SMTP (mocked only), the language-model path with a real model, and ITU's own PFD software as a cross-check.
 - **Security is minimal.** The API key is a basic guard and the ports bind to localhost, so this isn't ready to face the internet.
 - **Schema changes** use `create_all`, with no migrations.
 - **The normalised DuckDB store was deferred.** Rules read the `.mdb` directly. See [ARCHITECTURE.md](ARCHITECTURE.md) section 4.2.

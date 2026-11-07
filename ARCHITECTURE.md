@@ -241,7 +241,7 @@ schema.sql     design for the deferred analytical store
 
 1. Free-space propagation for pfd (RR Art. 21).
 2. Angle of arrival equals geometric elevation; no refraction.
-3. Maximum (boresight) antenna gain towards Finland — worst case until GIMS contours are used.
+3. Maximum (boresight) antenna gain towards Finland: the worst case, which Traficom said to assume.
 4. Maximum notified power density.
 5. P.1546 without terrain data (`pathinfo = 0`); effective height from notified antenna height and site altitude.
 6. Receiver height and time percentage per T/R 25-08.
@@ -249,7 +249,6 @@ schema.sql     design for the deferred analytical store
 
 ## 8. Out of scope / later
 
-- GIMS beam contours (exact off-axis gain).
 - Article 22 epfd for NGSO.
 - Terrain-based P.1546 (`pathinfo = 1`).
 - Terrestrial services other than land mobile.

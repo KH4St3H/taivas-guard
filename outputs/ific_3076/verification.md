@@ -51,12 +51,12 @@ This checks the Python port for these inputs only. It does not check the inputs,
 
 ## Reproducibility
 
-Two runs produced identical files. The manifest differs only in time and duration, and it records the code commit it ran on.
+Exported in the screening container from the clean Compose run at code commit ba6f09a. The manifest's `code_version` is empty because the image has no Git history, but its code hashes match that commit. A second empty database, loaded by uploading `brific3075.mdb` and `brific3076.mdb`, gave the same cases. The only differences were the source URL, and the hash and size of the uploaded file.
 
 | File | SHA-256 |
 |---|---|
-| cases.csv | a54c5ffc22888768754a60aaeea556f806d77b475d43176208eaaea0082077dc |
-| cases.json | 604191df3256e423d95a8bf41aa4f82670961e6b780565fafe1dcc2c2661d352 |
+| cases.csv | 2d5db61bd5a370be6d9ac6fca2a4f47dc2c906990da3af41a5b9a3ea19951ccd |
+| cases.json | 43229b8d9a09bbd18830b484d1bcdedc30d612eef9519451f2fdec98dc323a4d |
 | funnel.json | d90fcab2e1986f586dd12b180bcf20c64f51a4b6e7954d4ef0c4f850c8207373 |
 
 ## Effect of protecting TX frequencies (ticket 16)

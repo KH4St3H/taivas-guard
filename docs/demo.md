@@ -1,6 +1,6 @@
 # Demo script
 
-Rehearsed once from an empty database on 2026-11-07, with Space and Terrestrial 3083. It takes about 5 minutes, plus about 2 minutes for the first screening.
+Rehearsed once from an empty database on 2026-11-07, with Space and Terrestrial 3083, at commit d9fee4e. The TX protection merged after that changes station links but not these steps. It takes about 5 minutes, plus about 2 minutes for the first screening.
 
 It needs Docker, Node and internet access to the ITU. Email goes to a file, so nothing is sent.
 
