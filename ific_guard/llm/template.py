@@ -109,6 +109,15 @@ _STATUS_TEXT = {
 
 def _station_line(record: dict[str, Any]) -> str:
     sides = "/".join(sorted({b["side"].upper() for b in record.get("matched_bands", [])}))
+    if "status" not in record:
+        # Terrestrial station records carry a field strength, not a PFD result or a station criterion.
+        value = record.get("value_db")
+        result = (f"calculated field strength {_db(value)} dB(uV/m); no station-specific criterion comparison"
+                  if _is_number(value) else f"not calculated: {record.get('not_calculated') or 'no station result'}")
+        line = f"- Station {record['station_id']} ({sides}): {result}"
+        if record.get("field_location"):
+            line += "; at the station's site, which is not where this band is received"
+        return line
     line = f"- Station {record['station_id']} ({sides}): {_STATUS_TEXT.get(record['status'], record['status'])}"
     if _is_number(record.get("margin_db")):
         line += (f", {_db(record['value_db'])} dB against {_db(record['limit_db'])} dB, margin {_db(record['margin_db'])} dB"
