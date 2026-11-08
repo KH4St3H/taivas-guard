@@ -27,7 +27,7 @@ class Settings(BaseSettings):
     terrestrial_zip_pattern: str = "https://www.itu.int/en/ITU-R/terrestrial/brific/BRIFIC/MDB/brific{issue}.zip"
     http_timeout_s: float = 60.0
     user_agent: str = "ific-guard/0.1"
-    max_zip_bytes: int = 2 * 1024**3
+    max_zip_bytes: int = 4 * 1024**3
     max_mdb_bytes: int = 6 * 1024**3
 
     # screening

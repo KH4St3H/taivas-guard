@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { evaluate, parseName, sniffType, zipEntries } from './fileCheck';
+import { MAX_BYTES, evaluate, parseName, sniffType, zipEntries } from './fileCheck';
 
 const bytes = (s: string) => Uint8Array.from(s, (c) => c.charCodeAt(0));
 const mdbHead = new Uint8Array([0, 1, 0, 0, ...bytes('Standard Jet DB'), 0]);
@@ -59,6 +59,7 @@ describe('evaluate', () => {
     const pdf = bytes('%PDF-1.7 not a database....');
     expect(evaluate('ific3083.mdb', pdf.length, pdf, pdf).ok).toBe(false);
     expect(evaluate('ific3083.mdb', 0, mdbHead, mdbHead).ok).toBe(false);
-    expect(evaluate('ific3083.mdb', 2 * 1024 ** 3, mdbHead, mdbHead).ok).toBe(false);
+    expect(evaluate('ific3083.mdb', MAX_BYTES, mdbHead, mdbHead).ok).toBe(true);
+    expect(evaluate('ific3083.mdb', MAX_BYTES + 1, mdbHead, mdbHead).ok).toBe(false);
   });
 });
